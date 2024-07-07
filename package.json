@@ -14,6 +14,7 @@
     "konva": "^9.3.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-konva": "^18.2.10",
     "xstate": "^5.14.0"
   },
   "devDependencies": {
