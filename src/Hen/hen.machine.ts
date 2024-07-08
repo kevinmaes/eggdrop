@@ -45,8 +45,29 @@ export const henMachine = setup({
 		pickNewTargetXPosition: assign(({ context }) => ({
 			targetPosition: { x: pickXPosition(context.stageWidth), y: 0 },
 		})),
-		// Stub for provided actions
-		updatePosition: () => {},
+		updatePosition: assign(({ context, event }) => {
+			// Compare the context.position.x with context.targetPosition.x
+			// and calulate the direction
+			let direction = 1;
+			if (context.position.x > context.targetPosition.x) {
+				direction = -1;
+			}
+
+			let newX =
+				context.position.x + direction * event.output.timeDiff * context.speed;
+
+			if (direction === 1 && newX > context.targetPosition.x) {
+				newX = context.targetPosition.x;
+			}
+			if (direction === -1 && newX < context.targetPosition.x) {
+				newX = context.targetPosition.x;
+			}
+
+			return {
+				position: { x: newX, y: context.position.y },
+			};
+		}),
+		// Stub for a provided action
 		layEgg: () => {
 			// Trigger the creation of a new egg
 		},

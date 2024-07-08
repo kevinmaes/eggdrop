@@ -4,7 +4,7 @@ import { Image as KonvaImage } from 'react-konva';
 import useImage from 'use-image';
 import { henMachine } from './hen.machine';
 import { Animation } from 'konva/lib/Animation';
-import { assign, fromPromise } from 'xstate';
+import { fromPromise } from 'xstate';
 import henImageFile from '../assets/hen1.png';
 import { Ref } from 'react';
 import Konva from 'konva';
@@ -44,29 +44,6 @@ export function Hen({
 				}),
 			},
 			actions: {
-				updatePosition: assign(({ context, event }) => {
-					// Compare the context.position.x with context.targetPosition.x
-					// and calulate the direction
-					let direction = 1;
-					if (context.position.x > context.targetPosition.x) {
-						direction = -1;
-					}
-
-					let newX =
-						context.position.x +
-						direction * event.output.timeDiff * context.speed;
-
-					if (direction === 1 && newX > context.targetPosition.x) {
-						newX = context.targetPosition.x;
-					}
-					if (direction === -1 && newX < context.targetPosition.x) {
-						newX = context.targetPosition.x;
-					}
-
-					return {
-						position: { x: newX, y: context.position.y },
-					};
-				}),
 				layEgg: () => {
 					return onLayEgg(id, state.context.position.x);
 				},
