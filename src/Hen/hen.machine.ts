@@ -1,4 +1,4 @@
-import { assign, fromPromise, log, setup } from 'xstate';
+import { assign, fromPromise, setup } from 'xstate';
 
 export function pickXPosition({
 	context,
@@ -68,37 +68,37 @@ export const henMachine = setup({
 	states: {
 		'Setting Target Position': {
 			entry: 'pickNewTargetXPosition',
-			always: { target: 'moving' },
+			always: { target: 'Moving' },
 		},
-		moving: {
+		Moving: {
 			invoke: {
 				src: 'moveHen',
 				onDone: [
 					{
 						guard: ({ context }) =>
 							context.position.x === context.targetPosition.x,
-						target: 'stopped',
+						target: 'Stopped',
 					},
 					{
-						target: 'moving',
+						target: 'Moving',
 						reenter: true,
 						actions: 'updatePosition',
 					},
 				],
 			},
 		},
-		stopped: {
+		Stopped: {
 			entry: ['pickNewTargetXPosition'],
 			after: {
 				pickStopDuration: [
-					{ guard: 'can lay egg', target: 'layingEgg' },
-					{ target: 'moving' },
+					{ guard: 'can lay egg', target: 'Laying Egg' },
+					{ target: 'Moving' },
 				],
 			},
 		},
-		layingEgg: {
+		'Laying Egg': {
 			entry: 'layEgg',
-			after: { 1000: 'moving' },
+			after: { 1000: 'Moving' },
 		},
 	},
 });
