@@ -1,4 +1,3 @@
-// import { useEffect } from 'react';
 import { useActor } from '@xstate/react';
 import { Image as KonvaImage } from 'react-konva';
 import useImage from 'use-image';
