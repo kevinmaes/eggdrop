@@ -28,17 +28,6 @@ export const henMachine = setup({
 		moveHen: fromPromise(() => {
 			return Promise.resolve({ timeDiff: 0 });
 		}),
-		// moveHen: fromPromise(() => {
-		// 	return new Promise((resolve) => {
-		// 		// console.log('inside promise');
-		// 		const anim = new Animation((frame) => {
-		// 			// console.log('inside animation frame');
-		// 			resolve({ timeDiff: frame?.timeDiff });
-		// 			// anim.stop();
-		// 		}, layerRef);
-		// 		anim.start();
-		// 	});
-		// }),
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => {
