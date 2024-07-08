@@ -146,6 +146,7 @@ const App = () => {
 						initialY={hen.initialY}
 						onLayEgg={handleLayEgg}
 						maxEggs={1}
+						eggLayingRate={0.5}
 					/>
 				))}
 				<Chef

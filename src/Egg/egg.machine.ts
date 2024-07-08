@@ -19,7 +19,7 @@ export const eggMachine = setup({
 		notifyOfEggPosition: () => {},
 		splatOnFloor: assign({
 			position: ({ context }) => ({
-				x: context.position.x,
+				x: context.position.x - 20,
 				y: window.innerHeight - 10,
 			}),
 		}),
@@ -70,7 +70,7 @@ export const eggMachine = setup({
 		id: input.id,
 		position: input.position,
 		fallingSpeed: input.fallingSpeed,
-		exitingSpeed: 5,
+		exitingSpeed: 10,
 		exitPosition: {
 			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
 			y: window.innerHeight - 50,

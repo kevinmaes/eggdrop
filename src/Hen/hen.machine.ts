@@ -14,6 +14,7 @@ export const henMachine = setup({
 			position: { x: number; y: number };
 			stageWidth: number;
 			maxEggs: number;
+			eggLayingRate: number;
 		};
 		context: {
 			stageWidth: number;
@@ -24,6 +25,7 @@ export const henMachine = setup({
 			maxStopMS: number;
 			maxEggs: number;
 			eggsLaid: number;
+			eggLayingRate: number;
 		};
 	},
 	actors: {
@@ -34,7 +36,7 @@ export const henMachine = setup({
 		'can lay egg': ({ context }) => {
 			const allowedByMax =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-			return allowedByMax && Math.random() < 0.2;
+			return allowedByMax && Math.random() < context.eggLayingRate;
 		},
 		// 'can lay egg': ({ context }) =>
 		// 	context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
@@ -68,6 +70,7 @@ export const henMachine = setup({
 		maxStopMS: 500,
 		maxEggs: input.maxEggs,
 		eggsLaid: 0,
+		eggLayingRate: input.eggLayingRate,
 	}),
 	on: {
 		'Set stage width': {

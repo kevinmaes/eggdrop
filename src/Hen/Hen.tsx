@@ -15,6 +15,7 @@ interface HenProps {
 	initialX: number;
 	initialY: number;
 	maxEggs: number;
+	eggLayingRate: number;
 	onLayEgg: (henId: string, x: number) => void;
 }
 
@@ -24,6 +25,7 @@ export function Hen({
 	maxEggs,
 	initialX,
 	initialY,
+	eggLayingRate,
 	onLayEgg,
 }: HenProps) {
 	const [state] = useActor(
@@ -75,6 +77,7 @@ export function Hen({
 				position: { x: initialX, y: initialY },
 				stageWidth: window.innerWidth,
 				maxEggs,
+				eggLayingRate,
 			},
 		}
 	);
