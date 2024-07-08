@@ -98,6 +98,7 @@ const App = () => {
 					/>
 				))}
 				<Chef
+					layerRef={layerRef}
 					onXPositionUpdate={handleChefXPositionUpdate}
 					initialPosition={chefInitialPosition}
 				/>

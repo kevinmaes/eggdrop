@@ -1,74 +1,66 @@
-// chefMachine.js
-import { setup } from 'xstate';
+import { assign, fromPromise, setup } from 'xstate';
 
 export const chefMachine = setup({
 	types: {} as {
 		context: {
 			position: { x: number; y: number };
 			speed: number;
+			speedLimit: number;
 			direction: -1 | 0 | 1;
 			acceleration: number;
 			deceleration: number;
 		};
-		events: { type: 'Move left' } | { type: 'Move right' };
+		events:
+			| { type: 'Catch' }
+			| { type: 'Set direction'; direction: -1 | 0 | 1 };
+		input: {
+			position: { x: number; y: number };
+			speed: number;
+			speedLimit: number;
+			acceleration: number;
+			deceleration: number;
+		};
 	},
 	actions: {
-		// move: assign(({ context, event }) => {
-		// 	// const { speed, acceleration, deceleration, position } = context;
-		// 	// let newSpeed = speed;
-		// 	// let direction = 0;
-		// 	// if (event.type === 'Move left') {
-		// 	// 	direction = -1;
-		// 	// } else if (event.type === 'Move right') {
-		// 	// 	direction = 1;
-		// 	// }
-		// 	// console.log('direction', direction);
-		// 	// if (direction === 0) {
-		// 	// 	if (speed > 0) {
-		// 	// 		newSpeed = Math.max(speed - deceleration, 0);
-		// 	// 	} else if (speed < 0) {
-		// 	// 		newSpeed = Math.min(speed + deceleration, 0);
-		// 	// 	}
-		// 	// } else {
-		// 	// 	if (direction) {
-		// 	// 		newSpeed = speed + direction * acceleration;
-		// 	// 	}
-		// 	// }
-		// 	// return {
-		// 	// 	position: {
-		// 	// 		...position,
-		// 	// 		x: position.x + newSpeed,
-		// 	// 	},
-		// 	// 	speed: newSpeed,
-		// 	// };
-		// }),
-		// moveRight: assign({
-		// 	position: ({ context }) => ({
-		// 		...context.position,
-		// 		x: Math.min(context.position.x + 10, window.innerWidth - 50),
-		// 	}),
-		// }),
+		// Stub for a provided action
+		updateChefPosition: () => {},
+	},
+	actors: {
+		// Stub for a provided actor
+		moveChef: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 }).createMachine({
 	id: 'chef',
-	initial: 'Idle',
-	context: {
-		position: { x: window.innerWidth / 2, y: window.innerHeight - 120 },
-		speed: 0,
+	initial: 'Moving',
+	context: ({ input }) => ({
+		position: input.position,
+		speed: input.speed,
+		speedLimit: input.speedLimit,
 		direction: 0,
-		acceleration: 0.3,
-		deceleration: 0.5,
+		acceleration: input.acceleration,
+		deceleration: input.deceleration,
+	}),
+	on: {
+		'Set direction': {
+			actions: assign({
+				direction: ({ event }) => ('direction' in event ? event.direction : 0),
+			}),
+		},
 	},
 	states: {
-		Idle: {
-			on: {
-				'Move left': {
-					// actions: 'move',
-				},
-				'Move right': {
-					// actions: 'move',
+		Moving: {
+			invoke: {
+				src: 'moveChef',
+				onDone: {
+					target: 'Moving',
+					reenter: true,
+					actions: ['updateChefPosition'],
 				},
 			},
+			on: {
+				Catch: 'Catching',
+			},
 		},
+		Catching: {},
 	},
 });

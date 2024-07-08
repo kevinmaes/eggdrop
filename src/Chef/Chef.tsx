@@ -1,32 +1,113 @@
-import { useEffect, useState } from 'react';
-import {
-	// Image as KonvaImage,
-	Rect,
-} from 'react-konva';
+import { useActor } from '@xstate/react';
+import Konva from 'konva';
+import { Ref, useEffect } from 'react';
+import { assign, fromPromise } from 'xstate';
+import { chefMachine } from './chef.machine';
+import { Animation } from 'konva/lib/Animation';
+import { Rect } from 'react-konva';
 // import useImage from 'use-image';
 
 export function Chef({
+	layerRef,
 	initialPosition,
 	onXPositionUpdate,
 }: {
+	layerRef: Ref<Konva.Layer>;
 	initialPosition: { x: number; y: number };
 	onXPositionUpdate: (position: { x: number; y: number }) => void;
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
 
-	// console.log('chef render');
+	const leftXLimit = 0;
+	const rightXLimit = window.innerWidth - 75;
+
+	const [state, send] = useActor(
+		chefMachine.provide({
+			actors: {
+				moveChef: fromPromise(() => {
+					return new Promise((resolve) => {
+						const anim = new Animation((frame) => {
+							if (frame?.timeDiff) {
+								resolve({ timeDiff: frame?.timeDiff });
+							}
+						}, layerRef);
+						anim.start();
+					});
+				}),
+			},
+			actions: {
+				updateChefPosition: assign(({ context }) => {
+					const {
+						speed,
+						speedLimit,
+						position,
+						direction,
+						acceleration,
+						deceleration,
+					} = context;
+					let newSpeed = speed;
+					let newXPos = position.x;
+
+					if (direction === 0) {
+						if (speed > 0) {
+							newSpeed = Math.max(speed - deceleration, 0);
+							if (newSpeed > speedLimit) {
+								newSpeed = speedLimit;
+							}
+						} else if (speed < 0) {
+							newSpeed = Math.min(speed + deceleration, 0);
+							if (Math.abs(newSpeed) > speedLimit) {
+								newSpeed = -speedLimit;
+							}
+						}
+					} else {
+						if (direction) {
+							newSpeed = speed + direction * acceleration;
+						}
+					}
+
+					newXPos = context.position.x + newSpeed;
+
+					if (newXPos < leftXLimit) {
+						newXPos = leftXLimit;
+						newSpeed = 0;
+					} else if (newXPos > rightXLimit) {
+						newXPos = rightXLimit;
+						newSpeed = 0;
+					}
+
+					// Update the outside world
+					onXPositionUpdate({ x: newXPos, y: position.y });
+
+					return {
+						speed: newSpeed,
+						position: { x: newXPos, y: position.y },
+					};
+				}),
+			},
+		}),
+		{
+			input: {
+				position: initialPosition,
+				speed: 0,
+				speedLimit: 20,
+				acceleration: 0.1 * 20,
+				deceleration: 1,
+			},
+		}
+	);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === 'ArrowLeft') {
-				setXDirection(-1);
+				send({ type: 'Set direction', direction: -1 });
 			} else if (e.key === 'ArrowRight') {
-				setXDirection(1);
+				send({ type: 'Set direction', direction: 1 });
 			}
 		};
 		const handleKeyUp = (e: KeyboardEvent) => {
 			if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-				setXDirection(0);
+				send({ type: 'Set direction', direction: 0 });
 			}
 		};
 		window.addEventListener('keydown', handleKeyDown);
@@ -37,62 +118,12 @@ export function Chef({
 		};
 	}, []);
 
-	const leftXLimit = 0;
-	const rightXLimit = window.innerWidth - 75;
-	const speedLimit = 20;
-	const accel = 0.1 * speedLimit;
-	const decel = 1;
-
-	const [xPos, setXPos] = useState(initialPosition.x);
-	const [yPos] = useState(initialPosition.y);
-	const [xDirection, setXDirection] = useState(0);
-	const [speed, setSpeed] = useState(0);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			let newSpeed = speed;
-
-			let newXPos = xPos;
-
-			if (xDirection === 0) {
-				if (speed > 0) {
-					newSpeed = Math.max(speed - decel, 0);
-					if (newSpeed > speedLimit) {
-						newSpeed = speedLimit;
-					}
-				} else if (speed < 0) {
-					newSpeed = Math.min(speed + decel, 0);
-					if (Math.abs(newSpeed) > speedLimit) {
-						newSpeed = -speedLimit;
-					}
-				}
-			} else {
-				if (xDirection) {
-					newSpeed = speed + xDirection * accel;
-				}
-			}
-
-			newXPos = xPos + newSpeed;
-
-			if (newXPos < leftXLimit) {
-				newXPos = leftXLimit;
-				newSpeed = 0;
-			} else if (newXPos > rightXLimit) {
-				newXPos = rightXLimit;
-				newSpeed = 0;
-			}
-
-			onXPositionUpdate({ x: newXPos, y: yPos });
-
-			setSpeed(newSpeed);
-			setXPos(newXPos);
-		}, 16);
-
-		return () => clearInterval(interval);
-	});
+	const { position } = state.context;
 
 	// Render a square for now
-	return <Rect x={xPos} y={yPos} width={75} height={100} fill="green" />;
+	return (
+		<Rect x={position.x} y={position.y} width={75} height={100} fill="green" />
+	);
 
 	// return (
 	// 	<KonvaImage
