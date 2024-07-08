@@ -16,19 +16,32 @@ export const eggMachine = setup({
 	},
 	actions: {
 		// Stub for a provided action
-		updateEggPosition: () => {},
 		notifyOfEggPosition: () => {},
-		// updateEggPosition: assign({
-		// 	position: ({ context, event }) => {
-		// 		const newY =
-		// 			context.position.y +
-		// 			context.fallingSpeed * event.output.timeDiff * 0.1;
-		// 		return {
-		// 			x: context.position.x,
-		// 			y: newY,
-		// 		};
-		// 	},
-		// }),
+		splatOnFloor: assign({
+			position: ({ context }) => ({
+				x: context.position.x,
+				y: window.innerHeight - 10,
+			}),
+		}),
+		hatchOnFloor: assign({
+			position: ({ context }) => ({
+				x: context.position.x,
+				y: window.innerHeight - 30,
+			}),
+		}),
+		updateEggPosition: assign({
+			position: ({ context, event }) => {
+				const newY =
+					context.position.y +
+					context.fallingSpeed * event.output.timeDiff * 0.1;
+				const newPosition = {
+					x: context.position.x,
+					y: newY,
+				};
+
+				return newPosition;
+			},
+		}),
 		updateChickPosition: assign({
 			position: ({ context, event }) => {
 				const direction = context.exitPosition.x < 0 ? -1 : 1;
@@ -97,8 +110,12 @@ export const eggMachine = setup({
 		},
 		Landed: {
 			always: [
-				{ guard: () => Math.random() > 0.5, target: 'Splatting' },
-				{ target: 'Hatching' },
+				{
+					guard: () => Math.random() > 0.5,
+					target: 'Splatting',
+					actions: 'splatOnFloor',
+				},
+				{ target: 'Hatching', actions: 'hatchOnFloor' },
 			],
 		},
 		Hatching: {

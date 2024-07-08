@@ -54,19 +54,6 @@ export function Egg({
 				}),
 			},
 			actions: {
-				updateEggPosition: assign({
-					position: ({ context, event }) => {
-						const newY =
-							context.position.y +
-							context.fallingSpeed * event.output.timeDiff * 0.1;
-						const newPosition = {
-							x: context.position.x,
-							y: newY,
-						};
-
-						return newPosition;
-					},
-				}),
 				notifyOfEggPosition: ({ context }) => {
 					// console.log('notifyOfEggPosition');
 					// Pass this egg's position up the component tree for hit detection
@@ -127,9 +114,9 @@ export function Egg({
 		<Rect
 			x={state.context.position.x}
 			y={state.context.position.y}
-			width={20}
-			height={5}
-			fill="black"
+			width={40}
+			height={3}
+			fill="white"
 		/>
 	) : (
 		<Circle
