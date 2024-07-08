@@ -53,7 +53,11 @@ const App = () => {
 	// };
 
 	return (
-		<Stage width={window.innerWidth} height={window.innerHeight}>
+		<Stage
+			width={window.innerWidth}
+			height={window.innerHeight}
+			style={{ background: 'blue' }}
+		>
 			<Layer ref={layerRef}>
 				{hens.map((hen) => (
 					<Hen
