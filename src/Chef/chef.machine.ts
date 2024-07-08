@@ -58,9 +58,19 @@ export const chefMachine = setup({
 				},
 			},
 			on: {
-				Catch: 'Catching',
+				Catch: {
+					target: 'Catching',
+					actions: assign({
+						direction: 0,
+						speed: 0,
+					}),
+				},
 			},
 		},
-		Catching: {},
+		Catching: {
+			after: {
+				500: 'Moving',
+			},
+		},
 	},
 });

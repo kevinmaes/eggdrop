@@ -8,10 +8,12 @@ import { Rect } from 'react-konva';
 // import useImage from 'use-image';
 
 export function Chef({
+	caughtAnEgg,
 	layerRef,
 	initialPosition,
 	onXPositionUpdate,
 }: {
+	caughtAnEgg: boolean;
 	layerRef: Ref<Konva.Layer>;
 	initialPosition: { x: number; y: number };
 	onXPositionUpdate: (position: { x: number; y: number }) => void;
@@ -120,9 +122,16 @@ export function Chef({
 
 	const { position } = state.context;
 
+	useEffect(() => {
+		if (caughtAnEgg) {
+			send({ type: 'Catch' });
+		}
+	}, [caughtAnEgg]);
+
+	const color = state.matches('Catching') ? 'gray' : 'green';
 	// Render a square for now
 	return (
-		<Rect x={position.x} y={position.y} width={75} height={100} fill="green" />
+		<Rect x={position.x} y={position.y} width={75} height={100} fill={color} />
 	);
 
 	// return (

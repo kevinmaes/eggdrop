@@ -22,12 +22,13 @@ const App = () => {
 	const chefPositionRef = useRef<{ x: number; y: number }>(chefInitialPosition);
 	const layerRef = useRef<Konva.Layer>(null);
 
-	const henConfigs = new Array(1).fill(null).map(() => ({
+	const henConfigs = new Array(20).fill(null).map(() => ({
 		id: nanoid(),
 		initialX: getStartXPosition(window.innerWidth),
 		initialY: 10,
 	}));
 	const [hens] = useState(henConfigs);
+	const [chefCaughtAnEgg, setChefCaughtAnEgg] = useState(false);
 
 	const [eggs, setEggs] = useState<EggConfig[]>([]);
 
@@ -59,6 +60,12 @@ const App = () => {
 		) {
 			console.log(`Egg ${id} caught by the chef!`);
 			setEggs((eggs) => eggs.filter((egg) => egg.id !== id));
+
+			// Don't love this hack to send an event to the child Chef component's actor.
+			setChefCaughtAnEgg(true);
+			setTimeout(() => {
+				setChefCaughtAnEgg(false);
+			}, 1);
 		}
 	};
 
@@ -87,6 +94,12 @@ const App = () => {
 						maxEggs={1}
 					/>
 				))}
+				<Chef
+					layerRef={layerRef}
+					onXPositionUpdate={handleChefXPositionUpdate}
+					initialPosition={chefInitialPosition}
+					caughtAnEgg={chefCaughtAnEgg}
+				/>
 				{eggs.map((egg) => (
 					<Egg
 						layerRef={layerRef}
@@ -97,11 +110,6 @@ const App = () => {
 						onUpdatePosition={handleEggPositionUpdate}
 					/>
 				))}
-				<Chef
-					layerRef={layerRef}
-					onXPositionUpdate={handleChefXPositionUpdate}
-					initialPosition={chefInitialPosition}
-				/>
 			</Layer>
 		</Stage>
 	);
