@@ -34,7 +34,7 @@ export const henMachine = setup({
 		'can lay egg': ({ context }) => {
 			const allowedByMax =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-			return allowedByMax && Math.random() < 0.09;
+			return allowedByMax && Math.random() < 0.2;
 		},
 		// 'can lay egg': ({ context }) =>
 		// 	context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
