@@ -8,20 +8,22 @@ import { Rect } from 'react-konva';
 // import useImage from 'use-image';
 
 export function Chef({
+	dimensions,
 	caughtAnEgg,
 	layerRef,
 	initialPosition,
-	onXPositionUpdate,
+	chefPotRef,
 }: {
+	dimensions: { width: number; height: number };
 	caughtAnEgg: boolean;
 	layerRef: Ref<Konva.Layer>;
 	initialPosition: { x: number; y: number };
-	onXPositionUpdate: (position: { x: number; y: number }) => void;
+	chefPotRef: Ref<Konva.Rect>;
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
-
-	const leftXLimit = 0;
-	const rightXLimit = window.innerWidth - 75;
+	const buffer = 10;
+	const leftXLimit = buffer;
+	const rightXLimit = window.innerWidth - dimensions.width - buffer;
 
 	const [state, send] = useActor(
 		chefMachine.provide({
@@ -78,9 +80,6 @@ export function Chef({
 						newSpeed = 0;
 					}
 
-					// Update the outside world
-					onXPositionUpdate({ x: newXPos, y: position.y });
-
 					return {
 						speed: newSpeed,
 						position: { x: newXPos, y: position.y },
@@ -128,10 +127,26 @@ export function Chef({
 		}
 	}, [caughtAnEgg]);
 
-	const color = state.matches('Catching') ? 'gray' : 'green';
+	const color = state.matches('Catching') ? 'yellow' : 'silver';
 	// Render a square for now
 	return (
-		<Rect x={position.x} y={position.y} width={75} height={100} fill={color} />
+		<>
+			<Rect
+				x={position.x}
+				y={position.y}
+				width={dimensions.width}
+				height={dimensions.height}
+				fill="gray"
+			></Rect>
+			<Rect
+				ref={chefPotRef}
+				x={position.x + 0.1 * dimensions.width}
+				y={position.y + 0.4 * dimensions.height}
+				width={dimensions.width * 0.8}
+				height={dimensions.height * 0.5}
+				fill={color}
+			/>
+		</>
 	);
 
 	// return (

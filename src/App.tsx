@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { Hen } from './Hen/Hen';
 import { Chef } from './Chef/Chef';
@@ -15,11 +15,12 @@ interface EggConfig {
 }
 
 const App = () => {
+	const chefDimensions = { width: 124, height: 150 };
 	const chefInitialPosition = {
-		x: window.innerWidth / 2,
-		y: window.innerHeight - 120,
+		x: window.innerWidth / 2 - 0.5 * chefDimensions.width,
+		y: window.innerHeight - chefDimensions.height - 10,
 	};
-	const chefPositionRef = useRef<{ x: number; y: number }>(chefInitialPosition);
+	const chefPotRef = useRef<Konva.Rect>(null);
 	const layerRef = useRef<Konva.Layer>(null);
 
 	const henConfigs = new Array(20).fill(null).map(() => ({
@@ -51,12 +52,20 @@ const App = () => {
 			return;
 		}
 
-		const { x: chefX, y: chefY } = chefPositionRef.current;
+		if (!chefPotRef.current) {
+			return;
+		}
+
+		const {
+			x: potX,
+			y: potY,
+			width: potWidth,
+		} = chefPotRef.current?.getClientRect();
 
 		if (
-			position.x >= chefX &&
-			position.x <= chefX + 50 &&
-			position.y >= chefY
+			position.x >= potX &&
+			position.x <= potX + potWidth &&
+			position.y >= potY
 		) {
 			console.log(`Egg ${id} caught by the chef!`);
 			setEggs((eggs) => eggs.filter((egg) => egg.id !== id));
@@ -68,13 +77,6 @@ const App = () => {
 			}, 1);
 		}
 	};
-
-	const handleChefXPositionUpdate = useCallback(
-		(position: { x: number; y: number }) => {
-			chefPositionRef.current = position;
-		},
-		[]
-	);
 
 	return (
 		<Stage
@@ -95,10 +97,11 @@ const App = () => {
 					/>
 				))}
 				<Chef
+					dimensions={chefDimensions}
 					layerRef={layerRef}
-					onXPositionUpdate={handleChefXPositionUpdate}
 					initialPosition={chefInitialPosition}
 					caughtAnEgg={chefCaughtAnEgg}
+					chefPotRef={chefPotRef}
 				/>
 				{eggs.map((egg) => (
 					<Egg
