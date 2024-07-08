@@ -1,14 +1,16 @@
 // import { useEffect } from 'react';
 import { useActor } from '@xstate/react';
-import { Image as KonvaImage, Layer } from 'react-konva';
+import { Image as KonvaImage } from 'react-konva';
 import useImage from 'use-image';
 import { henMachine } from './hen.machine';
 import { Animation } from 'konva/lib/Animation';
-import { fromPromise } from 'xstate';
+import { assign, fromPromise } from 'xstate';
 import henImageFile from '../assets/hen1.png';
+import { Ref } from 'react';
+import Konva from 'konva';
 
 interface HenProps {
-	layerRef: React.LegacyRef<typeof Layer>;
+	layerRef: Ref<Konva.Layer>;
 	id: number;
 	initialX: number;
 	initialY: number;
@@ -23,7 +25,9 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 						// console.log('inside promise');
 						const anim = new Animation((frame) => {
 							// console.log('inside animation frame');
-							resolve({ timeDiff: frame?.timeDiff });
+							if (frame?.timeDiff) {
+								resolve({ timeDiff: frame?.timeDiff });
+							}
 							// anim.stop();
 						}, layerRef);
 						anim.start();
@@ -31,6 +35,32 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 				}),
 			},
 			actions: {
+				updatePosition: assign(({ context, event }) => {
+					// Compare the context.position.x with context.targetPosition.x
+					// and calulate the direction
+					let newDirection = 1;
+					if (context.position.x > context.targetPosition.x) {
+						newDirection = -1;
+					}
+					// console.log('updatePosition', context.targetPosition.x, newDirection);
+
+					let newX =
+						context.position.x +
+						newDirection * event.output.timeDiff * context.speed;
+
+					if (newDirection === 1 && newX > context.targetPosition.x) {
+						console.log('fixing position 1 direction');
+						newX = context.targetPosition.x;
+					}
+					if (newDirection === -1 && newX < context.targetPosition.x) {
+						console.log('fixing position -1 direction');
+						newX = context.targetPosition.x;
+					}
+
+					return {
+						position: { x: newX, y: context.position.y },
+					};
+				}),
 				layEgg: () => {
 					console.log('layEgg action called!');
 					return onLayEgg(id, state.context.position.x);
@@ -40,26 +70,13 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 		{
 			input: {
 				position: { x: initialX, y: initialY },
-				direction: 1,
+				stageWidth: window.innerWidth,
 			},
 		}
 	);
 
 	const { position } = state.context;
 	const [henImage] = useImage(henImageFile);
-	// const layerRef = useRef();
-
-	// useEffect(() => {
-	// 	const anim = new Animation((frame) => {
-	// 		send({ type: 'UPDATE_POSITION', timeDiff: frame?.timeDiff });
-	// 	}, layerRef);
-
-	// 	anim.start();
-
-	// 	return () => {
-	// 		anim.stop();
-	// 	};
-	// }, [send]);
 
 	return (
 		<KonvaImage
