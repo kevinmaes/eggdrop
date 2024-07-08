@@ -1,4 +1,4 @@
-import { setup, assign, fromPromise } from 'xstate';
+import { setup, assign, fromPromise, log } from 'xstate';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -9,23 +9,26 @@ export const eggMachine = setup({
 			exitingSpeed: number;
 		};
 		input: {
-			id: number;
+			id: string;
 			position: { x: number; y: number };
 			fallingSpeed: number;
 		};
 	},
 	actions: {
-		updateEggPosition: assign({
-			position: ({ context, event }) => {
-				const newY =
-					context.position.y +
-					context.fallingSpeed * event.output.timeDiff * 0.1;
-				return {
-					x: context.position.x,
-					y: newY,
-				};
-			},
-		}),
+		// Stub for a provided action
+		updateEggPosition: () => {},
+		notifyOfEggPosition: () => {},
+		// updateEggPosition: assign({
+		// 	position: ({ context, event }) => {
+		// 		const newY =
+		// 			context.position.y +
+		// 			context.fallingSpeed * event.output.timeDiff * 0.1;
+		// 		return {
+		// 			x: context.position.x,
+		// 			y: newY,
+		// 		};
+		// 	},
+		// }),
 		updateChickPosition: assign({
 			position: ({ context, event }) => {
 				const direction = context.exitPosition.x < 0 ? -1 : 1;
@@ -46,17 +49,17 @@ export const eggMachine = setup({
 	},
 	guards: {
 		hitFloor: ({ context }) => context.position.y >= window.innerHeight - 50,
-		caughtByChef: ({ context, event }) => {
-			return false;
-			const chefX = event.chefPosition.x;
-			const chefY = event.chefPosition.y;
-			return (
-				context.position.x >= chefX &&
-				context.position.x <= chefX + 50 &&
-				context.position.y >= chefY &&
-				context.position.y <= chefY + 50
-			);
-		},
+		// caughtByChef: ({ context, event }) => {
+		// 	return false;
+		// 	const chefX = event.chefPosition.x;
+		// 	const chefY = event.chefPosition.y;
+		// 	return (
+		// 		context.position.x >= chefX &&
+		// 		context.position.x <= chefX + 50 &&
+		// 		context.position.y >= chefY &&
+		// 		context.position.y <= chefY + 50
+		// 	);
+		// },
 	},
 }).createMachine({
 	id: 'egg',
@@ -77,12 +80,19 @@ export const eggMachine = setup({
 				src: 'fallEgg',
 				onDone: [
 					{ target: 'Landed', guard: 'hitFloor' },
-					{ target: 'Caught', guard: 'caughtByChef' },
-					{ target: 'Falling', actions: 'updateEggPosition', reenter: true },
+					{
+						target: 'Falling',
+						actions: ['updateEggPosition', 'notifyOfEggPosition'],
+						reenter: true,
+					},
 				],
 			},
+			// on: {
+			// 	Catch: 'Caught',
+			// },
 		},
 		Caught: {
+			entry: log('Caught!'),
 			type: 'final',
 		},
 		Landed: {

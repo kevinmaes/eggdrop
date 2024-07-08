@@ -1,9 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Image as KonvaImage, Rect } from 'react-konva';
+import {
+	// Image as KonvaImage,
+	Rect,
+} from 'react-konva';
 // import useImage from 'use-image';
 
-export function Chef() {
+export function Chef({
+	initialPosition,
+	onXPositionUpdate,
+}: {
+	initialPosition: { x: number; y: number };
+	onXPositionUpdate: (position: { x: number; y: number }) => void;
+}) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
+
+	// console.log('chef render');
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -32,8 +43,8 @@ export function Chef() {
 	const accel = 0.1 * speedLimit;
 	const decel = 1;
 
-	const [xPos, setXPos] = useState(window.innerWidth / 2);
-	const [yPos] = useState(window.innerHeight - 120);
+	const [xPos, setXPos] = useState(initialPosition.x);
+	const [yPos] = useState(initialPosition.y);
 	const [xDirection, setXDirection] = useState(0);
 	const [speed, setSpeed] = useState(0);
 
@@ -70,6 +81,8 @@ export function Chef() {
 				newXPos = rightXLimit;
 				newSpeed = 0;
 			}
+
+			onXPositionUpdate({ x: newXPos, y: yPos });
 
 			setSpeed(newSpeed);
 			setXPos(newXPos);

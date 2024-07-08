@@ -13,6 +13,7 @@ export const henMachine = setup({
 		input: {
 			position: { x: number; y: number };
 			stageWidth: number;
+			maxEggs: number;
 		};
 		context: {
 			stageWidth: number;
@@ -21,6 +22,8 @@ export const henMachine = setup({
 			speed: number;
 			minStopMS: number;
 			maxStopMS: number;
+			maxEggs: number;
+			eggsLaid: number;
 		};
 	},
 	actors: {
@@ -28,8 +31,8 @@ export const henMachine = setup({
 		moveHen: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
-		// 'can lay egg': () => Math.random() < 0.05,
-		'can lay egg': () => true,
+		// 'can lay egg': () => context.eggsLaid < context.maxEggs && Math.random() < 0.05,
+		'can lay egg': ({ context }) => context.eggsLaid < context.maxEggs,
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
@@ -58,6 +61,8 @@ export const henMachine = setup({
 		minStopMS: 500,
 		// maxStopMS: 5000,
 		maxStopMS: 500,
+		maxEggs: input.maxEggs,
+		eggsLaid: 0,
 	}),
 	on: {
 		'Set stage width': {
@@ -98,7 +103,12 @@ export const henMachine = setup({
 			},
 		},
 		'Laying Egg': {
-			entry: 'layEgg',
+			entry: [
+				'layEgg',
+				assign({
+					eggsLaid: ({ context }) => context.eggsLaid + 1,
+				}),
+			],
 			after: { 1000: 'Moving' },
 		},
 	},

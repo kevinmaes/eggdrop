@@ -11,12 +11,21 @@ import Konva from 'konva';
 
 interface HenProps {
 	layerRef: Ref<Konva.Layer>;
-	id: number;
+	id: string;
 	initialX: number;
 	initialY: number;
-	onLayEgg: (henId: number, x: number) => void;
+	maxEggs: number;
+	onLayEgg: (henId: string, x: number) => void;
 }
-export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
+
+export function Hen({
+	layerRef,
+	id,
+	maxEggs,
+	initialX,
+	initialY,
+	onLayEgg,
+}: HenProps) {
 	const [state] = useActor(
 		henMachine.provide({
 			actors: {
@@ -65,6 +74,7 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 			input: {
 				position: { x: initialX, y: initialY },
 				stageWidth: window.innerWidth,
+				maxEggs,
 			},
 		}
 	);

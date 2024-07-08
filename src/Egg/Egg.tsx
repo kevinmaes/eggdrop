@@ -7,21 +7,17 @@ import {
 } from 'react-konva';
 // import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
-import { fromPromise } from 'xstate';
-import { Ref } from 'react';
+import { assign, fromPromise } from 'xstate';
+import { Ref, useEffect } from 'react';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
-// import { Animation } from 'konva/lib/Animation';
 
 interface EggProps {
 	layerRef: Ref<Konva.Layer>;
-	id: number;
+	id: string;
 	initialX: number;
 	initialY: number;
-	// chefPosition: { x: number; y: number };
-	// onRemove: (id: number) => void;
-	// onUpdatePosition: (id: number, timeDiff: number) => void;
-	// onCollision: (id: number, type: 'floor' | 'chef') => void;
+	onUpdatePosition: (id: string, position: { x: number; y: number }) => void;
 }
 
 export function Egg({
@@ -29,10 +25,9 @@ export function Egg({
 	id,
 	initialX,
 	initialY,
-}: // chefPosition,
-// onRemove,
-EggProps) {
-	const [state] = useActor(
+	onUpdatePosition,
+}: EggProps) {
+	const [state, send] = useActor(
 		eggMachine.provide({
 			actors: {
 				fallEgg: fromPromise(() => {
@@ -58,6 +53,26 @@ EggProps) {
 					});
 				}),
 			},
+			actions: {
+				updateEggPosition: assign({
+					position: ({ context, event }) => {
+						const newY =
+							context.position.y +
+							context.fallingSpeed * event.output.timeDiff * 0.1;
+						const newPosition = {
+							x: context.position.x,
+							y: newY,
+						};
+
+						return newPosition;
+					},
+				}),
+				notifyOfEggPosition: ({ context }) => {
+					// console.log('notifyOfEggPosition');
+					// Pass this egg's position up the component tree for hit detection
+					onUpdatePosition(id, context.position);
+				},
+			},
 		}),
 		{
 			input: {
@@ -67,6 +82,13 @@ EggProps) {
 			},
 		}
 	);
+
+	useEffect(() => {
+		setTimeout(() => {
+			send({ type: 'Catch' });
+		}, 5000);
+	}, []);
+
 	// const [eggImage] = useImage('path-to-your-egg-image.png');
 
 	// useEffect(() => {
@@ -79,7 +101,14 @@ EggProps) {
 		return null;
 	}
 
-	return state.matches('Hatching') ? (
+	return state.matches('Caught') ? (
+		<Circle
+			x={state.context.position.x}
+			y={state.context.position.y}
+			radius={10}
+			fill="black"
+		/>
+	) : state.matches('Hatching') ? (
 		<Circle
 			x={state.context.position.x}
 			y={state.context.position.y}
