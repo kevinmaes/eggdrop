@@ -1,10 +1,17 @@
 import { useState, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { Hen } from './Hen/Hen';
-// import { Egg } from './Egg/Egg';
 import { Chef } from './Chef/Chef';
 import { pickXPosition } from './Hen/hen.machine';
 import Konva from 'konva';
+import { Egg } from './Egg/Egg';
+
+interface EggConfig {
+	id: number;
+	henId: number;
+	initialX: number;
+	initialY: number;
+}
 
 const App = () => {
 	const layerRef = useRef<Konva.Layer>(null);
@@ -16,14 +23,14 @@ const App = () => {
 	}));
 	const [hens] = useState(henConfigs);
 
-	// const [eggs, setEggs] = useState<Egg[]>([]);
+	const [eggs, setEggs] = useState<EggConfig[]>([]);
 
 	const handleLayEgg = (henId: number, x: number) => {
-		console.log(`Hen ${henId} laid an egg at ${x}!`);
-		// setEggs((eggs) => [
-		// 	...eggs,
-		// 	{ id: `${henId}-${eggs.length}`, initialX: x, initialY: 50 },
-		// ]);
+		// console.log(`Hen ${henId} laid an egg at ${x}!`);
+		setEggs((eggs) => [
+			...eggs,
+			{ id: eggs.length, henId, initialX: x, initialY: 50 },
+		]);
 	};
 
 	// const handleUpdateEggPosition = (id, timeDiff) => {
@@ -65,16 +72,17 @@ const App = () => {
 						onLayEgg={handleLayEgg}
 					/>
 				))}
-				{/* {eggs.map((egg) => (
+				{eggs.map((egg) => (
 					<Egg
+						layerRef={layerRef}
 						key={egg.id}
 						id={egg.id}
 						initialX={egg.initialX}
 						initialY={egg.initialY}
-						onUpdatePosition={handleUpdateEggPosition}
-						onCollision={handleEggCollision}
+						// onUpdatePosition={handleUpdateEggPosition}
+						// onCollision={handleEggCollision}
 					/>
-				))} */}
+				))}
 				<Chef />
 			</Layer>
 		</Stage>

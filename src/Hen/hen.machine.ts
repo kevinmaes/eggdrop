@@ -29,7 +29,7 @@ export const henMachine = setup({
 		moveHen: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
-		'can lay egg': () => Math.random() < 0.1,
+		'can lay egg': () => Math.random() < 0.05,
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
@@ -56,7 +56,8 @@ export const henMachine = setup({
 		targetPosition: { x: 0, y: 0 },
 		speed: 0.4,
 		minStopMS: 500,
-		maxStopMS: 5000,
+		// maxStopMS: 5000,
+		maxStopMS: 500,
 	}),
 	on: {
 		'Set stage width': {

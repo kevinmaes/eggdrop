@@ -1,28 +1,33 @@
-// eggMachine.js
 import { setup, assign, fromPromise } from 'xstate';
 
 export const eggMachine = setup({
-	actors: {
-		fallEgg: fromPromise(() => {
-			return new Promise<void>((resolve) => {
-				const interval = setInterval(() => {
-					resolve();
-					clearInterval(interval);
-				}, 1000);
-			});
-		}),
+	types: {} as {
+		input: {
+			id: number;
+			position: { x: number; y: number };
+			speed: number;
+		};
 	},
 	actions: {
 		updatePosition: assign({
-			position: ({ context, event }) => ({
-				x: context.position.x,
-				y: context.position.y + context.speed * event.timeDiff * 0.1,
-			}),
+			position: ({ context, event }) => {
+				const newY =
+					context.position.y + context.speed * event.output.timeDiff * 0.1;
+				return {
+					x: context.position.x,
+					y: newY,
+				};
+			},
 		}),
+	},
+	actors: {
+		// Stub for a provided actor
+		fallEgg: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
 		hitFloor: ({ context }) => context.position.y >= window.innerHeight - 50,
 		caughtByChef: ({ context, event }) => {
+			return false;
 			const chefX = event.chefPosition.x;
 			const chefY = event.chefPosition.y;
 			return (
@@ -35,26 +40,28 @@ export const eggMachine = setup({
 	},
 }).createMachine({
 	id: 'egg',
-	initial: 'falling',
-	context: {
-		position: { x: 0, y: 0 },
-		speed: 2, // speed of falling
-	},
+	initial: 'Falling',
+	context: ({ input }) => ({
+		id: input.id,
+		position: input.position,
+		speed: input.speed,
+	}),
 	states: {
-		falling: {
+		Falling: {
 			invoke: {
 				src: 'fallEgg',
 				onDone: [
-					{ target: 'splatted', guard: 'hitFloor' },
-					{ target: 'caught', guard: 'caughtByChef' },
+					{ target: 'Landed', guard: 'hitFloor' },
+					{ target: 'Caught', guard: 'caughtByChef' },
+					{ target: 'Falling', actions: 'updatePosition', reenter: true },
 				],
-				actions: 'updatePosition',
+				// actions: 'updatePosition',
 			},
 		},
-		splatted: {
+		Landed: {
 			type: 'final',
 		},
-		caught: {
+		Caught: {
 			type: 'final',
 		},
 	},
