@@ -11,6 +11,8 @@ export const chefMachine = setup({
 			acceleration: number;
 			deceleration: number;
 			hitTestResult: EggHitTestResult;
+			minXPos: number;
+			maxXPos: number;
 		};
 		events:
 			| { type: 'Catch' }
@@ -22,11 +24,59 @@ export const chefMachine = setup({
 			speedLimit: number;
 			acceleration: number;
 			deceleration: number;
+			minXPos: number;
+			maxXPos: number;
 		};
 	},
 	actions: {
 		// Stub for a provided action
-		updateChefPosition: () => {},
+		updateChefPosition: assign(({ context }) => {
+			const {
+				speed,
+				speedLimit,
+				position,
+				direction,
+				acceleration,
+				deceleration,
+				minXPos,
+				maxXPos,
+			} = context;
+			let newSpeed = speed;
+			let newXPos = position.x;
+
+			if (direction === 0) {
+				if (speed > 0) {
+					newSpeed = Math.max(speed - deceleration, 0);
+					if (newSpeed > speedLimit) {
+						newSpeed = speedLimit;
+					}
+				} else if (speed < 0) {
+					newSpeed = Math.min(speed + deceleration, 0);
+					if (Math.abs(newSpeed) > speedLimit) {
+						newSpeed = -speedLimit;
+					}
+				}
+			} else {
+				if (direction) {
+					newSpeed = speed + direction * acceleration;
+				}
+			}
+
+			newXPos = context.position.x + newSpeed;
+
+			if (newXPos < minXPos) {
+				newXPos = minXPos;
+				newSpeed = 0;
+			} else if (newXPos > maxXPos) {
+				newXPos = maxXPos;
+				newSpeed = 0;
+			}
+
+			return {
+				speed: newSpeed,
+				position: { x: newXPos, y: position.y },
+			};
+		}),
 	},
 	actors: {
 		// Stub for a provided actor
@@ -43,6 +93,8 @@ export const chefMachine = setup({
 		acceleration: input.acceleration,
 		deceleration: input.deceleration,
 		hitTestResult: 'none',
+		minXPos: input.minXPos,
+		maxXPos: input.maxXPos,
 	}),
 	on: {
 		'Set direction': {
