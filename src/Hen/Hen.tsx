@@ -38,21 +38,21 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 				updatePosition: assign(({ context, event }) => {
 					// Compare the context.position.x with context.targetPosition.x
 					// and calulate the direction
-					let newDirection = 1;
+					let direction = 1;
 					if (context.position.x > context.targetPosition.x) {
-						newDirection = -1;
+						direction = -1;
 					}
-					// console.log('updatePosition', context.targetPosition.x, newDirection);
+					// console.log('updatePosition', context.targetPosition.x, direction);
 
 					let newX =
 						context.position.x +
-						newDirection * event.output.timeDiff * context.speed;
+						direction * event.output.timeDiff * context.speed;
 
-					if (newDirection === 1 && newX > context.targetPosition.x) {
+					if (direction === 1 && newX > context.targetPosition.x) {
 						console.log('fixing position 1 direction');
 						newX = context.targetPosition.x;
 					}
-					if (newDirection === -1 && newX < context.targetPosition.x) {
+					if (direction === -1 && newX < context.targetPosition.x) {
 						console.log('fixing position -1 direction');
 						newX = context.targetPosition.x;
 					}
