@@ -62,17 +62,6 @@ export const eggMachine = setup({
 	},
 	guards: {
 		hitFloor: ({ context }) => context.position.y >= window.innerHeight - 50,
-		// caughtByChef: ({ context, event }) => {
-		// 	return false;
-		// 	const chefX = event.chefPosition.x;
-		// 	const chefY = event.chefPosition.y;
-		// 	return (
-		// 		context.position.x >= chefX &&
-		// 		context.position.x <= chefX + 50 &&
-		// 		context.position.y >= chefY &&
-		// 		context.position.y <= chefY + 50
-		// 	);
-		// },
 	},
 }).createMachine({
 	id: 'egg',
@@ -100,9 +89,6 @@ export const eggMachine = setup({
 					},
 				],
 			},
-			// on: {
-			// 	Catch: 'Caught',
-			// },
 		},
 		Caught: {
 			entry: log('Caught!'),

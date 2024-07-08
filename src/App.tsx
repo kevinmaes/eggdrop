@@ -25,7 +25,7 @@ const App = () => {
 	const chefPotRightHitRef = useRef<Konva.Rect>(null);
 	const layerRef = useRef<Konva.Layer>(null);
 
-	const henConfigs = new Array(20).fill(null).map(() => ({
+	const henConfigs = new Array(1).fill(null).map(() => ({
 		id: nanoid(),
 		initialX: getStartXPosition(window.innerWidth),
 		initialY: 10,
