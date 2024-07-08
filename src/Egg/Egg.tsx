@@ -2,6 +2,7 @@
 import { useActor } from '@xstate/react';
 import {
 	Circle,
+	Rect,
 	// Image as KonvaImage
 } from 'react-konva';
 // import useImage from 'use-image';
@@ -31,7 +32,7 @@ export function Egg({
 }: // chefPosition,
 // onRemove,
 EggProps) {
-	const [current] = useActor(
+	const [state] = useActor(
 		eggMachine.provide({
 			actors: {
 				fallEgg: fromPromise(() => {
@@ -56,19 +57,6 @@ EggProps) {
 		}
 	);
 	// const [eggImage] = useImage('path-to-your-egg-image.png');
-	// const layerRef = useRef();
-
-	// useEffect(() => {
-	// 	const anim = new Animation((frame) => {
-	// 		send({ type: 'FALL', timeDiff: frame?.timeDiff, chefPosition });
-	// 	}, layerRef.current);
-
-	// 	anim.start();
-
-	// 	return () => {
-	// 		anim.stop();
-	// 	};
-	// }, [send, chefPosition]);
 
 	// useEffect(() => {
 	// 	if (current.matches('splatted') || current.matches('caught')) {
@@ -76,13 +64,28 @@ EggProps) {
 	// 	}
 	// }, [current, id, onRemove]);
 
-	// Render a circle for now
-	return (
+	return state.matches('Hatching') ? (
 		<Circle
-			x={current.context.position.x}
-			y={current.context.position.y}
-			radius={10}
+			x={state.context.position.x}
+			y={state.context.position.y}
+			radius={20}
 			fill="brown"
+		/>
+	) : state.matches('Splatting') ? (
+		// Render a rectangle
+		<Rect
+			x={state.context.position.x}
+			y={state.context.position.y}
+			width={20}
+			height={5}
+			fill="black"
+		/>
+	) : (
+		<Circle
+			x={state.context.position.x}
+			y={state.context.position.y}
+			radius={10}
+			fill="white"
 		/>
 	);
 

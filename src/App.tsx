@@ -16,7 +16,7 @@ interface EggConfig {
 const App = () => {
 	const layerRef = useRef<Konva.Layer>(null);
 
-	const henConfigs = new Array(20).fill(null).map((_, index) => ({
+	const henConfigs = new Array(1).fill(null).map((_, index) => ({
 		id: index + 1,
 		initialX: getStartXPosition(window.innerWidth),
 		initialY: 10,
@@ -26,7 +26,7 @@ const App = () => {
 	const [eggs, setEggs] = useState<EggConfig[]>([]);
 
 	const handleLayEgg = (henId: number, x: number) => {
-		// console.log(`Hen ${henId} laid an egg at ${x}!`);
+		console.log(`Hen ${henId} laid an egg at ${x}!`);
 		setEggs((eggs) => [
 			...eggs,
 			{ id: eggs.length, henId, initialX: x, initialY: 50 },

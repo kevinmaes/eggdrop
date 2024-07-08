@@ -55,13 +55,21 @@ export const eggMachine = setup({
 					{ target: 'Caught', guard: 'caughtByChef' },
 					{ target: 'Falling', actions: 'updatePosition', reenter: true },
 				],
-				// actions: 'updatePosition',
 			},
 		},
-		Landed: {
+		Caught: {
 			type: 'final',
 		},
-		Caught: {
+		Landed: {
+			always: [
+				{ guard: () => Math.random() > 0.5, target: 'Splatting' },
+				{ target: 'Hatching' },
+			],
+		},
+		Hatching: {},
+		Splatting: {},
+		Exiting: {},
+		'Off Stage': {
 			type: 'final',
 		},
 	},

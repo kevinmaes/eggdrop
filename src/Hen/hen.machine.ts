@@ -28,7 +28,8 @@ export const henMachine = setup({
 		moveHen: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
-		'can lay egg': () => Math.random() < 0.05,
+		// 'can lay egg': () => Math.random() < 0.05,
+		'can lay egg': () => true,
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
