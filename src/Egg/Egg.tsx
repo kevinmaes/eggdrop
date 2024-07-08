@@ -35,8 +35,8 @@ export function Egg({
 						const anim = new Animation((frame) => {
 							if (frame?.timeDiff) {
 								resolve({ timeDiff: frame?.timeDiff });
+								anim.stop();
 							}
-							// anim.stop();
 						}, layerRef);
 						anim.start();
 					});
@@ -46,8 +46,8 @@ export function Egg({
 						const anim = new Animation((frame) => {
 							if (frame?.timeDiff) {
 								resolve({ timeDiff: frame?.timeDiff });
+								anim.stop();
 							}
-							// anim.stop();
 						}, layerRef);
 						anim.start();
 					});

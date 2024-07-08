@@ -35,8 +35,8 @@ export function Hen({
 						const anim = new Animation((frame) => {
 							if (frame?.timeDiff) {
 								resolve({ timeDiff: frame?.timeDiff });
+								anim.stop();
 							}
-							// anim.stop();
 						}, layerRef);
 						anim.start();
 					});
