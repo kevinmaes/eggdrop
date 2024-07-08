@@ -7,18 +7,24 @@ import { Animation } from 'konva/lib/Animation';
 import { Rect } from 'react-konva';
 // import useImage from 'use-image';
 
+export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
+
 export function Chef({
 	dimensions,
-	caughtAnEgg,
+	hitTestResult,
 	layerRef,
 	initialPosition,
-	chefPotRef,
+	chefPotRimHitRef,
+	chefPotLeftHitRef,
+	chefPotRightHitRef,
 }: {
 	dimensions: { width: number; height: number };
-	caughtAnEgg: boolean;
+	hitTestResult: EggHitTestResult;
 	layerRef: Ref<Konva.Layer>;
 	initialPosition: { x: number; y: number };
-	chefPotRef: Ref<Konva.Rect>;
+	chefPotRimHitRef: Ref<Konva.Rect>;
+	chefPotLeftHitRef: Ref<Konva.Rect>;
+	chefPotRightHitRef: Ref<Konva.Rect>;
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
 	const buffer = 10;
@@ -122,15 +128,23 @@ export function Chef({
 	const { position } = state.context;
 
 	useEffect(() => {
-		if (caughtAnEgg) {
+		if (hitTestResult === 'caught') {
 			send({ type: 'Catch' });
 		}
-	}, [caughtAnEgg]);
+		if (hitTestResult === 'broke-left') {
+			send({ type: 'Broke', hitTestResult });
+		}
+		if (hitTestResult === 'broke-right') {
+			send({ type: 'Broke', hitTestResult });
+		}
+	}, [hitTestResult]);
 
 	const color = state.matches('Catching') ? 'yellow' : 'silver';
+
 	// Render a square for now
 	return (
 		<>
+			{/* Chef */}
 			<Rect
 				x={position.x}
 				y={position.y}
@@ -138,13 +152,58 @@ export function Chef({
 				height={dimensions.height}
 				fill="gray"
 			></Rect>
+			{/* Pot */}
 			<Rect
-				ref={chefPotRef}
 				x={position.x + 0.1 * dimensions.width}
 				y={position.y + 0.4 * dimensions.height}
 				width={dimensions.width * 0.8}
 				height={dimensions.height * 0.5}
 				fill={color}
+			/>
+			{/* Top side hit box (for catching eggs) */}
+			<Rect
+				ref={chefPotRimHitRef}
+				x={position.x + 0.1 * dimensions.width}
+				y={position.y + 0.4 * dimensions.height}
+				width={dimensions.width * 0.8}
+				height={10}
+				fill="blue"
+			/>
+			{/* Left side hit box */}
+			<Rect
+				ref={chefPotLeftHitRef}
+				x={position.x}
+				y={position.y + 0.4 * dimensions.height}
+				width={10}
+				height={dimensions.height * 0.5}
+				fill="black"
+			/>
+			{/* Left side broken egg */}
+			<Rect
+				ref={chefPotLeftHitRef}
+				x={position.x}
+				y={position.y + 0.4 * dimensions.height}
+				width={5}
+				height={dimensions.height * 0.5}
+				fill={state.context.hitTestResult === 'broke-left' ? 'white' : 'none'}
+			/>
+			{/* Right side hit box */}
+			<Rect
+				ref={chefPotRightHitRef}
+				x={position.x + dimensions.width - 10}
+				y={position.y + 0.4 * dimensions.height}
+				width={10}
+				height={dimensions.height * 0.5}
+				fill="black"
+			/>
+			{/* Right side broken egg */}
+			<Rect
+				ref={chefPotRightHitRef}
+				x={position.x + dimensions.width - 5}
+				y={position.y + 0.4 * dimensions.height}
+				width={5}
+				height={dimensions.height * 0.5}
+				fill={state.context.hitTestResult === 'broke-right' ? 'white' : 'none'}
 			/>
 		</>
 	);

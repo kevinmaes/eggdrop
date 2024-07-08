@@ -1,4 +1,5 @@
 import { assign, fromPromise, setup } from 'xstate';
+import { EggHitTestResult } from './Chef';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -9,9 +10,11 @@ export const chefMachine = setup({
 			direction: -1 | 0 | 1;
 			acceleration: number;
 			deceleration: number;
+			hitTestResult: EggHitTestResult;
 		};
 		events:
 			| { type: 'Catch' }
+			| { type: 'Broke'; hitTestResult: EggHitTestResult }
 			| { type: 'Set direction'; direction: -1 | 0 | 1 };
 		input: {
 			position: { x: number; y: number };
@@ -39,6 +42,7 @@ export const chefMachine = setup({
 		direction: 0,
 		acceleration: input.acceleration,
 		deceleration: input.deceleration,
+		hitTestResult: 'none',
 	}),
 	on: {
 		'Set direction': {
@@ -65,12 +69,26 @@ export const chefMachine = setup({
 						speed: 0,
 					}),
 				},
+				Broke: {
+					target: 'Broken',
+					actions: assign({
+						hitTestResult: ({ event }) => event.hitTestResult,
+					}),
+				},
 			},
 		},
 		Catching: {
 			after: {
 				200: 'Moving',
 			},
+		},
+		Broken: {
+			after: {
+				200: 'Moving',
+			},
+			exit: assign({
+				hitTestResult: 'none',
+			}),
 		},
 	},
 });

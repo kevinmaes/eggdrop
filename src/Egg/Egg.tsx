@@ -7,7 +7,7 @@ import {
 } from 'react-konva';
 // import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
-import { assign, fromPromise } from 'xstate';
+import { fromPromise } from 'xstate';
 import { Ref, useEffect } from 'react';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
