@@ -84,14 +84,14 @@ EggProps) {
 			x={state.context.position.x}
 			y={state.context.position.y}
 			radius={20}
-			fill="brown"
+			fill="yellow"
 		/>
 	) : state.matches('Exiting') ? (
 		<Circle
 			x={state.context.position.x}
 			y={state.context.position.y}
 			radius={20}
-			fill="brown"
+			fill="yellow"
 		/>
 	) : state.matches('Splatting') ? (
 		// Render a rectangle
