@@ -46,13 +46,24 @@ EggProps) {
 						anim.start();
 					});
 				}),
+				exitChick: fromPromise(() => {
+					return new Promise((resolve) => {
+						const anim = new Animation((frame) => {
+							if (frame?.timeDiff) {
+								resolve({ timeDiff: frame?.timeDiff });
+							}
+							// anim.stop();
+						}, layerRef);
+						anim.start();
+					});
+				}),
 			},
 		}),
 		{
 			input: {
 				id,
 				position: { x: initialX, y: initialY },
-				speed: 2,
+				fallingSpeed: 2,
 			},
 		}
 	);
@@ -64,7 +75,18 @@ EggProps) {
 	// 	}
 	// }, [current, id, onRemove]);
 
+	if (state.matches('Done')) {
+		return null;
+	}
+
 	return state.matches('Hatching') ? (
+		<Circle
+			x={state.context.position.x}
+			y={state.context.position.y}
+			radius={20}
+			fill="brown"
+		/>
+	) : state.matches('Exiting') ? (
 		<Circle
 			x={state.context.position.x}
 			y={state.context.position.y}
