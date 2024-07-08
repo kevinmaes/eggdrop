@@ -69,7 +69,7 @@ export const chefMachine = setup({
 		},
 		Catching: {
 			after: {
-				500: 'Moving',
+				200: 'Moving',
 			},
 		},
 	},
