@@ -45,8 +45,6 @@ const App = () => {
 	// 	setEggs((eggs) => eggs.filter((egg) => egg.id !== id));
 	// };
 
-	console.log('layerRef', layerRef.current);
-
 	return (
 		<Stage
 			width={window.innerWidth}

@@ -22,9 +22,7 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 			actors: {
 				moveHen: fromPromise(() => {
 					return new Promise((resolve) => {
-						// console.log('inside promise');
 						const anim = new Animation((frame) => {
-							// console.log('inside animation frame');
 							if (frame?.timeDiff) {
 								resolve({ timeDiff: frame?.timeDiff });
 							}
@@ -42,18 +40,15 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 					if (context.position.x > context.targetPosition.x) {
 						direction = -1;
 					}
-					// console.log('updatePosition', context.targetPosition.x, direction);
 
 					let newX =
 						context.position.x +
 						direction * event.output.timeDiff * context.speed;
 
 					if (direction === 1 && newX > context.targetPosition.x) {
-						console.log('fixing position 1 direction');
 						newX = context.targetPosition.x;
 					}
 					if (direction === -1 && newX < context.targetPosition.x) {
-						console.log('fixing position -1 direction');
 						newX = context.targetPosition.x;
 					}
 
@@ -62,7 +57,6 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 					};
 				}),
 				layEgg: () => {
-					console.log('layEgg action called!');
 					return onLayEgg(id, state.context.position.x);
 				},
 			},

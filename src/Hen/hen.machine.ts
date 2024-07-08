@@ -25,17 +25,17 @@ export const henMachine = setup({
 		};
 	},
 	actors: {
-		moveHen: fromPromise(() => {
-			return Promise.resolve({ timeDiff: 0 });
-		}),
+		// Stub for a provided actor
+		moveHen: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
+	},
+	guards: {
+		'can lay egg': () => Math.random() < 0.1,
 	},
 	actions: {
-		pickNewTargetXPosition: assign(({ context }) => {
-			console.log('context.stageWidth', context.stageWidth);
-			return {
-				targetPosition: { x: pickXPosition({ context }), y: 0 },
-			};
-		}),
+		pickNewTargetXPosition: assign(({ context }) => ({
+			targetPosition: { x: pickXPosition({ context }), y: 0 },
+		})),
+		// Stub for provided actions
 		updatePosition: () => {},
 		layEgg: () => {
 			// Trigger the creation of a new egg
@@ -88,14 +88,17 @@ export const henMachine = setup({
 			},
 		},
 		stopped: {
-			entry: [log('Hen stopped'), 'pickNewTargetXPosition'],
+			entry: ['pickNewTargetXPosition'],
 			after: {
-				pickStopDuration: { target: 'moving' },
+				pickStopDuration: [
+					{ guard: 'can lay egg', target: 'layingEgg' },
+					{ target: 'moving' },
+				],
 			},
 		},
 		layingEgg: {
 			entry: 'layEgg',
-			always: { target: 'moving' },
+			after: { 1000: 'moving' },
 		},
 	},
 });
