@@ -34,12 +34,11 @@ export const henMachine = setup({
 	},
 	guards: {
 		'can lay egg': ({ context }) => {
-			const allowedByMax =
+			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-			return allowedByMax && Math.random() < context.eggLayingRate;
+			const withinEggLayingRate = Math.random() < context.eggLayingRate;
+			return withinLimit && withinEggLayingRate;
 		},
-		// 'can lay egg': ({ context }) =>
-		// 	context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
@@ -87,7 +86,6 @@ export const henMachine = setup({
 		targetPosition: { x: 0, y: 0 },
 		speed: 0.4,
 		minStopMS: 500,
-		// maxStopMS: 5000,
 		maxStopMS: 500,
 		maxEggs: input.maxEggs,
 		eggsLaid: 0,

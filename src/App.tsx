@@ -145,8 +145,8 @@ const App = () => {
 						initialX={hen.initialX}
 						initialY={hen.initialY}
 						onLayEgg={handleLayEgg}
-						maxEggs={1}
-						eggLayingRate={0.5}
+						maxEggs={-1}
+						eggLayingRate={0.9}
 					/>
 				))}
 				<Chef
