@@ -1,12 +1,11 @@
 import { assign, fromPromise, setup } from 'xstate';
 
-export function pickXPosition({
-	context,
-}: {
-	context: { stageWidth: number };
-}) {
-	const xBuffer = 50;
-	return Math.random() * (context.stageWidth - 2 * xBuffer) + xBuffer;
+export function getStartXPosition(stageWidth: number, buffer: number = 50) {
+	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
+}
+
+export function pickXPosition(stageWidth: number, buffer: number = 50) {
+	return Math.random() * (stageWidth - 2 * buffer) + buffer;
 }
 
 export const henMachine = setup({
@@ -33,7 +32,7 @@ export const henMachine = setup({
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
-			targetPosition: { x: pickXPosition({ context }), y: 0 },
+			targetPosition: { x: pickXPosition(context.stageWidth), y: 0 },
 		})),
 		// Stub for provided actions
 		updatePosition: () => {},

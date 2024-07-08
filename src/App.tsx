@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { Hen } from './Hen/Hen';
 import { Chef } from './Chef/Chef';
-import { pickXPosition } from './Hen/hen.machine';
+import { getStartXPosition } from './Hen/hen.machine';
 import Konva from 'konva';
 import { Egg } from './Egg/Egg';
 
@@ -18,7 +18,7 @@ const App = () => {
 
 	const henConfigs = new Array(20).fill(null).map((_, index) => ({
 		id: index + 1,
-		initialX: pickXPosition({ context: { stageWidth: window.innerWidth } }),
+		initialX: getStartXPosition(window.innerWidth),
 		initialY: 10,
 	}));
 	const [hens] = useState(henConfigs);
