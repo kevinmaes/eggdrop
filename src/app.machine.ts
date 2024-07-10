@@ -1,3 +1,4 @@
+import { createActorContext } from '@xstate/react';
 import { fromPromise, setup } from 'xstate';
 
 interface HenStats {
@@ -23,7 +24,7 @@ interface GenerationSnapshot {
 	hens: HenStats[];
 }
 
-export const appMachine = setup({
+const appMachine = setup({
 	types: {} as {
 		context: {
 			generationIndex: number;
@@ -113,3 +114,5 @@ export const appMachine = setup({
 		},
 	},
 });
+
+export const AppActorContext = createActorContext(appMachine);
