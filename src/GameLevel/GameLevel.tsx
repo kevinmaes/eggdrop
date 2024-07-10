@@ -165,7 +165,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 						initialX={hen.initialX}
 						initialY={hen.initialY}
 						maxEggs={-1}
-						stoppedEggLayingRate={0.5}
+						stoppedEggLayingRate={0.9}
 						movingEggLayingRate={0.01}
 					/>
 				))}
