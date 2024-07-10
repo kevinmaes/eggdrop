@@ -3,6 +3,8 @@ import Konva from 'konva';
 import { Ref, useEffect, useRef } from 'react';
 import { Rect } from 'react-konva';
 import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
+import { chefMachine } from './chef.machine';
+import { ActorRefFrom } from 'xstate';
 // import useImage from 'use-image';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
@@ -18,9 +20,10 @@ export function Chef({
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
 	const gameLevelActorRef = GameLevelActorContext.useActorRef();
-	const chefActorRef = GameLevelActorContext.useSelector(
-		(state) => state.children.chefMachine
-	);
+	const chefActorRef = gameLevelActorRef.system.get(
+		'chefMachine'
+	) as ActorRefFrom<typeof chefMachine>;
+
 	const chefState = useSelector(chefActorRef, (state) => state);
 	const chefPosition = useSelector(
 		chefActorRef,
@@ -57,10 +60,13 @@ export function Chef({
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('keyup', handleKeyUp);
 		};
-	}, []);
+	}, [chefActorRef]);
 
-	// const color = chefState?.matches('Catching') ? 'yellow' : 'silver';
-	const color = 'silver';
+	if (!chefState) {
+		return null;
+	}
+
+	const color = chefState.matches('Catching') ? 'yellow' : 'silver';
 
 	return (
 		<>

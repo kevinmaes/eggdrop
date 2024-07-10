@@ -4,6 +4,8 @@ import { animationActor } from '../helpers/animationActor';
 export const eggMachine = setup({
 	types: {} as {
 		context: {
+			id: string;
+			henId: string;
 			position: { x: number; y: number };
 			exitPosition: { x: number; y: number };
 			fallingSpeed: number;
@@ -13,6 +15,7 @@ export const eggMachine = setup({
 		events: { type: 'Hatch chick' } | { type: 'Splat egg' };
 		input: {
 			id: string;
+			henId: string;
 			position: { x: number; y: number };
 			fallingSpeed: number;
 			floorY: number;
@@ -74,6 +77,7 @@ export const eggMachine = setup({
 	initial: 'Falling',
 	context: ({ input }) => ({
 		id: input.id,
+		henId: input.henId,
 		position: input.position,
 		fallingSpeed: input.fallingSpeed,
 		exitingSpeed: 10,

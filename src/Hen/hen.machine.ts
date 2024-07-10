@@ -1,4 +1,4 @@
-import { assign, setup } from 'xstate';
+import { assign, log, sendParent, setup } from 'xstate';
 import { animationActor } from '../helpers/animationActor';
 
 export function getStartXPosition(stageWidth: number, buffer: number = 50) {
@@ -12,6 +12,7 @@ export function pickXPosition(stageWidth: number, buffer: number = 50) {
 export const henMachine = setup({
 	types: {} as {
 		input: {
+			id: string;
 			position: { x: number; y: number };
 			stageDimensions: { width: number; height: number };
 			maxEggs: number;
@@ -19,6 +20,7 @@ export const henMachine = setup({
 			movingEggLayingRate: number;
 		};
 		context: {
+			id: string;
 			stageDimensions: { width: number; height: number };
 			position: { x: number; y: number };
 			targetPosition: { x: number; y: number };
@@ -71,14 +73,17 @@ export const henMachine = setup({
 				newX = context.targetPosition.x;
 			}
 
+			const newPosition = {
+				x: newX,
+				y: context.position.y,
+			};
+			// console.log('newPosition', newPosition);
+
 			return {
-				position: { x: newX, y: context.position.y },
+				// position: { x: newX, y: context.position.y },
+				position: newPosition,
 			};
 		}),
-		// Stub for a provided action
-		layEgg: () => {
-			// Trigger the creation of a new egg
-		},
 	},
 	delays: {
 		pickStopDuration: ({ context }) => {
@@ -90,6 +95,7 @@ export const henMachine = setup({
 	id: 'hen',
 	initial: 'Setting Target Position',
 	context: ({ input }) => ({
+		id: input.id,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
 		targetPosition: { x: 0, y: 0 },
@@ -140,7 +146,12 @@ export const henMachine = setup({
 		},
 		'Laying Egg': {
 			entry: [
-				'layEgg',
+				log('Hen should lay egg'),
+				sendParent(({ context }) => ({
+					type: 'Lay an egg',
+					henId: context.id,
+					henPosition: context.position,
+				})),
 				assign({
 					eggsLaid: ({ context }) => context.eggsLaid + 1,
 				}),

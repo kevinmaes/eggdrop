@@ -19,7 +19,7 @@ interface HenConfig {
 	initialY: number;
 }
 
-const henConfigs = new Array(3).fill(null).map(() => ({
+const henConfigs = new Array(1).fill(null).map(() => ({
 	id: nanoid(),
 	initialX: getStartXPosition(1920),
 	initialY: 10,
@@ -45,9 +45,9 @@ const gameLevelMachine = setup({
 					chefPotRimHitRef: React.RefObject<Rect>;
 			  }
 			| {
-					type: 'Egg laid';
+					type: 'Lay an egg';
 					henId: string;
-					position: { x: number; y: number };
+					henPosition: { x: number; y: number };
 			  }
 			| {
 					type: 'Egg position updated';
@@ -59,6 +59,7 @@ const gameLevelMachine = setup({
 	actors: {
 		chefMachine,
 		henMachine,
+		eggMachine,
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
@@ -115,19 +116,31 @@ const gameLevelMachine = setup({
 				chefPotRimHitRef: ({ event }) => event.chefPotRimHitRef,
 			}),
 		},
-		'Egg laid': {
+		'Lay an egg': {
 			actions: [
-				log('Egg laid'),
+				log('Lay an egg'),
 				assign({
-					eggs: ({ context, event }) => [
-						...context.eggs,
-						{
-							id: nanoid(),
-							henId: event.henId,
-							initialX: event.position.x,
-							initialY: event.position.y,
-						},
-					],
+					eggActorRefs: ({ context, event, spawn }) => {
+						const eggHenButtYOffset = 35;
+						const eggId = nanoid();
+						return [
+							...context.eggActorRefs,
+							spawn('eggMachine', {
+								id: eggId,
+								systemId: eggId,
+								input: {
+									id: eggId,
+									henId: event.henId,
+									position: {
+										x: event.henPosition.x,
+										y: event.henPosition.y + eggHenButtYOffset,
+									},
+									fallingSpeed: 2,
+									floorY: context.stageDimensions.height,
+								},
+							}),
+						];
+					},
 				}),
 			],
 		},
@@ -173,31 +186,16 @@ const gameLevelMachine = setup({
 				log('now Playing'),
 				assign({
 					henActorRefs: ({ context, spawn }) => {
-						// const id = nanoid();
-						// const spawnedHen = spawn('henMachine', {
-						// 	id,
-						// 	systemId: id,
-						// 	input: {
-						// 		position: {
-						// 			x: getStartXPosition(context.stageDimensions.width),
-						// 			y: 10,
-						// 		},
-						// 		stageDimensions: context.stageDimensions,
-						// 		maxEggs: -1,
-						// 		stationaryEggLayingRate: 0.9,
-						// 		movingEggLayingRate: 0.1,
-						// 	},
-						// });
-						// return [spawnedHen];
-
 						return henConfigs.map((config) => {
+							const { id: henId, initialX, initialY } = config;
 							const spawnedHen = spawn('henMachine', {
-								id: config.id,
-								systemId: config.id,
+								id: henId,
+								systemId: henId,
 								input: {
+									id: henId,
 									position: {
-										x: config.initialX,
-										y: config.initialY,
+										x: initialX,
+										y: initialY,
 									},
 									stageDimensions: context.stageDimensions,
 									maxEggs: -1,
@@ -237,7 +235,9 @@ const gameLevelMachine = setup({
 	},
 });
 
-export const GameLevelActorContext = createActorContext(gameLevelMachine);
+export const GameLevelActorContext = createActorContext(gameLevelMachine, {
+	systemId: 'gameLevelMachine',
+});
 
 // assign({
 // 	eggs: ({ context, event, system }) => {

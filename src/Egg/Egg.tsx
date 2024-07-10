@@ -1,4 +1,4 @@
-import { useActor } from '@xstate/react';
+import { useSelector } from '@xstate/react';
 import {
 	Circle,
 	Rect,
@@ -6,90 +6,55 @@ import {
 } from 'react-konva';
 // import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
-import { Ref } from 'react';
-import Konva from 'konva';
-import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
-
-interface EggProps {
-	layerRef: Ref<Konva.Layer>;
-	// floorY: number;
-	id: string;
-	initialX: number;
-	initialY: number;
-}
+import { ActorRefFrom } from 'xstate';
 
 export function Egg({
-	// floorY,
-	id,
-	initialX,
-	initialY,
-}: EggProps) {
-	const gameLevelActorRef = GameLevelActorContext.useActorRef();
+	eggActorRef,
+}: {
+	eggActorRef: ActorRefFrom<typeof eggMachine>;
+}) {
+	const eggState = useSelector(eggActorRef, (state) => state);
 
-	const [state] = useActor(
-		eggMachine.provide({
-			actions: {
-				notifyOfEggPosition: ({ context }) => {
-					gameLevelActorRef.send({
-						type: 'Egg position updated',
-						eggId: id,
-						position: context.position,
-					});
-				},
-				eggDone: () => {
-					gameLevelActorRef.send({ type: 'Remove egg', eggId: id });
-				},
-			},
-		}),
-		{
-			input: {
-				id,
-				position: { x: initialX, y: initialY },
-				fallingSpeed: 2,
-				// TODO remove this.
-				floorY: 0,
-			},
-		}
-	);
-
-	if (state.matches('Done')) {
+	if (eggState.matches('Done')) {
 		return null;
 	}
 
-	return state.matches('Caught') ? (
+	console.log('eggState', eggState.context.position);
+
+	return eggState.matches('Caught') ? (
 		<Circle
-			x={state.context.position.x}
-			y={state.context.position.y}
+			x={eggState.context.position.x}
+			y={eggState.context.position.y}
 			radius={10}
 			fill="black"
 		/>
-	) : state.matches('Hatching') ? (
+	) : eggState.matches('Hatching') ? (
 		<Circle
-			x={state.context.position.x}
-			y={state.context.position.y}
+			x={eggState.context.position.x}
+			y={eggState.context.position.y}
 			radius={20}
 			fill="yellow"
 		/>
-	) : state.matches('Exiting') ? (
+	) : eggState.matches('Exiting') ? (
 		<Circle
-			x={state.context.position.x}
-			y={state.context.position.y}
+			x={eggState.context.position.x}
+			y={eggState.context.position.y}
 			radius={20}
 			fill="yellow"
 		/>
-	) : state.matches('Splatting') ? (
+	) : eggState.matches('Splatting') ? (
 		// Render a rectangle
 		<Rect
-			x={state.context.position.x}
-			y={state.context.position.y}
+			x={eggState.context.position.x}
+			y={eggState.context.position.y}
 			width={40}
 			height={3}
 			fill="white"
 		/>
 	) : (
 		<Circle
-			x={state.context.position.x}
-			y={state.context.position.y}
+			x={eggState.context.position.x}
+			y={eggState.context.position.y}
 			radius={10}
 			fill="white"
 		/>

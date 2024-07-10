@@ -4,6 +4,7 @@ import { Hen } from '../Hen/Hen';
 import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
 import { GameLevelActorContext } from './gameLevel.machine';
+import { Egg } from '../Egg/Egg';
 
 interface GameLevelProps {
 	stageDimensions: {
@@ -13,12 +14,12 @@ interface GameLevelProps {
 }
 
 export function GameLevel({ stageDimensions }: GameLevelProps) {
-	const henActorRefs = GameLevelActorContext.useSelector(
-		(state) => state.context.henActorRefs
+	const { henActorRefs, eggActorRefs } = GameLevelActorContext.useSelector(
+		(state) => ({
+			henActorRefs: state.context.henActorRefs,
+			eggActorRefs: state.context.eggActorRefs,
+		})
 	);
-	// const eggConfigs = GameLevelActorContext.useSelector(
-	// 	(state) => state.context.eggs
-	// );
 
 	const chefDimensions = { width: 124, height: 150 };
 	const chefInitialPosition = {
@@ -36,7 +37,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 		>
 			<Layer ref={layerRef}>
 				{henActorRefs.map((henActorRef) => (
-					<Hen key={henActorRef.id} id={henActorRef.id} />
+					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
 				<Chef
 					stageDimensions={stageDimensions}
@@ -44,6 +45,9 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					layerRef={layerRef}
 					initialPosition={chefInitialPosition}
 				/>
+				{eggActorRefs.map((eggActorRef) => (
+					<Egg eggActorRef={eggActorRef} />
+				))}
 			</Layer>
 		</Stage>
 	);
