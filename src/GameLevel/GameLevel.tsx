@@ -1,11 +1,8 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { Hen } from '../Hen/Hen';
 import { Chef } from '../Chef/Chef';
-import { getStartXPosition } from '../Hen/hen.machine';
 import Konva from 'konva';
-import { Egg } from '../Egg/Egg';
-import { nanoid } from 'nanoid';
 import { GameLevelActorContext } from './gameLevel.machine';
 
 interface GameLevelProps {
@@ -16,9 +13,12 @@ interface GameLevelProps {
 }
 
 export function GameLevel({ stageDimensions }: GameLevelProps) {
-	const eggConfigs = GameLevelActorContext.useSelector(
-		(state) => state.context.eggs
+	const henActorRefs = GameLevelActorContext.useSelector(
+		(state) => state.context.henActorRefs
 	);
+	// const eggConfigs = GameLevelActorContext.useSelector(
+	// 	(state) => state.context.eggs
+	// );
 
 	const chefDimensions = { width: 124, height: 150 };
 	const chefInitialPosition = {
@@ -28,13 +28,6 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 
 	const layerRef = useRef<Konva.Layer>(null);
 
-	const henConfigs = new Array(1).fill(null).map(() => ({
-		id: nanoid(),
-		initialX: getStartXPosition(stageDimensions.width),
-		initialY: 10,
-	}));
-	const [hens] = useState(henConfigs);
-
 	return (
 		<Stage
 			width={stageDimensions.width}
@@ -42,18 +35,8 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 			style={{ background: 'blue' }}
 		>
 			<Layer ref={layerRef}>
-				{hens.map((hen) => (
-					<Hen
-						key={hen.id}
-						id={hen.id}
-						layerRef={layerRef}
-						stageDimensions={stageDimensions}
-						initialX={hen.initialX}
-						initialY={hen.initialY}
-						maxEggs={-1}
-						stationaryEggLayingRate={0.9}
-						movingEggLayingRate={0.01}
-					/>
+				{henActorRefs.map((henActorRef) => (
+					<Hen key={henActorRef.id} id={henActorRef.id} />
 				))}
 				<Chef
 					stageDimensions={stageDimensions}
@@ -61,17 +44,47 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					layerRef={layerRef}
 					initialPosition={chefInitialPosition}
 				/>
-				{eggConfigs.map((egg) => (
-					<Egg
-						layerRef={layerRef}
-						key={egg.id}
-						id={egg.id}
-						initialX={egg.initialX}
-						initialY={egg.initialY}
-						floorY={stageDimensions.height}
-					/>
-				))}
 			</Layer>
 		</Stage>
 	);
+
+	// return (
+	// 	<Stage
+	// 		width={stageDimensions.width}
+	// 		height={stageDimensions.height}
+	// 		style={{ background: 'blue' }}
+	// 	>
+	// 		<Layer ref={layerRef}>
+	// 			{hens.map((hen) => (
+	// 				<Hen
+	// 					key={hen.id}
+	// 					id={hen.id}
+	// 					layerRef={layerRef}
+	// 					stageDimensions={stageDimensions}
+	// 					initialX={hen.initialX}
+	// 					initialY={hen.initialY}
+	// 					maxEggs={-1}
+	// 					stationaryEggLayingRate={0.9}
+	// 					movingEggLayingRate={0.01}
+	// 				/>
+	// 			))}
+	// 			<Chef
+	// 				stageDimensions={stageDimensions}
+	// 				dimensions={chefDimensions}
+	// 				layerRef={layerRef}
+	// 				initialPosition={chefInitialPosition}
+	// 			/>
+	// 			{eggConfigs.map((egg) => (
+	// 				<Egg
+	// 					layerRef={layerRef}
+	// 					key={egg.id}
+	// 					id={egg.id}
+	// 					initialX={egg.initialX}
+	// 					initialY={egg.initialY}
+	// 					// floorY={stageDimensions.height}
+	// 				/>
+	// 			))}
+	// 		</Layer>
+	// 	</Stage>
+	// );
 }

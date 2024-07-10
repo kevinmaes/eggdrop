@@ -1,8 +1,10 @@
 import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { assign, log, raise, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, raise, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
+import { getStartXPosition, henMachine } from '../Hen/hen.machine';
+import { eggMachine } from '../Egg/egg.machine';
 
 interface EggConfig {
 	id: string;
@@ -17,6 +19,12 @@ interface HenConfig {
 	initialY: number;
 }
 
+const henConfigs = new Array(3).fill(null).map(() => ({
+	id: nanoid(),
+	initialX: getStartXPosition(1920),
+	initialY: 10,
+}));
+
 const gameLevelMachine = setup({
 	types: {} as {
 		context: {
@@ -25,6 +33,9 @@ const gameLevelMachine = setup({
 			generationIndex: number;
 			hens: HenConfig[];
 			eggs: EggConfig[];
+			henActorRefs: ActorRefFrom<typeof henMachine>[];
+			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
+
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 		};
 		events:
@@ -47,6 +58,7 @@ const gameLevelMachine = setup({
 	},
 	actors: {
 		chefMachine,
+		henMachine,
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
@@ -78,6 +90,12 @@ const gameLevelMachine = setup({
 				position.y <= potRimHitY + potRimHitHeight
 			);
 		},
+		'egg hits the floor': ({ context, event }) => {
+			if (!('position' in event)) {
+				return false;
+			}
+			return event.position.y >= context.stageDimensions.height - 50;
+		},
 	},
 }).createMachine({
 	context: {
@@ -86,6 +104,8 @@ const gameLevelMachine = setup({
 		generationIndex: 0,
 		hens: [],
 		eggs: [],
+		henActorRefs: [],
+		eggActorRefs: [],
 		chefPotRimHitRef: null,
 	},
 	initial: 'Playing',
@@ -122,6 +142,17 @@ const gameLevelMachine = setup({
 					sendTo('chefMachine', { type: 'Catch' }),
 				],
 			},
+			{
+				guard: 'egg hits the floor',
+				actions: [
+					// raise(({ event }) => ({
+					// 	type: 'Remove egg',
+					// 	eggId: event.eggId,
+					// })),
+					// sendTo('chefMachine', { type: 'Catch' }),
+					// Send to specific egg machine by id
+				],
+			},
 		],
 		'Remove egg': {
 			actions: [
@@ -138,7 +169,47 @@ const gameLevelMachine = setup({
 	},
 	states: {
 		Playing: {
-			entry: log('now Playing'),
+			entry: [
+				log('now Playing'),
+				assign({
+					henActorRefs: ({ context, spawn }) => {
+						// const id = nanoid();
+						// const spawnedHen = spawn('henMachine', {
+						// 	id,
+						// 	systemId: id,
+						// 	input: {
+						// 		position: {
+						// 			x: getStartXPosition(context.stageDimensions.width),
+						// 			y: 10,
+						// 		},
+						// 		stageDimensions: context.stageDimensions,
+						// 		maxEggs: -1,
+						// 		stationaryEggLayingRate: 0.9,
+						// 		movingEggLayingRate: 0.1,
+						// 	},
+						// });
+						// return [spawnedHen];
+
+						return henConfigs.map((config) => {
+							const spawnedHen = spawn('henMachine', {
+								id: config.id,
+								systemId: config.id,
+								input: {
+									position: {
+										x: config.initialX,
+										y: config.initialY,
+									},
+									stageDimensions: context.stageDimensions,
+									maxEggs: -1,
+									stationaryEggLayingRate: 0.9,
+									movingEggLayingRate: 0.1,
+								},
+							});
+							return spawnedHen;
+						});
+					},
+				}),
+			],
 			invoke: {
 				id: 'chefMachine',
 				src: 'chefMachine',

@@ -1,4 +1,5 @@
-import { assign, fromPromise, setup } from 'xstate';
+import { assign, setup } from 'xstate';
+import { animationActor } from '../helpers/animationActor';
 
 export function getStartXPosition(stageWidth: number, buffer: number = 50) {
 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
@@ -31,8 +32,7 @@ export const henMachine = setup({
 		};
 	},
 	actors: {
-		// Stub for a provided actor
-		moveHen: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
+		animationActor,
 	},
 	guards: {
 		'can lay egg while stopped': ({ context }) => {
@@ -108,7 +108,7 @@ export const henMachine = setup({
 		},
 		Moving: {
 			invoke: {
-				src: 'moveHen',
+				src: 'animationActor',
 				onDone: [
 					{
 						guard: ({ context }) =>

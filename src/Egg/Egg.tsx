@@ -6,49 +6,28 @@ import {
 } from 'react-konva';
 // import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
-import { fromPromise } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
-import { Animation } from 'konva/lib/Animation';
 import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 
 interface EggProps {
 	layerRef: Ref<Konva.Layer>;
-	floorY: number;
+	// floorY: number;
 	id: string;
 	initialX: number;
 	initialY: number;
 }
 
-export function Egg({ layerRef, floorY, id, initialX, initialY }: EggProps) {
+export function Egg({
+	// floorY,
+	id,
+	initialX,
+	initialY,
+}: EggProps) {
 	const gameLevelActorRef = GameLevelActorContext.useActorRef();
 
 	const [state] = useActor(
 		eggMachine.provide({
-			actors: {
-				fallEgg: fromPromise(() => {
-					return new Promise((resolve) => {
-						const anim = new Animation((frame) => {
-							if (frame?.timeDiff) {
-								resolve({ timeDiff: frame?.timeDiff });
-								anim.stop();
-							}
-						}, layerRef);
-						anim.start();
-					});
-				}),
-				exitChick: fromPromise(() => {
-					return new Promise((resolve) => {
-						const anim = new Animation((frame) => {
-							if (frame?.timeDiff) {
-								resolve({ timeDiff: frame?.timeDiff });
-								anim.stop();
-							}
-						}, layerRef);
-						anim.start();
-					});
-				}),
-			},
 			actions: {
 				notifyOfEggPosition: ({ context }) => {
 					gameLevelActorRef.send({
@@ -67,7 +46,8 @@ export function Egg({ layerRef, floorY, id, initialX, initialY }: EggProps) {
 				id,
 				position: { x: initialX, y: initialY },
 				fallingSpeed: 2,
-				floorY,
+				// TODO remove this.
+				floorY: 0,
 			},
 		}
 	);

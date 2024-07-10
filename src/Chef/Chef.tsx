@@ -59,7 +59,8 @@ export function Chef({
 		};
 	}, []);
 
-	const color = chefState?.matches('Catching') ? 'yellow' : 'silver';
+	// const color = chefState?.matches('Catching') ? 'yellow' : 'silver';
+	const color = 'silver';
 
 	return (
 		<>
@@ -103,9 +104,9 @@ export function Chef({
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={5}
 				height={dimensions.height * 0.5}
-				fill={
-					chefState?.context.hitTestResult === 'broke-left' ? 'white' : 'none'
-				}
+				// fill={
+				// 	chefState?.context.hitTestResult === 'broke-left' ? 'white' : 'none'
+				// }
 			/>
 			{/* Right side hit box */}
 			<Rect

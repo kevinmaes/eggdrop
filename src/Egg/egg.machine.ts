@@ -1,4 +1,5 @@
-import { setup, assign, fromPromise, log } from 'xstate';
+import { setup, assign, log, OutputFrom } from 'xstate';
+import { animationActor } from '../helpers/animationActor';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -9,6 +10,7 @@ export const eggMachine = setup({
 			exitingSpeed: number;
 			floorY: number;
 		};
+		events: { type: 'Hatch chick' } | { type: 'Splat egg' };
 		input: {
 			id: string;
 			position: { x: number; y: number };
@@ -34,9 +36,10 @@ export const eggMachine = setup({
 		}),
 		updateEggPosition: assign({
 			position: ({ context, event }) => {
+				if (!('output' in event)) return context.position;
+				const output = event.output as OutputFrom<typeof animationActor>;
 				const newY =
-					context.position.y +
-					context.fallingSpeed * event.output.timeDiff * 0.1;
+					context.position.y + context.fallingSpeed * output.timeDiff * 0.1;
 				const newPosition = {
 					x: context.position.x,
 					y: newY,
@@ -47,10 +50,12 @@ export const eggMachine = setup({
 		}),
 		updateChickPosition: assign({
 			position: ({ context, event }) => {
+				if (!('output' in event)) return context.position;
+				const output = event.output as OutputFrom<typeof animationActor>;
 				const direction = context.exitPosition.x < 0 ? -1 : 1;
 				const newX =
 					context.position.x +
-					direction * context.exitingSpeed * event.output.timeDiff * 0.1;
+					direction * context.exitingSpeed * output.timeDiff * 0.1;
 				return {
 					x: newX,
 					y: context.position.y,
@@ -59,13 +64,11 @@ export const eggMachine = setup({
 		}),
 	},
 	actors: {
-		// Stub for a provided actor
-		fallEgg: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
-		exitChick: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
+		animationActor,
 	},
-	guards: {
-		hitFloor: ({ context }) => context.position.y >= context.floorY - 50,
-	},
+	// guards: {
+	// 	hitFloor: ({ context }) => context.position.y >= context.floorY - 50,
+	// },
 }).createMachine({
 	id: 'egg',
 	initial: 'Falling',
@@ -83,9 +86,10 @@ export const eggMachine = setup({
 	states: {
 		Falling: {
 			invoke: {
-				src: 'fallEgg',
+				// src: 'fallingEggActor',
+				src: 'animationActor',
 				onDone: [
-					{ target: 'Landed', guard: 'hitFloor' },
+					// { target: 'Landed', guard: 'hitFloor' },
 					{
 						target: 'Falling',
 						actions: ['updateEggPosition', 'notifyOfEggPosition'],
@@ -120,7 +124,8 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			invoke: {
-				src: 'exitChick',
+				// src: 'exitChick',
+				src: 'animationActor',
 				onDone: [
 					{
 						target: 'Done',
