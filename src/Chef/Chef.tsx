@@ -10,10 +10,8 @@ import { ActorRefFrom } from 'xstate';
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
 
 export function Chef({
-	// stageDimensions,
 	dimensions,
 }: {
-	stageDimensions: { width: number; height: number };
 	dimensions: { width: number; height: number };
 	layerRef: Ref<Konva.Layer>;
 	initialPosition: { x: number; y: number };

@@ -1,4 +1,4 @@
-import { setup, assign, log, OutputFrom, sendParent } from 'xstate';
+import { setup, assign, OutputFrom, sendParent } from 'xstate';
 import { animationActor } from '../helpers/animationActor';
 
 export const eggMachine = setup({
