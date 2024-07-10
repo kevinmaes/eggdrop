@@ -14,7 +14,7 @@ export const henMachine = setup({
 			position: { x: number; y: number };
 			stageDimensions: { width: number; height: number };
 			maxEggs: number;
-			stoppedEggLayingRate: number;
+			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
 		};
 		context: {
@@ -26,7 +26,7 @@ export const henMachine = setup({
 			maxStopMS: number;
 			maxEggs: number;
 			eggsLaid: number;
-			stoppedEggLayingRate: number;
+			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
 		};
 	},
@@ -38,7 +38,8 @@ export const henMachine = setup({
 		'can lay egg while stopped': ({ context }) => {
 			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-			const withinEggLayingRate = Math.random() < context.stoppedEggLayingRate;
+			const withinEggLayingRate =
+				Math.random() < context.stationaryEggLayingRate;
 			return withinLimit && withinEggLayingRate;
 		},
 		'can lay egg while moving': ({ context }) => {
@@ -97,7 +98,7 @@ export const henMachine = setup({
 		maxStopMS: 500,
 		maxEggs: input.maxEggs,
 		eggsLaid: 0,
-		stoppedEggLayingRate: input.stoppedEggLayingRate,
+		stationaryEggLayingRate: input.stationaryEggLayingRate,
 		movingEggLayingRate: input.movingEggLayingRate,
 	}),
 	states: {

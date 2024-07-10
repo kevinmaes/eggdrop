@@ -16,7 +16,7 @@ interface HenProps {
 	initialX: number;
 	initialY: number;
 	maxEggs: number;
-	stoppedEggLayingRate: number;
+	stationaryEggLayingRate: number;
 	movingEggLayingRate: number;
 }
 
@@ -27,7 +27,7 @@ export function Hen({
 	maxEggs,
 	initialX,
 	initialY,
-	stoppedEggLayingRate,
+	stationaryEggLayingRate,
 	movingEggLayingRate,
 }: HenProps) {
 	const gamelevelActorRef = GameLevelActorContext.useActorRef();
@@ -62,7 +62,7 @@ export function Hen({
 				position: { x: initialX, y: initialY },
 				stageDimensions,
 				maxEggs,
-				stoppedEggLayingRate,
+				stationaryEggLayingRate,
 				movingEggLayingRate,
 			},
 		}
