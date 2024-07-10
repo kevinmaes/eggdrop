@@ -1,4 +1,4 @@
-import { setup, assign, log, OutputFrom } from 'xstate';
+import { setup, assign, log, OutputFrom, sendParent } from 'xstate';
 import { animationActor } from '../helpers/animationActor';
 
 export const eggMachine = setup({
@@ -23,7 +23,11 @@ export const eggMachine = setup({
 	},
 	actions: {
 		// Stub for a provided action
-		notifyOfEggPosition: () => {},
+		notifyOfEggPosition: sendParent(({ context }) => ({
+			type: 'Egg position updated',
+			eggId: context.id,
+			position: context.position,
+		})),
 		eggDone: () => {},
 		splatOnFloor: assign({
 			position: ({ context }) => ({
@@ -89,6 +93,10 @@ export const eggMachine = setup({
 	}),
 	states: {
 		Falling: {
+			on: {
+				'Hatch chick': 'Hatching',
+				'Splat egg': 'Splatting',
+			},
 			invoke: {
 				// src: 'fallingEggActor',
 				src: 'animationActor',
@@ -96,7 +104,11 @@ export const eggMachine = setup({
 					// { target: 'Landed', guard: 'hitFloor' },
 					{
 						target: 'Falling',
-						actions: ['updateEggPosition', 'notifyOfEggPosition'],
+						actions: [
+							'updateEggPosition',
+							// log('should update position'),
+							'notifyOfEggPosition',
+						],
 						reenter: true,
 					},
 				],
@@ -117,6 +129,12 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
+			entry: assign({
+				position: ({ context }) => ({
+					x: context.position.x,
+					y: context.position.y - 20,
+				}),
+			}),
 			after: {
 				1000: 'Exiting',
 			},

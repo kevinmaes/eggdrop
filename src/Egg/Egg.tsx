@@ -19,7 +19,7 @@ export function Egg({
 		return null;
 	}
 
-	console.log('eggState', eggState.context.position);
+	// console.log('eggState', eggState.context.position);
 
 	return eggState.matches('Caught') ? (
 		<Circle

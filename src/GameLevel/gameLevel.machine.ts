@@ -63,6 +63,7 @@ const gameLevelMachine = setup({
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
+			// console.log('testPotRimHit');
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}
@@ -95,7 +96,7 @@ const gameLevelMachine = setup({
 			if (!('position' in event)) {
 				return false;
 			}
-			return event.position.y >= context.stageDimensions.height - 50;
+			return event.position.y >= context.stageDimensions.height - 15;
 		},
 	},
 }).createMachine({
@@ -158,12 +159,15 @@ const gameLevelMachine = setup({
 			{
 				guard: 'egg hits the floor',
 				actions: [
-					// raise(({ event }) => ({
-					// 	type: 'Remove egg',
-					// 	eggId: event.eggId,
-					// })),
-					// sendTo('chefMachine', { type: 'Catch' }),
-					// Send to specific egg machine by id
+					// log('egg hit the floor'),
+					sendTo(
+						({ system, event }) => system.get(event.eggId),
+						() => {
+							return {
+								type: Math.random() < 0.5 ? 'Hatch chick' : 'Splat egg',
+							};
+						}
+					),
 				],
 			},
 		],
