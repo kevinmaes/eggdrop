@@ -46,7 +46,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					initialPosition={chefInitialPosition}
 				/>
 				{eggActorRefs.map((eggActorRef) => (
-					<Egg eggActorRef={eggActorRef} />
+					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
 				))}
 			</Layer>
 		</Stage>
