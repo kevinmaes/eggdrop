@@ -14,18 +14,22 @@ import { Animation } from 'konva/lib/Animation';
 
 interface EggProps {
 	layerRef: Ref<Konva.Layer>;
+	floorY: number;
 	id: string;
 	initialX: number;
 	initialY: number;
 	onUpdatePosition: (id: string, position: { x: number; y: number }) => void;
+	removeEgg: (id: string) => void;
 }
 
 export function Egg({
 	layerRef,
+	floorY,
 	id,
 	initialX,
 	initialY,
 	onUpdatePosition,
+	removeEgg,
 }: EggProps) {
 	const [state, send] = useActor(
 		eggMachine.provide({
@@ -59,6 +63,9 @@ export function Egg({
 					// Pass this egg's position up the component tree for hit detection
 					onUpdatePosition(id, context.position);
 				},
+				onDone: () => {
+					removeEgg(id);
+				},
 			},
 		}),
 		{
@@ -66,6 +73,7 @@ export function Egg({
 				id,
 				position: { x: initialX, y: initialY },
 				fallingSpeed: 2,
+				floorY,
 			},
 		}
 	);

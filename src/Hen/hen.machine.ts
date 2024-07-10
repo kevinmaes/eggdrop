@@ -12,12 +12,13 @@ export const henMachine = setup({
 	types: {} as {
 		input: {
 			position: { x: number; y: number };
-			stageWidth: number;
+			stageDimensions: { width: number; height: number };
 			maxEggs: number;
-			eggLayingRate: number;
+			stoppedEggLayingRate: number;
+			movingEggLayingRate: number;
 		};
 		context: {
-			stageWidth: number;
+			stageDimensions: { width: number; height: number };
 			position: { x: number; y: number };
 			targetPosition: { x: number; y: number };
 			speed: number;
@@ -25,7 +26,8 @@ export const henMachine = setup({
 			maxStopMS: number;
 			maxEggs: number;
 			eggsLaid: number;
-			eggLayingRate: number;
+			stoppedEggLayingRate: number;
+			movingEggLayingRate: number;
 		};
 	},
 	actors: {
@@ -33,16 +35,22 @@ export const henMachine = setup({
 		moveHen: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
-		'can lay egg': ({ context }) => {
+		'can lay egg while stopped': ({ context }) => {
 			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-			const withinEggLayingRate = Math.random() < context.eggLayingRate;
+			const withinEggLayingRate = Math.random() < context.stoppedEggLayingRate;
+			return withinLimit && withinEggLayingRate;
+		},
+		'can lay egg while moving': ({ context }) => {
+			const withinLimit =
+				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
+			const withinEggLayingRate = Math.random() < context.movingEggLayingRate;
 			return withinLimit && withinEggLayingRate;
 		},
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
-			targetPosition: { x: pickXPosition(context.stageWidth), y: 0 },
+			targetPosition: { x: pickXPosition(context.stageDimensions.width), y: 0 },
 		})),
 		updatePosition: assign(({ context, event }) => {
 			// Compare the context.position.x with context.targetPosition.x
@@ -81,7 +89,7 @@ export const henMachine = setup({
 	id: 'hen',
 	initial: 'Setting Target Position',
 	context: ({ input }) => ({
-		stageWidth: input.stageWidth,
+		stageDimensions: input.stageDimensions,
 		position: input.position,
 		targetPosition: { x: 0, y: 0 },
 		speed: 0.4,
@@ -89,15 +97,9 @@ export const henMachine = setup({
 		maxStopMS: 500,
 		maxEggs: input.maxEggs,
 		eggsLaid: 0,
-		eggLayingRate: input.eggLayingRate,
+		stoppedEggLayingRate: input.stoppedEggLayingRate,
+		movingEggLayingRate: input.movingEggLayingRate,
 	}),
-	on: {
-		'Set stage width': {
-			actions: assign({
-				stageWidth: ({ event }) => event.stageWidth,
-			}),
-		},
-	},
 	states: {
 		'Setting Target Position': {
 			entry: 'pickNewTargetXPosition',
@@ -112,6 +114,12 @@ export const henMachine = setup({
 							context.position.x === context.targetPosition.x,
 						target: 'Stopped',
 					},
+					// {
+					// 	guard: 'can lay egg while moving',
+					// 	target: 'Laying Egg While Moving',
+					// 	reenter: true,
+					// 	actions: ['updatePosition'],
+					// },
 					{
 						target: 'Moving',
 						reenter: true,
@@ -124,7 +132,7 @@ export const henMachine = setup({
 			entry: ['pickNewTargetXPosition'],
 			after: {
 				pickStopDuration: [
-					{ guard: 'can lay egg', target: 'Laying Egg' },
+					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
 					{ target: 'Moving' },
 				],
 			},
@@ -138,5 +146,14 @@ export const henMachine = setup({
 			],
 			after: { 1000: 'Moving' },
 		},
+		// 'Laying Egg While Moving': {
+		// 	entry: [
+		// 		'layEgg',
+		// 		assign({
+		// 			eggsLaid: ({ context }) => context.eggsLaid + 1,
+		// 		}),
+		// 	],
+		// 	after: { 100: 'Moving' },
+		// },
 	},
 });

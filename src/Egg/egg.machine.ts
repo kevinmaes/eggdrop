@@ -1,4 +1,4 @@
-import { setup, assign, fromPromise, log } from 'xstate';
+import { setup, assign, fromPromise } from 'xstate';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -7,26 +7,29 @@ export const eggMachine = setup({
 			exitPosition: { x: number; y: number };
 			fallingSpeed: number;
 			exitingSpeed: number;
+			floorY: number;
 		};
 		input: {
 			id: string;
 			position: { x: number; y: number };
 			fallingSpeed: number;
+			floorY: number;
 		};
 	},
 	actions: {
 		// Stub for a provided action
 		notifyOfEggPosition: () => {},
+		onDone: () => {},
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 20,
-				y: window.innerHeight - 10,
+				y: context.floorY - 10,
 			}),
 		}),
 		hatchOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x,
-				y: window.innerHeight - 30,
+				y: context.floorY - 30,
 			}),
 		}),
 		updateEggPosition: assign({
@@ -61,7 +64,7 @@ export const eggMachine = setup({
 		exitChick: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
-		hitFloor: ({ context }) => context.position.y >= window.innerHeight - 50,
+		hitFloor: ({ context }) => context.position.y >= context.floorY - 50,
 	},
 }).createMachine({
 	id: 'egg',
@@ -73,8 +76,9 @@ export const eggMachine = setup({
 		exitingSpeed: 10,
 		exitPosition: {
 			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-			y: window.innerHeight - 50,
+			y: input.floorY - 50,
 		},
+		floorY: input.floorY,
 	}),
 	states: {
 		Falling: {
@@ -91,7 +95,7 @@ export const eggMachine = setup({
 			},
 		},
 		Caught: {
-			entry: log('Caught!'),
+			entry: 'onDone',
 			type: 'final',
 		},
 		Landed: {
@@ -121,7 +125,7 @@ export const eggMachine = setup({
 					{
 						target: 'Done',
 						actions: 'updateChickPosition',
-						reenter: true,
+						// reenter: true,
 						guard: ({ context }) =>
 							context.position.x === context.exitPosition.x,
 					},
@@ -135,6 +139,7 @@ export const eggMachine = setup({
 		},
 		Done: {
 			type: 'final',
+			entry: 'onDone',
 		},
 	},
 });

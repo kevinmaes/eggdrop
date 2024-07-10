@@ -10,21 +10,25 @@ import Konva from 'konva';
 
 interface HenProps {
 	layerRef: Ref<Konva.Layer>;
+	stageDimensions: { width: number; height: number };
 	id: string;
 	initialX: number;
 	initialY: number;
 	maxEggs: number;
-	eggLayingRate: number;
+	stoppedEggLayingRate: number;
+	movingEggLayingRate: number;
 	onLayEgg: (henId: string, x: number) => void;
 }
 
 export function Hen({
 	layerRef,
+	stageDimensions,
 	id,
 	maxEggs,
 	initialX,
 	initialY,
-	eggLayingRate,
+	stoppedEggLayingRate,
+	movingEggLayingRate,
 	onLayEgg,
 }: HenProps) {
 	const [state] = useActor(
@@ -51,9 +55,10 @@ export function Hen({
 		{
 			input: {
 				position: { x: initialX, y: initialY },
-				stageWidth: window.innerWidth,
+				stageDimensions,
 				maxEggs,
-				eggLayingRate,
+				stoppedEggLayingRate,
+				movingEggLayingRate,
 			},
 		}
 	);

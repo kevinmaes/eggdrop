@@ -10,6 +10,7 @@ import { Rect } from 'react-konva';
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
 
 export function Chef({
+	stageDimensions,
 	dimensions,
 	hitTestResult,
 	layerRef,
@@ -18,6 +19,7 @@ export function Chef({
 	chefPotLeftHitRef,
 	chefPotRightHitRef,
 }: {
+	stageDimensions: { width: number; height: number };
 	dimensions: { width: number; height: number };
 	hitTestResult: EggHitTestResult;
 	layerRef: Ref<Konva.Layer>;
@@ -50,7 +52,7 @@ export function Chef({
 				acceleration: 0.1 * 20,
 				deceleration: 1,
 				minXPos: 10,
-				maxXPos: window.innerWidth - dimensions.width - 10,
+				maxXPos: stageDimensions.width - dimensions.width - 10,
 			},
 		}
 	);
@@ -92,7 +94,6 @@ export function Chef({
 
 	const color = state.matches('Catching') ? 'yellow' : 'silver';
 
-	// Render a square for now
 	return (
 		<>
 			{/* Chef */}
