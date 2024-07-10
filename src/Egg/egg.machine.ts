@@ -12,7 +12,7 @@ export const eggMachine = setup({
 			exitingSpeed: number;
 			floorY: number;
 		};
-		events: { type: 'Hatch chick' } | { type: 'Splat egg' };
+		events: { type: 'Hatch chick' } | { type: 'Splat egg' } | { type: 'Catch' };
 		input: {
 			id: string;
 			henId: string;
@@ -28,7 +28,6 @@ export const eggMachine = setup({
 			eggId: context.id,
 			position: context.position,
 		})),
-		eggDone: () => {},
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 20,
@@ -73,9 +72,6 @@ export const eggMachine = setup({
 	actors: {
 		animationActor,
 	},
-	// guards: {
-	// 	hitFloor: ({ context }) => context.position.y >= context.floorY - 50,
-	// },
 }).createMachine({
 	id: 'egg',
 	initial: 'Falling',
@@ -96,27 +92,18 @@ export const eggMachine = setup({
 			on: {
 				'Hatch chick': 'Hatching',
 				'Splat egg': 'Splatting',
+				Catch: 'Done',
 			},
 			invoke: {
-				// src: 'fallingEggActor',
 				src: 'animationActor',
 				onDone: [
-					// { target: 'Landed', guard: 'hitFloor' },
 					{
 						target: 'Falling',
-						actions: [
-							'updateEggPosition',
-							// log('should update position'),
-							'notifyOfEggPosition',
-						],
+						actions: ['updateEggPosition', 'notifyOfEggPosition'],
 						reenter: true,
 					},
 				],
 			},
-		},
-		Caught: {
-			type: 'final',
-			entry: [log('Egg told to be caught'), 'eggDone'],
 		},
 		Landed: {
 			always: [
@@ -146,7 +133,6 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			invoke: {
-				// src: 'exitChick',
 				src: 'animationActor',
 				onDone: [
 					{
@@ -165,7 +151,6 @@ export const eggMachine = setup({
 		},
 		Done: {
 			type: 'final',
-			entry: 'eggDone',
 		},
 	},
 });

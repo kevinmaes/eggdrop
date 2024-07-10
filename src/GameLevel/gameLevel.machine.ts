@@ -129,6 +129,7 @@ const gameLevelMachine = setup({
 							spawn('eggMachine', {
 								id: eggId,
 								systemId: eggId,
+								onDone: { actions: 'Remove egg' },
 								input: {
 									id: eggId,
 									henId: event.henId,
@@ -149,11 +150,12 @@ const gameLevelMachine = setup({
 			{
 				guard: 'testPotRimHit',
 				actions: [
-					raise(({ event }) => ({
-						type: 'Remove egg',
-						eggId: event.eggId,
-					})),
 					sendTo('chefMachine', { type: 'Catch' }),
+					// Sending Catch to the eggActor will lead to final state
+					// and automatic removal by this parent machine.
+					sendTo(({ system, event }) => system.get(event.eggId), {
+						type: 'Catch',
+					}),
 				],
 			},
 			{
@@ -178,8 +180,8 @@ const gameLevelMachine = setup({
 					eggs: ({ context, event }) =>
 						context.eggs.filter((egg) => egg.id !== event.eggId),
 				}),
-				({ context }) => {
-					console.log('eggs: ', context.eggs.length);
+				({ context, event }) => {
+					console.log('After remove eggs: ', context.eggs.length, event);
 				},
 			],
 		},

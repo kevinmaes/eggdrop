@@ -21,14 +21,7 @@ export function Egg({
 
 	// console.log('eggState', eggState.context.position);
 
-	return eggState.matches('Caught') ? (
-		<Circle
-			x={eggState.context.position.x}
-			y={eggState.context.position.y}
-			radius={10}
-			fill="black"
-		/>
-	) : eggState.matches('Hatching') ? (
+	return eggState.matches('Hatching') ? (
 		<Circle
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}

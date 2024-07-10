@@ -73,15 +73,8 @@ export const henMachine = setup({
 				newX = context.targetPosition.x;
 			}
 
-			const newPosition = {
-				x: newX,
-				y: context.position.y,
-			};
-			// console.log('newPosition', newPosition);
-
 			return {
-				// position: { x: newX, y: context.position.y },
-				position: newPosition,
+				position: { x: newX, y: context.position.y },
 			};
 		}),
 	},
