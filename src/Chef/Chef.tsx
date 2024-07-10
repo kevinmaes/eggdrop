@@ -5,6 +5,7 @@ import { fromPromise } from 'xstate';
 import { chefMachine } from './chef.machine';
 import { Animation } from 'konva/lib/Animation';
 import { Rect } from 'react-konva';
+import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 // import useImage from 'use-image';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
@@ -29,7 +30,9 @@ export function Chef({
 	chefPotRightHitRef: Ref<Konva.Rect>;
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
-	const [state, send] = useActor(
+	const gameLevelActorRef = GameLevelActorContext.useActorRef();
+
+	const [state, send, chefActorRef] = useActor(
 		chefMachine.provide({
 			actors: {
 				moveChef: fromPromise(() => {
@@ -56,6 +59,13 @@ export function Chef({
 			},
 		}
 	);
+
+	useEffect(() => {
+		gameLevelActorRef.send({
+			type: 'Set chefActorRef',
+			chefActorRef,
+		});
+	}, [chefActorRef]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {

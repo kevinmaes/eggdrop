@@ -1,4 +1,4 @@
-import { assign, fromPromise, setup } from 'xstate';
+import { assign, fromPromise, log, setup } from 'xstate';
 import { EggHitTestResult } from './Chef';
 
 export const chefMachine = setup({
@@ -116,10 +116,13 @@ export const chefMachine = setup({
 			on: {
 				Catch: {
 					target: 'Catching',
-					actions: assign({
-						direction: 0,
-						speed: 0,
-					}),
+					actions: [
+						log('Catch received by chef'),
+						assign({
+							direction: 0,
+							speed: 0,
+						}),
+					],
 				},
 				Broke: {
 					target: 'Broken',

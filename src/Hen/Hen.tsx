@@ -7,6 +7,7 @@ import { fromPromise } from 'xstate';
 import henImageFile from '../assets/hen1.png';
 import { Ref } from 'react';
 import Konva from 'konva';
+import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 
 interface HenProps {
 	layerRef: Ref<Konva.Layer>;
@@ -17,7 +18,6 @@ interface HenProps {
 	maxEggs: number;
 	stoppedEggLayingRate: number;
 	movingEggLayingRate: number;
-	onLayEgg: (henId: string, x: number) => void;
 }
 
 export function Hen({
@@ -29,8 +29,9 @@ export function Hen({
 	initialY,
 	stoppedEggLayingRate,
 	movingEggLayingRate,
-	onLayEgg,
 }: HenProps) {
+	const gamelevelActorRef = GameLevelActorContext.useActorRef();
+
 	const [state] = useActor(
 		henMachine.provide({
 			actors: {
@@ -48,7 +49,11 @@ export function Hen({
 			},
 			actions: {
 				layEgg: () => {
-					return onLayEgg(id, state.context.position.x);
+					gamelevelActorRef.send({
+						type: 'Egg laid',
+						henId: id,
+						position: { x: state.context.position.x, y: 50 },
+					});
 				},
 			},
 		}),

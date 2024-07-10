@@ -1,10 +1,10 @@
-import { useSelector } from '@xstate/react';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
+import { GameLevelActorContext } from './GameLevel/gameLevel.machine';
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
-	const appState = useSelector(appActorRef, (state) => state);
+	const appState = AppActorContext.useSelector((state) => state);
 
 	if (appState.matches('Show Error')) {
 		return <div>Error loading the game...</div>;
@@ -28,7 +28,9 @@ const App = () => {
 	if (appState.matches('Game Play')) {
 		return (
 			<div>
-				<GameLevel stageDimensions={{ width: 1920, height: 1080 }} />
+				<GameLevelActorContext.Provider>
+					<GameLevel stageDimensions={{ width: 1920, height: 1080 }} />
+				</GameLevelActorContext.Provider>
 				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
 			</div>
 		);

@@ -1,4 +1,3 @@
-// import { useEffect, useRef } from 'react';
 import { useActor } from '@xstate/react';
 import {
 	Circle,
@@ -8,9 +7,10 @@ import {
 // import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
 import { fromPromise } from 'xstate';
-import { Ref, useEffect } from 'react';
+import { Ref } from 'react';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
+import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 
 interface EggProps {
 	layerRef: Ref<Konva.Layer>;
@@ -18,20 +18,12 @@ interface EggProps {
 	id: string;
 	initialX: number;
 	initialY: number;
-	onUpdatePosition: (id: string, position: { x: number; y: number }) => void;
-	removeEgg: (id: string) => void;
 }
 
-export function Egg({
-	layerRef,
-	floorY,
-	id,
-	initialX,
-	initialY,
-	onUpdatePosition,
-	removeEgg,
-}: EggProps) {
-	const [state, send] = useActor(
+export function Egg({ layerRef, floorY, id, initialX, initialY }: EggProps) {
+	const gameLevelActorRef = GameLevelActorContext.useActorRef();
+
+	const [state] = useActor(
 		eggMachine.provide({
 			actors: {
 				fallEgg: fromPromise(() => {
@@ -59,12 +51,14 @@ export function Egg({
 			},
 			actions: {
 				notifyOfEggPosition: ({ context }) => {
-					// console.log('notifyOfEggPosition');
-					// Pass this egg's position up the component tree for hit detection
-					onUpdatePosition(id, context.position);
+					gameLevelActorRef.send({
+						type: 'Egg position updated',
+						eggId: id,
+						position: context.position,
+					});
 				},
-				onDone: () => {
-					removeEgg(id);
+				eggDone: () => {
+					gameLevelActorRef.send({ type: 'Remove egg', eggId: id });
 				},
 			},
 		}),
@@ -77,20 +71,6 @@ export function Egg({
 			},
 		}
 	);
-
-	useEffect(() => {
-		setTimeout(() => {
-			send({ type: 'Catch' });
-		}, 5000);
-	}, []);
-
-	// const [eggImage] = useImage('path-to-your-egg-image.png');
-
-	// useEffect(() => {
-	// 	if (current.matches('splatted') || current.matches('caught')) {
-	// 		onRemove(id);
-	// 	}
-	// }, [current, id, onRemove]);
 
 	if (state.matches('Done')) {
 		return null;

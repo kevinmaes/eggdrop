@@ -1,4 +1,4 @@
-import { setup, assign, fromPromise } from 'xstate';
+import { setup, assign, fromPromise, log } from 'xstate';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -19,7 +19,7 @@ export const eggMachine = setup({
 	actions: {
 		// Stub for a provided action
 		notifyOfEggPosition: () => {},
-		onDone: () => {},
+		eggDone: () => {},
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 20,
@@ -95,8 +95,8 @@ export const eggMachine = setup({
 			},
 		},
 		Caught: {
-			entry: 'onDone',
 			type: 'final',
+			entry: [log('Egg told to be caught'), 'eggDone'],
 		},
 		Landed: {
 			always: [
@@ -125,7 +125,6 @@ export const eggMachine = setup({
 					{
 						target: 'Done',
 						actions: 'updateChickPosition',
-						// reenter: true,
 						guard: ({ context }) =>
 							context.position.x === context.exitPosition.x,
 					},
@@ -139,7 +138,7 @@ export const eggMachine = setup({
 		},
 		Done: {
 			type: 'final',
-			entry: 'onDone',
+			entry: 'eggDone',
 		},
 	},
 });
