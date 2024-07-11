@@ -228,7 +228,6 @@ const gameLevelMachine = setup({
 					speedLimit: 5,
 					acceleration: 3,
 					deceleration: 3,
-
 					minXPos: 10,
 					maxXPos:
 						context.stageDimensions.width - context.chefDimensions.width - 10,
