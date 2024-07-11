@@ -1,6 +1,6 @@
-import { assign, fromPromise, log, setup } from 'xstate';
+import { assign, log, setup } from 'xstate';
 import { EggHitTestResult } from './Chef';
-import { Animation } from 'konva/lib/Animation';
+import { animationActor } from '../helpers/animationActor';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -80,18 +80,7 @@ export const chefMachine = setup({
 		}),
 	},
 	actors: {
-		// Stub for a provided actor
-		// moveChef: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
-		moveChef: fromPromise(() => {
-			return new Promise((resolve) => {
-				const anim = new Animation((frame) => {
-					if (frame?.timeDiff) {
-						resolve({ timeDiff: frame?.timeDiff });
-					}
-				});
-				anim.start();
-			});
-		}),
+		animationActor,
 	},
 }).createMachine({
 	id: 'chef',
@@ -117,7 +106,7 @@ export const chefMachine = setup({
 	states: {
 		Moving: {
 			invoke: {
-				src: 'moveChef',
+				src: 'animationActor',
 				onDone: {
 					target: 'Moving',
 					reenter: true,
