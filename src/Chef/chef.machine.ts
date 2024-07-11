@@ -1,4 +1,4 @@
-import { assign, log, setup } from 'xstate';
+import { assign, setup } from 'xstate';
 import { EggHitTestResult } from './Chef';
 import { animationActor } from '../helpers/animationActor';
 
@@ -117,7 +117,7 @@ export const chefMachine = setup({
 				Catch: {
 					target: 'Catching',
 					actions: [
-						log('Catch received by chef'),
+						// log('Catch received by chef'),
 						assign({
 							direction: 0,
 							speed: 0,

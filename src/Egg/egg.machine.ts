@@ -1,5 +1,6 @@
-import { setup, assign, OutputFrom, sendParent } from 'xstate';
+import { setup, assign, OutputFrom, sendParent, enqueueActions } from 'xstate';
 import { animationActor } from '../helpers/animationActor';
+import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -74,6 +75,13 @@ export const eggMachine = setup({
 	actors: {
 		animationActor,
 	},
+	guards: {
+		'egg is in chef range': ({ context }) => {
+			return (
+				context.position.y >= STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+			);
+		},
+	},
 }).createMachine({
 	id: 'egg',
 	initial: 'Falling',
@@ -100,7 +108,14 @@ export const eggMachine = setup({
 				onDone: [
 					{
 						target: 'Falling',
-						actions: ['updateEggPosition', 'notifyOfEggPosition'],
+						actions: enqueueActions(({ enqueue, check }) => {
+							enqueue({ type: 'updateEggPosition' });
+
+							// Only notify the parent if the egg is in the chef's range
+							if (check({ type: 'egg is in chef range' })) {
+								enqueue({ type: 'notifyOfEggPosition' });
+							}
+						}),
 						reenter: true,
 					},
 				],

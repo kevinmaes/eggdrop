@@ -5,6 +5,7 @@ import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
 import { GameLevelActorContext } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
+import { CHEF_DIMENSIONS } from './gameConfig';
 
 interface GameLevelProps {
 	stageDimensions: {
@@ -21,10 +22,9 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 		})
 	);
 
-	const chefDimensions = { width: 124, height: 150 };
 	const chefInitialPosition = {
-		x: stageDimensions.width / 2 - 0.5 * chefDimensions.width,
-		y: stageDimensions.height - chefDimensions.height - 10,
+		x: stageDimensions.width / 2 - 0.5 * CHEF_DIMENSIONS.width,
+		y: stageDimensions.height - CHEF_DIMENSIONS.height - 10,
 	};
 
 	const layerRef = useRef<Konva.Layer>(null);
@@ -40,7 +40,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
 				<Chef
-					dimensions={chefDimensions}
+					dimensions={CHEF_DIMENSIONS}
 					layerRef={layerRef}
 					initialPosition={chefInitialPosition}
 				/>

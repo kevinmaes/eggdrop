@@ -1,23 +1,11 @@
 import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine } from '../Egg/egg.machine';
-
-interface EggConfig {
-	id: string;
-	henId: string;
-	initialX: number;
-	initialY: number;
-}
-
-interface HenConfig {
-	id: string;
-	initialX: number;
-	initialY: number;
-}
+import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 
 const henConfigs = new Array(1).fill(null).map(() => ({
 	id: nanoid(),
@@ -31,11 +19,8 @@ const gameLevelMachine = setup({
 			stageDimensions: { width: number; height: number };
 			chefDimensions: { width: number; height: number };
 			generationIndex: number;
-			hens: HenConfig[];
-			eggs: EggConfig[];
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
-
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 		};
 		events:
@@ -99,11 +84,9 @@ const gameLevelMachine = setup({
 	},
 }).createMachine({
 	context: {
-		stageDimensions: { width: 1920, height: 1080 },
-		chefDimensions: { width: 124, height: 150 },
+		stageDimensions: STAGE_DIMENSIONS,
+		chefDimensions: CHEF_DIMENSIONS,
 		generationIndex: 0,
-		hens: [],
-		eggs: [],
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
@@ -117,7 +100,7 @@ const gameLevelMachine = setup({
 		},
 		'Lay an egg': {
 			actions: [
-				log('Lay an egg'),
+				// log('Lay an egg'),
 				assign({
 					eggActorRefs: ({ context, event, spawn }) => {
 						const eggHenButtYOffset = 35;
@@ -172,7 +155,7 @@ const gameLevelMachine = setup({
 		],
 		'Remove egg': {
 			actions: [
-				log('Remove egg'),
+				// log('Remove egg'),
 				assign({
 					eggActorRefs: ({ context, event }) =>
 						context.eggActorRefs.filter(
@@ -188,7 +171,7 @@ const gameLevelMachine = setup({
 	states: {
 		Playing: {
 			entry: [
-				log('now Playing'),
+				// log('now Playing'),
 				assign({
 					henActorRefs: ({ context, spawn }) => {
 						return henConfigs.map(({ id: henId, initialX, initialY }) =>

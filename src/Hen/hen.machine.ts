@@ -1,4 +1,4 @@
-import { assign, log, sendParent, setup } from 'xstate';
+import { assign, sendParent, setup } from 'xstate';
 import { animationActor } from '../helpers/animationActor';
 
 export function getStartXPosition(stageWidth: number, buffer: number = 50) {
@@ -139,7 +139,7 @@ export const henMachine = setup({
 		},
 		'Laying Egg': {
 			entry: [
-				log('Hen should lay egg'),
+				// log('Hen should lay egg'),
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,
