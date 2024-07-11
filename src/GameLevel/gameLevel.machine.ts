@@ -58,8 +58,6 @@ const gameLevelMachine = setup({
 	},
 	actors: {
 		chefMachine,
-		henMachine,
-		eggMachine,
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
@@ -124,12 +122,11 @@ const gameLevelMachine = setup({
 					eggActorRefs: ({ context, event, spawn }) => {
 						const eggHenButtYOffset = 35;
 						const eggId = nanoid();
+						// Spawn and add a new egg.
 						return [
 							...context.eggActorRefs,
-							spawn('eggMachine', {
-								id: eggId,
+							spawn(eggMachine, {
 								systemId: eggId,
-								onDone: { actions: 'Remove egg' },
 								input: {
 									id: eggId,
 									henId: event.henId,
@@ -161,12 +158,12 @@ const gameLevelMachine = setup({
 			{
 				guard: 'egg hits the floor',
 				actions: [
-					// log('egg hit the floor'),
 					sendTo(
 						({ system, event }) => system.get(event.eggId),
 						() => {
 							return {
-								type: Math.random() < 0.5 ? 'Hatch chick' : 'Splat egg',
+								type: 'Land on floor',
+								result: Math.random() < 0.5 ? 'Hatch' : 'Splat',
 							};
 						}
 					),
@@ -177,12 +174,14 @@ const gameLevelMachine = setup({
 			actions: [
 				log('Remove egg'),
 				assign({
-					eggs: ({ context, event }) =>
-						context.eggs.filter((egg) => egg.id !== event.eggId),
+					eggActorRefs: ({ context, event }) =>
+						context.eggActorRefs.filter(
+							(eggActorRef) =>
+								// TODO Should be able to assign the egg an id and compare that
+								// but spawn has a type error.
+								eggActorRef.getSnapshot().context.id !== event.eggId
+						),
 				}),
-				({ context, event }) => {
-					console.log('After remove eggs: ', context.eggs.length, event);
-				},
 			],
 		},
 	},
@@ -192,10 +191,8 @@ const gameLevelMachine = setup({
 				log('now Playing'),
 				assign({
 					henActorRefs: ({ context, spawn }) => {
-						return henConfigs.map((config) => {
-							const { id: henId, initialX, initialY } = config;
-							const spawnedHen = spawn('henMachine', {
-								id: henId,
+						return henConfigs.map(({ id: henId, initialX, initialY }) =>
+							spawn(henMachine, {
 								systemId: henId,
 								input: {
 									id: henId,
@@ -208,9 +205,8 @@ const gameLevelMachine = setup({
 									stationaryEggLayingRate: 0.9,
 									movingEggLayingRate: 0.1,
 								},
-							});
-							return spawnedHen;
-						});
+							})
+						);
 					},
 				}),
 			],

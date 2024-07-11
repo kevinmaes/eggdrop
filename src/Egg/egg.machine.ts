@@ -12,7 +12,9 @@ export const eggMachine = setup({
 			exitingSpeed: number;
 			floorY: number;
 		};
-		events: { type: 'Hatch chick' } | { type: 'Splat egg' } | { type: 'Catch' };
+		events:
+			| { type: 'Land on floor'; result: 'Hatch' | 'Splat' }
+			| { type: 'Catch' };
 		input: {
 			id: string;
 			henId: string;
@@ -90,8 +92,7 @@ export const eggMachine = setup({
 	states: {
 		Falling: {
 			on: {
-				'Hatch chick': 'Hatching',
-				'Splat egg': 'Splatting',
+				'Land on floor': 'Landed',
 				Catch: 'Done',
 			},
 			invoke: {
@@ -108,11 +109,17 @@ export const eggMachine = setup({
 		Landed: {
 			always: [
 				{
-					guard: () => Math.random() > 0.5,
+					guard: ({ event }) => {
+						if (event.type !== 'Land on floor') return false;
+						return event.result === 'Splat';
+					},
 					target: 'Splatting',
 					actions: 'splatOnFloor',
 				},
-				{ target: 'Hatching', actions: 'hatchOnFloor' },
+				{
+					target: 'Hatching',
+					actions: 'hatchOnFloor',
+				},
 			],
 		},
 		Hatching: {
@@ -151,6 +158,10 @@ export const eggMachine = setup({
 		},
 		Done: {
 			type: 'final',
+			entry: sendParent(({ context }) => ({
+				type: 'Remove egg',
+				eggId: context.id,
+			})),
 		},
 	},
 });
