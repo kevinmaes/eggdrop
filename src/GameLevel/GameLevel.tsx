@@ -50,44 +50,4 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 			</Layer>
 		</Stage>
 	);
-
-	// return (
-	// 	<Stage
-	// 		width={stageDimensions.width}
-	// 		height={stageDimensions.height}
-	// 		style={{ background: 'blue' }}
-	// 	>
-	// 		<Layer ref={layerRef}>
-	// 			{hens.map((hen) => (
-	// 				<Hen
-	// 					key={hen.id}
-	// 					id={hen.id}
-	// 					layerRef={layerRef}
-	// 					stageDimensions={stageDimensions}
-	// 					initialX={hen.initialX}
-	// 					initialY={hen.initialY}
-	// 					maxEggs={-1}
-	// 					stationaryEggLayingRate={0.9}
-	// 					movingEggLayingRate={0.01}
-	// 				/>
-	// 			))}
-	// 			<Chef
-	// 				stageDimensions={stageDimensions}
-	// 				dimensions={chefDimensions}
-	// 				layerRef={layerRef}
-	// 				initialPosition={chefInitialPosition}
-	// 			/>
-	// 			{eggConfigs.map((egg) => (
-	// 				<Egg
-	// 					layerRef={layerRef}
-	// 					key={egg.id}
-	// 					id={egg.id}
-	// 					initialX={egg.initialX}
-	// 					initialY={egg.initialY}
-	// 					// floorY={stageDimensions.height}
-	// 				/>
-	// 			))}
-	// 		</Layer>
-	// 	</Stage>
-	// );
 }
