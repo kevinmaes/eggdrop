@@ -40,7 +40,6 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
 				<Chef
-					stageDimensions={stageDimensions}
 					dimensions={chefDimensions}
 					layerRef={layerRef}
 					initialPosition={chefInitialPosition}
