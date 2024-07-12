@@ -7,7 +7,7 @@ import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 
-const henConfigs = new Array(20).fill(null).map(() => ({
+const henConfigs = new Array(1).fill(null).map(() => ({
 	id: nanoid(),
 	initialX: getStartXPosition(1920),
 	initialY: 10,
@@ -132,20 +132,6 @@ const gameLevelMachine = setup({
 					sendTo(({ system, event }) => system.get(event.eggId), {
 						type: 'Catch',
 					}),
-				],
-			},
-			{
-				guard: 'egg hits the floor',
-				actions: [
-					sendTo(
-						({ system, event }) => system.get(event.eggId),
-						() => {
-							return {
-								type: 'Land on floor',
-								result: Math.random() < 0.5 ? 'Hatch' : 'Splat',
-							};
-						}
-					),
 				],
 			},
 		],

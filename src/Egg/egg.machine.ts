@@ -33,19 +33,19 @@ export const eggMachine = setup({
 		setTargetPositionToExit: assign({
 			targetPosition: ({ context }) => ({
 				x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-				y: context.floorY - 30,
+				y: context.floorY - 60,
 			}),
 		}),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 20,
-				y: context.floorY - 10,
+				y: context.floorY - 50,
 			}),
 		}),
 		hatchOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x,
-				y: context.floorY - 30,
+				y: context.floorY - 60,
 			}),
 		}),
 	},

@@ -1,10 +1,10 @@
 import { useSelector } from '@xstate/react';
-import {
-	Circle,
-	Rect,
-	// Image as KonvaImage
-} from 'react-konva';
-// import useImage from 'use-image';
+import { Image as KonvaImage } from 'react-konva';
+
+import eggImageFile from '../assets/egg.png';
+import brokenEggFile from '../assets/broken-egg2.jpeg';
+import runningChickImageFile from '../assets/running-chick.png';
+import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
@@ -20,7 +20,11 @@ export function Egg({
 	const gameLevelActorRef = GameLevelActorContext.useActorRef();
 	const eggState = useSelector(eggActorRef, (state) => state);
 	const { id, position, targetPosition } = eggState.context;
-	const eggRef = useRef<Konva.Circle>(null);
+	const eggRef = useRef<Konva.Image>(null);
+
+	const [eggImage] = useImage(eggImageFile);
+	const [brokenEggImage] = useImage(brokenEggFile);
+	const [runningChickImage] = useImage(runningChickImageFile);
 
 	useEffect(() => {
 		if (eggRef.current) {
@@ -28,6 +32,7 @@ export function Egg({
 				eggRef.current.to({
 					duration: 3,
 					y: targetPosition.y,
+					rotation: -720,
 					onUpdate: function () {
 						if (!eggRef.current) return;
 						const updatedPosition = eggRef.current?.getPosition();
@@ -72,36 +77,43 @@ export function Egg({
 	}
 
 	return eggState.matches('Hatching') ? (
-		<Circle
+		<KonvaImage
+			ref={eggRef}
+			image={runningChickImage}
+			width={60}
+			height={60}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
-			radius={20}
-			fill="yellow"
 		/>
 	) : eggState.matches('Exiting') ? (
-		<Circle
+		<KonvaImage
 			ref={eggRef}
+			image={runningChickImage}
+			width={60}
+			height={60}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
-			radius={20}
-			fill="yellow"
 		/>
 	) : eggState.matches('Splatting') ? (
 		// Render a rectangle
-		<Rect
+		<KonvaImage
+			// ref={eggRef}
+			image={brokenEggImage}
+			width={60}
+			height={60}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
-			width={40}
-			height={3}
-			fill="white"
 		/>
 	) : (
-		<Circle
+		<KonvaImage
 			ref={eggRef}
+			image={eggImage}
+			width={20}
+			height={25}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
-			radius={10}
-			fill="white"
+			offsetX={10}
+			offsetY={12.5}
 		/>
 	);
 }
