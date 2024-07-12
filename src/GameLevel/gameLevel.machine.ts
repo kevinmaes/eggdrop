@@ -95,7 +95,7 @@ const gameLevelMachine = setup({
 				return updatedHenStatsById;
 			},
 		}),
-		updateStatsForEggDone: assign({
+		updateHenStatsForEggDone: assign({
 			henStatsById: (
 				{ context },
 				params: {
@@ -231,7 +231,7 @@ const gameLevelMachine = setup({
 		'Egg done': {
 			actions: [
 				{
-					type: 'updateStatsForEggDone',
+					type: 'updateHenStatsForEggDone',
 					params: ({ event }) => ({
 						henId: event.henId,
 						eggId: event.eggId,
