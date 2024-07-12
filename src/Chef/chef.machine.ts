@@ -1,11 +1,12 @@
 import { assign, setup } from 'xstate';
 import { EggHitTestResult } from './Chef';
 import { animationActor } from '../helpers/animationActor';
+import { Position } from '../GameLevel/types';
 
 export const chefMachine = setup({
 	types: {} as {
 		context: {
-			position: { x: number; y: number };
+			position: Position;
 			speed: number;
 			speedLimit: number;
 			direction: -1 | 0 | 1;
@@ -20,7 +21,7 @@ export const chefMachine = setup({
 			| { type: 'Broke'; hitTestResult: EggHitTestResult }
 			| { type: 'Set direction'; direction: -1 | 0 | 1 };
 		input: {
-			position: { x: number; y: number };
+			position: Position;
 			speed: number;
 			speedLimit: number;
 			acceleration: number;

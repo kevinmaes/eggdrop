@@ -1,4 +1,5 @@
 import { setup, assign, sendParent } from 'xstate';
+import { Position } from '../GameLevel/types';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
@@ -6,8 +7,8 @@ export const eggMachine = setup({
 		context: {
 			id: string;
 			henId: string;
-			position: { x: number; y: number };
-			targetPosition: { x: number; y: number };
+			position: Position;
+			targetPosition: Position;
 			fallingSpeed: number;
 			exitingSpeed: number;
 			floorY: number;
@@ -20,7 +21,7 @@ export const eggMachine = setup({
 		input: {
 			id: string;
 			henId: string;
-			position: { x: number; y: number };
+			position: Position;
 			fallingSpeed: number;
 			floorY: number;
 		};

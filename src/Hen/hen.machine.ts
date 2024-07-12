@@ -1,6 +1,7 @@
 import { assign, sendParent, setup } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
+import { Position } from '../GameLevel/types';
 
 export function getStartXPosition(stageWidth: number, buffer: number = 50) {
 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
@@ -14,7 +15,7 @@ export const henMachine = setup({
 	types: {} as {
 		input: {
 			id: string;
-			position: { x: number; y: number };
+			position: Position;
 			stageDimensions: { width: number; height: number };
 			maxEggs: number;
 			stationaryEggLayingRate: number;
@@ -26,8 +27,8 @@ export const henMachine = setup({
 			henRef: Ref<Konva.Image>;
 			id: string;
 			stageDimensions: { width: number; height: number };
-			position: { x: number; y: number };
-			targetPosition: { x: number; y: number };
+			position: Position;
+			targetPosition: Position;
 			speed: number;
 			baseAnimationDuration: number;
 			minStopMS: number;

@@ -5,6 +5,7 @@ import { Rect } from 'react-konva';
 import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
+import { Position } from '../GameLevel/types';
 // import useImage from 'use-image';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
@@ -14,7 +15,7 @@ export function Chef({
 }: {
 	dimensions: { width: number; height: number };
 	layerRef: Ref<Konva.Layer>;
-	initialPosition: { x: number; y: number };
+	initialPosition: Position;
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
 	const gameLevelActorRef = GameLevelActorContext.useActorRef();

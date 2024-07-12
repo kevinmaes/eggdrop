@@ -6,6 +6,7 @@ import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
+import { Position } from './types';
 
 interface HenStats {
 	id: string;
@@ -56,12 +57,12 @@ const gameLevelMachine = setup({
 			| {
 					type: 'Lay an egg';
 					henId: string;
-					henPosition: { x: number; y: number };
+					henPosition: Position;
 			  }
 			| {
 					type: 'Egg position updated';
 					eggId: string;
-					position: { x: number; y: number };
+					position: Position;
 			  }
 			| {
 					type: 'Egg done';
@@ -95,7 +96,7 @@ const gameLevelMachine = setup({
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
 				{ context, spawn },
-				params: { henId: string; henPosition: { x: number; y: number } }
+				params: { henId: string; henPosition: Position }
 			) => {
 				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
