@@ -1,5 +1,4 @@
 import { setup, assign, sendParent } from 'xstate';
-import { STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -28,13 +27,13 @@ export const eggMachine = setup({
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
-				y: STAGE_DIMENSIONS.height - 20,
+				y: context.floorY - 30,
 			}),
 		}),
 		setTargetPositionToExit: assign({
-			targetPosition: () => ({
+			targetPosition: ({ context }) => ({
 				x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-				y: STAGE_DIMENSIONS.height - 20,
+				y: context.floorY - 30,
 			}),
 		}),
 		splatOnFloor: assign({
