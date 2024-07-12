@@ -1,4 +1,4 @@
-import { setup, assign, sendParent, log } from 'xstate';
+import { setup, assign, sendParent } from 'xstate';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({

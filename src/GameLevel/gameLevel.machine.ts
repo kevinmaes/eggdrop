@@ -1,7 +1,7 @@
 import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -69,6 +69,63 @@ const gameLevelMachine = setup({
 					eggId: string;
 					resultStatus: EggResultStatus;
 			  };
+	},
+	actions: {
+		updateHenStatsForEggLayed: assign({
+			henStatsById: ({ context }, params: { henId: string }) => {
+				const updatedHenStatsById = {
+					...context.henStatsById,
+				};
+				const existingHenStats = context.henStatsById[params.henId];
+
+				if (existingHenStats) {
+					updatedHenStatsById[params.henId] = {
+						...existingHenStats,
+						eggsLayed: existingHenStats.eggsLayed + 1,
+					};
+				} else {
+					updatedHenStatsById[params.henId] = {
+						id: params.henId,
+						eggsLayed: 1,
+						eggsCaught: 0,
+						eggsHatched: 0,
+						eggsBroken: 0,
+					};
+				}
+				return updatedHenStatsById;
+			},
+		}),
+		updateStatsForEggDone: assign({
+			henStatsById: (
+				{ context },
+				params: {
+					henId: string;
+					eggId: string;
+					resultStatus: EggResultStatus;
+				}
+			) => {
+				const updatedHenStats = {
+					...context.henStatsById[params.henId],
+				};
+
+				switch (params.resultStatus) {
+					case 'Caught':
+						updatedHenStats.eggsCaught += 1;
+						break;
+					case 'Hatched':
+						updatedHenStats.eggsHatched += 1;
+						break;
+					case 'Broken':
+						updatedHenStats.eggsBroken += 1;
+						break;
+				}
+
+				return {
+					...context.henStatsById,
+					[params.henId]: updatedHenStats,
+				};
+			},
+		}),
 	},
 	actors: {
 		chefMachine,
@@ -152,30 +209,10 @@ const gameLevelMachine = setup({
 						];
 					},
 				}),
-				assign({
-					henStatsById: ({ context, event }) => {
-						const updatedHenStatsById = {
-							...context.henStatsById,
-						};
-						const existingHenStats = context.henStatsById[event.henId];
-
-						if (existingHenStats) {
-							updatedHenStatsById[event.henId] = {
-								...existingHenStats,
-								eggsLayed: existingHenStats.eggsLayed + 1,
-							};
-						} else {
-							updatedHenStatsById[event.henId] = {
-								id: event.henId,
-								eggsLayed: 1,
-								eggsCaught: 0,
-								eggsHatched: 0,
-								eggsBroken: 0,
-							};
-						}
-						return updatedHenStatsById;
-					},
-				}),
+				{
+					type: 'updateHenStatsForEggLayed',
+					params: ({ event }) => ({ henId: event.henId }),
+				},
 			],
 		},
 		'Egg position updated': [
@@ -193,30 +230,14 @@ const gameLevelMachine = setup({
 		],
 		'Egg done': {
 			actions: [
-				assign({
-					henStatsById: ({ context, event }) => {
-						const updatedHenStats = {
-							...context.henStatsById[event.henId],
-						};
-
-						switch (event.resultStatus) {
-							case 'Caught':
-								updatedHenStats.eggsCaught += 1;
-								break;
-							case 'Hatched':
-								updatedHenStats.eggsHatched += 1;
-								break;
-							case 'Broken':
-								updatedHenStats.eggsBroken += 1;
-								break;
-						}
-
-						return {
-							...context.henStatsById,
-							[event.henId]: updatedHenStats,
-						};
-					},
-				}),
+				{
+					type: 'updateStatsForEggDone',
+					params: ({ event }) => ({
+						henId: event.henId,
+						eggId: event.eggId,
+						resultStatus: event.resultStatus,
+					}),
+				},
 				assign({
 					eggActorRefs: ({ context, event }) =>
 						context.eggActorRefs.filter(
