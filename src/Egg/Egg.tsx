@@ -9,14 +9,17 @@ import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
+import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 
 export function Egg({
 	eggActorRef,
 }: {
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
+	const gameLevelActorRef = GameLevelActorContext.useActorRef();
 	const eggState = useSelector(eggActorRef, (state) => state);
-	const { position, targetPosition } = eggState.context;
+	const { id, position, targetPosition } = eggState.context;
 	const eggRef = useRef<Konva.Circle>(null);
 
 	useEffect(() => {
@@ -25,11 +28,22 @@ export function Egg({
 				eggRef.current.to({
 					duration: 3,
 					y: targetPosition.y,
-					onUpdate: () => {
-						// console.log('update');
+					onUpdate: function () {
+						if (!eggRef.current) return;
+						const updatedPosition = eggRef.current?.getPosition();
+
+						if (
+							updatedPosition.y >=
+							STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+						) {
+							gameLevelActorRef.send({
+								type: 'Egg position updated',
+								eggId: id,
+								position: updatedPosition,
+							});
+						}
 					},
 					onFinish: () => {
-						console.log('onFinish state.value', eggState.value);
 						eggActorRef.send({
 							type: 'Land on floor',
 							result: Math.random() < 0.5 ? 'Hatch' : 'Splat',

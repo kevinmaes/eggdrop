@@ -46,7 +46,6 @@ const gameLevelMachine = setup({
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
-			// console.log('testPotRimHit');
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}
