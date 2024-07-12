@@ -7,7 +7,7 @@ import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 
-const henConfigs = new Array(1).fill(null).map(() => ({
+const henConfigs = new Array(20).fill(null).map(() => ({
 	id: nanoid(),
 	initialX: getStartXPosition(1920),
 	initialY: 10,

@@ -58,7 +58,6 @@ export function Egg({
 					x: targetPosition.x,
 					easing: Konva.Easings.EaseIn,
 					onFinish: () => {
-						console.log('onFinish state.value', eggState.value);
 						eggActorRef.send({
 							type: 'Finished exiting',
 						});
