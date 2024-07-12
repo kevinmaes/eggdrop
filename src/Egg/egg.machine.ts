@@ -1,10 +1,13 @@
-import { setup, assign, OutputFrom, sendParent, enqueueActions } from 'xstate';
+import { setup, assign, OutputFrom, sendParent } from 'xstate';
 import { animationActor } from '../helpers/animationActor';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { Ref } from 'react';
+import Konva from 'konva';
 
 export const eggMachine = setup({
 	types: {} as {
 		context: {
+			eggRef: Ref<Konva.Circle>;
 			id: string;
 			henId: string;
 			position: { x: number; y: number };
@@ -25,6 +28,9 @@ export const eggMachine = setup({
 		};
 	},
 	actions: {
+		setEggRef: assign({
+			eggRef: (_, params: { eggRef: Ref<Konva.Circle> }) => params.eggRef,
+		}),
 		// Stub for a provided action
 		notifyOfEggPosition: sendParent(({ context }) => ({
 			type: 'Egg position updated',
@@ -86,6 +92,7 @@ export const eggMachine = setup({
 	id: 'egg',
 	initial: 'Falling',
 	context: ({ input }) => ({
+		eggRef: null,
 		id: input.id,
 		henId: input.henId,
 		position: input.position,
@@ -102,23 +109,6 @@ export const eggMachine = setup({
 			on: {
 				'Land on floor': 'Landed',
 				Catch: 'Done',
-			},
-			invoke: {
-				src: 'animationActor',
-				onDone: [
-					{
-						target: 'Falling',
-						actions: enqueueActions(({ enqueue, check }) => {
-							enqueue({ type: 'updateEggPosition' });
-
-							// Only notify the parent if the egg is in the chef's range
-							if (check({ type: 'egg is in chef range' })) {
-								enqueue({ type: 'notifyOfEggPosition' });
-							}
-						}),
-						reenter: true,
-					},
-				],
 			},
 		},
 		Landed: {
