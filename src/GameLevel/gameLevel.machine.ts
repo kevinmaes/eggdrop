@@ -71,6 +71,32 @@ const gameLevelMachine = setup({
 			  };
 	},
 	actions: {
+		spawnNewEggForHen: assign({
+			eggActorRefs: (
+				{ context, spawn },
+				params: { henId: string; henPosition: { x: number; y: number } }
+			) => {
+				const eggHenButtYOffset = 35;
+				const eggId = nanoid();
+				// Spawn and add a new egg.
+				return [
+					...context.eggActorRefs,
+					spawn(eggMachine, {
+						systemId: eggId,
+						input: {
+							id: eggId,
+							henId: params.henId,
+							position: {
+								x: params.henPosition.x,
+								y: params.henPosition.y + eggHenButtYOffset,
+							},
+							fallingSpeed: 2,
+							floorY: context.stageDimensions.height,
+						},
+					}),
+				];
+			},
+		}),
 		updateHenStatsForEggLayed: assign({
 			henStatsById: ({ context }, params: { henId: string }) => {
 				const updatedHenStatsById = {
@@ -186,29 +212,13 @@ const gameLevelMachine = setup({
 		},
 		'Lay an egg': {
 			actions: [
-				assign({
-					eggActorRefs: ({ context, event, spawn }) => {
-						const eggHenButtYOffset = 35;
-						const eggId = nanoid();
-						// Spawn and add a new egg.
-						return [
-							...context.eggActorRefs,
-							spawn(eggMachine, {
-								systemId: eggId,
-								input: {
-									id: eggId,
-									henId: event.henId,
-									position: {
-										x: event.henPosition.x,
-										y: event.henPosition.y + eggHenButtYOffset,
-									},
-									fallingSpeed: 2,
-									floorY: context.stageDimensions.height,
-								},
-							}),
-						];
-					},
-				}),
+				{
+					type: 'spawnNewEggForHen',
+					params: ({ event }) => ({
+						henId: event.henId,
+						henPosition: event.henPosition,
+					}),
+				},
 				{
 					type: 'updateHenStatsForEggLayed',
 					params: ({ event }) => ({ henId: event.henId }),
