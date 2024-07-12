@@ -1,7 +1,7 @@
 import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine } from '../Egg/egg.machine';
@@ -100,7 +100,7 @@ const gameLevelMachine = setup({
 		},
 		'Lay an egg': {
 			actions: [
-				// log('Lay an egg'),
+				log('Lay an egg'),
 				assign({
 					eggActorRefs: ({ context, event, spawn }) => {
 						const eggHenButtYOffset = 35;
@@ -183,6 +183,8 @@ const gameLevelMachine = setup({
 										x: initialX,
 										y: initialY,
 									},
+									speed: Math.random(),
+									baseAnimationDuration: 3,
 									stageDimensions: context.stageDimensions,
 									maxEggs: -1,
 									stationaryEggLayingRate: 0.9,

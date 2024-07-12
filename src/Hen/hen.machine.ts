@@ -1,5 +1,6 @@
-import { assign, sendParent, setup } from 'xstate';
-import { animationActor } from '../helpers/animationActor';
+import { assign, log, sendParent, setup } from 'xstate';
+import { Ref } from 'react';
+import Konva from 'konva';
 
 export function getStartXPosition(stageWidth: number, buffer: number = 50) {
 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
@@ -18,13 +19,17 @@ export const henMachine = setup({
 			maxEggs: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
+			speed: number;
+			baseAnimationDuration: number;
 		};
 		context: {
+			henRef: Ref<Konva.Image>;
 			id: string;
 			stageDimensions: { width: number; height: number };
 			position: { x: number; y: number };
 			targetPosition: { x: number; y: number };
 			speed: number;
+			baseAnimationDuration: number;
 			minStopMS: number;
 			maxStopMS: number;
 			maxEggs: number;
@@ -32,9 +37,9 @@ export const henMachine = setup({
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
 		};
-	},
-	actors: {
-		animationActor,
+		events:
+			| { type: 'Set henRef'; henRef: Ref<Konva.Image> }
+			| { type: 'Stop moving' };
 	},
 	guards: {
 		'can lay egg while stopped': ({ context }) => {
@@ -55,27 +60,8 @@ export const henMachine = setup({
 		pickNewTargetXPosition: assign(({ context }) => ({
 			targetPosition: { x: pickXPosition(context.stageDimensions.width), y: 0 },
 		})),
-		updatePosition: assign(({ context, event }) => {
-			// Compare the context.position.x with context.targetPosition.x
-			// and calulate the direction
-			let direction = 1;
-			if (context.position.x > context.targetPosition.x) {
-				direction = -1;
-			}
-
-			let newX =
-				context.position.x + direction * event.output.timeDiff * context.speed;
-
-			if (direction === 1 && newX > context.targetPosition.x) {
-				newX = context.targetPosition.x;
-			}
-			if (direction === -1 && newX < context.targetPosition.x) {
-				newX = context.targetPosition.x;
-			}
-
-			return {
-				position: { x: newX, y: context.position.y },
-			};
+		updatePosition: assign({
+			position: ({ context }) => context.targetPosition,
 		}),
 	},
 	delays: {
@@ -86,13 +72,15 @@ export const henMachine = setup({
 	},
 }).createMachine({
 	id: 'hen',
-	initial: 'Setting Target Position',
+	initial: 'Moving',
 	context: ({ input }) => ({
+		henRef: null,
 		id: input.id,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
 		targetPosition: { x: 0, y: 0 },
-		speed: 0.4,
+		speed: input.speed,
+		baseAnimationDuration: input.baseAnimationDuration,
 		minStopMS: 500,
 		maxStopMS: 500,
 		maxEggs: input.maxEggs,
@@ -100,36 +88,20 @@ export const henMachine = setup({
 		stationaryEggLayingRate: input.stationaryEggLayingRate,
 		movingEggLayingRate: input.movingEggLayingRate,
 	}),
+
 	states: {
-		'Setting Target Position': {
-			entry: 'pickNewTargetXPosition',
-			always: { target: 'Moving' },
-		},
 		Moving: {
-			invoke: {
-				src: 'animationActor',
-				onDone: [
-					{
-						guard: ({ context }) =>
-							context.position.x === context.targetPosition.x,
-						target: 'Stopped',
-					},
-					// {
-					// 	guard: 'can lay egg while moving',
-					// 	target: 'Laying Egg While Moving',
-					// 	reenter: true,
-					// 	actions: ['updatePosition'],
-					// },
-					{
-						target: 'Moving',
-						reenter: true,
-						actions: 'updatePosition',
-					},
-				],
+			entry: [
+				// log('entry Moving'),
+				'pickNewTargetXPosition',
+			],
+			// exit: log('exit Moving'),
+			on: {
+				'Stop moving': { target: 'Stopped', actions: log('done moving') },
 			},
 		},
 		Stopped: {
-			entry: ['pickNewTargetXPosition'],
+			entry: [log('Stopped'), 'updatePosition'],
 			after: {
 				pickStopDuration: [
 					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
@@ -139,7 +111,7 @@ export const henMachine = setup({
 		},
 		'Laying Egg': {
 			entry: [
-				// log('Hen should lay egg'),
+				log('Hen should lay egg'),
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,

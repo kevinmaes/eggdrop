@@ -4,30 +4,47 @@ import henImageFile from '../assets/hen1.png';
 import { useSelector } from '@xstate/react';
 import { ActorRefFrom } from 'xstate';
 import { henMachine } from './hen.machine';
+import { useEffect, useRef } from 'react';
+import Konva from 'konva';
 
 export function Hen({
 	henActorRef,
 }: {
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
-	// const henActorRef = GameLevelActorContext.useSelector((state) =>
-	// 	state.context.henActorRefs.find((henActorRef) => henActorRef.id === id)
-	// );
-	const position = useSelector(henActorRef, (state) => state?.context.position);
+	const henRef = useRef<Konva.Image>(null);
+
+	const { speed, baseAnimationDuration, position, targetPosition } =
+		useSelector(henActorRef, (state) => ({
+			position: state.context.position,
+			targetPosition: state.context.targetPosition,
+			speed: state.context.speed,
+			baseAnimationDuration: state.context.baseAnimationDuration,
+		}));
 
 	const [henImage] = useImage(henImageFile);
+
+	useEffect(() => {
+		if (henRef.current) {
+			const totalDistance = 1920;
+			const xDistance = Math.abs(targetPosition.x - position.x);
+			const relativeDistance = xDistance / totalDistance;
+			const duration = baseAnimationDuration * (1 - relativeDistance * speed);
+
+			henRef.current.to({
+				duration,
+				x: targetPosition.x,
+				easing: Konva.Easings.EaseInOut,
+				onFinish: () => {
+					henActorRef.send({ type: 'Stop moving' });
+				},
+			});
+		}
+	}, [henRef, targetPosition]);
 
 	if (!position) {
 		return null;
 	}
 
-	return (
-		<KonvaImage
-			image={henImage}
-			x={position.x}
-			y={position.y}
-			width={50}
-			height={50}
-		/>
-	);
+	return <KonvaImage ref={henRef} image={henImage} width={50} height={50} />;
 }
