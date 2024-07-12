@@ -1,4 +1,4 @@
-import { assign, log, sendParent, setup } from 'xstate';
+import { assign, sendParent, setup } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
 
@@ -91,17 +91,13 @@ export const henMachine = setup({
 
 	states: {
 		Moving: {
-			entry: [
-				// log('entry Moving'),
-				'pickNewTargetXPosition',
-			],
-			// exit: log('exit Moving'),
+			entry: 'pickNewTargetXPosition',
 			on: {
-				'Stop moving': { target: 'Stopped', actions: log('done moving') },
+				'Stop moving': { target: 'Stopped' },
 			},
 		},
 		Stopped: {
-			entry: [log('Stopped'), 'updatePosition'],
+			entry: 'updatePosition',
 			after: {
 				pickStopDuration: [
 					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
@@ -111,7 +107,6 @@ export const henMachine = setup({
 		},
 		'Laying Egg': {
 			entry: [
-				log('Hen should lay egg'),
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,

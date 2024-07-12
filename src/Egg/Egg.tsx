@@ -9,7 +9,6 @@ import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
-import { STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export function Egg({
 	eggActorRef,
@@ -17,22 +16,43 @@ export function Egg({
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
 	const eggState = useSelector(eggActorRef, (state) => state);
-	const { position } = eggState.context;
+	const { position, targetPosition } = eggState.context;
 	const eggRef = useRef<Konva.Circle>(null);
 
 	useEffect(() => {
 		if (eggRef.current) {
-			eggRef.current.to({
-				duration: 3,
-				x: position.x,
-				y: STAGE_DIMENSIONS.height - 20,
-				onUpdate: () => {},
-				onFinish: () => {
-					eggActorRef.send({ type: 'Land on floor', result: 'Splat' });
-				},
-			});
+			if (eggState.matches('Falling')) {
+				eggRef.current.to({
+					duration: 3,
+					y: targetPosition.y,
+					onUpdate: () => {
+						// console.log('update');
+					},
+					onFinish: () => {
+						console.log('onFinish state.value', eggState.value);
+						eggActorRef.send({
+							type: 'Land on floor',
+							result: Math.random() < 0.5 ? 'Hatch' : 'Splat',
+						});
+					},
+				});
+			}
+
+			if (eggState.matches('Exiting')) {
+				eggRef.current.to({
+					duration: 1,
+					x: targetPosition.x,
+					easing: Konva.Easings.EaseIn,
+					onFinish: () => {
+						console.log('onFinish state.value', eggState.value);
+						eggActorRef.send({
+							type: 'Finished exiting',
+						});
+					},
+				});
+			}
 		}
-	}, [eggRef, position]);
+	}, [eggRef, position, targetPosition]);
 
 	if (eggState.matches('Done')) {
 		return null;
@@ -47,6 +67,7 @@ export function Egg({
 		/>
 	) : eggState.matches('Exiting') ? (
 		<Circle
+			ref={eggRef}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
 			radius={20}

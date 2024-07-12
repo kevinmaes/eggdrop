@@ -1,7 +1,7 @@
 import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine } from '../Egg/egg.machine';
@@ -99,32 +99,29 @@ const gameLevelMachine = setup({
 			}),
 		},
 		'Lay an egg': {
-			actions: [
-				log('Lay an egg'),
-				assign({
-					eggActorRefs: ({ context, event, spawn }) => {
-						const eggHenButtYOffset = 35;
-						const eggId = nanoid();
-						// Spawn and add a new egg.
-						return [
-							...context.eggActorRefs,
-							spawn(eggMachine, {
-								systemId: eggId,
-								input: {
-									id: eggId,
-									henId: event.henId,
-									position: {
-										x: event.henPosition.x,
-										y: event.henPosition.y + eggHenButtYOffset,
-									},
-									fallingSpeed: 2,
-									floorY: context.stageDimensions.height,
+			actions: assign({
+				eggActorRefs: ({ context, event, spawn }) => {
+					const eggHenButtYOffset = 35;
+					const eggId = nanoid();
+					// Spawn and add a new egg.
+					return [
+						...context.eggActorRefs,
+						spawn(eggMachine, {
+							systemId: eggId,
+							input: {
+								id: eggId,
+								henId: event.henId,
+								position: {
+									x: event.henPosition.x,
+									y: event.henPosition.y + eggHenButtYOffset,
 								},
-							}),
-						];
-					},
-				}),
-			],
+								fallingSpeed: 2,
+								floorY: context.stageDimensions.height,
+							},
+						}),
+					];
+				},
+			}),
 		},
 		'Egg position updated': [
 			{
@@ -155,7 +152,6 @@ const gameLevelMachine = setup({
 		],
 		'Remove egg': {
 			actions: [
-				// log('Remove egg'),
 				assign({
 					eggActorRefs: ({ context, event }) =>
 						context.eggActorRefs.filter(
@@ -171,7 +167,6 @@ const gameLevelMachine = setup({
 	states: {
 		Playing: {
 			entry: [
-				// log('now Playing'),
 				assign({
 					henActorRefs: ({ context, spawn }) => {
 						return henConfigs.map(({ id: henId, initialX, initialY }) =>
