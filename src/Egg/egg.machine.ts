@@ -1,5 +1,6 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, log } from 'xstate';
 
+export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		context: {
@@ -10,6 +11,7 @@ export const eggMachine = setup({
 			fallingSpeed: number;
 			exitingSpeed: number;
 			floorY: number;
+			resultStatus: EggResultStatus;
 		};
 		events:
 			| { type: 'Land on floor'; result: 'Hatch' | 'Splat' }
@@ -64,13 +66,19 @@ export const eggMachine = setup({
 			y: input.floorY - 50,
 		},
 		floorY: input.floorY,
+		resultStatus: null,
 	}),
 	states: {
 		Falling: {
 			entry: 'setNewTargetPosition',
 			on: {
 				'Land on floor': 'Landed',
-				Catch: 'Done',
+				Catch: {
+					target: 'Done',
+					actions: assign({
+						resultStatus: 'Caught',
+					}),
+				},
 			},
 		},
 		Landed: {
@@ -90,11 +98,17 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
+			entry: assign({
+				resultStatus: 'Hatched',
+			}),
 			after: {
 				1000: 'Exiting',
 			},
 		},
 		Splatting: {
+			entry: assign({
+				resultStatus: 'Broken',
+			}),
 			after: {
 				1000: 'Done',
 			},
@@ -102,15 +116,17 @@ export const eggMachine = setup({
 		Exiting: {
 			entry: ['setTargetPositionToExit'],
 			on: {
-				'Finished exiting': 'Done',
+				'Finished exiting': { target: 'Done' },
 			},
 		},
 		Done: {
 			type: 'final',
 			entry: [
 				sendParent(({ context }) => ({
-					type: 'Remove egg',
+					type: 'Egg done',
+					henId: context.henId,
 					eggId: context.id,
+					resultStatus: context.resultStatus,
 				})),
 			],
 		},

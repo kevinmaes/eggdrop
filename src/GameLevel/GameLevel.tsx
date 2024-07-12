@@ -19,6 +19,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 		(state) => ({
 			henActorRefs: state.context.henActorRefs,
 			eggActorRefs: state.context.eggActorRefs,
+			henStatsById: state.context.henStatsById,
 		})
 	);
 

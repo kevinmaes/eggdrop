@@ -1,28 +1,6 @@
 import { createActorContext } from '@xstate/react';
 import { fromPromise, setup } from 'xstate';
-
-interface HenStats {
-	id: string;
-	eggsLayed: number;
-	eggsHatched: number;
-	eggsSplat: number;
-	eggsBroken: number;
-}
-
-interface GenerationStats {
-	generationIndex: number;
-	averageEggsLayed: number;
-	averageEggsHatched: number;
-	averageEggsSplat: number;
-	averageEggsBroken: number;
-	averageHenSpeedLimit: number;
-	// other averages here
-}
-
-interface GenerationSnapshot {
-	stats: GenerationStats;
-	hens: HenStats[];
-}
+import { GenerationSnapshot } from './GameLevel/gameLevel.machine';
 
 const appMachine = setup({
 	types: {} as {

@@ -1,11 +1,34 @@
 import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
-import { eggMachine } from '../Egg/egg.machine';
+import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
+
+interface HenStats {
+	id: string;
+	eggsLayed: number;
+	eggsCaught: number;
+	eggsHatched: number;
+	eggsBroken: number;
+}
+
+interface GenerationStats {
+	generationIndex: number;
+	averageEggsLayed: number;
+	averageEggsHatched: number;
+	averageEggsSplat: number;
+	averageEggsBroken: number;
+	averageHenSpeedLimit: number;
+	// other averages here
+}
+
+export interface GenerationSnapshot {
+	stats: GenerationStats;
+	henStatsById: Record<string, HenStats>;
+}
 
 const henConfigs = new Array(1).fill(null).map(() => ({
 	id: nanoid(),
@@ -22,6 +45,7 @@ const gameLevelMachine = setup({
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
+			henStatsById: Record<string, HenStats>;
 		};
 		events:
 			| { type: 'Play' }
@@ -39,7 +63,12 @@ const gameLevelMachine = setup({
 					eggId: string;
 					position: { x: number; y: number };
 			  }
-			| { type: 'Remove egg'; eggId: string };
+			| {
+					type: 'Egg done';
+					henId: string;
+					eggId: string;
+					resultStatus: EggResultStatus;
+			  };
 	},
 	actors: {
 		chefMachine,
@@ -89,6 +118,7 @@ const gameLevelMachine = setup({
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
+		henStatsById: {},
 	},
 	initial: 'Playing',
 	on: {
@@ -98,29 +128,55 @@ const gameLevelMachine = setup({
 			}),
 		},
 		'Lay an egg': {
-			actions: assign({
-				eggActorRefs: ({ context, event, spawn }) => {
-					const eggHenButtYOffset = 35;
-					const eggId = nanoid();
-					// Spawn and add a new egg.
-					return [
-						...context.eggActorRefs,
-						spawn(eggMachine, {
-							systemId: eggId,
-							input: {
-								id: eggId,
-								henId: event.henId,
-								position: {
-									x: event.henPosition.x,
-									y: event.henPosition.y + eggHenButtYOffset,
+			actions: [
+				assign({
+					eggActorRefs: ({ context, event, spawn }) => {
+						const eggHenButtYOffset = 35;
+						const eggId = nanoid();
+						// Spawn and add a new egg.
+						return [
+							...context.eggActorRefs,
+							spawn(eggMachine, {
+								systemId: eggId,
+								input: {
+									id: eggId,
+									henId: event.henId,
+									position: {
+										x: event.henPosition.x,
+										y: event.henPosition.y + eggHenButtYOffset,
+									},
+									fallingSpeed: 2,
+									floorY: context.stageDimensions.height,
 								},
-								fallingSpeed: 2,
-								floorY: context.stageDimensions.height,
-							},
-						}),
-					];
-				},
-			}),
+							}),
+						];
+					},
+				}),
+				assign({
+					henStatsById: ({ context, event }) => {
+						const updatedHenStatsById = {
+							...context.henStatsById,
+						};
+						const existingHenStats = context.henStatsById[event.henId];
+
+						if (existingHenStats) {
+							updatedHenStatsById[event.henId] = {
+								...existingHenStats,
+								eggsLayed: existingHenStats.eggsLayed + 1,
+							};
+						} else {
+							updatedHenStatsById[event.henId] = {
+								id: event.henId,
+								eggsLayed: 1,
+								eggsCaught: 0,
+								eggsHatched: 0,
+								eggsBroken: 0,
+							};
+						}
+						return updatedHenStatsById;
+					},
+				}),
+			],
 		},
 		'Egg position updated': [
 			{
@@ -135,8 +191,32 @@ const gameLevelMachine = setup({
 				],
 			},
 		],
-		'Remove egg': {
+		'Egg done': {
 			actions: [
+				assign({
+					henStatsById: ({ context, event }) => {
+						const updatedHenStats = {
+							...context.henStatsById[event.henId],
+						};
+
+						switch (event.resultStatus) {
+							case 'Caught':
+								updatedHenStats.eggsCaught += 1;
+								break;
+							case 'Hatched':
+								updatedHenStats.eggsHatched += 1;
+								break;
+							case 'Broken':
+								updatedHenStats.eggsBroken += 1;
+								break;
+						}
+
+						return {
+							...context.henStatsById,
+							[event.henId]: updatedHenStats,
+						};
+					},
+				}),
 				assign({
 					eggActorRefs: ({ context, event }) =>
 						context.eggActorRefs.filter(
