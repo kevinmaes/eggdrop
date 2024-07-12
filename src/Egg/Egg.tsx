@@ -49,10 +49,13 @@ export function Egg({
 						}
 					},
 					onFinish: () => {
-						eggActorRef.send({
-							type: 'Land on floor',
-							result: Math.random() < 0.5 ? 'Hatch' : 'Splat',
-						});
+						// Check that the egg wasn't already caught and terminated.
+						if (eggRef.current) {
+							eggActorRef.send({
+								type: 'Land on floor',
+								result: Math.random() < 0.5 ? 'Hatch' : 'Splat',
+							});
+						}
 					},
 				});
 			}
