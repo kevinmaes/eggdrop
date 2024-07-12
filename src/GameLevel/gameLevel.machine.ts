@@ -71,6 +71,27 @@ const gameLevelMachine = setup({
 			  };
 	},
 	actions: {
+		spawnNewHen: assign({
+			henActorRefs: ({ context, spawn }) =>
+				henConfigs.map(({ id: henId, initialX, initialY }) =>
+					spawn(henMachine, {
+						systemId: henId,
+						input: {
+							id: henId,
+							position: {
+								x: initialX,
+								y: initialY,
+							},
+							speed: Math.random(),
+							baseAnimationDuration: 3,
+							stageDimensions: context.stageDimensions,
+							maxEggs: -1,
+							stationaryEggLayingRate: 0.9,
+							movingEggLayingRate: 0.1,
+						},
+					})
+				),
+		}),
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
 				{ context, spawn },
@@ -262,30 +283,7 @@ const gameLevelMachine = setup({
 	},
 	states: {
 		Playing: {
-			entry: [
-				assign({
-					henActorRefs: ({ context, spawn }) => {
-						return henConfigs.map(({ id: henId, initialX, initialY }) =>
-							spawn(henMachine, {
-								systemId: henId,
-								input: {
-									id: henId,
-									position: {
-										x: initialX,
-										y: initialY,
-									},
-									speed: Math.random(),
-									baseAnimationDuration: 3,
-									stageDimensions: context.stageDimensions,
-									maxEggs: -1,
-									stationaryEggLayingRate: 0.9,
-									movingEggLayingRate: 0.1,
-								},
-							})
-						);
-					},
-				}),
-			],
+			entry: 'spawnNewHen',
 			invoke: {
 				id: 'chefMachine',
 				src: 'chefMachine',
