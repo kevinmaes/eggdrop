@@ -38,12 +38,6 @@ export const eggMachine = setup({
 				y: STAGE_DIMENSIONS.height - 20,
 			}),
 		}),
-		// Stub for a provided action
-		// notifyOfEggPosition: sendParent(({ context }) => ({
-		// 	type: 'Egg position updated',
-		// 	eggId: context.id,
-		// 	position: context.position,
-		// })),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 20,
