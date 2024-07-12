@@ -1,6 +1,5 @@
-import { setup, assign, OutputFrom, sendParent } from 'xstate';
-import { animationActor } from '../helpers/animationActor';
-import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { setup, assign, sendParent } from 'xstate';
+import { STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -50,30 +49,6 @@ export const eggMachine = setup({
 				y: context.floorY - 30,
 			}),
 		}),
-		updateEggPosition: assign({
-			position: ({ context, event }) => {
-				if (!('output' in event)) return context.position;
-				const output = event.output as OutputFrom<typeof animationActor>;
-				const newY =
-					context.position.y + context.fallingSpeed * output.timeDiff * 0.1;
-				const newPosition = {
-					x: context.position.x,
-					y: newY,
-				};
-
-				return newPosition;
-			},
-		}),
-	},
-	actors: {
-		animationActor,
-	},
-	guards: {
-		'egg is in chef range': ({ context }) => {
-			return (
-				context.position.y >= STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
-			);
-		},
 	},
 }).createMachine({
 	id: 'egg',
