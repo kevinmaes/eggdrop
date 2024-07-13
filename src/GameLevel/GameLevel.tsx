@@ -36,19 +36,27 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 			height={stageDimensions.height}
 			style={{ background: 'blue' }}
 		>
+			{/* Background graphics layer */}
+			<Layer></Layer>
 			<Layer ref={layerRef}>
 				{henActorRefs.map((henActorRef) => (
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
+			</Layer>
+			<Layer>
 				<Chef
 					dimensions={CHEF_DIMENSIONS}
 					layerRef={layerRef}
 					initialPosition={chefInitialPosition}
 				/>
+			</Layer>
+			<Layer>
 				{eggActorRefs.map((eggActorRef) => (
 					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
 				))}
 			</Layer>
+			{/* Game Info UI layer */}
+			<Layer></Layer>
 		</Stage>
 	);
 }
