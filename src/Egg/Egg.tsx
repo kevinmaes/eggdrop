@@ -10,14 +10,18 @@ import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
-import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
+import { AppActorContext } from '../app.machine';
+import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
 export function Egg({
 	eggActorRef,
 }: {
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
-	const gameLevelActorRef = GameLevelActorContext.useActorRef();
+	const appActorRef = AppActorContext.useActorRef();
+	const gameLevelActorRef = appActorRef.system.get(
+		'gameLevelMachine'
+	) as ActorRefFrom<typeof gameLevelMachine>;
 	const eggState = useSelector(eggActorRef, (state) => state);
 	const { id, position, targetPosition } = eggState.context;
 	const eggRef = useRef<Konva.Image>(null);

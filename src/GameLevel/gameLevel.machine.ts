@@ -1,4 +1,3 @@
-import { createActorContext } from '@xstate/react';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
 import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
@@ -6,25 +5,7 @@ import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
-import { Position } from './types';
-
-interface HenStats {
-	id: string;
-	eggsLayed: number;
-	eggsCaught: number;
-	eggsHatched: number;
-	eggsBroken: number;
-}
-
-interface GenerationStats {
-	generationIndex: number;
-	averageEggsLayed: number;
-	averageEggsHatched: number;
-	averageEggsSplat: number;
-	averageEggsBroken: number;
-	averageHenSpeedLimit: number;
-	// other averages here
-}
+import { GenerationStats, HenStats, Position } from './types';
 
 export interface GenerationSnapshot {
 	stats: GenerationStats;
@@ -37,7 +18,7 @@ const henConfigs = new Array(1).fill(null).map(() => ({
 	initialY: 10,
 }));
 
-const gameLevelMachine = setup({
+export const gameLevelMachine = setup({
 	types: {} as {
 		context: {
 			stageDimensions: { width: number; height: number };
@@ -310,8 +291,4 @@ const gameLevelMachine = setup({
 			},
 		},
 	},
-});
-
-export const GameLevelActorContext = createActorContext(gameLevelMachine, {
-	systemId: 'gameLevelMachine',
 });

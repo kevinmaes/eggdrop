@@ -1,6 +1,7 @@
 import { createActorContext } from '@xstate/react';
 import { fromPromise, setup } from 'xstate';
 import { GenerationSnapshot } from './GameLevel/gameLevel.machine';
+import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 
 const appMachine = setup({
 	types: {} as {
@@ -19,6 +20,7 @@ const appMachine = setup({
 		loadAssets: fromPromise(() => {
 			return Promise.resolve();
 		}),
+		gameLevelMachine,
 	},
 }).createMachine({
 	context: {
@@ -66,6 +68,10 @@ const appMachine = setup({
 						Pause: {
 							target: 'Paused',
 						},
+					},
+					invoke: {
+						src: 'gameLevelMachine',
+						systemId: 'gameLevelMachine',
 					},
 					after: {
 						'30000': {

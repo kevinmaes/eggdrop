@@ -1,7 +1,6 @@
 import { AppActorContext } from './app.machine';
 import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
-import { GameLevelActorContext } from './GameLevel/gameLevel.machine';
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
@@ -29,9 +28,7 @@ const App = () => {
 	if (appState.matches('Game Play')) {
 		return (
 			<div>
-				<GameLevelActorContext.Provider>
-					<GameLevel stageDimensions={STAGE_DIMENSIONS} />
-				</GameLevelActorContext.Provider>
+				<GameLevel stageDimensions={STAGE_DIMENSIONS} />
 				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
 			</div>
 		);

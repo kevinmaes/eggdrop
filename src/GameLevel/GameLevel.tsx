@@ -3,9 +3,12 @@ import { Stage, Layer } from 'react-konva';
 import { Hen } from '../Hen/Hen';
 import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
-import { GameLevelActorContext } from './gameLevel.machine';
+import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
 import { CHEF_DIMENSIONS } from './gameConfig';
+import { ActorRefFrom } from 'xstate';
+import { useSelector } from '@xstate/react';
+import { AppActorContext } from '../app.machine';
 
 interface GameLevelProps {
 	stageDimensions: {
@@ -15,7 +18,12 @@ interface GameLevelProps {
 }
 
 export function GameLevel({ stageDimensions }: GameLevelProps) {
-	const { henActorRefs, eggActorRefs } = GameLevelActorContext.useSelector(
+	const appActorRef = AppActorContext.useActorRef();
+	const gameLevelActorRef = appActorRef.system.get(
+		'gameLevelMachine'
+	) as ActorRefFrom<typeof gameLevelMachine>;
+	const { henActorRefs, eggActorRefs } = useSelector(
+		gameLevelActorRef,
 		(state) => ({
 			henActorRefs: state.context.henActorRefs,
 			eggActorRefs: state.context.eggActorRefs,

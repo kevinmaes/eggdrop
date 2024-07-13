@@ -2,10 +2,11 @@ import { useSelector } from '@xstate/react';
 import Konva from 'konva';
 import { Ref, useEffect, useRef } from 'react';
 import { Rect } from 'react-konva';
-import { GameLevelActorContext } from '../GameLevel/gameLevel.machine';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
 import { Position } from '../GameLevel/types';
+import { AppActorContext } from '../app.machine';
+import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 // import useImage from 'use-image';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
@@ -18,10 +19,14 @@ export function Chef({
 	initialPosition: Position;
 }) {
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
-	const gameLevelActorRef = GameLevelActorContext.useActorRef();
-	const chefActorRef = gameLevelActorRef.system.get(
-		'chefMachine'
-	) as ActorRefFrom<typeof chefMachine>;
+	const appActorRef = AppActorContext.useActorRef();
+
+	const gameLevelActorRef = appActorRef.system.get(
+		'gameLevelMachine'
+	) as ActorRefFrom<typeof gameLevelMachine>;
+	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
+		typeof chefMachine
+	>;
 
 	const chefState = useSelector(chefActorRef, (state) => state);
 	const chefPosition = useSelector(
