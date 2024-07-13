@@ -1,3 +1,4 @@
+import { Circle, Layer, Stage, Text } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
@@ -25,12 +26,59 @@ const App = () => {
 		);
 	}
 
+	console.log('appState', appState);
+
 	if (appState.matches('Game Play')) {
 		return (
-			<div>
-				<GameLevel stageDimensions={STAGE_DIMENSIONS} />
+			<>
+				<Stage
+					width={STAGE_DIMENSIONS.width}
+					height={STAGE_DIMENSIONS.height}
+					style={{ background: 'blue' }}
+				>
+					{/* Background graphics layer */}
+					<Layer>
+						<Text
+							x={1200}
+							y={50}
+							text="Kitchen bg"
+							fontSize={30}
+							fontFamily="Arial"
+							fill="black"
+						/>
+					</Layer>
+					{appState.hasTag('init level') ? (
+						// Init level UI
+						<Layer>
+							<Text
+								x={200}
+								y={50}
+								text="Init Level"
+								fontSize={30}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Circle x={100} y={100} radius={50} fill="red" />
+						</Layer>
+					) : appState.hasTag('summary') ? (
+						// Level Summary UI
+						<Layer>
+							<Text
+								x={300}
+								y={50}
+								text="Level summary"
+								fontSize={30}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Circle x={100} y={100} radius={50} fill="blue" />
+						</Layer>
+					) : (
+						<GameLevel stageDimensions={STAGE_DIMENSIONS} />
+					)}
+				</Stage>
 				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
-			</div>
+			</>
 		);
 	}
 

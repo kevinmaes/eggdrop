@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Stage, Layer } from 'react-konva';
+import { Layer } from 'react-konva';
 import { Hen } from '../Hen/Hen';
 import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
@@ -39,13 +39,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 	const layerRef = useRef<Konva.Layer>(null);
 
 	return (
-		<Stage
-			width={stageDimensions.width}
-			height={stageDimensions.height}
-			style={{ background: 'blue' }}
-		>
-			{/* Background graphics layer */}
-			<Layer></Layer>
+		<>
 			<Layer ref={layerRef}>
 				{henActorRefs.map((henActorRef) => (
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
@@ -65,6 +59,6 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 			</Layer>
 			{/* Game Info UI layer */}
 			<Layer></Layer>
-		</Stage>
+		</>
 	);
 }

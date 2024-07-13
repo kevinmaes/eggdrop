@@ -57,10 +57,12 @@ const appMachine = setup({
 					target: 'Intro',
 				},
 			},
+
 			states: {
 				'Init Level': {
-					always: {
-						target: 'Playing',
+					tags: ['init level'],
+					after: {
+						2000: 'Playing',
 					},
 				},
 				Playing: {
@@ -74,13 +76,14 @@ const appMachine = setup({
 						systemId: 'gameLevelMachine',
 					},
 					after: {
-						'30000': {
+						'5000': {
 							target: 'Level Summary',
 						},
 					},
 					description: 'The main state for game play of each level',
 				},
 				'Level Summary': {
+					tags: ['summary'],
 					on: {
 						Next: {
 							target: 'Init Level',
