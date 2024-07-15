@@ -17,7 +17,6 @@ const initialGenerationPopulation = new Array(POPULATION_SIZE)
 		// Pick minimum and maximum X positions for the hen.
 		const minX = (Math.random() * 0.25 + 0.25) * STAGE_DIMENSIONS.width;
 		const maxX = (1 - 0.25 - Math.random() * 0.25) * STAGE_DIMENSIONS.width;
-		console.log('minX:', minX, 'maxX:', maxX);
 		return {
 			id: nanoid(),
 			// Configuration
