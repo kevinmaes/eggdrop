@@ -202,6 +202,9 @@ export const gameLevelMachine = setup({
 					0
 				);
 				const catchRate = totalEggsCaught / totalEggsLaid;
+				const averageHatchRate =
+					context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
+					totalHens;
 
 				return {
 					generationIndex: context.generationIndex,
@@ -213,6 +216,7 @@ export const gameLevelMachine = setup({
 						(acc, hen) => acc + hen.speed,
 						0
 					),
+					averageHatchRate,
 					totalEggsLaid,
 					totalEggsCaught,
 					totalEggsHatched,
@@ -276,6 +280,7 @@ export const gameLevelMachine = setup({
 			averageEggsHatched: 0,
 			averageEggsLaid: 0,
 			averageHenSpeedLimit: 0,
+			averageHatchRate: 0,
 			generationIndex: 0,
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,

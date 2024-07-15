@@ -8,13 +8,13 @@ export interface GenerationStats {
 	averageEggsHatched: number;
 	averageEggsLaid: number;
 	averageHenSpeedLimit: number;
+	averageHatchRate: number;
 	generationIndex: number;
 	totalEggsBroken: number;
 	totalEggsCaught: number;
 	totalEggsHatched: number;
 	totalEggsLaid: number;
 	catchRate: number;
-	// other averages here
 }
 
 export interface LevelResults {
