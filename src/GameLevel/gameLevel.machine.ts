@@ -373,7 +373,7 @@ export const gameLevelMachine = setup({
 								10,
 						},
 						speed: 0,
-						speedLimit: 5,
+						speedLimit: 4,
 						acceleration: 3,
 						deceleration: 3,
 						minXPos: 10,
