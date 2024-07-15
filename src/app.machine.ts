@@ -11,9 +11,7 @@ const appMachine = setup({
 		};
 		events:
 			| { type: 'Next' }
-			| { type: 'Pause' }
 			| { type: 'Start' }
-			| { type: 'Resume' }
 			| { type: 'Quit' }
 			| { type: 'Level complete' };
 	},
@@ -67,11 +65,6 @@ const appMachine = setup({
 					},
 				},
 				Playing: {
-					on: {
-						Pause: {
-							target: 'Paused',
-						},
-					},
 					invoke: {
 						src: 'gameLevelMachine',
 						systemId: 'gameLevelMachine',
@@ -80,13 +73,6 @@ const appMachine = setup({
 						},
 					},
 					description: 'The main state for game play of each level',
-				},
-				Paused: {
-					on: {
-						Resume: {
-							target: 'Playing',
-						},
-					},
 				},
 			},
 		},
