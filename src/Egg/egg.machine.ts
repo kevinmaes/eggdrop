@@ -1,4 +1,4 @@
-import { setup, assign, sendParent, log } from 'xstate';
+import { setup, assign, sendParent } from 'xstate';
 import { Position } from '../GameLevel/types';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
