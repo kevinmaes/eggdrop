@@ -60,19 +60,6 @@ const App = () => {
 							/>
 							<Circle x={100} y={100} radius={50} fill="red" />
 						</Layer>
-					) : appState.hasTag('summary') ? (
-						// Level Summary UI
-						<Layer>
-							<Text
-								x={300}
-								y={50}
-								text="Level summary"
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Circle x={100} y={100} radius={50} fill="blue" />
-						</Layer>
 					) : (
 						<GameLevel stageDimensions={STAGE_DIMENSIONS} />
 					)}

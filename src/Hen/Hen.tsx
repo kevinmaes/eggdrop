@@ -14,24 +14,36 @@ export function Hen({
 }) {
 	const henRef = useRef<Konva.Image>(null);
 
-	const { speed, baseAnimationDuration, position, targetPosition } =
+	const { speed, baseAnimationDuration, position, targetPosition, gamePaused } =
 		useSelector(henActorRef, (state) => ({
 			position: state.context.position,
 			targetPosition: state.context.targetPosition,
 			speed: state.context.speed,
 			baseAnimationDuration: state.context.baseAnimationDuration,
+			gamePaused: state.context.gamePaused,
 		}));
+	const tweenRef = useRef<Konva.Tween | null>(null);
 
 	const [henImage] = useImage(henImageFile);
 
 	useEffect(() => {
 		if (henRef.current) {
+			if (tweenRef.current && gamePaused === true) {
+				tweenRef.current.pause();
+				return;
+			}
+			if (tweenRef.current && gamePaused === false) {
+				tweenRef.current.play();
+				return;
+			}
+
 			const totalDistance = 1920;
 			const xDistance = Math.abs(targetPosition.x - position.x);
 			const relativeDistance = xDistance / totalDistance;
 			const duration = baseAnimationDuration * (1 - relativeDistance * speed);
 
-			henRef.current.to({
+			tweenRef.current = new Konva.Tween({
+				node: henRef.current,
 				duration,
 				x: targetPosition.x,
 				easing: Konva.Easings.EaseInOut,
@@ -39,8 +51,9 @@ export function Hen({
 					henActorRef.send({ type: 'Stop moving' });
 				},
 			});
+			tweenRef.current.play();
 		}
-	}, [henRef, targetPosition]);
+	}, [henRef, targetPosition, gamePaused]);
 
 	if (!position) {
 		return null;

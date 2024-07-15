@@ -1,4 +1,4 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
@@ -13,11 +13,14 @@ export const eggMachine = setup({
 			exitingSpeed: number;
 			floorY: number;
 			resultStatus: EggResultStatus;
+			gamePaused: boolean;
 		};
 		events:
 			| { type: 'Land on floor'; result: 'Hatch' | 'Splat' }
 			| { type: 'Catch' }
-			| { type: 'Finished exiting' };
+			| { type: 'Finished exiting' }
+			| { type: 'Resume game' }
+			| { type: 'Pause game' };
 		input: {
 			id: string;
 			henId: string;
@@ -68,7 +71,15 @@ export const eggMachine = setup({
 		},
 		floorY: input.floorY,
 		resultStatus: null,
+		gamePaused: false,
 	}),
+	on: {
+		'Pause game': {
+			actions: assign({
+				gamePaused: true,
+			}),
+		},
+	},
 	states: {
 		Falling: {
 			entry: 'setNewTargetPosition',

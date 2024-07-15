@@ -13,6 +13,7 @@ export interface HenStats {
 
 export interface GenerationStats {
 	generationIndex: number;
+	totalEggsCaught: number;
 	averageEggsLayed: number;
 	averageEggsHatched: number;
 	averageEggsSplat: number;

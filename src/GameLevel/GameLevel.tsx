@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Layer } from 'react-konva';
+import { Layer, Text } from 'react-konva';
 import { Hen } from '../Hen/Hen';
 import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
@@ -22,14 +22,20 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
-	const { henActorRefs, eggActorRefs } = useSelector(
-		gameLevelActorRef,
-		(state) => ({
-			henActorRefs: state.context.henActorRefs,
-			eggActorRefs: state.context.eggActorRefs,
-			henStatsById: state.context.henStatsById,
-		})
-	);
+	const gameLevelState = useSelector(gameLevelActorRef, (state) => state);
+	const {
+		remainingTime,
+		henActorRefs,
+		eggActorRefs,
+		aggregateHenStats,
+		// henStatsById,
+	} = useSelector(gameLevelActorRef, (state) => ({
+		remainingTime: state.context.remainingTime,
+		henActorRefs: state.context.henActorRefs,
+		eggActorRefs: state.context.eggActorRefs,
+		aggregateHenStats: state.context.aggregateHenStats,
+		henStatsById: state.context.henStatsById,
+	}));
 
 	const chefInitialPosition = {
 		x: stageDimensions.width / 2 - 0.5 * CHEF_DIMENSIONS.width,
@@ -57,8 +63,30 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
 				))}
 			</Layer>
-			{/* Game Info UI layer */}
-			<Layer></Layer>
+			{/* Game Timer UI layer */}
+			<Layer>
+				<Text
+					x={200}
+					y={250}
+					text={`Time: ${remainingTime / 1000} seconds`}
+					fontSize={30}
+					fontFamily="Arial"
+					fill="black"
+				/>
+			</Layer>
+			{/* Game level summary UI */}
+			{gameLevelState.hasTag('summary') && (
+				<Layer>
+					<Text
+						x={400}
+						y={450}
+						text={`Total eggs caught ${aggregateHenStats.totalEggsCaught}`}
+						fontSize={30}
+						fontFamily="Arial"
+						fill="black"
+					/>
+				</Layer>
+			)}
 		</>
 	);
 }

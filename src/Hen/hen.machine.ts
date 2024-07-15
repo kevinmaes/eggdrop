@@ -1,4 +1,4 @@
-import { assign, sendParent, setup } from 'xstate';
+import { assign, log, sendParent, setup } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
@@ -37,10 +37,13 @@ export const henMachine = setup({
 			eggsLaid: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
+			gamePaused: boolean;
 		};
 		events:
 			| { type: 'Set henRef'; henRef: Ref<Konva.Image> }
-			| { type: 'Stop moving' };
+			| { type: 'Stop moving' }
+			| { type: 'Resume game' }
+			| { type: 'Pause game' };
 	},
 	guards: {
 		'can lay egg while stopped': ({ context }) => {
@@ -88,8 +91,16 @@ export const henMachine = setup({
 		eggsLaid: 0,
 		stationaryEggLayingRate: input.stationaryEggLayingRate,
 		movingEggLayingRate: input.movingEggLayingRate,
+		gamePaused: false,
 	}),
-
+	on: {
+		'Pause game': {
+			target: '.Stopped',
+			actions: assign({
+				gamePaused: true,
+			}),
+		},
+	},
 	states: {
 		Moving: {
 			entry: 'pickNewTargetXPosition',
@@ -98,9 +109,13 @@ export const henMachine = setup({
 			},
 		},
 		Stopped: {
-			entry: 'updatePosition',
+			entry: ['updatePosition', log('hen in Stopped state')],
+			on: {
+				'Resume game': 'Moving',
+			},
 			after: {
 				pickStopDuration: [
+					{ guard: ({ context }) => context.gamePaused },
 					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
 					{ target: 'Moving' },
 				],

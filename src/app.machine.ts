@@ -14,7 +14,8 @@ const appMachine = setup({
 			| { type: 'Pause' }
 			| { type: 'Start' }
 			| { type: 'Resume' }
-			| { type: 'Quit' };
+			| { type: 'Quit' }
+			| { type: 'Level complete' };
 	},
 	actors: {
 		loadAssets: fromPromise(() => {
@@ -27,7 +28,7 @@ const appMachine = setup({
 		generationIndex: 0,
 		generationSnapshotHistory: [],
 	},
-	id: 'Leveled Game',
+	id: 'Egg Drop Game',
 	initial: 'Loading',
 	states: {
 		Loading: {
@@ -74,21 +75,11 @@ const appMachine = setup({
 					invoke: {
 						src: 'gameLevelMachine',
 						systemId: 'gameLevelMachine',
-					},
-					after: {
-						'5000': {
-							target: 'Level Summary',
+						input: {
+							levelDuration: 3000,
 						},
 					},
 					description: 'The main state for game play of each level',
-				},
-				'Level Summary': {
-					tags: ['summary'],
-					on: {
-						Next: {
-							target: 'Init Level',
-						},
-					},
 				},
 				Paused: {
 					on: {

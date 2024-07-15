@@ -1,18 +1,19 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, HenStats, Position } from './types';
+import { gameTimerMachine } from './gameTimer.machine';
 
 export interface GenerationSnapshot {
 	stats: GenerationStats;
 	henStatsById: Record<string, HenStats>;
 }
 
-const henConfigs = new Array(1).fill(null).map(() => ({
+const henConfigs = new Array(10).fill(null).map(() => ({
 	id: nanoid(),
 	initialX: getStartXPosition(1920),
 	initialY: 10,
@@ -21,16 +22,19 @@ const henConfigs = new Array(1).fill(null).map(() => ({
 export const gameLevelMachine = setup({
 	types: {} as {
 		context: {
+			remainingTime: number;
 			stageDimensions: { width: number; height: number };
 			chefDimensions: { width: number; height: number };
 			generationIndex: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
+			aggregateHenStats: GenerationStats;
 			henStatsById: Record<string, HenStats>;
 		};
 		events:
-			| { type: 'Play' }
+			| { type: 'Time countdown tick' }
+			| { type: 'Time countdown done' }
 			| {
 					type: 'Set chefPotRimHitRef';
 					chefPotRimHitRef: React.RefObject<Rect>;
@@ -51,6 +55,9 @@ export const gameLevelMachine = setup({
 					eggId: string;
 					resultStatus: EggResultStatus;
 			  };
+		input: {
+			levelDuration: number;
+		};
 	},
 	actions: {
 		spawnNewHen: assign({
@@ -197,15 +204,26 @@ export const gameLevelMachine = setup({
 		},
 	},
 }).createMachine({
-	context: {
+	context: ({ input }) => ({
+		remainingTime: input.levelDuration,
 		stageDimensions: STAGE_DIMENSIONS,
 		chefDimensions: CHEF_DIMENSIONS,
+		// TODO: Increment the generationIndex.
 		generationIndex: 0,
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
+		aggregateHenStats: {
+			generationIndex: 0,
+			totalEggsCaught: 0,
+			averageEggsLayed: 0,
+			averageEggsHatched: 0,
+			averageEggsSplat: 0,
+			averageEggsBroken: 0,
+			averageHenSpeedLimit: 0,
+		},
 		henStatsById: {},
-	},
+	}),
 	initial: 'Playing',
 	on: {
 		'Set chefPotRimHitRef': {
@@ -266,29 +284,72 @@ export const gameLevelMachine = setup({
 	states: {
 		Playing: {
 			entry: 'spawnNewHen',
-			invoke: {
-				id: 'chefMachine',
-				src: 'chefMachine',
-				systemId: 'chefMachine',
-				input: ({ context }) => ({
-					position: {
-						x:
-							context.stageDimensions.width / 2 -
-							0.5 * context.chefDimensions.width,
-						y:
-							context.stageDimensions.height -
-							context.chefDimensions.height -
-							10,
-					},
-					speed: 0,
-					speedLimit: 5,
-					acceleration: 3,
-					deceleration: 3,
-					minXPos: 10,
-					maxXPos:
-						context.stageDimensions.width - context.chefDimensions.width - 10,
-				}),
+			on: {
+				'Time countdown tick': {
+					actions: [
+						log('Time countdown tick'),
+						assign({
+							remainingTime: ({ context }) => context.remainingTime - 1000,
+						}),
+					],
+				},
+				'Time countdown done': 'Done',
 			},
+			invoke: [
+				{
+					src: gameTimerMachine,
+					input: ({ context }) => ({
+						remainingTime: context.remainingTime,
+					}),
+				},
+				{
+					id: 'chefMachine',
+					src: 'chefMachine',
+					systemId: 'chefMachine',
+					input: ({ context }) => ({
+						position: {
+							x:
+								context.stageDimensions.width / 2 -
+								0.5 * context.chefDimensions.width,
+							y:
+								context.stageDimensions.height -
+								context.chefDimensions.height -
+								10,
+						},
+						speed: 0,
+						speedLimit: 5,
+						acceleration: 3,
+						deceleration: 3,
+						minXPos: 10,
+						maxXPos:
+							context.stageDimensions.width - context.chefDimensions.width - 10,
+					}),
+				},
+			],
+		},
+		Done: {
+			tags: 'summary',
+			entry: [
+				// assign({
+				// 	eggActorRefs: [],
+				// }),
+				({ context }) => {
+					context.henActorRefs.forEach((henActorRef) => {
+						henActorRef.send({ type: 'Pause game' });
+					});
+
+					context.eggActorRefs.forEach((eggActorRef) => {
+						eggActorRef.send({ type: 'Pause game' });
+					});
+				},
+				// sendParent(({ context }) => {
+				// 	return {
+				// 		type: 'Level complete',
+				// 		generationIndex: context.generationIndex,
+				// 		henStatsById: context.henStatsById,
+				// 	};
+				// }),
+			],
 		},
 	},
 });

@@ -23,7 +23,8 @@ export function Egg({
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 	const eggState = useSelector(eggActorRef, (state) => state);
-	const { id, position, targetPosition } = eggState.context;
+	const { id, position, targetPosition, gamePaused } = eggState.context;
+	const tweenRef = useRef<Konva.Tween | null>(null);
 	const eggRef = useRef<Konva.Image>(null);
 
 	const [eggImage] = useImage(eggImageFile);
@@ -32,8 +33,19 @@ export function Egg({
 
 	useEffect(() => {
 		if (eggRef.current) {
+			if (tweenRef.current && gamePaused === true) {
+				tweenRef.current.pause();
+				return;
+			}
+			if (tweenRef.current && gamePaused === false) {
+				tweenRef.current.play();
+				return;
+			}
+
 			if (eggState.matches('Falling')) {
-				eggRef.current.to({
+				tweenRef.current = new Konva.Tween({
+					// eggRef.current.to({
+					node: eggRef.current,
 					duration: 3,
 					y: targetPosition.y,
 					rotation: -720,
@@ -62,6 +74,7 @@ export function Egg({
 						}
 					},
 				});
+				tweenRef.current.play();
 			}
 
 			if (eggState.matches('Exiting')) {
@@ -77,7 +90,7 @@ export function Egg({
 				});
 			}
 		}
-	}, [eggRef, position, targetPosition]);
+	}, [eggRef, position, targetPosition, gamePaused]);
 
 	if (eggState.matches('Done')) {
 		return null;
