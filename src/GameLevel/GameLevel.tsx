@@ -22,13 +22,8 @@ export function GameLevel({
 	gameLevelActorRef,
 }: GameLevelProps) {
 	const gameLevelState = useSelector(gameLevelActorRef, (state) => state);
-	const {
-		generationIndex,
-		remainingTime,
-		henActorRefs,
-		eggActorRefs,
-		levelStats,
-	} = gameLevelState.context;
+	const { generationIndex, remainingTime, henActorRefs, eggActorRefs } =
+		gameLevelState.context;
 
 	const chefInitialPosition = {
 		x: stageDimensions.width / 2 - 0.5 * CHEF_DIMENSIONS.width,
