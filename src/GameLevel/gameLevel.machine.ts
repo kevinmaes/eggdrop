@@ -332,9 +332,6 @@ export const gameLevelMachine = setup({
 		Done: {
 			tags: 'summary',
 			entry: [
-				// assign({
-				// 	eggActorRefs: [],
-				// }),
 				({ context }) => {
 					context.henActorRefs.forEach((henActorRef) => {
 						henActorRef.send({ type: 'Pause game' });
