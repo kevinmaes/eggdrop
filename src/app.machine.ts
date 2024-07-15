@@ -3,7 +3,7 @@ import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getStartXPosition } from './Hen/hen.machine';
-import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
+import { LEVEL_DURATION_MS, STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 
@@ -205,7 +205,7 @@ const appMachine = setup({
 						systemId: 'gameLevelMachine',
 						input: ({ context }) => ({
 							generationIndex: context.generationIndex,
-							levelDuration: 5000,
+							levelDuration: LEVEL_DURATION_MS,
 							population: context.population,
 						}),
 					},
