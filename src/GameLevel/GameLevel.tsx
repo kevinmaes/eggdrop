@@ -28,7 +28,6 @@ export function GameLevel({
 		henActorRefs,
 		eggActorRefs,
 		levelStats,
-		// henStatsById,
 	} = useSelector(gameLevelActorRef, (state) => ({
 		generationIndex: state.context.generationIndex,
 		remainingTime: state.context.remainingTime,
