@@ -1,4 +1,4 @@
-import { assign, log, sendParent, setup } from 'xstate';
+import { assign, sendParent, setup } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
@@ -112,7 +112,7 @@ export const henMachine = setup({
 			},
 		},
 		Stopped: {
-			entry: ['updatePosition', log('hen in Stopped state')],
+			entry: 'updatePosition',
 			on: {
 				'Resume game': 'Moving',
 			},
