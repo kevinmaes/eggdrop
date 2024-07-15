@@ -7,13 +7,13 @@ export interface GenerationStats {
 	averageEggsBroken: number;
 	averageEggsHatched: number;
 	averageEggsLaid: number;
-	averageEggsSplat: number;
 	averageHenSpeedLimit: number;
 	generationIndex: number;
 	totalEggsBroken: number;
 	totalEggsCaught: number;
 	totalEggsHatched: number;
 	totalEggsLaid: number;
+	catchRate: number;
 	// other averages here
 }
 
@@ -28,10 +28,11 @@ export interface IndividualHen {
 	// Configuration
 	initialPosition: Position;
 	speed: number;
-	baseAnimationDuration: number;
+	baseTweenDurationSeconds: number;
 	maxEggs: number;
 	stationaryEggLayingRate: number;
 	movingEggLayingRate: number;
+	hatchRate: number;
 	// Results
 	fitness: number;
 	eggsLaid: number;

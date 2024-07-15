@@ -101,6 +101,14 @@ export function GameLevel({
 						fontFamily="Arial"
 						fill="black"
 					/>
+					<Text
+						x={600}
+						y={500}
+						text={`Catch rate ${levelStats.catchRate}`}
+						fontSize={30}
+						fontFamily="Arial"
+						fill="black"
+					/>
 				</Layer>
 			)}
 		</>

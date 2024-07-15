@@ -21,7 +21,8 @@ export const henMachine = setup({
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
 			speed: number;
-			baseAnimationDuration: number;
+			baseTweenDurationSeconds: number;
+			hatchRate: number;
 		};
 		context: {
 			henRef: Ref<Konva.Image>;
@@ -30,7 +31,7 @@ export const henMachine = setup({
 			position: Position;
 			targetPosition: Position;
 			speed: number;
-			baseAnimationDuration: number;
+			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;
 			maxEggs: number;
@@ -38,6 +39,7 @@ export const henMachine = setup({
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
 			gamePaused: boolean;
+			hatchRate: number;
 		};
 		events:
 			| { type: 'Set henRef'; henRef: Ref<Konva.Image> }
@@ -84,7 +86,7 @@ export const henMachine = setup({
 		position: input.position,
 		targetPosition: { x: 0, y: 0 },
 		speed: input.speed,
-		baseAnimationDuration: input.baseAnimationDuration,
+		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: 500,
 		maxStopMS: 500,
 		maxEggs: input.maxEggs,
@@ -92,6 +94,7 @@ export const henMachine = setup({
 		stationaryEggLayingRate: input.stationaryEggLayingRate,
 		movingEggLayingRate: input.movingEggLayingRate,
 		gamePaused: false,
+		hatchRate: input.hatchRate,
 	}),
 	on: {
 		'Pause game': {
@@ -127,6 +130,7 @@ export const henMachine = setup({
 					type: 'Lay an egg',
 					henId: context.id,
 					henPosition: context.position,
+					hatchRate: context.hatchRate,
 				})),
 				assign({
 					eggsLaid: ({ context }) => context.eggsLaid + 1,

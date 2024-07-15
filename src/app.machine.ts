@@ -16,10 +16,11 @@ const initialGenerationPopulation = new Array(10).fill(null).map(() => ({
 		y: 10,
 	},
 	speed: Math.random(),
-	baseAnimationDuration: 3,
+	baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 	maxEggs: -1,
-	stationaryEggLayingRate: 0.9,
-	movingEggLayingRate: 0.1,
+	stationaryEggLayingRate: Math.random(),
+	movingEggLayingRate: Math.random(),
+	hatchRate: Math.random(),
 	// Results
 	fitness: 0,
 	eggsLaid: 0,
@@ -88,8 +89,9 @@ const appMachine = setup({
 							y: 10,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,
-						baseAnimationDuration:
-							(parent1.baseAnimationDuration + parent2.baseAnimationDuration) /
+						baseTweenDurationSeconds:
+							(parent1.baseTweenDurationSeconds +
+								parent2.baseTweenDurationSeconds) /
 							2,
 						maxEggs: -1,
 						stationaryEggLayingRate:
@@ -98,6 +100,7 @@ const appMachine = setup({
 							2,
 						movingEggLayingRate:
 							(parent1.movingEggLayingRate + parent2.movingEggLayingRate) / 2,
+						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
 						fitness: 0,
 						eggsLaid: 0,
 						eggsCaught: 0,
@@ -113,7 +116,7 @@ const appMachine = setup({
 						member,
 						[
 							'speed',
-							'baseAnimationDuration',
+							'baseTweenDurationSeconds',
 							'stationaryEggLayingRate',
 							'movingEggLayingRate',
 						],
@@ -202,16 +205,18 @@ const appMachine = setup({
 					description: 'The main state for game play of each level',
 				},
 				'Next Generation Evolution': {
-					tags: 'evolution',
+					tags: ['level summary'],
 					on: {
-						'Start next level': {
-							target: 'Playing',
-							actions: assign({
-								generationIndex: ({ context }) => context.generationIndex + 1,
-							}),
-						},
+						'Start next level': 'Playing',
 					},
-					entry: [log('Evaluation state'), 'evaluateAndEvolveNextGeneration'],
+					entry: [log('Show summary')],
+					exit: [
+						log('Leave summary and prep next gen'),
+						'evaluateAndEvolveNextGeneration',
+						assign({
+							generationIndex: ({ context }) => context.generationIndex + 1,
+						}),
+					],
 				},
 			},
 		},

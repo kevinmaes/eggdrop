@@ -14,14 +14,19 @@ export function Hen({
 }) {
 	const henRef = useRef<Konva.Image>(null);
 
-	const { speed, baseAnimationDuration, position, targetPosition, gamePaused } =
-		useSelector(henActorRef, (state) => ({
-			position: state.context.position,
-			targetPosition: state.context.targetPosition,
-			speed: state.context.speed,
-			baseAnimationDuration: state.context.baseAnimationDuration,
-			gamePaused: state.context.gamePaused,
-		}));
+	const {
+		speed,
+		baseTweenDurationSeconds,
+		position,
+		targetPosition,
+		gamePaused,
+	} = useSelector(henActorRef, (state) => ({
+		position: state.context.position,
+		targetPosition: state.context.targetPosition,
+		speed: state.context.speed,
+		baseTweenDurationSeconds: state.context.baseTweenDurationSeconds,
+		gamePaused: state.context.gamePaused,
+	}));
 	const tweenRef = useRef<Konva.Tween | null>(null);
 
 	const [henImage] = useImage(henImageFile);
@@ -40,7 +45,8 @@ export function Hen({
 			const totalDistance = 1920;
 			const xDistance = Math.abs(targetPosition.x - position.x);
 			const relativeDistance = xDistance / totalDistance;
-			const duration = baseAnimationDuration * (1 - relativeDistance * speed);
+			const duration =
+				baseTweenDurationSeconds * (1 - relativeDistance * speed);
 
 			tweenRef.current = new Konva.Tween({
 				node: henRef.current,

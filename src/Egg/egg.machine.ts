@@ -14,9 +14,10 @@ export const eggMachine = setup({
 			floorY: number;
 			resultStatus: EggResultStatus;
 			gamePaused: boolean;
+			hatchRate: number;
 		};
 		events:
-			| { type: 'Land on floor'; result: 'Hatch' | 'Splat' }
+			| { type: 'Land on floor' }
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
 			| { type: 'Resume game' }
@@ -27,6 +28,7 @@ export const eggMachine = setup({
 			position: Position;
 			fallingSpeed: number;
 			floorY: number;
+			hatchRate: number;
 		};
 	},
 	actions: {
@@ -72,6 +74,7 @@ export const eggMachine = setup({
 		floorY: input.floorY,
 		resultStatus: null,
 		gamePaused: false,
+		hatchRate: input.hatchRate,
 	}),
 	on: {
 		'Pause game': {
@@ -96,16 +99,13 @@ export const eggMachine = setup({
 		Landed: {
 			always: [
 				{
-					guard: ({ event }) => {
-						if (event.type !== 'Land on floor') return false;
-						return event.result === 'Splat';
-					},
-					target: 'Splatting',
-					actions: 'splatOnFloor',
-				},
-				{
+					guard: ({ context }) => Math.random() < context.hatchRate,
 					target: 'Hatching',
 					actions: 'hatchOnFloor',
+				},
+				{
+					target: 'Splatting',
+					actions: 'splatOnFloor',
 				},
 			],
 		},

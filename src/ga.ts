@@ -51,7 +51,7 @@ export function mutate(
 		Extract<
 			keyof IndividualHen,
 			| 'speed'
-			| 'baseAnimationDuration'
+			| 'baseTweenDurationSeconds'
 			| 'maxEggs'
 			| 'stationaryEggLayingRate'
 			| 'movingEggLayingRate'
@@ -118,8 +118,8 @@ export function mutate(
 
 // 		// Mutate offspring
 // 		const propertiesToMutate: Array<
-// 			Extract<keyof IndividualHen, 'speed' | 'baseAnimationDuration'>
-// 		> = ['speed', 'baseAnimationDuration'];
+// 			Extract<keyof IndividualHen, 'speed' | 'baseTweenDurationSeconds'>
+// 		> = ['speed', 'baseTweenDurationSeconds'];
 // 		const mutatedOffspring1 = mutate(
 // 			offspring1,
 // 			propertiesToMutate,

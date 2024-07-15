@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -40,6 +40,7 @@ export const gameLevelMachine = setup({
 					type: 'Lay an egg';
 					henId: string;
 					henPosition: Position;
+					hatchRate: number;
 			  }
 			| {
 					type: 'Egg position updated';
@@ -66,10 +67,11 @@ export const gameLevelMachine = setup({
 						id: henId,
 						initialPosition,
 						speed,
-						baseAnimationDuration,
+						baseTweenDurationSeconds,
 						maxEggs,
 						stationaryEggLayingRate,
 						movingEggLayingRate,
+						hatchRate,
 					}) =>
 						spawn(henMachine, {
 							systemId: henId,
@@ -81,10 +83,11 @@ export const gameLevelMachine = setup({
 									y: initialPosition.y,
 								},
 								speed,
-								baseAnimationDuration,
+								baseTweenDurationSeconds,
 								maxEggs,
 								stationaryEggLayingRate,
 								movingEggLayingRate,
+								hatchRate,
 							},
 						})
 				),
@@ -92,7 +95,7 @@ export const gameLevelMachine = setup({
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
 				{ context, spawn },
-				params: { henId: string; henPosition: Position }
+				params: { henId: string; henPosition: Position; hatchRate: number }
 			) => {
 				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
@@ -110,6 +113,7 @@ export const gameLevelMachine = setup({
 							},
 							fallingSpeed: 2,
 							floorY: context.stageDimensions.height,
+							hatchRate: params.hatchRate,
 						},
 					}),
 				];
@@ -158,6 +162,7 @@ export const gameLevelMachine = setup({
 					case 'Caught':
 						updatedHenStats.eggsCaught += 1;
 						updatedLevelStats.totalEggsCaught += 1;
+						console.log('resultStatus Caught');
 						break;
 					case 'Hatched':
 						updatedHenStats.eggsHatched += 1;
@@ -177,6 +182,49 @@ export const gameLevelMachine = setup({
 				};
 			}
 		),
+		calculateLevelStats: assign({
+			levelStats: ({ context }) => {
+				const totalHens = context.population.length;
+				const totalEggsLaid = context.population.reduce(
+					(acc, hen) => acc + hen.eggsLaid,
+					0
+				);
+				const totalEggsCaught = context.population.reduce(
+					(acc, hen) => acc + hen.eggsCaught,
+					0
+				);
+				const totalEggsHatched = context.population.reduce(
+					(acc, hen) => acc + hen.eggsHatched,
+					0
+				);
+				const totalEggsBroken = context.population.reduce(
+					(acc, hen) => acc + hen.eggsBroken,
+					0
+				);
+				const catchRate = totalEggsCaught / totalEggsLaid;
+
+				return {
+					generationIndex: context.generationIndex,
+					averageEggsLaid: totalEggsLaid / totalHens,
+					averageEggsCaught: totalEggsCaught / totalHens,
+					averageEggsHatched: totalEggsHatched / totalHens,
+					averageEggsBroken: totalEggsBroken / totalHens,
+					averageHenSpeedLimit: context.population.reduce(
+						(acc, hen) => acc + hen.speed,
+						0
+					),
+					totalEggsLaid,
+					totalEggsCaught,
+					totalEggsHatched,
+					totalEggsBroken,
+					catchRate,
+				};
+			},
+		}),
+		cleanupLevelRefs: assign({
+			henActorRefs: [],
+			eggActorRefs: [],
+		}),
 	},
 	actors: {
 		chefMachine,
@@ -211,12 +259,6 @@ export const gameLevelMachine = setup({
 				position.y <= potRimHitY + potRimHitHeight
 			);
 		},
-		'egg hits the floor': ({ context, event }) => {
-			if (!('position' in event)) {
-				return false;
-			}
-			return event.position.y >= context.stageDimensions.height - 15;
-		},
 	},
 }).createMachine({
 	context: ({ input }) => ({
@@ -233,7 +275,6 @@ export const gameLevelMachine = setup({
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
 			averageEggsLaid: 0,
-			averageEggsSplat: 0,
 			averageHenSpeedLimit: 0,
 			generationIndex: 0,
 			totalEggsBroken: 0,
@@ -241,6 +282,7 @@ export const gameLevelMachine = setup({
 			totalEggsHatched: 0,
 			totalEggsLaid: 0,
 			totalEggsSplat: 0,
+			catchRate: 0,
 		},
 		henStatsById: input.population.reduce(
 			(acc, individualHenConfig) => ({
@@ -264,6 +306,7 @@ export const gameLevelMachine = setup({
 					params: ({ event }) => ({
 						henId: event.henId,
 						henPosition: event.henPosition,
+						hatchRate: event.hatchRate,
 					}),
 				},
 				{
@@ -353,16 +396,11 @@ export const gameLevelMachine = setup({
 		Done: {
 			tags: 'summary',
 			entry: [
-				({ context }) => {
-					context.henActorRefs.forEach((henActorRef) => {
-						henActorRef.send({ type: 'Pause game' });
-					});
-
-					context.eggActorRefs.forEach((eggActorRef) => {
-						eggActorRef.send({ type: 'Pause game' });
-					});
-				},
+				log('Game Level summary state'),
+				'calculateLevelStats',
+				'cleanupLevelRefs',
 				sendParent(({ context }) => {
+					console.log('sending parent context.levelStats', context.levelStats);
 					return {
 						type: 'Level complete',
 						levelResults: {

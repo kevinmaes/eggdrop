@@ -8,6 +8,7 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
 	const appState = AppActorContext.useSelector((state) => state);
+	const { lastLevelResults } = appState.context;
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
@@ -31,7 +32,7 @@ const App = () => {
 		);
 	}
 
-	// console.log('appState', appState);
+	console.log('levelStats', lastLevelResults?.levelStats);
 
 	if (appState.matches('Game Play')) {
 		return (
@@ -65,12 +66,36 @@ const App = () => {
 							/>
 							<Circle x={100} y={100} radius={50} fill="red" />
 						</Layer>
-					) : appState.hasTag('evolution') ? (
+					) : appState.hasTag('level summary') ? (
 						<Layer>
 							<Text
 								x={200}
 								y={50}
 								text="In between levels"
+								fontSize={30}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Text
+								x={400}
+								y={450}
+								text={`Total eggs laid ${lastLevelResults?.levelStats.totalEggsLaid}`}
+								fontSize={30}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Text
+								x={400}
+								y={500}
+								text={`Total eggs caught ${lastLevelResults?.levelStats.totalEggsCaught}`}
+								fontSize={30}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Text
+								x={800}
+								y={500}
+								text={`Catch rate ${lastLevelResults?.levelStats.catchRate}`}
 								fontSize={30}
 								fontFamily="Arial"
 								fill="black"
