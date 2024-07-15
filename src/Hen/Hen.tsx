@@ -54,5 +54,14 @@ export function Hen({
 		return null;
 	}
 
-	return <KonvaImage ref={henRef} image={henImage} width={50} height={50} />;
+	return (
+		<KonvaImage
+			ref={henRef}
+			image={henImage}
+			x={position.x}
+			y={position.y}
+			width={50}
+			height={50}
+		/>
+	);
 }

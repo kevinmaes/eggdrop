@@ -2,14 +2,21 @@ import { createActorContext } from '@xstate/react';
 import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
-import { pickXPosition } from './Hen/hen.machine';
 import {
+	HEN_Y_POSITION,
 	LEVEL_DURATION_MS,
 	POPULATION_SIZE,
 	STAGE_DIMENSIONS,
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
+
+export function getOffScreenStartXPosition(
+	stageWidth: number,
+	buffer: number = 50
+) {
+	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
+}
 
 const initialGenerationPopulation = new Array(POPULATION_SIZE)
 	.fill(null)
@@ -21,8 +28,8 @@ const initialGenerationPopulation = new Array(POPULATION_SIZE)
 			id: nanoid(),
 			// Configuration
 			initialPosition: {
-				x: pickXPosition(minX, maxX),
-				y: 10,
+				x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
+				y: HEN_Y_POSITION,
 			},
 			speed: Math.random(),
 			baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
@@ -102,7 +109,7 @@ const appMachine = setup({
 					const child = {
 						id: nanoid(),
 						initialPosition: {
-							x: getStartXPosition(STAGE_DIMENSIONS.width),
+							x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
 							y: 10,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,

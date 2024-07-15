@@ -2,6 +2,7 @@ import { assign, sendParent, setup } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
+import { HEN_Y_POSITION } from '../GameLevel/gameConfig';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const range = maxX - minX;
@@ -68,7 +69,10 @@ export const henMachine = setup({
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
-			targetPosition: { x: pickXPosition(context.minX, context.maxX), y: 0 },
+			targetPosition: {
+				x: pickXPosition(context.minX, context.maxX),
+				y: HEN_Y_POSITION,
+			},
 		})),
 		updatePosition: assign({
 			position: ({ context }) => context.targetPosition,
@@ -88,7 +92,7 @@ export const henMachine = setup({
 		id: input.id,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
-		targetPosition: { x: 0, y: 0 },
+		targetPosition: { x: 0, y: HEN_Y_POSITION },
 		speed: input.speed,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: 500,
