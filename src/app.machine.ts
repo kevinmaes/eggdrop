@@ -32,10 +32,9 @@ const appMachine = setup({
 	types: {} as {
 		context: {
 			generationIndex: number;
-			generationSnapshotHistory: LevelResults[];
+			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
 			populationSize: number;
-			lastLevelResults: LevelResults | null;
 			mutationRate: number;
 			mutationVariancePercentage: number;
 		};
@@ -49,12 +48,18 @@ const appMachine = setup({
 			  };
 	},
 	actions: {
+		pushLastLevelResultsToHistory: assign({
+			levelResultsHistory: (
+				{ context },
+				params: { levelResults: LevelResults }
+			) => [...context.levelResultsHistory, params.levelResults],
+		}),
 		evaluateAndEvolveNextGeneration: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
+				const lastLevelResults = context.levelResultsHistory.slice(-1)[0];
 				const evaluatedPopulation = context.population.map((individual) => {
-					const individualResult =
-						context.lastLevelResults?.henStatsById[individual.id];
+					const individualResult = lastLevelResults.henStatsById[individual.id];
 					if (!individualResult) {
 						return individual;
 					}
@@ -138,7 +143,7 @@ const appMachine = setup({
 }).createMachine({
 	context: {
 		generationIndex: 0,
-		generationSnapshotHistory: [],
+		levelResultsHistory: [],
 		population: initialGenerationPopulation,
 		populationSize: 10,
 		lastLevelResults: null,
@@ -186,13 +191,12 @@ const appMachine = setup({
 				Playing: {
 					on: {
 						'Level complete': {
-							actions: assign({
-								lastLevelResults: ({ event }) => event.levelResults,
-								generationSnapshotHistory: ({ context, event }) => [
-									...context.generationSnapshotHistory,
-									event.levelResults,
-								],
-							}),
+							actions: {
+								type: 'pushLastLevelResultsToHistory',
+								params: ({ event }) => ({
+									levelResults: event.levelResults,
+								}),
+							},
 							target: 'Next Generation Evolution',
 						},
 					},

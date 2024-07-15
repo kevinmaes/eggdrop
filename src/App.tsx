@@ -8,7 +8,9 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
 	const appState = AppActorContext.useSelector((state) => state);
-	const { lastLevelResults } = appState.context;
+	const lastLevelResults = AppActorContext.useSelector(
+		(state) => state.context.levelResultsHistory.slice(-1)[0]
+	);
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
