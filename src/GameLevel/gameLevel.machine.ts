@@ -131,19 +131,19 @@ export const gameLevelMachine = setup({
 					};
 				}
 
-				const updatedAggregateHenStats = {
+				const updatedLevelStats = {
 					...context.levelStats,
 					totalEggsLaid: context.levelStats.totalEggsLaid + 1,
 				};
 
 				return {
-					levelStats: updatedAggregateHenStats,
+					levelStats: updatedLevelStats,
 					henStatsById: updatedHenStatsById,
 				};
 			}
 		),
-		updateHenStatsForEggDone: assign({
-			henStatsById: (
+		updateHenStatsForEggDone: assign(
+			(
 				{ context },
 				params: {
 					henId: string;
@@ -151,28 +151,41 @@ export const gameLevelMachine = setup({
 					resultStatus: EggResultStatus;
 				}
 			) => {
+				const updatedHenStatsById = {
+					...context.henStatsById,
+				};
+
 				const updatedHenStats = {
 					...context.henStatsById[params.henId],
+				};
+
+				const updatedLevelStats = {
+					...context.levelStats,
 				};
 
 				switch (params.resultStatus) {
 					case 'Caught':
 						updatedHenStats.eggsCaught += 1;
+						updatedLevelStats.totalEggsCaught += 1;
 						break;
 					case 'Hatched':
 						updatedHenStats.eggsHatched += 1;
+						updatedLevelStats.totalEggsHatched += 1;
 						break;
 					case 'Broken':
 						updatedHenStats.eggsBroken += 1;
+						updatedLevelStats.totalEggsBroken += 1;
 						break;
 				}
 
+				updatedHenStatsById[params.henId] = updatedHenStats;
+
 				return {
-					...context.henStatsById,
-					[params.henId]: updatedHenStats,
+					henStatsById: updatedHenStatsById,
+					levelStats: updatedLevelStats,
 				};
-			},
-		}),
+			}
+		),
 	},
 	actors: {
 		chefMachine,
