@@ -2,22 +2,16 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
 import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
-import { getStartXPosition, henMachine } from '../Hen/hen.machine';
+import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
-import { GenerationStats, HenStats, Position } from './types';
+import { GenerationStats, HenStats, IndividualHen, Position } from './types';
 import { gameTimerMachine } from './gameTimer.machine';
 
 export interface GenerationSnapshot {
 	stats: GenerationStats;
 	henStatsById: Record<string, HenStats>;
 }
-
-const henConfigs = new Array(10).fill(null).map(() => ({
-	id: nanoid(),
-	initialX: getStartXPosition(1920),
-	initialY: 10,
-}));
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -31,6 +25,7 @@ export const gameLevelMachine = setup({
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			levelStats: GenerationStats;
 			henStatsById: Record<string, HenStats>;
+			nextGenerationPopulation: IndividualHen[];
 		};
 		events:
 			| { type: 'Time countdown tick' }
@@ -59,28 +54,38 @@ export const gameLevelMachine = setup({
 			  };
 		input: {
 			levelDuration: number;
+			nextGenerationPopulation: IndividualHen[];
 		};
 	},
 	actions: {
-		spawnNewHen: assign({
+		spawnNewHens: assign({
 			henActorRefs: ({ context, spawn }) =>
-				henConfigs.map(({ id: henId, initialX, initialY }) =>
-					spawn(henMachine, {
-						systemId: henId,
-						input: {
-							id: henId,
-							position: {
-								x: initialX,
-								y: initialY,
+				context.nextGenerationPopulation.map(
+					({
+						id: henId,
+						initialPosition,
+						speed,
+						baseAnimationDuration,
+						maxEggs,
+						stationaryEggLayingRate,
+						movingEggLayingRate,
+					}) =>
+						spawn(henMachine, {
+							systemId: henId,
+							input: {
+								stageDimensions: context.stageDimensions,
+								id: henId,
+								position: {
+									x: initialPosition.x,
+									y: initialPosition.y,
+								},
+								speed,
+								baseAnimationDuration,
+								maxEggs,
+								stationaryEggLayingRate,
+								movingEggLayingRate,
 							},
-							speed: Math.random(),
-							baseAnimationDuration: 3,
-							stageDimensions: context.stageDimensions,
-							maxEggs: -1,
-							stationaryEggLayingRate: 0.9,
-							movingEggLayingRate: 0.1,
-						},
-					})
+						})
 				),
 		}),
 		spawnNewEggForHen: assign({
@@ -237,6 +242,7 @@ export const gameLevelMachine = setup({
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
+		nextGenerationPopulation: input.nextGenerationPopulation,
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -311,7 +317,7 @@ export const gameLevelMachine = setup({
 	},
 	states: {
 		Playing: {
-			entry: 'spawnNewHen',
+			entry: 'spawnNewHens',
 			on: {
 				'Time countdown tick': {
 					actions: [

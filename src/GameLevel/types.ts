@@ -24,3 +24,13 @@ export interface GenerationStats {
 	totalEggsLaid: number;
 	// other averages here
 }
+
+export interface IndividualHen {
+	id: string;
+	initialPosition: Position;
+	speed: number;
+	baseAnimationDuration: number;
+	maxEggs: number;
+	stationaryEggLayingRate: number;
+	movingEggLayingRate: number;
+}
