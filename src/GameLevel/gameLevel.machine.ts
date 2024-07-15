@@ -25,7 +25,7 @@ export const gameLevelMachine = setup({
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
-			nextGenerationPopulation: IndividualHen[];
+			population: IndividualHen[];
 		};
 		events:
 			| { type: 'Time countdown tick' }
@@ -53,14 +53,15 @@ export const gameLevelMachine = setup({
 					resultStatus: EggResultStatus;
 			  };
 		input: {
+			generationIndex: number;
 			levelDuration: number;
-			nextGenerationPopulation: IndividualHen[];
+			population: IndividualHen[];
 		};
 	},
 	actions: {
 		spawnNewHens: assign({
 			henActorRefs: ({ context, spawn }) =>
-				context.nextGenerationPopulation.map(
+				context.population.map(
 					({
 						id: henId,
 						initialPosition,
@@ -223,11 +224,11 @@ export const gameLevelMachine = setup({
 		stageDimensions: STAGE_DIMENSIONS,
 		chefDimensions: CHEF_DIMENSIONS,
 		// TODO: Increment the generationIndex.
-		generationIndex: 0,
+		generationIndex: input.generationIndex,
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
-		nextGenerationPopulation: input.nextGenerationPopulation,
+		population: input.population,
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -241,7 +242,7 @@ export const gameLevelMachine = setup({
 			totalEggsLaid: 0,
 			totalEggsSplat: 0,
 		},
-		henStatsById: input.nextGenerationPopulation.reduce(
+		henStatsById: input.population.reduce(
 			(acc, individualHenConfig) => ({
 				...acc,
 				[individualHenConfig.id]: individualHenConfig,
@@ -367,8 +368,11 @@ export const gameLevelMachine = setup({
 				sendParent(({ context }) => {
 					return {
 						type: 'Level complete',
-						generationIndex: context.generationIndex,
-						henStatsById: context.henStatsById,
+						levelResults: {
+							generationIndex: context.generationIndex,
+							levelStats: context.levelStats,
+							henStatsById: context.henStatsById,
+						},
 					};
 				}),
 			],

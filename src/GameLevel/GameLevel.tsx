@@ -8,28 +8,29 @@ import { Egg } from '../Egg/Egg';
 import { CHEF_DIMENSIONS } from './gameConfig';
 import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
-import { AppActorContext } from '../app.machine';
 
 interface GameLevelProps {
 	stageDimensions: {
 		width: number;
 		height: number;
 	};
+	gameLevelActorRef: ActorRefFrom<typeof gameLevelMachine>;
 }
 
-export function GameLevel({ stageDimensions }: GameLevelProps) {
-	const appActorRef = AppActorContext.useActorRef();
-	const gameLevelActorRef = appActorRef.system.get(
-		'gameLevelMachine'
-	) as ActorRefFrom<typeof gameLevelMachine>;
+export function GameLevel({
+	stageDimensions,
+	gameLevelActorRef,
+}: GameLevelProps) {
 	const gameLevelState = useSelector(gameLevelActorRef, (state) => state);
 	const {
+		generationIndex,
 		remainingTime,
 		henActorRefs,
 		eggActorRefs,
 		levelStats,
 		// henStatsById,
 	} = useSelector(gameLevelActorRef, (state) => ({
+		generationIndex: state.context.generationIndex,
 		remainingTime: state.context.remainingTime,
 		henActorRefs: state.context.henActorRefs,
 		eggActorRefs: state.context.eggActorRefs,
@@ -65,6 +66,14 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 			</Layer>
 			{/* Game Timer UI layer */}
 			<Layer>
+				<Text
+					x={100}
+					y={250}
+					text={`Gen: ${generationIndex}`}
+					fontSize={30}
+					fontFamily="Arial"
+					fill="black"
+				/>
 				<Text
 					x={200}
 					y={250}

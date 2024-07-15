@@ -17,6 +17,12 @@ export interface GenerationStats {
 	// other averages here
 }
 
+export interface LevelResults {
+	generationIndex: number;
+	levelStats: GenerationStats;
+	henStatsById: Record<string, IndividualHen>;
+}
+
 export interface IndividualHen {
 	id: string;
 	// Configuration

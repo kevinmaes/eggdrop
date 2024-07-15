@@ -1,36 +1,10 @@
 import { IndividualHen } from './GameLevel/types';
 
-export function calculateFitness(
-	individual: IndividualHen
-	// generationDuration: number,
-	// canvas: HTMLCanvasElement,
-	// fitnessWeights?: Record<string, number>
-) {
+export function calculateFitness(individual: IndividualHen) {
 	let overallFitness = 0;
 
-	// // Normalize the lifespan of the individual to be between 0 and 1
-	// const lifespanPercentage = individual.lifespan / generationDuration;
-
-	// // Normalize the xPosition fitness to be between 0 and 1
-	// const xPositionFitness =
-	// 	(individual.xPos / canvas.width) * fitnessWeights.xPosition;
-
-	// // Assess the number of walls avoided
-	// const avoidanceFitness = individual.wallsAvoided * fitnessWeights.avoidance;
-
-	// overallFitness = xPositionFitness + avoidanceFitness;
-
-	// // Reward the individual for reaching the goal
-	// let completionFitness = 0;
-	// if (individual.goalReached) {
-	// 	// Reward the individual for reaching the goal faster.
-	// 	completionFitness = (1 / lifespanPercentage) * fitnessWeights.completion;
-	// 	// Reward the individual for reaching the center of the goal.
-	// 	completionFitness +=
-	// 		(1 - individual.yPos / canvas.height) * fitnessWeights.completionPosition;
-	// }
-	// overallFitness += completionFitness;
-	individual.fitness = overallFitness;
+	const caughtRate = individual.eggsCaught / individual.eggsLaid;
+	individual.fitness = 1 - caughtRate;
 
 	return overallFitness;
 }
@@ -74,7 +48,14 @@ export function rouletteWheelSelection(population: IndividualHen[]) {
 export function mutate(
 	individual: IndividualHen,
 	properties: Array<
-		Extract<keyof IndividualHen, 'speed' | 'baseAnimationDuration'>
+		Extract<
+			keyof IndividualHen,
+			| 'speed'
+			| 'baseAnimationDuration'
+			| 'maxEggs'
+			| 'stationaryEggLayingRate'
+			| 'movingEggLayingRate'
+		>
 	>,
 	mutationRate: number,
 	variancePercentage: number
@@ -94,3 +75,68 @@ export function mutate(
 
 	return individual;
 }
+
+/**
+ * Generates the next generation of the population
+ * @param population - The current population array
+ * @param mutationRate - The rate at which mutations occur
+ * @param variancePercentage - The percentage variance for mutations
+ * @returns The next generation population array
+ */
+// export function generateNextGeneration(
+// 	population: IndividualHen[],
+// 	mutationRate: number,
+// 	variancePercentage: number
+// ): IndividualHen[] {
+// 	const nextGeneration: IndividualHen[] = [];
+// 	const populationSize = population.length;
+
+// 	// Calculate fitness for each individual
+// 	population.forEach((individual) => {
+// 		calculateFitness(individual);
+// 	});
+
+// 	// Create the next generation
+// 	while (nextGeneration.length < populationSize) {
+// 		// Select parents
+// 		const parent1 = rouletteWheelSelection(population);
+// 		const parent2 = rouletteWheelSelection(population);
+
+// 		// Create offspring via crossover (simple one-point crossover example)
+// 		const crossoverPoint = Math.floor(
+// 			Math.random() * Object.keys(parent1).length
+// 		);
+// 		const offspring1: IndividualHen = { ...parent1 };
+// 		const offspring2: IndividualHen = { ...parent2 };
+
+// 		Object.keys(parent1).forEach((key: string, index) => {
+// 			if (index > crossoverPoint) {
+// 				offspring1[key] = parent2[key];
+// 				offspring2[key] = parent1[key];
+// 			}
+// 		});
+
+// 		// Mutate offspring
+// 		const propertiesToMutate: Array<
+// 			Extract<keyof IndividualHen, 'speed' | 'baseAnimationDuration'>
+// 		> = ['speed', 'baseAnimationDuration'];
+// 		const mutatedOffspring1 = mutate(
+// 			offspring1,
+// 			propertiesToMutate,
+// 			mutationRate,
+// 			variancePercentage
+// 		);
+// 		const mutatedOffspring2 = mutate(
+// 			offspring2,
+// 			propertiesToMutate,
+// 			mutationRate,
+// 			variancePercentage
+// 		);
+
+// 		// Add offspring to the next generation
+// 		nextGeneration.push(mutatedOffspring1, mutatedOffspring2);
+// 	}
+
+// 	// In case of an odd number population, slice the array to maintain the original size
+// 	return nextGeneration.slice(0, populationSize);
+// }
