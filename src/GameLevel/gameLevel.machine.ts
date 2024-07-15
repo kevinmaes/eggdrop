@@ -183,7 +183,7 @@ export const gameLevelMachine = setup({
 				};
 			}
 		),
-		calculateLevelStats: assign({
+		calculateLevelStatsAverages: assign({
 			levelStats: ({ context }) => {
 				const totalHens = context.population.length;
 
@@ -383,7 +383,7 @@ export const gameLevelMachine = setup({
 			tags: 'summary',
 			entry: [
 				log('Game Level summary state'),
-				'calculateLevelStats',
+				'calculateLevelStatsAverages',
 				'cleanupLevelRefs',
 				sendParent(({ context }) => {
 					console.log('sending parent context.levelStats', context.levelStats);
