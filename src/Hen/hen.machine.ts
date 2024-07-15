@@ -2,7 +2,10 @@ import { assign, sendParent, setup } from 'xstate';
 import { Ref } from 'react';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
-import { HEN_Y_POSITION } from '../GameLevel/gameConfig';
+import {
+	HEN_Y_POSITION,
+	STAGGERED_HEN_DELAY_MS,
+} from '../GameLevel/gameConfig';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const range = maxX - minX;
@@ -79,6 +82,7 @@ export const henMachine = setup({
 		}),
 	},
 	delays: {
+		getRandomStartDelay: () => Math.random() * STAGGERED_HEN_DELAY_MS,
 		pickStopDuration: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
@@ -86,13 +90,13 @@ export const henMachine = setup({
 	},
 }).createMachine({
 	id: 'hen',
-	initial: 'Moving',
+	initial: 'Offscreen',
 	context: ({ input }) => ({
 		henRef: null,
 		id: input.id,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
-		targetPosition: { x: 0, y: HEN_Y_POSITION },
+		targetPosition: { x: input.position.x, y: input.position.y },
 		speed: input.speed,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: 500,
@@ -115,6 +119,11 @@ export const henMachine = setup({
 		},
 	},
 	states: {
+		Offscreen: {
+			after: {
+				getRandomStartDelay: { target: 'Moving' },
+			},
+		},
 		Moving: {
 			entry: 'pickNewTargetXPosition',
 			on: {

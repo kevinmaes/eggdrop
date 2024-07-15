@@ -22,8 +22,6 @@ const initialGenerationPopulation = new Array(POPULATION_SIZE)
 	.fill(null)
 	.map(() => {
 		// Pick minimum and maximum X positions for the hen.
-		const minX = (Math.random() * 0.25 + 0.25) * STAGE_DIMENSIONS.width;
-		const maxX = (1 - 0.25 - Math.random() * 0.25) * STAGE_DIMENSIONS.width;
 		return {
 			id: nanoid(),
 			// Configuration
@@ -31,14 +29,14 @@ const initialGenerationPopulation = new Array(POPULATION_SIZE)
 				x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
 				y: HEN_Y_POSITION,
 			},
-			speed: Math.random(),
+			speed: Math.random() * 1.2,
 			baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 			maxEggs: -1,
 			stationaryEggLayingRate: Math.random(),
 			movingEggLayingRate: 0, // Math.random(),
 			hatchRate: Math.random(),
-			minX,
-			maxX,
+			minX: (Math.random() * 0.25 + 0.25) * STAGE_DIMENSIONS.width,
+			maxX: (1 - 0.25 - Math.random() * 0.25) * STAGE_DIMENSIONS.width,
 			// Results
 			fitness: 0,
 			eggsLaid: 0,
