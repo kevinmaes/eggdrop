@@ -109,8 +109,8 @@ export const gameLevelMachine = setup({
 				];
 			},
 		}),
-		updateHenStatsForEggLayed: assign({
-			henStatsById: ({ context }, params: { henId: string }) => {
+		updateHenStatsForEggLayed: assign(
+			({ context }, params: { henId: string }) => {
 				const updatedHenStatsById = {
 					...context.henStatsById,
 				};
@@ -130,9 +130,18 @@ export const gameLevelMachine = setup({
 						eggsBroken: 0,
 					};
 				}
-				return updatedHenStatsById;
-			},
-		}),
+
+				const updatedAggregateHenStats = {
+					...context.aggregateHenStats,
+					totalEggsLayed: context.aggregateHenStats.totalEggsLayed + 1,
+				};
+
+				return {
+					aggregateHenStats: updatedAggregateHenStats,
+					henStatsById: updatedHenStatsById,
+				};
+			}
+		),
 		updateHenStatsForEggDone: assign({
 			henStatsById: (
 				{ context },
@@ -216,13 +225,17 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		aggregateHenStats: {
-			generationIndex: 0,
-			totalEggsCaught: 0,
-			averageEggsLayed: 0,
-			averageEggsHatched: 0,
-			averageEggsSplat: 0,
 			averageEggsBroken: 0,
+			averageEggsHatched: 0,
+			averageEggsLayed: 0,
+			averageEggsSplat: 0,
 			averageHenSpeedLimit: 0,
+			generationIndex: 0,
+			totalEggsBroken: 0,
+			totalEggsCaught: 0,
+			totalEggsHatched: 0,
+			totalEggsLayed: 0,
+			totalEggsSplat: 0,
 		},
 		henStatsById: {},
 	}),

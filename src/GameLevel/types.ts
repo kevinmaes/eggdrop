@@ -12,12 +12,15 @@ export interface HenStats {
 }
 
 export interface GenerationStats {
-	generationIndex: number;
-	totalEggsCaught: number;
-	averageEggsLayed: number;
-	averageEggsHatched: number;
-	averageEggsSplat: number;
 	averageEggsBroken: number;
+	averageEggsHatched: number;
+	averageEggsLayed: number;
+	averageEggsSplat: number;
 	averageHenSpeedLimit: number;
+	generationIndex: number;
+	totalEggsBroken: number;
+	totalEggsCaught: number;
+	totalEggsHatched: number;
+	totalEggsLayed: number;
 	// other averages here
 }
