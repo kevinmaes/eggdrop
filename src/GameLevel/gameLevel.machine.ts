@@ -29,7 +29,7 @@ export const gameLevelMachine = setup({
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
-			aggregateHenStats: GenerationStats;
+			levelStats: GenerationStats;
 			henStatsById: Record<string, HenStats>;
 		};
 		events:
@@ -132,12 +132,12 @@ export const gameLevelMachine = setup({
 				}
 
 				const updatedAggregateHenStats = {
-					...context.aggregateHenStats,
-					totalEggsLayed: context.aggregateHenStats.totalEggsLayed + 1,
+					...context.levelStats,
+					totalEggsLayed: context.levelStats.totalEggsLayed + 1,
 				};
 
 				return {
-					aggregateHenStats: updatedAggregateHenStats,
+					levelStats: updatedAggregateHenStats,
 					henStatsById: updatedHenStatsById,
 				};
 			}
@@ -224,7 +224,7 @@ export const gameLevelMachine = setup({
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
-		aggregateHenStats: {
+		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
 			averageEggsLayed: 0,

@@ -76,7 +76,7 @@ const appMachine = setup({
 						src: 'gameLevelMachine',
 						systemId: 'gameLevelMachine',
 						input: {
-							levelDuration: 3000,
+							levelDuration: 10000,
 						},
 					},
 					description: 'The main state for game play of each level',

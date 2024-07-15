@@ -27,13 +27,13 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 		remainingTime,
 		henActorRefs,
 		eggActorRefs,
-		aggregateHenStats,
+		levelStats,
 		// henStatsById,
 	} = useSelector(gameLevelActorRef, (state) => ({
 		remainingTime: state.context.remainingTime,
 		henActorRefs: state.context.henActorRefs,
 		eggActorRefs: state.context.eggActorRefs,
-		aggregateHenStats: state.context.aggregateHenStats,
+		levelStats: state.context.levelStats,
 		henStatsById: state.context.henStatsById,
 	}));
 
@@ -80,7 +80,15 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					<Text
 						x={400}
 						y={450}
-						text={`Total eggs caught ${aggregateHenStats.totalEggsCaught}`}
+						text={`Total eggs laid ${levelStats.totalEggsLayed}`}
+						fontSize={30}
+						fontFamily="Arial"
+						fill="black"
+					/>
+					<Text
+						x={400}
+						y={500}
+						text={`Total eggs caught ${levelStats.totalEggsCaught}`}
 						fontSize={30}
 						fontFamily="Arial"
 						fill="black"
