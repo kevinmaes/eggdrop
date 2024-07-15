@@ -1,5 +1,5 @@
 import { createActorContext } from '@xstate/react';
-import { fromPromise, setup } from 'xstate';
+import { fromPromise, log, setup } from 'xstate';
 import { GenerationSnapshot } from './GameLevel/gameLevel.machine';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 
@@ -65,15 +65,24 @@ const appMachine = setup({
 					},
 				},
 				Playing: {
+					on: {
+						'Level complete': {
+							actions: [log('Level complete received by App')],
+						},
+					},
 					invoke: {
 						src: 'gameLevelMachine',
 						systemId: 'gameLevelMachine',
 						input: {
-							levelDuration: 10000,
+							levelDuration: 5000,
 						},
 					},
 					description: 'The main state for game play of each level',
 				},
+				Evaluation: {},
+				Selection: {},
+				Crossover: {},
+				Mutation: {},
 			},
 		},
 	},

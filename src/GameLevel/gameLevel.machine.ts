@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -367,13 +367,13 @@ export const gameLevelMachine = setup({
 						eggActorRef.send({ type: 'Pause game' });
 					});
 				},
-				// sendParent(({ context }) => {
-				// 	return {
-				// 		type: 'Level complete',
-				// 		generationIndex: context.generationIndex,
-				// 		henStatsById: context.henStatsById,
-				// 	};
-				// }),
+				sendParent(({ context }) => {
+					return {
+						type: 'Level complete',
+						generationIndex: context.generationIndex,
+						henStatsById: context.henStatsById,
+					};
+				}),
 			],
 		},
 	},
