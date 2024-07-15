@@ -80,7 +80,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 					<Text
 						x={400}
 						y={450}
-						text={`Total eggs laid ${levelStats.totalEggsLayed}`}
+						text={`Total eggs laid ${levelStats.totalEggsLaid}`}
 						fontSize={30}
 						fontFamily="Arial"
 						fill="black"

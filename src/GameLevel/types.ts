@@ -5,7 +5,7 @@ export interface Position {
 
 export interface HenStats {
 	id: string;
-	eggsLayed: number;
+	eggsLaid: number;
 	eggsCaught: number;
 	eggsHatched: number;
 	eggsBroken: number;
@@ -14,13 +14,13 @@ export interface HenStats {
 export interface GenerationStats {
 	averageEggsBroken: number;
 	averageEggsHatched: number;
-	averageEggsLayed: number;
+	averageEggsLaid: number;
 	averageEggsSplat: number;
 	averageHenSpeedLimit: number;
 	generationIndex: number;
 	totalEggsBroken: number;
 	totalEggsCaught: number;
 	totalEggsHatched: number;
-	totalEggsLayed: number;
+	totalEggsLaid: number;
 	// other averages here
 }

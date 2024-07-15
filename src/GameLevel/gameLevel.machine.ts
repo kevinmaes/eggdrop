@@ -109,7 +109,7 @@ export const gameLevelMachine = setup({
 				];
 			},
 		}),
-		updateHenStatsForEggLayed: assign(
+		updateHenStatsForEggLaid: assign(
 			({ context }, params: { henId: string }) => {
 				const updatedHenStatsById = {
 					...context.henStatsById,
@@ -119,12 +119,12 @@ export const gameLevelMachine = setup({
 				if (existingHenStats) {
 					updatedHenStatsById[params.henId] = {
 						...existingHenStats,
-						eggsLayed: existingHenStats.eggsLayed + 1,
+						eggsLaid: existingHenStats.eggsLaid + 1,
 					};
 				} else {
 					updatedHenStatsById[params.henId] = {
 						id: params.henId,
-						eggsLayed: 1,
+						eggsLaid: 1,
 						eggsCaught: 0,
 						eggsHatched: 0,
 						eggsBroken: 0,
@@ -133,7 +133,7 @@ export const gameLevelMachine = setup({
 
 				const updatedAggregateHenStats = {
 					...context.levelStats,
-					totalEggsLayed: context.levelStats.totalEggsLayed + 1,
+					totalEggsLaid: context.levelStats.totalEggsLaid + 1,
 				};
 
 				return {
@@ -227,14 +227,14 @@ export const gameLevelMachine = setup({
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
-			averageEggsLayed: 0,
+			averageEggsLaid: 0,
 			averageEggsSplat: 0,
 			averageHenSpeedLimit: 0,
 			generationIndex: 0,
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,
 			totalEggsHatched: 0,
-			totalEggsLayed: 0,
+			totalEggsLaid: 0,
 			totalEggsSplat: 0,
 		},
 		henStatsById: {},
@@ -256,7 +256,7 @@ export const gameLevelMachine = setup({
 					}),
 				},
 				{
-					type: 'updateHenStatsForEggLayed',
+					type: 'updateHenStatsForEggLaid',
 					params: ({ event }) => ({ henId: event.henId }),
 				},
 			],
