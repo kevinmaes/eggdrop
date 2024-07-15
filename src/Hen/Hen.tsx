@@ -33,15 +33,6 @@ export function Hen({
 
 	useEffect(() => {
 		if (henRef.current) {
-			if (tweenRef.current && gamePaused === true) {
-				tweenRef.current.pause();
-				return;
-			}
-			if (tweenRef.current && gamePaused === false) {
-				tweenRef.current.play();
-				return;
-			}
-
 			const totalDistance = 1920;
 			const xDistance = Math.abs(targetPosition.x - position.x);
 			const relativeDistance = xDistance / totalDistance;
@@ -53,9 +44,7 @@ export function Hen({
 				duration,
 				x: targetPosition.x,
 				easing: Konva.Easings.EaseInOut,
-				onFinish: () => {
-					henActorRef.send({ type: 'Stop moving' });
-				},
+				onFinish: () => henActorRef.send({ type: 'Stop moving' }),
 			});
 			tweenRef.current.play();
 		}

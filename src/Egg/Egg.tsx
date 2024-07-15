@@ -33,15 +33,6 @@ export function Egg({
 
 	useEffect(() => {
 		if (eggRef.current) {
-			if (tweenRef.current && gamePaused === true) {
-				tweenRef.current.pause();
-				return;
-			}
-			if (tweenRef.current && gamePaused === false) {
-				tweenRef.current.play();
-				return;
-			}
-
 			if (eggState.matches('Falling')) {
 				tweenRef.current = new Konva.Tween({
 					node: eggRef.current,

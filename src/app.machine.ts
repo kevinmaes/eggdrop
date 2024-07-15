@@ -3,30 +3,36 @@ import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getStartXPosition } from './Hen/hen.machine';
-import { LEVEL_DURATION_MS, STAGE_DIMENSIONS } from './GameLevel/gameConfig';
+import {
+	LEVEL_DURATION_MS,
+	POPULATION_SIZE,
+	STAGE_DIMENSIONS,
+} from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 
-const initialGenerationPopulation = new Array(10).fill(null).map(() => ({
-	id: nanoid(),
-	// Configuration
-	initialPosition: {
-		x: getStartXPosition(STAGE_DIMENSIONS.width),
-		y: 10,
-	},
-	speed: Math.random(),
-	baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
-	maxEggs: -1,
-	stationaryEggLayingRate: Math.random(),
-	movingEggLayingRate: Math.random(),
-	hatchRate: Math.random(),
-	// Results
-	fitness: 0,
-	eggsLaid: 0,
-	eggsCaught: 0,
-	eggsHatched: 0,
-	eggsBroken: 0,
-}));
+const initialGenerationPopulation = new Array(POPULATION_SIZE)
+	.fill(null)
+	.map(() => ({
+		id: nanoid(),
+		// Configuration
+		initialPosition: {
+			x: getStartXPosition(STAGE_DIMENSIONS.width),
+			y: 10,
+		},
+		speed: Math.random(),
+		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
+		maxEggs: -1,
+		stationaryEggLayingRate: Math.random(),
+		movingEggLayingRate: 0, // Math.random(),
+		hatchRate: Math.random(),
+		// Results
+		fitness: 0,
+		eggsLaid: 0,
+		eggsCaught: 0,
+		eggsHatched: 0,
+		eggsBroken: 0,
+	}));
 
 const appMachine = setup({
 	types: {} as {
