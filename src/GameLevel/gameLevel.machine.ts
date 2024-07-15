@@ -169,6 +169,12 @@ export const gameLevelMachine = setup({
 						break;
 				}
 
+				console.log(
+					'updateHenStatsForEggDone',
+					params.resultStatus,
+					updatedLevelStats.totalEggsCaught
+				);
+
 				updatedHenStatsById[params.henId] = updatedHenStats;
 
 				return {
@@ -180,43 +186,23 @@ export const gameLevelMachine = setup({
 		calculateLevelStats: assign({
 			levelStats: ({ context }) => {
 				const totalHens = context.population.length;
-				const totalEggsLaid = context.population.reduce(
-					(acc, hen) => acc + hen.eggsLaid,
-					0
-				);
-				const totalEggsCaught = context.population.reduce(
-					(acc, hen) => acc + hen.eggsCaught,
-					0
-				);
-				const totalEggsHatched = context.population.reduce(
-					(acc, hen) => acc + hen.eggsHatched,
-					0
-				);
-				const totalEggsBroken = context.population.reduce(
-					(acc, hen) => acc + hen.eggsBroken,
-					0
-				);
-				const catchRate = totalEggsCaught / totalEggsLaid;
-				const averageHatchRate =
-					context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
-					totalHens;
 
 				return {
-					generationIndex: context.generationIndex,
-					averageEggsLaid: totalEggsLaid / totalHens,
-					averageEggsCaught: totalEggsCaught / totalHens,
-					averageEggsHatched: totalEggsHatched / totalHens,
-					averageEggsBroken: totalEggsBroken / totalHens,
+					...context.levelStats,
+					averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
+					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
+					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
+					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
 					averageHenSpeedLimit: context.population.reduce(
 						(acc, hen) => acc + hen.speed,
 						0
 					),
-					averageHatchRate,
-					totalEggsLaid,
-					totalEggsCaught,
-					totalEggsHatched,
-					totalEggsBroken,
-					catchRate,
+					averageHatchRate:
+						context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
+						totalHens,
+					catchRate:
+						context.levelStats.totalEggsCaught /
+						context.levelStats.totalEggsLaid,
 				};
 			},
 		}),

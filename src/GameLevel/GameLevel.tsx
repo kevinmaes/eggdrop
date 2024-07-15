@@ -28,14 +28,21 @@ export function GameLevel({
 		henActorRefs,
 		eggActorRefs,
 		levelStats,
-	} = useSelector(gameLevelActorRef, (state) => ({
-		generationIndex: state.context.generationIndex,
-		remainingTime: state.context.remainingTime,
-		henActorRefs: state.context.henActorRefs,
-		eggActorRefs: state.context.eggActorRefs,
-		levelStats: state.context.levelStats,
-		henStatsById: state.context.henStatsById,
-	}));
+	} = gameLevelState.context;
+	// const {
+	// 	generationIndex,
+	// 	remainingTime,
+	// 	henActorRefs,
+	// 	eggActorRefs,
+	// 	levelStats,
+	// } = useSelector(gameLevelActorRef, (state) => ({
+	// 	generationIndex: state.context.generationIndex,
+	// 	remainingTime: state.context.remainingTime,
+	// 	henActorRefs: state.context.henActorRefs,
+	// 	eggActorRefs: state.context.eggActorRefs,
+	// 	levelStats: state.context.levelStats,
+	// 	henStatsById: state.context.henStatsById,
+	// }));
 
 	const chefInitialPosition = {
 		x: stageDimensions.width / 2 - 0.5 * CHEF_DIMENSIONS.width,
