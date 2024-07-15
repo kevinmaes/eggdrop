@@ -5,12 +5,12 @@ import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
-import { GenerationStats, HenStats, IndividualHen, Position } from './types';
+import { GenerationStats, IndividualHen, Position } from './types';
 import { gameTimerMachine } from './gameTimer.machine';
 
 export interface GenerationSnapshot {
 	stats: GenerationStats;
-	henStatsById: Record<string, HenStats>;
+	henStatsById: Record<string, IndividualHen>;
 }
 
 export const gameLevelMachine = setup({
@@ -24,7 +24,7 @@ export const gameLevelMachine = setup({
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			levelStats: GenerationStats;
-			henStatsById: Record<string, HenStats>;
+			henStatsById: Record<string, IndividualHen>;
 			nextGenerationPopulation: IndividualHen[];
 		};
 		events:
@@ -119,22 +119,7 @@ export const gameLevelMachine = setup({
 				const updatedHenStatsById = {
 					...context.henStatsById,
 				};
-				const existingHenStats = context.henStatsById[params.henId];
-
-				if (existingHenStats) {
-					updatedHenStatsById[params.henId] = {
-						...existingHenStats,
-						eggsLaid: existingHenStats.eggsLaid + 1,
-					};
-				} else {
-					updatedHenStatsById[params.henId] = {
-						id: params.henId,
-						eggsLaid: 1,
-						eggsCaught: 0,
-						eggsHatched: 0,
-						eggsBroken: 0,
-					};
-				}
+				updatedHenStatsById[params.henId].eggsLaid += 1;
 
 				const updatedLevelStats = {
 					...context.levelStats,
@@ -256,7 +241,13 @@ export const gameLevelMachine = setup({
 			totalEggsLaid: 0,
 			totalEggsSplat: 0,
 		},
-		henStatsById: {},
+		henStatsById: input.nextGenerationPopulation.reduce(
+			(acc, individualHenConfig) => ({
+				...acc,
+				[individualHenConfig.id]: individualHenConfig,
+			}),
+			{}
+		),
 	}),
 	initial: 'Playing',
 	on: {

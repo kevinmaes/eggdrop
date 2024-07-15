@@ -9,6 +9,7 @@ import { IndividualHen } from './GameLevel/types';
 
 const initialGenerationPopulation = new Array(10).fill(null).map(() => ({
 	id: nanoid(),
+	// Configuration
 	initialPosition: {
 		x: getStartXPosition(STAGE_DIMENSIONS.width),
 		y: 10,
@@ -18,6 +19,12 @@ const initialGenerationPopulation = new Array(10).fill(null).map(() => ({
 	maxEggs: -1,
 	stationaryEggLayingRate: 0.9,
 	movingEggLayingRate: 0.1,
+	// Results
+	fitness: 0,
+	eggsLaid: 0,
+	eggsCaught: 0,
+	eggsHatched: 0,
+	eggsBroken: 0,
 }));
 
 const appMachine = setup({

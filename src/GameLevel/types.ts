@@ -3,14 +3,6 @@ export interface Position {
 	y: number;
 }
 
-export interface HenStats {
-	id: string;
-	eggsLaid: number;
-	eggsCaught: number;
-	eggsHatched: number;
-	eggsBroken: number;
-}
-
 export interface GenerationStats {
 	averageEggsBroken: number;
 	averageEggsHatched: number;
@@ -27,10 +19,17 @@ export interface GenerationStats {
 
 export interface IndividualHen {
 	id: string;
+	// Configuration
 	initialPosition: Position;
 	speed: number;
 	baseAnimationDuration: number;
 	maxEggs: number;
 	stationaryEggLayingRate: number;
 	movingEggLayingRate: number;
+	// Results
+	fitness: number;
+	eggsLaid: number;
+	eggsCaught: number;
+	eggsHatched: number;
+	eggsBroken: number;
 }
