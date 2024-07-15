@@ -67,6 +67,8 @@ export const gameLevelMachine = setup({
 						stationaryEggLayingRate,
 						movingEggLayingRate,
 						hatchRate,
+						minX,
+						maxX,
 					}) =>
 						spawn(henMachine, {
 							systemId: henId,
@@ -83,6 +85,8 @@ export const gameLevelMachine = setup({
 								stationaryEggLayingRate,
 								movingEggLayingRate,
 								hatchRate,
+								minX,
+								maxX,
 							},
 						})
 				),

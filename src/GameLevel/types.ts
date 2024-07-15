@@ -33,6 +33,8 @@ export interface IndividualHen {
 	stationaryEggLayingRate: number;
 	movingEggLayingRate: number;
 	hatchRate: number;
+	minX: number;
+	maxX: number;
 	// Results
 	fitness: number;
 	eggsLaid: number;

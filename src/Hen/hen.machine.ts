@@ -3,12 +3,12 @@ import { Ref } from 'react';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 
-export function getStartXPosition(stageWidth: number, buffer: number = 50) {
-	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
-}
-
-export function pickXPosition(stageWidth: number, buffer: number = 50) {
-	return Math.random() * (stageWidth - 2 * buffer) + buffer;
+export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
+	const range = maxX - minX;
+	let randomPosition = Math.random() * range + minX;
+	if (randomPosition < buffer) return buffer;
+	if (randomPosition > maxX - buffer) return maxX - buffer;
+	return randomPosition;
 }
 
 export const henMachine = setup({
@@ -23,6 +23,8 @@ export const henMachine = setup({
 			speed: number;
 			baseTweenDurationSeconds: number;
 			hatchRate: number;
+			minX: number;
+			maxX: number;
 		};
 		context: {
 			henRef: Ref<Konva.Image>;
@@ -40,6 +42,8 @@ export const henMachine = setup({
 			movingEggLayingRate: number;
 			gamePaused: boolean;
 			hatchRate: number;
+			minX: number;
+			maxX: number;
 		};
 		events:
 			| { type: 'Set henRef'; henRef: Ref<Konva.Image> }
@@ -64,7 +68,7 @@ export const henMachine = setup({
 	},
 	actions: {
 		pickNewTargetXPosition: assign(({ context }) => ({
-			targetPosition: { x: pickXPosition(context.stageDimensions.width), y: 0 },
+			targetPosition: { x: pickXPosition(context.minX, context.maxX), y: 0 },
 		})),
 		updatePosition: assign({
 			position: ({ context }) => context.targetPosition,
@@ -95,6 +99,8 @@ export const henMachine = setup({
 		movingEggLayingRate: input.movingEggLayingRate,
 		gamePaused: false,
 		hatchRate: input.hatchRate,
+		minX: input.minX,
+		maxX: input.maxX,
 	}),
 	on: {
 		'Pause game': {

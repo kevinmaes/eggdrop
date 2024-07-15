@@ -2,7 +2,7 @@ import { createActorContext } from '@xstate/react';
 import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
-import { getStartXPosition } from './Hen/hen.machine';
+import { pickXPosition } from './Hen/hen.machine';
 import {
 	LEVEL_DURATION_MS,
 	POPULATION_SIZE,
@@ -13,26 +13,34 @@ import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 
 const initialGenerationPopulation = new Array(POPULATION_SIZE)
 	.fill(null)
-	.map(() => ({
-		id: nanoid(),
-		// Configuration
-		initialPosition: {
-			x: getStartXPosition(STAGE_DIMENSIONS.width),
-			y: 10,
-		},
-		speed: Math.random(),
-		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
-		maxEggs: -1,
-		stationaryEggLayingRate: Math.random(),
-		movingEggLayingRate: 0, // Math.random(),
-		hatchRate: Math.random(),
-		// Results
-		fitness: 0,
-		eggsLaid: 0,
-		eggsCaught: 0,
-		eggsHatched: 0,
-		eggsBroken: 0,
-	}));
+	.map(() => {
+		// Pick minimum and maximum X positions for the hen.
+		const minX = (Math.random() * 0.25 + 0.25) * STAGE_DIMENSIONS.width;
+		const maxX = (1 - 0.25 - Math.random() * 0.25) * STAGE_DIMENSIONS.width;
+		console.log('minX:', minX, 'maxX:', maxX);
+		return {
+			id: nanoid(),
+			// Configuration
+			initialPosition: {
+				x: pickXPosition(minX, maxX),
+				y: 10,
+			},
+			speed: Math.random(),
+			baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
+			maxEggs: -1,
+			stationaryEggLayingRate: Math.random(),
+			movingEggLayingRate: 0, // Math.random(),
+			hatchRate: Math.random(),
+			minX,
+			maxX,
+			// Results
+			fitness: 0,
+			eggsLaid: 0,
+			eggsCaught: 0,
+			eggsHatched: 0,
+			eggsBroken: 0,
+		};
+	});
 
 const appMachine = setup({
 	types: {} as {
@@ -111,6 +119,8 @@ const appMachine = setup({
 						movingEggLayingRate:
 							(parent1.movingEggLayingRate + parent2.movingEggLayingRate) / 2,
 						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
+						minX: (parent1.minX + parent2.minX) / 2,
+						maxX: (parent1.maxX + parent2.maxX) / 2,
 						fitness: 0,
 						eggsLaid: 0,
 						eggsCaught: 0,
