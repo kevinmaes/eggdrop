@@ -35,6 +35,8 @@ export const gameLevelMachine = setup({
 		events:
 			| { type: 'Time countdown tick' }
 			| { type: 'Time countdown done' }
+			| { type: 'Pause game' }
+			| { type: 'Resume game' }
 			| {
 					type: 'Set chefPotRimHitRef';
 					chefPotRimHitRef: React.RefObject<Rect>;
