@@ -8,11 +8,6 @@ import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { gameTimerMachine } from './gameTimer.machine';
 
-export interface GenerationSnapshot {
-	stats: GenerationStats;
-	henStatsById: Record<string, IndividualHen>;
-}
-
 export const gameLevelMachine = setup({
 	types: {} as {
 		context: {

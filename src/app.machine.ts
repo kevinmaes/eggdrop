@@ -1,6 +1,5 @@
 import { createActorContext } from '@xstate/react';
 import { assign, fromPromise, log, setup } from 'xstate';
-import { GenerationSnapshot } from './GameLevel/gameLevel.machine';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getStartXPosition } from './Hen/hen.machine';
@@ -33,7 +32,7 @@ const appMachine = setup({
 	types: {} as {
 		context: {
 			generationIndex: number;
-			generationSnapshotHistory: GenerationSnapshot[];
+			generationSnapshotHistory: LevelResults[];
 			population: IndividualHen[];
 			populationSize: number;
 			lastLevelResults: LevelResults | null;
@@ -189,6 +188,10 @@ const appMachine = setup({
 						'Level complete': {
 							actions: assign({
 								lastLevelResults: ({ event }) => event.levelResults,
+								generationSnapshotHistory: ({ context, event }) => [
+									...context.generationSnapshotHistory,
+									event.levelResults,
+								],
 							}),
 							target: 'Next Generation Evolution',
 						},
