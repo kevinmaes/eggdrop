@@ -44,7 +44,6 @@ export function Egg({
 
 			if (eggState.matches('Falling')) {
 				tweenRef.current = new Konva.Tween({
-					// eggRef.current.to({
 					node: eggRef.current,
 					duration: 3,
 					y: targetPosition.y,
