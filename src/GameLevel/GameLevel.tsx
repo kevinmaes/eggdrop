@@ -75,35 +75,6 @@ export function GameLevel({
 					fill="black"
 				/>
 			</Layer>
-			{/* Game level summary UI */}
-			{gameLevelState.hasTag('summary') && (
-				<Layer>
-					<Text
-						x={400}
-						y={450}
-						text={`Total eggs laid ${levelStats.totalEggsLaid}`}
-						fontSize={30}
-						fontFamily="Arial"
-						fill="black"
-					/>
-					<Text
-						x={400}
-						y={500}
-						text={`Total eggs caught ${levelStats.totalEggsCaught}`}
-						fontSize={30}
-						fontFamily="Arial"
-						fill="black"
-					/>
-					<Text
-						x={600}
-						y={500}
-						text={`Catch rate ${levelStats.catchRate}`}
-						fontSize={30}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Layer>
-			)}
 		</>
 	);
 }

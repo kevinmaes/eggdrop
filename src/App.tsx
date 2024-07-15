@@ -97,7 +97,9 @@ const App = () => {
 							<Text
 								x={800}
 								y={500}
-								text={`Catch rate ${lastLevelResults?.levelStats.catchRate}`}
+								text={`Catch rate ${Math.round(
+									lastLevelResults?.levelStats.catchRate * 100
+								)}%`}
 								fontSize={30}
 								fontFamily="Arial"
 								fill="black"
