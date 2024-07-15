@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -312,12 +312,9 @@ export const gameLevelMachine = setup({
 			entry: 'spawnNewHens',
 			on: {
 				'Time countdown tick': {
-					actions: [
-						log('Time countdown tick'),
-						assign({
-							remainingTime: ({ context }) => context.remainingTime - 1000,
-						}),
-					],
+					actions: assign({
+						remainingTime: ({ context }) => context.remainingTime - 1000,
+					}),
 				},
 				'Time countdown done': 'Done',
 			},
