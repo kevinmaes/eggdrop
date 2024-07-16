@@ -1,7 +1,7 @@
-import { assign, setup } from 'xstate';
-import { animationActor } from '../helpers/animationActor';
+import { assign, fromPromise, setup } from 'xstate';
 import { Position } from '../GameLevel/types';
 import Konva from 'konva';
+import { Animation } from 'konva/lib/Animation';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -93,7 +93,19 @@ export const chefMachine = setup({
 		},
 	},
 	actors: {
-		animationActor,
+		animationActor: fromPromise(() => {
+			let anim: Animation | null;
+			return new Promise<{ timeDiff: number }>((resolve) => {
+				anim = new Animation((frame) => {
+					if (frame?.timeDiff) {
+						resolve({ timeDiff: frame?.timeDiff });
+						anim?.stop();
+						anim = null;
+					}
+				});
+				anim.start();
+			});
+		}),
 	},
 }).createMachine({
 	id: 'chef',
