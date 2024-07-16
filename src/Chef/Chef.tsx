@@ -37,10 +37,7 @@ export function Chef({
 	const chefPotRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
 		if (chefPotRef.current) {
-			chefActorRef.send({
-				type: 'Set chefPotRef',
-				chefPotRef,
-			});
+			chefActorRef.send({ type: 'Set chefPotRef', chefPotRef });
 		}
 	}, [chefPotRef.current]);
 
