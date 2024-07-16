@@ -80,7 +80,8 @@ export const chefMachine = setup({
 			};
 		}),
 		playCatchAnimation: ({ context }) => {
-			context.chefPotRef.current?.to({
+			if (!context.chefPotRef.current) return;
+			context.chefPotRef.current.to({
 				fill: 'yellow',
 				duration: 0.1,
 				onFinish: () => {
