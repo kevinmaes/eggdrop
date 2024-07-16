@@ -1,5 +1,4 @@
 import { assign, setup } from 'xstate';
-import { EggHitTestResult } from './Chef';
 import { animationActor } from '../helpers/animationActor';
 import { Position } from '../GameLevel/types';
 import Konva from 'konva';
@@ -14,14 +13,12 @@ export const chefMachine = setup({
 			direction: -1 | 0 | 1;
 			acceleration: number;
 			deceleration: number;
-			hitTestResult: EggHitTestResult;
 			minXPos: number;
 			maxXPos: number;
 		};
 		events:
 			| { type: 'Set chefPotRef'; chefPotRef: React.RefObject<Konva.Rect> }
 			| { type: 'Catch' }
-			| { type: 'Broke'; hitTestResult: EggHitTestResult }
 			| { type: 'Set direction'; direction: -1 | 0 | 1 };
 		input: {
 			position: Position;
@@ -109,7 +106,6 @@ export const chefMachine = setup({
 		direction: 0,
 		acceleration: input.acceleration,
 		deceleration: input.deceleration,
-		hitTestResult: 'none',
 		minXPos: input.minXPos,
 		maxXPos: input.maxXPos,
 	}),
@@ -132,28 +128,14 @@ export const chefMachine = setup({
 				onDone: {
 					target: 'Moving',
 					reenter: true,
-					actions: ['updateChefPosition'],
+					actions: 'updateChefPosition',
 				},
 			},
 			on: {
 				Catch: {
 					actions: 'playCatchAnimation',
 				},
-				Broke: {
-					target: 'Broken',
-					actions: assign({
-						hitTestResult: ({ event }) => event.hitTestResult,
-					}),
-				},
 			},
-		},
-		Broken: {
-			after: {
-				200: 'Moving',
-			},
-			exit: assign({
-				hitTestResult: 'none',
-			}),
 		},
 	},
 });

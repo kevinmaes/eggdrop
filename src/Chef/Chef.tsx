@@ -119,9 +119,6 @@ export function Chef({
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={5}
 				height={dimensions.height * 0.5}
-				// fill={
-				// 	chefState?.context.hitTestResult === 'broke-left' ? 'white' : 'none'
-				// }
 			/>
 			{/* Right side hit box */}
 			<Rect
@@ -137,7 +134,6 @@ export function Chef({
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={5}
 				height={dimensions.height * 0.5}
-				// fill={hitTestResult === 'broke-right' ? 'white' : 'none'}
 			/>
 		</>
 	);
