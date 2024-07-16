@@ -88,7 +88,7 @@ export const chefMachine = setup({
 				duration: 0.1,
 				onFinish: () => {
 					context.chefPotRef.current?.to({
-						fill: 'gray',
+						fill: 'silver',
 						duration: 0.1,
 					});
 				},

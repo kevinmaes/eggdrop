@@ -7,6 +7,7 @@ import { ActorRefFrom } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
 // import useImage from 'use-image';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
@@ -31,7 +32,7 @@ export function Chef({
 	const chefState = useSelector(chefActorRef, (state) => state);
 	const chefPosition = useSelector(
 		chefActorRef,
-		(state) => state?.context.position ?? { x: 0, y: 0 }
+		(state) => state?.context.position
 	);
 
 	const chefPotRef = useRef<Konva.Rect>(null);
@@ -76,8 +77,6 @@ export function Chef({
 		return null;
 	}
 
-	const color = chefState.matches('Catching') ? 'yellow' : 'silver';
-
 	return (
 		<>
 			{/* Chef */}
@@ -95,16 +94,16 @@ export function Chef({
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={dimensions.width * 0.8}
 				height={dimensions.height * 0.5}
-				fill={color}
+				fill="silver"
 			/>
-			{/* Top side hit box (for catching eggs) */}
+			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={chefPosition.x + 0.1 * dimensions.width}
-				y={chefPosition.y + 0.4 * dimensions.height}
-				width={dimensions.width * 0.8}
-				height={10}
-				fill="blue"
+				x={chefPosition.x + (dimensions.width - CHEF_POT_RIM_CONFIG.width) / 2}
+				y={CHEF_POT_RIM_CONFIG.y}
+				width={CHEF_POT_RIM_CONFIG.width}
+				height={CHEF_POT_RIM_CONFIG.height}
+				fill="yellow"
 			/>
 			{/* Left side hit box */}
 			<Rect
