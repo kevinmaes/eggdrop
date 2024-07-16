@@ -51,12 +51,12 @@ export const chefMachine = setup({
 
 			if (direction === 0) {
 				if (speed > 0) {
-					newSpeed = Math.max(speed - deceleration, 0);
+					newSpeed = Math.max(speed * (1 - deceleration), 0);
 					if (newSpeed > speedLimit) {
 						newSpeed = speedLimit;
 					}
 				} else if (speed < 0) {
-					newSpeed = Math.min(speed + deceleration, 0);
+					newSpeed = Math.min(speed * (1 - deceleration), 0);
 					if (Math.abs(newSpeed) > speedLimit) {
 						newSpeed = -speedLimit;
 					}
@@ -137,14 +137,7 @@ export const chefMachine = setup({
 			},
 			on: {
 				Catch: {
-					target: 'Catching',
-					actions: [
-						// log('Catch received by chef'),
-						assign({
-							direction: 0,
-							speed: 0,
-						}),
-					],
+					actions: 'playCatchAnimation',
 				},
 				Broke: {
 					target: 'Broken',
@@ -153,10 +146,6 @@ export const chefMachine = setup({
 					}),
 				},
 			},
-		},
-		Catching: {
-			entry: 'playCatchAnimation',
-			always: 'Moving',
 		},
 		Broken: {
 			after: {
