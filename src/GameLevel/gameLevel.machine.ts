@@ -69,6 +69,8 @@ export const gameLevelMachine = setup({
 						hatchRate,
 						minX,
 						maxX,
+						minStopMS,
+						maxStopMS,
 					}) =>
 						spawn(henMachine, {
 							systemId: henId,
@@ -87,6 +89,8 @@ export const gameLevelMachine = setup({
 								hatchRate,
 								minX,
 								maxX,
+								minStopMS,
+								maxStopMS,
 							},
 						})
 				),
@@ -197,12 +201,28 @@ export const gameLevelMachine = setup({
 					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
 					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
 					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
-					averageHenSpeedLimit: context.population.reduce(
-						(acc, hen) => acc + hen.speed,
-						0
-					),
+					averageStationaryEggLayingRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.stationaryEggLayingRate,
+							0
+						) / totalHens,
+					averageHenSpeed:
+						context.population.reduce((acc, hen) => acc + hen.speed, 0) /
+						totalHens,
 					averageHatchRate:
 						context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
+						totalHens,
+					averageMinX:
+						context.population.reduce((acc, hen) => acc + hen.minX, 0) /
+						totalHens,
+					averageMaxX:
+						context.population.reduce((acc, hen) => acc + hen.maxX, 0) /
+						totalHens,
+					averageMinStopMS:
+						context.population.reduce((acc, hen) => acc + hen.minStopMS, 0) /
+						totalHens,
+					averageMaxStopMS:
+						context.population.reduce((acc, hen) => acc + hen.maxStopMS, 0) /
 						totalHens,
 					catchRate:
 						context.levelStats.totalEggsCaught /
@@ -264,8 +284,13 @@ export const gameLevelMachine = setup({
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
 			averageEggsLaid: 0,
-			averageHenSpeedLimit: 0,
+			averageStationaryEggLayingRate: 0,
+			averageHenSpeed: 0,
 			averageHatchRate: 0,
+			averageMinX: 0,
+			averageMaxX: 0,
+			averageMinStopMS: 0,
+			averageMaxStopMS: 0,
 			generationIndex: 0,
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,

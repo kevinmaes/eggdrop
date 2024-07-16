@@ -27,6 +27,8 @@ export const henMachine = setup({
 			speed: number;
 			baseTweenDurationSeconds: number;
 			hatchRate: number;
+			minStopMS: number;
+			maxStopMS: number;
 			minX: number;
 			maxX: number;
 		};
@@ -122,6 +124,10 @@ export const henMachine = setup({
 			Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS),
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
+			// If values mutate to cross over, return the min value.
+			if (minStopMS >= maxStopMS) return minStopMS;
+
+			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
 	},
@@ -136,8 +142,8 @@ export const henMachine = setup({
 		targetPosition: { x: input.position.x, y: input.position.y },
 		speed: input.speed,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
-		minStopMS: 500,
-		maxStopMS: 500,
+		minStopMS: input.minStopMS,
+		maxStopMS: input.maxStopMS,
 		maxEggs: input.maxEggs,
 		eggsLaid: 0,
 		stationaryEggLayingRate: input.stationaryEggLayingRate,

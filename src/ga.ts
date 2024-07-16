@@ -1,4 +1,4 @@
-import { IndividualHen } from './GameLevel/types';
+import { IndividualHen, IndividualHenChromosomeKey } from './GameLevel/types';
 
 export function calculateFitness(individual: IndividualHen) {
 	let overallFitness = 0;
@@ -47,16 +47,7 @@ export function rouletteWheelSelection(population: IndividualHen[]) {
  */
 export function mutate(
 	individual: IndividualHen,
-	properties: Array<
-		Extract<
-			keyof IndividualHen,
-			| 'speed'
-			| 'baseTweenDurationSeconds'
-			| 'maxEggs'
-			| 'stationaryEggLayingRate'
-			| 'movingEggLayingRate'
-		>
-	>,
+	properties: IndividualHenChromosomeKey[],
 	mutationRate: number,
 	variancePercentage: number
 ): IndividualHen {

@@ -3,6 +3,7 @@ import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import {
+	getInitialChromosomeValues,
 	HEN_Y_POSITION,
 	LEVEL_DURATION_MS,
 	POPULATION_SIZE,
@@ -17,34 +18,6 @@ export function getOffScreenStartXPosition(
 ) {
 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
 }
-
-const initialGenerationPopulation = new Array(POPULATION_SIZE)
-	.fill(null)
-	.map(() => {
-		// Pick minimum and maximum X positions for the hen.
-		return {
-			id: nanoid(),
-			// Configuration
-			initialPosition: {
-				x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
-				y: HEN_Y_POSITION,
-			},
-			speed: Math.random() * 1.2,
-			baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
-			maxEggs: -1,
-			stationaryEggLayingRate: Math.random(),
-			movingEggLayingRate: 0, // Math.random(),
-			hatchRate: Math.random(),
-			minX: (Math.random() * 0.25 + 0.25) * STAGE_DIMENSIONS.width,
-			maxX: (1 - 0.25 - Math.random() * 0.25) * STAGE_DIMENSIONS.width,
-			// Results
-			fitness: 0,
-			eggsLaid: 0,
-			eggsCaught: 0,
-			eggsHatched: 0,
-			eggsBroken: 0,
-		};
-	});
 
 const appMachine = setup({
 	types: {} as {
@@ -125,6 +98,8 @@ const appMachine = setup({
 						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
 						minX: (parent1.minX + parent2.minX) / 2,
 						maxX: (parent1.maxX + parent2.maxX) / 2,
+						minStopMS: (parent1.minStopMS + parent2.minStopMS) / 2,
+						maxStopMS: (parent1.maxStopMS + parent2.maxStopMS) / 2,
 						fitness: 0,
 						eggsLaid: 0,
 						eggsCaught: 0,
@@ -143,6 +118,11 @@ const appMachine = setup({
 							'baseTweenDurationSeconds',
 							'stationaryEggLayingRate',
 							'movingEggLayingRate',
+							'hatchRate',
+							'minX',
+							'maxX',
+							'minStopMS',
+							'maxStopMS',
 						],
 						context.mutationRate,
 						context.mutationVariancePercentage
@@ -164,7 +144,24 @@ const appMachine = setup({
 	context: {
 		generationIndex: 0,
 		levelResultsHistory: [],
-		population: initialGenerationPopulation,
+		population: new Array(POPULATION_SIZE).fill(null).map(() => {
+			// Pick minimum and maximum X positions for the hen.
+			return {
+				id: nanoid(),
+				// Configuration
+				initialPosition: {
+					x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
+					y: HEN_Y_POSITION,
+				},
+				...getInitialChromosomeValues(),
+				// Results
+				fitness: 0,
+				eggsLaid: 0,
+				eggsCaught: 0,
+				eggsHatched: 0,
+				eggsBroken: 0,
+			};
+		}),
 		populationSize: 10,
 		lastLevelResults: null,
 		mutationRate: 0.1,

@@ -4,11 +4,18 @@ export interface Position {
 }
 
 export interface GenerationStats {
+	// Averages
 	averageEggsBroken: number;
 	averageEggsHatched: number;
 	averageEggsLaid: number;
-	averageHenSpeedLimit: number;
+	averageHenSpeed: number;
+	averageStationaryEggLayingRate: number;
 	averageHatchRate: number;
+	averageMinX: number;
+	averageMaxX: number;
+	averageMinStopMS: number;
+	averageMaxStopMS: number;
+	// Results
 	generationIndex: number;
 	totalEggsBroken: number;
 	totalEggsCaught: number;
@@ -35,6 +42,8 @@ export interface IndividualHen {
 	hatchRate: number;
 	minX: number;
 	maxX: number;
+	minStopMS: number;
+	maxStopMS: number;
 	// Results
 	fitness: number;
 	eggsLaid: number;
@@ -42,3 +51,14 @@ export interface IndividualHen {
 	eggsHatched: number;
 	eggsBroken: number;
 }
+
+export type IndividualHenChromosomeKey =
+	| 'speed'
+	| 'baseTweenDurationSeconds'
+	| 'stationaryEggLayingRate'
+	| 'movingEggLayingRate'
+	| 'hatchRate'
+	| 'minX'
+	| 'maxX'
+	| 'minStopMS'
+	| 'maxStopMS';

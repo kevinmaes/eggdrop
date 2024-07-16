@@ -10,3 +10,23 @@ export const CHEF_POT_RIM_CONFIG = {
 
 export const HEN_Y_POSITION = 10;
 export const STAGGERED_HEN_DELAY_MS = 8000;
+
+export function getInitialChromosomeValues() {
+	const minX = Math.random() * 0.4 * STAGE_DIMENSIONS.width;
+	const maxX = STAGE_DIMENSIONS.width - minX;
+	const minStopMS = Math.ceil(Math.random() * 1000);
+	const maxStopMS = minStopMS + Math.random() * 5000;
+
+	return {
+		speed: Math.random() * 1.2,
+		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
+		maxEggs: -1,
+		stationaryEggLayingRate: Math.random(),
+		movingEggLayingRate: 0, // Math.random(),
+		hatchRate: Math.random(),
+		minX,
+		maxX,
+		minStopMS,
+		maxStopMS,
+	};
+}
