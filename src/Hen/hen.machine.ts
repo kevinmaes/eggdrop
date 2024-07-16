@@ -1,9 +1,9 @@
-import { assign, sendParent, setup } from 'xstate';
-import { Ref } from 'react';
+import { assign, fromPromise, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
 	HEN_Y_POSITION,
+	STAGE_DIMENSIONS,
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
 
@@ -31,7 +31,7 @@ export const henMachine = setup({
 			maxX: number;
 		};
 		context: {
-			henRef: Ref<Konva.Image>;
+			henRef: React.RefObject<Konva.Image>;
 			id: string;
 			stageDimensions: { width: number; height: number };
 			position: Position;
@@ -50,7 +50,8 @@ export const henMachine = setup({
 			maxX: number;
 		};
 		events:
-			| { type: 'Set henRef'; henRef: Ref<Konva.Image> }
+			| { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
+			// | { type: 'Stop moving'; atPosition: Position }
 			| { type: 'Stop moving' }
 			| { type: 'Resume game' }
 			| { type: 'Pause game' };
@@ -61,7 +62,8 @@ export const henMachine = setup({
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
 			const withinEggLayingRate =
 				Math.random() < context.stationaryEggLayingRate;
-			return withinLimit && withinEggLayingRate;
+			const canLayEgg = withinLimit && withinEggLayingRate;
+			return canLayEgg;
 		},
 		'can lay egg while moving': ({ context }) => {
 			const withinLimit =
@@ -70,20 +72,55 @@ export const henMachine = setup({
 			return withinLimit && withinEggLayingRate;
 		},
 	},
-	actions: {
-		pickNewTargetXPosition: assign(({ context }) => ({
-			targetPosition: {
-				x: pickXPosition(context.minX, context.maxX),
-				y: HEN_Y_POSITION,
-			},
-		})),
-		updatePosition: assign({
-			position: ({ context }) => context.targetPosition,
-		}),
+	actors: {
+		tweenActor: fromPromise(
+			({
+				input,
+			}: {
+				input: {
+					henRef: React.RefObject<Konva.Image>;
+					speed: number;
+					baseTweenDurationSeconds: number;
+					position: Position;
+					minX: number;
+					maxX: number;
+				};
+			}) => {
+				return new Promise<{ endPosition: Position }>((resolve, reject) => {
+					if (input.henRef.current) {
+						const targetPosition = {
+							x: pickXPosition(input.minX, input.maxX),
+							y: HEN_Y_POSITION,
+						};
+						const totalDistance = STAGE_DIMENSIONS.width;
+						const xDistance = Math.abs(targetPosition.x - input.position.x);
+						const relativeDistance = xDistance / totalDistance;
+						const duration =
+							input.baseTweenDurationSeconds *
+							(1 - relativeDistance * input.speed);
+
+						const tween = new Konva.Tween({
+							node: input.henRef.current,
+							duration,
+							x: targetPosition.x,
+							easing: Konva.Easings.EaseInOut,
+							onFinish: () => {
+								tween.destroy();
+								return resolve({ endPosition: targetPosition });
+							},
+						});
+						tween.play();
+					} else {
+						reject('No henRef');
+					}
+				});
+			}
+		),
 	},
 	delays: {
-		getRandomStartDelay: () => Math.random() * STAGGERED_HEN_DELAY_MS,
-		pickStopDuration: ({ context }) => {
+		getRandomStartDelay: () =>
+			Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS),
+		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
@@ -92,7 +129,7 @@ export const henMachine = setup({
 	id: 'hen',
 	initial: 'Offscreen',
 	context: ({ input }) => ({
-		henRef: null,
+		henRef: { current: null },
 		id: input.id,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
@@ -111,6 +148,11 @@ export const henMachine = setup({
 		maxX: input.maxX,
 	}),
 	on: {
+		'Set henRef': {
+			actions: assign({
+				henRef: ({ event }) => event.henRef,
+			}),
+		},
 		'Pause game': {
 			target: '.Stopped',
 			actions: assign({
@@ -125,18 +167,31 @@ export const henMachine = setup({
 			},
 		},
 		Moving: {
-			entry: 'pickNewTargetXPosition',
-			on: {
-				'Stop moving': { target: 'Stopped' },
+			invoke: {
+				src: 'tweenActor',
+				input: ({ context }) => ({
+					henRef: context.henRef,
+					speed: context.speed,
+					baseTweenDurationSeconds: context.baseTweenDurationSeconds,
+					position: context.position,
+					minX: context.minX,
+					maxX: context.maxX,
+				}),
+				onDone: {
+					target: 'Stopped',
+					actions: assign({
+						position: ({ event }) => event.output.endPosition,
+					}),
+				},
+				onError: { target: 'Stopped' },
 			},
 		},
 		Stopped: {
-			entry: 'updatePosition',
 			on: {
 				'Resume game': 'Moving',
 			},
 			after: {
-				pickStopDuration: [
+				getRandomStopDurationMS: [
 					{ guard: ({ context }) => context.gamePaused },
 					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
 					{ target: 'Moving' },
