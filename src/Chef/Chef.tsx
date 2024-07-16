@@ -34,8 +34,17 @@ export function Chef({
 		(state) => state?.context.position ?? { x: 0, y: 0 }
 	);
 
-	const chefPotRimHitRef = useRef<Konva.Rect>(null);
+	const chefPotRef = useRef<Konva.Rect>(null);
+	useEffect(() => {
+		if (chefPotRef.current) {
+			chefActorRef.send({
+				type: 'Set chefPotRef',
+				chefPotRef,
+			});
+		}
+	}, [chefPotRef.current]);
 
+	const chefPotRimHitRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
 		if (chefPotRimHitRef.current) {
 			gameLevelActorRef.send({
@@ -84,6 +93,7 @@ export function Chef({
 			></Rect>
 			{/* Pot */}
 			<Rect
+				ref={chefPotRef}
 				x={chefPosition.x + 0.1 * dimensions.width}
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={dimensions.width * 0.8}
@@ -101,7 +111,6 @@ export function Chef({
 			/>
 			{/* Left side hit box */}
 			<Rect
-				// ref={chefPotLeftHitRef}
 				x={chefPosition.x}
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={10}
@@ -120,7 +129,6 @@ export function Chef({
 			/>
 			{/* Right side hit box */}
 			<Rect
-				// ref={chefPotRightHitRef}
 				x={chefPosition.x + dimensions.width - 10}
 				y={chefPosition.y + 0.4 * dimensions.height}
 				width={10}

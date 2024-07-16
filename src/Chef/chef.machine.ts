@@ -2,10 +2,12 @@ import { assign, setup } from 'xstate';
 import { EggHitTestResult } from './Chef';
 import { animationActor } from '../helpers/animationActor';
 import { Position } from '../GameLevel/types';
+import Konva from 'konva';
 
 export const chefMachine = setup({
 	types: {} as {
 		context: {
+			chefPotRef: React.RefObject<Konva.Rect>;
 			position: Position;
 			speed: number;
 			speedLimit: number;
@@ -17,6 +19,7 @@ export const chefMachine = setup({
 			maxXPos: number;
 		};
 		events:
+			| { type: 'Set chefPotRef'; chefPotRef: React.RefObject<Konva.Rect> }
 			| { type: 'Catch' }
 			| { type: 'Broke'; hitTestResult: EggHitTestResult }
 			| { type: 'Set direction'; direction: -1 | 0 | 1 };
@@ -79,6 +82,18 @@ export const chefMachine = setup({
 				position: { x: newXPos, y: position.y },
 			};
 		}),
+		playCatchAnimation: ({ context }) => {
+			context.chefPotRef.current?.to({
+				fill: 'yellow',
+				duration: 0.1,
+				onFinish: () => {
+					context.chefPotRef.current?.to({
+						fill: 'gray',
+						duration: 0.1,
+					});
+				},
+			});
+		},
 	},
 	actors: {
 		animationActor,
@@ -87,6 +102,7 @@ export const chefMachine = setup({
 	id: 'chef',
 	initial: 'Moving',
 	context: ({ input }) => ({
+		chefPotRef: { current: null },
 		position: input.position,
 		speed: input.speed,
 		speedLimit: input.speedLimit,
@@ -98,6 +114,11 @@ export const chefMachine = setup({
 		maxXPos: input.maxXPos,
 	}),
 	on: {
+		'Set chefPotRef': {
+			actions: assign({
+				chefPotRef: ({ event }) => event.chefPotRef,
+			}),
+		},
 		'Set direction': {
 			actions: assign({
 				direction: ({ event }) => ('direction' in event ? event.direction : 0),
@@ -134,9 +155,8 @@ export const chefMachine = setup({
 			},
 		},
 		Catching: {
-			after: {
-				200: 'Moving',
-			},
+			entry: 'playCatchAnimation',
+			always: 'Moving',
 		},
 		Broken: {
 			after: {
