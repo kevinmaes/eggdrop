@@ -2,6 +2,7 @@ import { assign, fromPromise, setup } from 'xstate';
 import { Position } from '../GameLevel/types';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
+import { sounds } from '../sounds';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -92,6 +93,10 @@ export const chefMachine = setup({
 				},
 			});
 		},
+		playCatchSound: () => {
+			console.log('playCatchSound');
+			sounds.catch.play();
+		},
 	},
 	actors: {
 		animationActor: fromPromise(() => {
@@ -146,7 +151,7 @@ export const chefMachine = setup({
 			},
 			on: {
 				Catch: {
-					actions: 'playCatchAnimation',
+					actions: ['playCatchAnimation', 'playCatchSound'],
 				},
 			},
 		},

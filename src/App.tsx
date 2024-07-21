@@ -4,6 +4,7 @@ import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
 import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
+import { sounds } from './sounds';
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
@@ -29,6 +30,13 @@ const App = () => {
 				<h1>Welcome to the game!</h1>
 				<button onClick={() => appActorRef.send({ type: 'Start' })}>
 					Start
+				</button>
+				<button
+					onClick={() => {
+						sounds.catch.play();
+					}}
+				>
+					Play caught
 				</button>
 			</div>
 		);
