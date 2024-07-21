@@ -1,5 +1,6 @@
 import { setup, assign, sendParent } from 'xstate';
 import { Position } from '../GameLevel/types';
+import { sounds } from '../sounds';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
@@ -50,12 +51,22 @@ export const eggMachine = setup({
 				y: context.floorY - 50,
 			}),
 		}),
+		playSplatSound: () => {
+			sounds.splat.play();
+		},
 		hatchOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x,
 				y: context.floorY - 60,
 			}),
 		}),
+		playHatchSound: () => {
+			sounds.hatch.play();
+			setTimeout(() => {
+				console.log('yipee');
+				sounds.yipee.play();
+			}, 500);
+		},
 	},
 }).createMachine({
 	id: 'egg',
@@ -101,11 +112,11 @@ export const eggMachine = setup({
 				{
 					guard: ({ context }) => Math.random() < context.hatchRate,
 					target: 'Hatching',
-					actions: 'hatchOnFloor',
+					actions: ['hatchOnFloor', 'playHatchSound'],
 				},
 				{
 					target: 'Splatting',
-					actions: 'splatOnFloor',
+					actions: ['splatOnFloor', 'playSplatSound'],
 				},
 			],
 		},

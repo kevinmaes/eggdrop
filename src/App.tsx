@@ -33,7 +33,9 @@ const App = () => {
 				</button>
 				<button
 					onClick={() => {
-						sounds.catch.play();
+						// sounds.catch.play();
+						// sounds.splat.play();
+						sounds.yipee.play();
 					}}
 				>
 					Play caught

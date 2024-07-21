@@ -93,10 +93,6 @@ export const chefMachine = setup({
 				},
 			});
 		},
-		playCatchSound: () => {
-			console.log('playCatchSound');
-			sounds.catch.play();
-		},
 	},
 	actors: {
 		animationActor: fromPromise(() => {
@@ -151,7 +147,7 @@ export const chefMachine = setup({
 			},
 			on: {
 				Catch: {
-					actions: ['playCatchAnimation', 'playCatchSound'],
+					actions: ['playCatchAnimation'],
 				},
 			},
 		},

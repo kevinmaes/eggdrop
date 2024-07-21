@@ -7,6 +7,7 @@ import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { gameTimerMachine } from './gameTimer.machine';
+import { sounds } from '../sounds';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -230,6 +231,18 @@ export const gameLevelMachine = setup({
 				};
 			},
 		}),
+		startBackgroundMusic: () => {
+			sounds.backgroundLoop.play();
+		},
+		stopBackgroundMusic: () => {
+			sounds.backgroundLoop.stop();
+		},
+		playEggLaidSound: () => {
+			sounds.layEgg.play();
+		},
+		playCatchEggSound: () => {
+			sounds.catch.play();
+		},
 		cleanupLevelRefs: assign({
 			henActorRefs: [],
 			eggActorRefs: [],
@@ -324,6 +337,7 @@ export const gameLevelMachine = setup({
 						hatchRate: event.hatchRate,
 					}),
 				},
+				'playEggLaidSound',
 				{
 					type: 'updateHenStatsForEggLaid',
 					params: ({ event }) => ({ henId: event.henId }),
@@ -335,6 +349,7 @@ export const gameLevelMachine = setup({
 				guard: 'testPotRimHit',
 				actions: [
 					sendTo('chefMachine', { type: 'Catch' }),
+					'playCatchEggSound',
 					// Sending Catch to the eggActor will lead to final state
 					// and automatic removal by this parent machine.
 					sendTo(({ system, event }) => system.get(event.eggId), {
@@ -367,7 +382,8 @@ export const gameLevelMachine = setup({
 	},
 	states: {
 		Playing: {
-			entry: 'spawnNewHens',
+			entry: ['spawnNewHens', 'startBackgroundMusic'],
+			exit: 'stopBackgroundMusic',
 			on: {
 				'Time countdown tick': {
 					actions: assign({
