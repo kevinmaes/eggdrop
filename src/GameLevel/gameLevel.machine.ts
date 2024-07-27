@@ -6,8 +6,8 @@ import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
-import { gameTimerMachine } from './gameTimer.machine';
 import { sounds } from '../sounds';
+import { countdownTimerMachine } from './countdownTimer.machine';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -56,6 +56,9 @@ export const gameLevelMachine = setup({
 		};
 	},
 	actions: {
+		countdownTick: assign({
+			remainingTime: (_, params: { remainingMS: number }) => params.remainingMS,
+		}),
 		spawnNewHens: assign({
 			henActorRefs: ({ context, spawn }) =>
 				context.population.map(
@@ -250,6 +253,7 @@ export const gameLevelMachine = setup({
 	},
 	actors: {
 		chefMachine,
+		countdownTimerMachine,
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
@@ -384,20 +388,23 @@ export const gameLevelMachine = setup({
 		Playing: {
 			entry: ['spawnNewHens', 'startBackgroundMusic'],
 			exit: 'stopBackgroundMusic',
-			on: {
-				'Time countdown tick': {
-					actions: assign({
-						remainingTime: ({ context }) => context.remainingTime - 1000,
-					}),
-				},
-				'Time countdown done': 'Done',
-			},
 			invoke: [
 				{
-					src: gameTimerMachine,
+					src: 'countdownTimerMachine',
 					input: ({ context }) => ({
-						remainingTime: context.remainingTime,
+						totalMS: context.remainingTime,
+						tickMS: 1000,
 					}),
+					onSnapshot: {
+						actions: {
+							type: 'countdownTick',
+							params: ({ event }) => ({
+								remainingMS: event.snapshot.context.remainingMS,
+								done: event.snapshot.context.done,
+							}),
+						},
+					},
+					onDone: 'Done',
 				},
 				{
 					id: 'chefMachine',
