@@ -1,4 +1,4 @@
-import { assign, fromPromise, log, sendParent, setup } from 'xstate';
+import { assign, log, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
@@ -6,6 +6,7 @@ import {
 	STAGE_DIMENSIONS,
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
+import { animationActor } from '../Egg/animation';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const range = maxX - minX;
@@ -76,49 +77,50 @@ export const henMachine = setup({
 		},
 	},
 	actors: {
-		tweenActor: fromPromise(
-			({
-				input,
-			}: {
-				input: {
-					henRef: React.RefObject<Konva.Image>;
-					speed: number;
-					baseTweenDurationSeconds: number;
-					position: Position;
-					minX: number;
-					maxX: number;
-				};
-			}) => {
-				return new Promise<{ endPosition: Position }>((resolve, reject) => {
-					if (input.henRef.current) {
-						const targetPosition = {
-							x: pickXPosition(input.minX, input.maxX),
-							y: HEN_Y_POSITION,
-						};
-						const totalDistance = STAGE_DIMENSIONS.width;
-						const xDistance = Math.abs(targetPosition.x - input.position.x);
-						const relativeDistance = xDistance / totalDistance;
-						const duration =
-							input.baseTweenDurationSeconds *
-							(1 - relativeDistance * input.speed);
+		animationActor,
+		// tweenActor: fromPromise(
+		// 	({
+		// 		input,
+		// 	}: {
+		// 		input: {
+		// 			henRef: React.RefObject<Konva.Image>;
+		// 			speed: number;
+		// 			baseTweenDurationSeconds: number;
+		// 			position: Position;
+		// 			minX: number;
+		// 			maxX: number;
+		// 		};
+		// 	}) => {
+		// 		return new Promise<{ endPosition: Position }>((resolve, reject) => {
+		// 			if (input.henRef.current) {
+		// 				const targetPosition = {
+		// 					x: pickXPosition(input.minX, input.maxX),
+		// 					y: HEN_Y_POSITION,
+		// 				};
+		// 				const totalDistance = STAGE_DIMENSIONS.width;
+		// 				const xDistance = Math.abs(targetPosition.x - input.position.x);
+		// 				const relativeDistance = xDistance / totalDistance;
+		// 				const duration =
+		// 					input.baseTweenDurationSeconds *
+		// 					(1 - relativeDistance * input.speed);
 
-						const tween = new Konva.Tween({
-							node: input.henRef.current,
-							duration,
-							x: targetPosition.x,
-							easing: Konva.Easings.EaseInOut,
-							onFinish: () => {
-								tween.destroy();
-								return resolve({ endPosition: targetPosition });
-							},
-						});
-						tween.play();
-					} else {
-						reject('No henRef');
-					}
-				});
-			}
-		),
+		// 				const tween = new Konva.Tween({
+		// 					node: input.henRef.current,
+		// 					duration,
+		// 					x: targetPosition.x,
+		// 					easing: Konva.Easings.EaseInOut,
+		// 					onFinish: () => {
+		// 						tween.destroy();
+		// 						return resolve({ endPosition: targetPosition });
+		// 					},
+		// 				});
+		// 				tween.play();
+		// 			} else {
+		// 				reject('No henRef');
+		// 			}
+		// 		});
+		// 	}
+		// ),
 	},
 	delays: {
 		getRandomStartDelay: () =>
@@ -175,15 +177,29 @@ export const henMachine = setup({
 		},
 		Moving: {
 			invoke: {
-				src: 'tweenActor',
-				input: ({ context }) => ({
-					henRef: context.henRef,
-					speed: context.speed,
-					baseTweenDurationSeconds: context.baseTweenDurationSeconds,
-					position: context.position,
-					minX: context.minX,
-					maxX: context.maxX,
-				}),
+				src: 'animationActor',
+				input: ({ context }) => {
+					const targetPosition = {
+						x: pickXPosition(context.minX, context.maxX),
+						y: HEN_Y_POSITION,
+					};
+					const totalDistance = STAGE_DIMENSIONS.width;
+					const xDistance = Math.abs(targetPosition.x - context.position.x);
+					const relativeDistance = xDistance / totalDistance;
+					const duration =
+						context.baseTweenDurationSeconds *
+						(1 - relativeDistance * context.speed);
+
+					return {
+						ref: context.henRef,
+						animationProps: {
+							x: targetPosition.x,
+							y: targetPosition.y,
+							duration,
+							easing: Konva.Easings.EaseInOut,
+						},
+					};
+				},
 				onDone: {
 					target: 'Stopped',
 					actions: assign({

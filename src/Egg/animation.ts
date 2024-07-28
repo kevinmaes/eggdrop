@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import { fromPromise } from 'xstate';
+import { Position } from '../GameLevel/types';
 
 export const animationActor = fromPromise(
 	({
@@ -11,15 +12,22 @@ export const animationActor = fromPromise(
 				duration: number;
 				x: number;
 				y: number;
-				rotation: number;
+				rotation?: number;
+				easing?: (typeof Konva.Easings)[keyof typeof Konva.Easings];
 				onUpdate?: () => void;
 			};
 		};
 	}) => {
-		return new Promise<void>((resolve) => {
+		return new Promise<{ endPosition: Position }>((resolve) => {
 			input.ref.current?.to({
 				...input.animationProps,
-				onFinish: resolve,
+				onFinish: () =>
+					resolve({
+						endPosition: {
+							x: input.animationProps.x,
+							y: input.animationProps.y,
+						},
+					}),
 			});
 		});
 	}
