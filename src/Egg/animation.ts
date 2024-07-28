@@ -22,12 +22,9 @@ export const animationActor = fromPromise(
 		};
 	}) => {
 		return new Promise<void>((resolve) => {
-			console.log('Running animation promise');
 			input.ref.current?.to({
 				...input.animationProps,
-				onFinish: () => {
-					resolve();
-				},
+				onFinish: resolve,
 			});
 		});
 	}
