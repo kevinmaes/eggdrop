@@ -28,9 +28,7 @@ export const eggMachine = setup({
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
 			| { type: 'Resume game' }
-			| { type: 'Pause game' }
-			| { type: 'Animation done' };
-
+			| { type: 'Pause game' };
 		input: {
 			parentRef: AnyActorRef;
 			id: string;
@@ -122,7 +120,6 @@ export const eggMachine = setup({
 		FallingWithAnimation: {
 			entry: 'setNewTargetPosition',
 			on: {
-				'Animation done': 'Landed',
 				Catch: {
 					target: 'Done',
 					actions: assign({
@@ -133,7 +130,6 @@ export const eggMachine = setup({
 			invoke: {
 				src: 'animationActor',
 				input: ({ context, self }) => ({
-					id: context.id,
 					ref: context.eggRef,
 					parentRef: self,
 					animationProps: {
@@ -147,17 +143,12 @@ export const eggMachine = setup({
 								context.eggRef.current.y() >=
 								STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
 							) {
-								// console.log('Egg position updated should send to system');
 								context.parentRef.send({
 									type: 'Egg position updated',
 									eggId: context.id,
 									position: context.eggRef.current.getPosition(),
 								});
 							}
-						},
-						onFinish: () => {
-							console.log('Egg done falling');
-							self.send({ type: 'Animation done' });
 						},
 					},
 				}),
@@ -195,13 +186,9 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			entry: ['setTargetPositionToExit'],
-			on: {
-				'Animation done': { target: 'Done' },
-			},
 			invoke: {
 				src: 'animationActor',
 				input: ({ context, self }) => ({
-					id: context.id,
 					ref: context.eggRef,
 					parentRef: self,
 					animationProps: {
@@ -209,10 +196,6 @@ export const eggMachine = setup({
 						x: context.targetPosition.x,
 						y: context.targetPosition.y,
 						rotation: -720,
-						onFinish: () => {
-							console.log('Chick done existing');
-							self.send({ type: 'Animation done' });
-						},
 					},
 				}),
 			},
