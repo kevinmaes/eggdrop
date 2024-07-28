@@ -8,6 +8,7 @@ export const animationActor = fromPromise(
 	}: {
 		input: {
 			node: React.RefObject<any>['current'] | null;
+			setTween?: (t: Konva.Tween) => void;
 			animationProps: {
 				duration: number;
 				x: number;
@@ -35,6 +36,8 @@ export const animationActor = fromPromise(
 					});
 				},
 			});
+			// Pass the tween back to the caller so it can be paused and played
+			input.setTween?.(tween);
 			tween.play();
 		});
 	}

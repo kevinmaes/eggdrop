@@ -129,28 +129,42 @@ export const eggMachine = setup({
 			},
 			invoke: {
 				src: 'animationActor',
-				input: ({ context }) => ({
-					node: context.eggRef.current,
-					animationProps: {
-						duration: 3,
-						x: context.targetPosition.x,
-						y: context.targetPosition.y,
-						rotation: -720,
-						onUpdate: () => {
-							if (!context.eggRef.current) return;
-							if (
-								context.eggRef.current.y() >=
-								STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
-							) {
-								context.parentRef.send({
-									type: 'Egg position updated',
-									eggId: context.id,
-									position: context.eggRef.current.getPosition(),
-								});
-							}
+				input: ({ context }) => {
+					let tween: Konva.Tween;
+					function setTween(t: Konva.Tween) {
+						tween = t;
+					}
+
+					setTimeout(() => {
+						tween.pause();
+						setTimeout(() => {
+							tween.play();
+						}, 500);
+					}, 500);
+					return {
+						node: context.eggRef.current,
+						setTween,
+						animationProps: {
+							duration: 3,
+							x: context.targetPosition.x,
+							y: context.targetPosition.y,
+							rotation: -720,
+							onUpdate: () => {
+								if (!context.eggRef.current) return;
+								if (
+									context.eggRef.current.y() >=
+									STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+								) {
+									context.parentRef.send({
+										type: 'Egg position updated',
+										eggId: context.id,
+										position: context.eggRef.current.getPosition(),
+									});
+								}
+							},
 						},
-					},
-				}),
+					};
+				},
 				onDone: { target: 'Landed', actions: log('Going to Landed') },
 			},
 		},
