@@ -3,7 +3,7 @@ import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
-import { animationMachine, animationActor } from './animation.machine';
+import { animationActor } from './animation.machine';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
@@ -42,8 +42,6 @@ export const eggMachine = setup({
 		};
 	},
 	actors: {
-		// animationActor,
-		animationMachine,
 		animationActor,
 	},
 	actions: {
@@ -133,7 +131,6 @@ export const eggMachine = setup({
 				},
 			},
 			invoke: {
-				// src: 'animationMachine',
 				src: 'animationActor',
 				input: ({ context, self }) => ({
 					id: context.id,
