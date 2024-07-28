@@ -8,37 +8,24 @@ export const animationActor = fromPromise(
 	}: {
 		input: {
 			node: React.RefObject<any>['current'] | null;
-			setTween?: (t: Konva.Tween) => void;
-			animationProps: {
-				duration: number;
-				x: number;
-				y: number;
-				rotation?: number;
-				easing?: (typeof Konva.Easings)[keyof typeof Konva.Easings];
-				onUpdate?: () => void;
-			};
+			tween: Konva.Tween | null;
 		};
 	}) => {
-		return new Promise<{ endPosition: Position }>((resolve) => {
-			if (!input.node) {
-				throw new Error('No ref');
-			}
-			const tween = new Konva.Tween({
-				node: input.node,
-				...input.animationProps,
-				onFinish: () => {
-					tween.destroy();
-					return resolve({
+		return new Promise<{ endPosition: Position }>((resolve, reject) => {
+			if (input.node !== null && input.tween !== null) {
+				input.tween.play();
+				input.tween.onFinish = () => {
+					input.tween?.destroy();
+					resolve({
 						endPosition: {
-							x: input.animationProps.x,
-							y: input.animationProps.y,
+							x: input.node.x(),
+							y: input.node.y(),
 						},
 					});
-				},
-			});
-			// Pass the tween back to the caller so it can be paused and played
-			input.setTween?.(tween);
-			tween.play();
+				};
+			} else {
+				return reject('No node or tween');
+			}
 		});
 	}
 );

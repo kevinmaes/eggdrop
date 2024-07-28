@@ -147,14 +147,17 @@ export const henMachine = setup({
 						context.baseTweenDurationSeconds *
 						(1 - relativeDistance * context.speed);
 
+					const tween = new Konva.Tween({
+						node: context.henRef.current!,
+						duration,
+						x: targetPosition.x,
+						y: targetPosition.y,
+						easing: Konva.Easings.EaseInOut,
+					});
+
 					return {
 						node: context.henRef.current,
-						animationProps: {
-							x: targetPosition.x,
-							y: targetPosition.y,
-							duration,
-							easing: Konva.Easings.EaseInOut,
-						},
+						tween,
 					};
 				},
 				onDone: {

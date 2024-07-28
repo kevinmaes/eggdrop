@@ -21,6 +21,7 @@ export const eggMachine = setup({
 			resultStatus: EggResultStatus;
 			gamePaused: boolean;
 			hatchRate: number;
+			currentTween: Konva.Tween | null;
 		};
 		events:
 			| { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
@@ -98,6 +99,7 @@ export const eggMachine = setup({
 		resultStatus: null,
 		gamePaused: false,
 		hatchRate: input.hatchRate,
+		currentTween: null,
 	}),
 	on: {
 		'Pause game': {
@@ -118,33 +120,15 @@ export const eggMachine = setup({
 			},
 		},
 		FallingWithAnimation: {
-			entry: 'setNewTargetPosition',
-			on: {
-				Catch: {
-					target: 'Done',
-					actions: assign({
-						resultStatus: 'Caught',
-					}),
-				},
-			},
-			invoke: {
-				src: 'animationActor',
-				input: ({ context }) => {
-					let tween: Konva.Tween;
-					function setTween(t: Konva.Tween) {
-						tween = t;
-					}
-
-					setTimeout(() => {
-						tween.pause();
-						setTimeout(() => {
-							tween.play();
-						}, 500);
-					}, 500);
-					return {
-						node: context.eggRef.current,
-						setTween,
-						animationProps: {
+			entry: [
+				'setNewTargetPosition',
+				assign({
+					currentTween: ({ context }) => {
+						if (!context.eggRef.current) {
+							return null;
+						}
+						return new Konva.Tween({
+							node: context.eggRef.current,
 							duration: 3,
 							x: context.targetPosition.x,
 							y: context.targetPosition.y,
@@ -162,7 +146,24 @@ export const eggMachine = setup({
 									});
 								}
 							},
-						},
+						});
+					},
+				}),
+			],
+			on: {
+				Catch: {
+					target: 'Done',
+					actions: assign({
+						resultStatus: 'Caught',
+					}),
+				},
+			},
+			invoke: {
+				src: 'animationActor',
+				input: ({ context }) => {
+					return {
+						node: context.eggRef.current,
+						tween: context.currentTween,
 					};
 				},
 				onDone: { target: 'Landed', actions: log('Going to Landed') },
@@ -201,15 +202,19 @@ export const eggMachine = setup({
 			entry: ['setTargetPositionToExit'],
 			invoke: {
 				src: 'animationActor',
-				input: ({ context }) => ({
-					node: context.eggRef.current,
-					animationProps: {
-						duration: 3,
+				input: ({ context }) => {
+					const tween = new Konva.Tween({
+						node: context.eggRef.current!,
+						duration: 1,
 						x: context.targetPosition.x,
 						y: context.targetPosition.y,
-						rotation: -720,
-					},
-				}),
+					});
+
+					return {
+						node: context.eggRef.current,
+						tween,
+					};
+				},
 			},
 		},
 		Done: {
