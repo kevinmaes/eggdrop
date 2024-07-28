@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { fromPromise } from 'xstate';
-import { Position } from '../GameLevel/types';
+import { Position } from './GameLevel/types';
 
 export const animationActor = fromPromise(
 	({

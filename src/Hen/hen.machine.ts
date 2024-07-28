@@ -6,7 +6,7 @@ import {
 	STAGE_DIMENSIONS,
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
-import { animationActor } from '../Egg/animation';
+import { animationActor } from '../animation';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const range = maxX - minX;

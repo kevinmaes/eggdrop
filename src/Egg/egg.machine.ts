@@ -3,7 +3,7 @@ import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
-import { animationActor } from './animation';
+import { animationActor } from '../animation';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
