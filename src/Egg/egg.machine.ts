@@ -129,9 +129,8 @@ export const eggMachine = setup({
 			},
 			invoke: {
 				src: 'animationActor',
-				input: ({ context, self }) => ({
-					ref: context.eggRef,
-					parentRef: self,
+				input: ({ context }) => ({
+					node: context.eggRef.current,
 					animationProps: {
 						duration: 3,
 						x: context.targetPosition.x,
@@ -188,9 +187,8 @@ export const eggMachine = setup({
 			entry: ['setTargetPositionToExit'],
 			invoke: {
 				src: 'animationActor',
-				input: ({ context, self }) => ({
-					ref: context.eggRef,
-					parentRef: self,
+				input: ({ context }) => ({
+					node: context.eggRef.current,
 					animationProps: {
 						duration: 3,
 						x: context.targetPosition.x,

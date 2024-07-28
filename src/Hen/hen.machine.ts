@@ -148,7 +148,7 @@ export const henMachine = setup({
 						(1 - relativeDistance * context.speed);
 
 					return {
-						ref: context.henRef,
+						node: context.henRef.current,
 						animationProps: {
 							x: targetPosition.x,
 							y: targetPosition.y,
