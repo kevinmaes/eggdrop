@@ -7,7 +7,7 @@ export const animationActor = fromPromise(
 		input,
 	}: {
 		input: {
-			ref: React.RefObject<Konva.Rect>;
+			ref: React.RefObject<any>;
 			animationProps: {
 				duration: number;
 				x: number;
@@ -19,16 +19,23 @@ export const animationActor = fromPromise(
 		};
 	}) => {
 		return new Promise<{ endPosition: Position }>((resolve) => {
-			input.ref.current?.to({
+			if (!input.ref.current) {
+				throw new Error('No ref');
+			}
+			const tween = new Konva.Tween({
+				node: input.ref.current,
 				...input.animationProps,
-				onFinish: () =>
-					resolve({
+				onFinish: () => {
+					tween.destroy();
+					return resolve({
 						endPosition: {
 							x: input.animationProps.x,
 							y: input.animationProps.y,
 						},
-					}),
+					});
+				},
 			});
+			tween.play();
 		});
 	}
 );
