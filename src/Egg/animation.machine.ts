@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { AnyActorRef, setup } from 'xstate';
+import { AnyActorRef, fromPromise, setup } from 'xstate';
 
 type AnimationProps = {
 	duration: number;
@@ -43,3 +43,26 @@ export const animationMachine = setup({
 		running: {},
 	},
 });
+
+export const animationActor = fromPromise(
+	({
+		input,
+	}: {
+		input: {
+			id: string;
+			ref: React.RefObject<Konva.Rect>;
+			parentRef: AnyActorRef;
+			animationProps: AnimationProps;
+		};
+	}) => {
+		return new Promise<void>((resolve) => {
+			console.log('Running animation promise');
+			input.ref.current?.to({
+				...input.animationProps,
+				onFinish: () => {
+					resolve();
+				},
+			});
+		});
+	}
+);
