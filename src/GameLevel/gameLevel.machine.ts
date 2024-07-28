@@ -101,7 +101,7 @@ export const gameLevelMachine = setup({
 		}),
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
-				{ context, spawn },
+				{ context, self, spawn },
 				params: { henId: string; henPosition: Position; hatchRate: number }
 			) => {
 				const eggHenButtYOffset = 35;
@@ -112,6 +112,7 @@ export const gameLevelMachine = setup({
 					spawn(eggMachine, {
 						systemId: eggId,
 						input: {
+							parentRef: self,
 							id: eggId,
 							henId: params.henId,
 							position: {
@@ -257,6 +258,7 @@ export const gameLevelMachine = setup({
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
+			console.log('testPotRimHit', context.chefPotRimHitRef);
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}
@@ -354,6 +356,7 @@ export const gameLevelMachine = setup({
 				actions: [
 					sendTo('chefMachine', { type: 'Catch' }),
 					'playCatchEggSound',
+					log('Egg caught'),
 					// Sending Catch to the eggActor will lead to final state
 					// and automatic removal by this parent machine.
 					sendTo(({ system, event }) => system.get(event.eggId), {

@@ -1,4 +1,4 @@
-import { assign, fromPromise, sendParent, setup } from 'xstate';
+import { assign, fromPromise, log, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
@@ -60,6 +60,7 @@ export const henMachine = setup({
 	},
 	guards: {
 		'can lay egg while stopped': ({ context }) => {
+			return true;
 			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
 			const withinEggLayingRate =
@@ -203,6 +204,7 @@ export const henMachine = setup({
 		},
 		'Laying Egg': {
 			entry: [
+				log('Hen laying egg'),
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,

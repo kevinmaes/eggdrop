@@ -1,11 +1,16 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, AnyActorRef, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
+import Konva from 'konva';
+import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { animationMachine } from './animation.machine';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		context: {
+			parentRef: AnyActorRef;
+			eggRef: React.RefObject<Konva.Image>;
 			id: string;
 			henId: string;
 			position: Position;
@@ -18,12 +23,16 @@ export const eggMachine = setup({
 			hatchRate: number;
 		};
 		events:
+			| { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
 			| { type: 'Land on floor' }
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
 			| { type: 'Resume game' }
-			| { type: 'Pause game' };
+			| { type: 'Pause game' }
+			| { type: 'Animation done' };
+
 		input: {
+			parentRef: AnyActorRef;
 			id: string;
 			henId: string;
 			position: Position;
@@ -31,6 +40,10 @@ export const eggMachine = setup({
 			floorY: number;
 			hatchRate: number;
 		};
+	},
+	actors: {
+		// animationActor,
+		animationMachine,
 	},
 	actions: {
 		setNewTargetPosition: assign({
@@ -70,8 +83,10 @@ export const eggMachine = setup({
 	},
 }).createMachine({
 	id: 'egg',
-	initial: 'Falling',
+	initial: 'Idle',
 	context: ({ input }) => ({
+		parentRef: input.parentRef,
+		eggRef: { current: null },
 		id: input.id,
 		henId: input.henId,
 		position: input.position,
@@ -95,10 +110,20 @@ export const eggMachine = setup({
 		},
 	},
 	states: {
-		Falling: {
+		Idle: {
+			on: {
+				'Set eggRef': {
+					target: 'FallingWithAnimation',
+					actions: assign({
+						eggRef: ({ event }) => event.eggRef,
+					}),
+				},
+			},
+		},
+		FallingWithAnimation: {
 			entry: 'setNewTargetPosition',
 			on: {
-				'Land on floor': 'Landed',
+				'Animation done': 'Landed',
 				Catch: {
 					target: 'Done',
 					actions: assign({
@@ -106,17 +131,50 @@ export const eggMachine = setup({
 					}),
 				},
 			},
+			invoke: {
+				src: 'animationMachine',
+				input: ({ context, self }) => ({
+					id: context.id,
+					ref: context.eggRef,
+					parentRef: self,
+					animationProps: {
+						duration: 3,
+						x: context.targetPosition.x,
+						y: context.targetPosition.y,
+						rotation: -720,
+						onUpdate: () => {
+							if (!context.eggRef.current) return;
+							if (
+								context.eggRef.current.y() >=
+								STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+							) {
+								// console.log('Egg position updated should send to system');
+								context.parentRef.send({
+									type: 'Egg position updated',
+									eggId: context.id,
+									position: context.eggRef.current.getPosition(),
+								});
+							}
+						},
+						onFinish: () => {
+							console.log('Egg done falling');
+							self.send({ type: 'Animation done' });
+						},
+					},
+				}),
+				onDone: { target: 'Landed', actions: log('Going to Landed') },
+			},
 		},
 		Landed: {
 			always: [
 				{
 					guard: ({ context }) => Math.random() < context.hatchRate,
 					target: 'Hatching',
-					actions: ['hatchOnFloor', 'playHatchSound'],
+					actions: [log('should hatch'), 'hatchOnFloor', 'playHatchSound'],
 				},
 				{
 					target: 'Splatting',
-					actions: ['splatOnFloor', 'playSplatSound'],
+					actions: [log('should splat'), 'splatOnFloor', 'playSplatSound'],
 				},
 			],
 		},
@@ -139,7 +197,25 @@ export const eggMachine = setup({
 		Exiting: {
 			entry: ['setTargetPositionToExit'],
 			on: {
-				'Finished exiting': { target: 'Done' },
+				'Animation done': { target: 'Done' },
+			},
+			invoke: {
+				src: 'animationMachine',
+				input: ({ context, self }) => ({
+					id: context.id,
+					ref: context.eggRef,
+					parentRef: self,
+					animationProps: {
+						duration: 3,
+						x: context.targetPosition.x,
+						y: context.targetPosition.y,
+						rotation: -720,
+						onFinish: () => {
+							console.log('Chick done existing');
+							self.send({ type: 'Animation done' });
+						},
+					},
+				}),
 			},
 		},
 		Done: {
