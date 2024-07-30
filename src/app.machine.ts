@@ -135,9 +135,7 @@ const appMachine = setup({
 		}),
 	},
 	actors: {
-		loadAssets: fromPromise(() => {
-			return Promise.resolve();
-		}),
+		loadAssets: fromPromise(() => Promise.resolve()),
 		gameLevelMachine,
 	},
 }).createMachine({
