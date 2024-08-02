@@ -9,9 +9,6 @@ import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
-// import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
-// import { AppActorContext } from '../app.machine';
-// import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
 export function Egg({
 	eggActorRef,
@@ -56,7 +53,6 @@ export function Egg({
 	) : eggState.matches('Splatting') ? (
 		// Render a rectangle
 		<KonvaImage
-			// ref={eggRef}
 			image={brokenEggImage}
 			width={60}
 			height={60}
