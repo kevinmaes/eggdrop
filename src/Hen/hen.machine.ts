@@ -69,6 +69,7 @@ export const henMachine = setup({
 			return canLayEgg;
 		},
 		'can lay egg while moving': ({ context }) => {
+			return true;
 			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
 			const withinEggLayingRate = Math.random() < context.movingEggLayingRate;
@@ -176,6 +177,25 @@ export const henMachine = setup({
 				},
 				onError: { target: 'Stopped' },
 			},
+			// TODO: Start to implement egg laying while moving
+			// Need to include hen speed and more random timing of when to lay eggs.
+			// after: {
+			// 	1000: {
+			// 		target: 'Moving',
+			// 		actions: [
+			// 			log('Laying while moving'),
+			// 			sendParent(({ context }) => ({
+			// 				type: 'Lay an egg',
+			// 				henId: context.id,
+			// 				henPosition: context.henRef.current!.getPosition(),
+			// 				hatchRate: context.hatchRate,
+			// 			})),
+			// 			assign({
+			// 				eggsLaid: ({ context }) => context.eggsLaid + 1,
+			// 			}),
+			// 		],
+			// 	},
+			// },
 		},
 		Stopped: {
 			on: {
@@ -194,7 +214,7 @@ export const henMachine = setup({
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,
-					henPosition: context.position,
+					henPosition: context.henRef.current!.getPosition(),
 					hatchRate: context.hatchRate,
 				})),
 				assign({
@@ -203,14 +223,5 @@ export const henMachine = setup({
 			],
 			after: { 1000: 'Moving' },
 		},
-		// 'Laying Egg While Moving': {
-		// 	entry: [
-		// 		'layEgg',
-		// 		assign({
-		// 			eggsLaid: ({ context }) => context.eggsLaid + 1,
-		// 		}),
-		// 	],
-		// 	after: { 100: 'Moving' },
-		// },
 	},
 });
