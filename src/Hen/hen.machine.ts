@@ -51,6 +51,7 @@ export const henMachine = setup({
 			hatchRate: number;
 			minX: number;
 			maxX: number;
+			currentTween: Konva.Tween | null;
 		};
 		events:
 			| { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
@@ -112,6 +113,7 @@ export const henMachine = setup({
 		hatchRate: input.hatchRate,
 		minX: input.minX,
 		maxX: input.maxX,
+		currentTween: null,
 	}),
 	on: {
 		'Set henRef': {
@@ -133,33 +135,41 @@ export const henMachine = setup({
 			},
 		},
 		Moving: {
-			invoke: {
-				src: 'animationActor',
-				input: ({ context }) => {
-					const targetPosition = {
+			entry: [
+				assign({
+					targetPosition: ({ context }) => ({
 						x: pickXPosition(context.minX, context.maxX),
 						y: HEN_Y_POSITION,
-					};
-					const totalDistance = STAGE_DIMENSIONS.width;
-					const xDistance = Math.abs(targetPosition.x - context.position.x);
-					const relativeDistance = xDistance / totalDistance;
-					const duration =
-						context.baseTweenDurationSeconds *
-						(1 - relativeDistance * context.speed);
+					}),
+				}),
+				assign({
+					currentTween: ({ context }) => {
+						const { targetPosition } = context;
+						const totalDistance = STAGE_DIMENSIONS.width;
+						const xDistance = Math.abs(targetPosition.x - context.position.x);
+						const relativeDistance = xDistance / totalDistance;
+						const duration =
+							context.baseTweenDurationSeconds *
+							(1 - relativeDistance * context.speed);
 
-					const tween = new Konva.Tween({
-						node: context.henRef.current!,
-						duration,
-						x: targetPosition.x,
-						y: targetPosition.y,
-						easing: Konva.Easings.EaseInOut,
-					});
+						const tween = new Konva.Tween({
+							node: context.henRef.current!,
+							duration,
+							x: targetPosition.x,
+							y: targetPosition.y,
+							easing: Konva.Easings.EaseInOut,
+						});
 
-					return {
-						node: context.henRef.current,
-						tween,
-					};
-				},
+						return tween;
+					},
+				}),
+			],
+			invoke: {
+				src: 'animationActor',
+				input: ({ context }) => ({
+					node: context.henRef.current,
+					tween: context.currentTween,
+				}),
 				onDone: {
 					target: 'Stopped',
 					actions: assign({
