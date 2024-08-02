@@ -191,7 +191,6 @@ export const henMachine = setup({
 		},
 		'Laying Egg': {
 			entry: [
-				log('Hen laying egg'),
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,
