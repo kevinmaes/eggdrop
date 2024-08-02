@@ -75,49 +75,46 @@ export const henMachine = setup({
 		},
 	},
 	actors: {
-		tweenActor: fromPromise(
-			({
-				input,
-			}: {
-				input: {
-					henRef: React.RefObject<Konva.Image>;
-					speed: number;
-					baseTweenDurationSeconds: number;
-					position: Position;
-					minX: number;
-					maxX: number;
-				};
-			}) => {
-				return new Promise<{ endPosition: Position }>((resolve, reject) => {
-					if (input.henRef.current) {
-						const targetPosition = {
-							x: pickXPosition(input.minX, input.maxX),
-							y: HEN_Y_POSITION,
-						};
-						const totalDistance = STAGE_DIMENSIONS.width;
-						const xDistance = Math.abs(targetPosition.x - input.position.x);
-						const relativeDistance = xDistance / totalDistance;
-						const duration =
-							input.baseTweenDurationSeconds *
-							(1 - relativeDistance * input.speed);
-
-						const tween = new Konva.Tween({
-							node: input.henRef.current,
-							duration,
-							x: targetPosition.x,
-							easing: Konva.Easings.EaseInOut,
-							onFinish: () => {
-								tween.destroy();
-								return resolve({ endPosition: targetPosition });
-							},
-						});
-						tween.play();
-					} else {
-						reject('No henRef');
-					}
-				});
+		tweenActor: fromPromise<
+			{ endPosition: Position },
+			{
+				henRef: React.RefObject<Konva.Image>;
+				speed: number;
+				baseTweenDurationSeconds: number;
+				position: Position;
+				minX: number;
+				maxX: number;
 			}
-		),
+		>(({ input }) => {
+			return new Promise((resolve, reject) => {
+				if (input.henRef.current) {
+					const targetPosition = {
+						x: pickXPosition(input.minX, input.maxX),
+						y: HEN_Y_POSITION,
+					};
+					const totalDistance = STAGE_DIMENSIONS.width;
+					const xDistance = Math.abs(targetPosition.x - input.position.x);
+					const relativeDistance = xDistance / totalDistance;
+					const duration =
+						input.baseTweenDurationSeconds *
+						(1 - relativeDistance * input.speed);
+
+					const tween = new Konva.Tween({
+						node: input.henRef.current,
+						duration,
+						x: targetPosition.x,
+						easing: Konva.Easings.EaseInOut,
+						onFinish: () => {
+							tween.destroy();
+							return resolve({ endPosition: targetPosition });
+						},
+					});
+					tween.play();
+				} else {
+					reject('No henRef');
+				}
+			});
+		}),
 	},
 	delays: {
 		getRandomStartDelay: () =>

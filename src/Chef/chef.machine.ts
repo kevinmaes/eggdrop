@@ -96,7 +96,7 @@ export const chefMachine = setup({
 	actors: {
 		animationActor: fromPromise(() => {
 			let anim: Animation | null;
-			return new Promise<{ timeDiff: number }>((resolve) => {
+			return new Promise((resolve) => {
 				anim = new Animation((frame) => {
 					if (frame?.timeDiff) {
 						resolve({ timeDiff: frame?.timeDiff });
