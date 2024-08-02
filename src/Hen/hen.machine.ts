@@ -61,7 +61,6 @@ export const henMachine = setup({
 	},
 	guards: {
 		'can lay egg while stopped': ({ context }) => {
-			return true;
 			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
 			const withinEggLayingRate =
