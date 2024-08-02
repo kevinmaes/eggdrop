@@ -74,7 +74,6 @@ export const eggMachine = setup({
 		playHatchSound: () => {
 			sounds.hatch.play();
 			setTimeout(() => {
-				console.log('yipee');
 				sounds.yipee.play();
 			}, 500);
 		},
