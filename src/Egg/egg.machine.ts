@@ -1,4 +1,4 @@
-import { setup, assign, sendParent, AnyActorRef, log } from 'xstate';
+import { setup, assign, sendParent, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
@@ -9,7 +9,6 @@ export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		context: {
-			parentRef: AnyActorRef;
 			eggRef: React.RefObject<Konva.Image>;
 			id: string;
 			henId: string;
@@ -29,9 +28,10 @@ export const eggMachine = setup({
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
 			| { type: 'Resume game' }
-			| { type: 'Pause game' };
+			| { type: 'Pause game' }
+			| { type: 'Notify of animation position' };
+
 		input: {
-			parentRef: AnyActorRef;
 			id: string;
 			henId: string;
 			position: Position;
@@ -83,7 +83,6 @@ export const eggMachine = setup({
 	id: 'egg',
 	initial: 'Idle',
 	context: ({ input }) => ({
-		parentRef: input.parentRef,
 		eggRef: { current: null },
 		id: input.id,
 		henId: input.henId,
@@ -123,7 +122,7 @@ export const eggMachine = setup({
 			entry: [
 				'setNewTargetPosition',
 				assign({
-					currentTween: ({ context }) => {
+					currentTween: ({ context, self }) => {
 						if (!context.eggRef.current) {
 							return null;
 						}
@@ -133,24 +132,27 @@ export const eggMachine = setup({
 							x: context.targetPosition.x,
 							y: context.targetPosition.y,
 							rotation: -720,
-							onUpdate: () => {
-								if (!context.eggRef.current) return;
-								if (
-									context.eggRef.current.y() >=
-									STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
-								) {
-									context.parentRef.send({
-										type: 'Egg position updated',
-										eggId: context.id,
-										position: context.eggRef.current.getPosition(),
-									});
-								}
-							},
+							onUpdate: () =>
+								self.send({ type: 'Notify of animation position' }),
 						});
 					},
 				}),
 			],
 			on: {
+				'Notify of animation position': {
+					guard: ({ context }) => {
+						if (!context.eggRef.current) return false;
+						return (
+							context.eggRef.current.y() >=
+							STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+						);
+					},
+					actions: sendParent(({ context }) => ({
+						type: 'Egg position updated',
+						eggId: context.id,
+						position: context.eggRef.current!.getPosition(),
+					})),
+				},
 				Catch: {
 					target: 'Done',
 					actions: assign({

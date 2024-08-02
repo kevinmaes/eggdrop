@@ -101,7 +101,7 @@ export const gameLevelMachine = setup({
 		}),
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
-				{ context, self, spawn },
+				{ context, spawn },
 				params: { henId: string; henPosition: Position; hatchRate: number }
 			) => {
 				const eggHenButtYOffset = 35;
@@ -112,7 +112,6 @@ export const gameLevelMachine = setup({
 					spawn(eggMachine, {
 						systemId: eggId,
 						input: {
-							parentRef: self,
 							id: eggId,
 							henId: params.henId,
 							position: {
