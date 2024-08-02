@@ -55,7 +55,6 @@ export const henMachine = setup({
 		};
 		events:
 			| { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
-			// | { type: 'Stop moving'; atPosition: Position }
 			| { type: 'Stop moving' }
 			| { type: 'Resume game' }
 			| { type: 'Pause game' };
