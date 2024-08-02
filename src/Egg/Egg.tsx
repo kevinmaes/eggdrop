@@ -53,7 +53,6 @@ export function Egg({
 	) : eggState.matches('Splatting') ? (
 		// Render a rectangle
 		<KonvaImage
-			// ref={eggRef}
 			image={brokenEggImage}
 			width={60}
 			height={60}
