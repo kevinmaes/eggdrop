@@ -355,7 +355,6 @@ export const gameLevelMachine = setup({
 				actions: [
 					sendTo('chefMachine', { type: 'Catch' }),
 					'playCatchEggSound',
-					log('Egg caught'),
 					// Sending Catch to the eggActor will lead to final state
 					// and automatic removal by this parent machine.
 					sendTo(({ system, event }) => system.get(event.eggId), {
