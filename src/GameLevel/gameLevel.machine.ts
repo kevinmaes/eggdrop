@@ -257,6 +257,7 @@ export const gameLevelMachine = setup({
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
+			console.log('testPotRimHit', context.chefPotRimHitRef);
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}

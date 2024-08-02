@@ -1,11 +1,15 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
+import Konva from 'konva';
+import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { animationActor } from '../animation';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		context: {
+			eggRef: React.RefObject<Konva.Image>;
 			id: string;
 			henId: string;
 			position: Position;
@@ -16,13 +20,17 @@ export const eggMachine = setup({
 			resultStatus: EggResultStatus;
 			gamePaused: boolean;
 			hatchRate: number;
+			currentTween: Konva.Tween | null;
 		};
 		events:
+			| { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
 			| { type: 'Land on floor' }
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
 			| { type: 'Resume game' }
-			| { type: 'Pause game' };
+			| { type: 'Pause game' }
+			| { type: 'Notify of animation position' };
+
 		input: {
 			id: string;
 			henId: string;
@@ -31,6 +39,9 @@ export const eggMachine = setup({
 			floorY: number;
 			hatchRate: number;
 		};
+	},
+	actors: {
+		animationActor,
 	},
 	actions: {
 		setNewTargetPosition: assign({
@@ -63,15 +74,15 @@ export const eggMachine = setup({
 		playHatchSound: () => {
 			sounds.hatch.play();
 			setTimeout(() => {
-				console.log('yipee');
 				sounds.yipee.play();
 			}, 500);
 		},
 	},
 }).createMachine({
 	id: 'egg',
-	initial: 'Falling',
+	initial: 'Idle',
 	context: ({ input }) => ({
+		eggRef: { current: null },
 		id: input.id,
 		henId: input.henId,
 		position: input.position,
@@ -86,6 +97,7 @@ export const eggMachine = setup({
 		resultStatus: null,
 		gamePaused: false,
 		hatchRate: input.hatchRate,
+		currentTween: null,
 	}),
 	on: {
 		'Pause game': {
@@ -95,10 +107,51 @@ export const eggMachine = setup({
 		},
 	},
 	states: {
-		Falling: {
-			entry: 'setNewTargetPosition',
+		Idle: {
 			on: {
-				'Land on floor': 'Landed',
+				'Set eggRef': {
+					target: 'FallingWithAnimation',
+					actions: assign({
+						eggRef: ({ event }) => event.eggRef,
+					}),
+				},
+			},
+		},
+		FallingWithAnimation: {
+			entry: [
+				'setNewTargetPosition',
+				assign({
+					currentTween: ({ context, self }) => {
+						if (!context.eggRef.current) {
+							return null;
+						}
+						return new Konva.Tween({
+							node: context.eggRef.current,
+							duration: 3,
+							x: context.targetPosition.x,
+							y: context.targetPosition.y,
+							rotation: -720,
+							onUpdate: () =>
+								self.send({ type: 'Notify of animation position' }),
+						});
+					},
+				}),
+			],
+			on: {
+				'Notify of animation position': {
+					guard: ({ context }) => {
+						if (!context.eggRef.current) return false;
+						return (
+							context.eggRef.current.y() >=
+							STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+						);
+					},
+					actions: sendParent(({ context }) => ({
+						type: 'Egg position updated',
+						eggId: context.id,
+						position: context.eggRef.current!.getPosition(),
+					})),
+				},
 				Catch: {
 					target: 'Done',
 					actions: assign({
@@ -106,17 +159,27 @@ export const eggMachine = setup({
 					}),
 				},
 			},
+			invoke: {
+				src: 'animationActor',
+				input: ({ context }) => {
+					return {
+						node: context.eggRef.current,
+						tween: context.currentTween,
+					};
+				},
+				onDone: { target: 'Landed', actions: log('Going to Landed') },
+			},
 		},
 		Landed: {
 			always: [
 				{
 					guard: ({ context }) => Math.random() < context.hatchRate,
 					target: 'Hatching',
-					actions: ['hatchOnFloor', 'playHatchSound'],
+					actions: [log('should hatch'), 'hatchOnFloor', 'playHatchSound'],
 				},
 				{
 					target: 'Splatting',
-					actions: ['splatOnFloor', 'playSplatSound'],
+					actions: [log('should splat'), 'splatOnFloor', 'playSplatSound'],
 				},
 			],
 		},
@@ -138,8 +201,21 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			entry: ['setTargetPositionToExit'],
-			on: {
-				'Finished exiting': { target: 'Done' },
+			invoke: {
+				src: 'animationActor',
+				input: ({ context }) => {
+					const tween = new Konva.Tween({
+						node: context.eggRef.current!,
+						duration: 1,
+						x: context.targetPosition.x,
+						y: context.targetPosition.y,
+					});
+
+					return {
+						node: context.eggRef.current,
+						tween,
+					};
+				},
 			},
 		},
 		Done: {
