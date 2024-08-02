@@ -42,7 +42,6 @@ export const eggMachine = setup({
 		};
 	},
 	actors: {
-		// animationActor,
 		animationMachine,
 	},
 	actions: {
