@@ -2,11 +2,7 @@ import { setup, assign, sendParent, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
-import {
-	CHEF_DIMENSIONS,
-	CHEF_POT_RIM_CONFIG,
-	STAGE_DIMENSIONS,
-} from '../GameLevel/gameConfig';
+import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
 import { animationActor } from '../animation';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
