@@ -7,7 +7,7 @@ import {
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
 import { animationActor } from '../animation';
-import { GameAssets, SpriteData } from '../types/assets';
+import { GameAssets } from '../types/assets';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const range = maxX - minX;
@@ -17,7 +17,7 @@ export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	return randomPosition;
 }
 
-export const henMachine: any = setup({
+export const henMachine = setup({
 	types: {} as {
 		input: {
 			id: string;
@@ -38,7 +38,7 @@ export const henMachine: any = setup({
 		context: {
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
-			henAssets: { sprite: SpriteData };
+			henAssets: GameAssets['hen'];
 			stageDimensions: { width: number; height: number };
 			position: Position;
 			targetPosition: Position;

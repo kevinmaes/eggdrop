@@ -140,6 +140,8 @@ const appMachine = setup({
 		loadAssets: fromPromise<GameAssets>(async () => {
 			const henResult = await fetch('images/rectangles.json');
 			const henSpriteData = await henResult.json();
+			const chefResult = await fetch('images/chef.sprite.json');
+			const chefSpriteData = await chefResult.json();
 
 			return {
 				hen: {
@@ -149,7 +151,7 @@ const appMachine = setup({
 					sprite: henSpriteData,
 				},
 				chef: {
-					sprite: henSpriteData,
+					sprite: chefSpriteData,
 				},
 			};
 		}),
