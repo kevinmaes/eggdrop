@@ -9,7 +9,7 @@ import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
 import useImage from 'use-image';
-import chefImageFile from '../assets/chef-3.png';
+// import chefImageFile from '../assets/chef-3.png';
 import { Image as KonvaImage } from 'react-konva';
 
 // import useImage from 'use-image';
