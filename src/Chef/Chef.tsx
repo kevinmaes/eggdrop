@@ -9,7 +9,6 @@ import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
 import useImage from 'use-image';
-// import chefImageFile from '../assets/chef-3.png';
 import { Image as KonvaImage } from 'react-konva';
 
 // import useImage from 'use-image';
@@ -23,7 +22,7 @@ export function Chef({
 	layerRef: Ref<Konva.Layer>;
 	initialPosition: Position;
 }) {
-	// const [chefImage] = useImage('path-to-your-chef-image.png');
+	const [chefImage] = useImage('images/chef-3.png');
 	const appActorRef = AppActorContext.useActorRef();
 
 	const gameLevelActorRef = appActorRef.system.get(
@@ -38,8 +37,6 @@ export function Chef({
 		chefActorRef,
 		(state) => state?.context.position
 	);
-
-	const [chefImage] = useImage(chefImageFile);
 
 	const chefPotRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
