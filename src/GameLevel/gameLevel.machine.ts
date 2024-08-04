@@ -8,10 +8,12 @@ import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { countdownTimerMachine } from './countdownTimer.machine';
+import { GameAssets } from '../types/assets';
 
 export const gameLevelMachine = setup({
 	types: {} as {
 		context: {
+			gameAssets: GameAssets;
 			remainingTime: number;
 			stageDimensions: { width: number; height: number };
 			chefDimensions: { width: number; height: number };
@@ -50,6 +52,7 @@ export const gameLevelMachine = setup({
 					resultStatus: EggResultStatus;
 			  };
 		input: {
+			gameAssets: GameAssets;
 			generationIndex: number;
 			levelDuration: number;
 			population: IndividualHen[];
@@ -81,6 +84,7 @@ export const gameLevelMachine = setup({
 							input: {
 								stageDimensions: context.stageDimensions,
 								id: henId,
+								henAssets: context.gameAssets.hen,
 								position: {
 									x: initialPosition.x,
 									y: initialPosition.y,
@@ -289,6 +293,7 @@ export const gameLevelMachine = setup({
 	},
 }).createMachine({
 	context: ({ input }) => ({
+		gameAssets: input.gameAssets,
 		remainingTime: input.levelDuration,
 		stageDimensions: STAGE_DIMENSIONS,
 		chefDimensions: CHEF_DIMENSIONS,
