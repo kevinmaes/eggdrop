@@ -11,6 +11,7 @@ import {
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
+import { GameAssets } from './types/assets';
 
 export function getOffScreenStartXPosition(
 	stageWidth: number,
@@ -28,6 +29,7 @@ const appMachine = setup({
 			populationSize: number;
 			mutationRate: number;
 			mutationVariancePercentage: number;
+			gameAssets: GameAssets | null;
 		};
 		events:
 			| { type: 'Start' }
@@ -135,7 +137,22 @@ const appMachine = setup({
 		}),
 	},
 	actors: {
-		loadAssets: fromPromise(() => Promise.resolve()),
+		loadAssets: fromPromise<GameAssets>(async () => {
+			const henResult = await fetch('images/rectangles.json');
+			const henSpriteData = await henResult.json();
+
+			return {
+				hen: {
+					sprite: henSpriteData,
+				},
+				egg: {
+					sprite: henSpriteData,
+				},
+				chef: {
+					sprite: henSpriteData,
+				},
+			};
+		}),
 		gameLevelMachine,
 	},
 }).createMachine({
@@ -161,7 +178,7 @@ const appMachine = setup({
 			};
 		}),
 		populationSize: 10,
-		lastLevelResults: null,
+		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
 	},
@@ -173,6 +190,9 @@ const appMachine = setup({
 				input: {},
 				onDone: {
 					target: 'Intro',
+					actions: assign({
+						gameAssets: ({ event }) => event.output,
+					}),
 				},
 				onError: {
 					target: 'Show Error',
@@ -200,7 +220,8 @@ const appMachine = setup({
 				'Init Level': {
 					tags: ['init level'],
 					after: {
-						2000: 'Playing',
+						// 2000: 'Playing',
+						10: 'Playing',
 					},
 				},
 				Playing: {
@@ -218,11 +239,17 @@ const appMachine = setup({
 					invoke: {
 						src: 'gameLevelMachine',
 						systemId: 'gameLevelMachine',
-						input: ({ context }) => ({
-							generationIndex: context.generationIndex,
-							levelDuration: LEVEL_DURATION_MS,
-							population: context.population,
-						}),
+						input: ({ context }) => {
+							if (!context.gameAssets) {
+								throw new Error('Game assets not loaded');
+							}
+							return {
+								gameAssets: context.gameAssets,
+								generationIndex: context.generationIndex,
+								levelDuration: LEVEL_DURATION_MS,
+								population: context.population,
+							};
+						},
 					},
 					description: 'The main state for game play of each level',
 				},

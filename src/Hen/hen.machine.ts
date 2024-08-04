@@ -7,6 +7,7 @@ import {
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
 import { animationActor } from '../animation';
+import { GameAssets, SpriteData } from '../types/assets';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const range = maxX - minX;
@@ -20,6 +21,7 @@ export const henMachine: any = setup({
 	types: {} as {
 		input: {
 			id: string;
+			henAssets: GameAssets['hen'];
 			position: Position;
 			stageDimensions: { width: number; height: number };
 			maxEggs: number;
@@ -36,6 +38,7 @@ export const henMachine: any = setup({
 		context: {
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
+			henAssets: { sprite: SpriteData };
 			stageDimensions: { width: number; height: number };
 			position: Position;
 			targetPosition: Position;
@@ -80,8 +83,10 @@ export const henMachine: any = setup({
 		animationActor,
 	},
 	delays: {
-		getRandomStartDelay: () =>
-			Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS),
+		getRandomStartDelay: () => {
+			return 2000;
+			return Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS);
+		},
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			// If values mutate to cross over, return the min value.
@@ -97,6 +102,7 @@ export const henMachine: any = setup({
 	context: ({ input }) => ({
 		henRef: { current: null },
 		id: input.id,
+		henAssets: input.henAssets,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
 		targetPosition: { x: input.position.x, y: input.position.y },
@@ -210,6 +216,7 @@ export const henMachine: any = setup({
 			},
 		},
 		'Laying Egg': {
+			tags: 'laying',
 			entry: [
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',

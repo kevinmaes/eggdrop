@@ -8,6 +8,10 @@ import { Position } from '../GameLevel/types';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
+import useImage from 'use-image';
+import chefImageFile from '../assets/chef-3.png';
+import { Image as KonvaImage } from 'react-konva';
+
 // import useImage from 'use-image';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
@@ -34,6 +38,8 @@ export function Chef({
 		chefActorRef,
 		(state) => state?.context.position
 	);
+
+	const [chefImage] = useImage(chefImageFile);
 
 	const chefPotRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
@@ -79,6 +85,13 @@ export function Chef({
 
 	return (
 		<>
+			<KonvaImage
+				image={chefImage}
+				x={chefPosition.x}
+				y={chefPosition.y}
+				width={dimensions.width}
+				height={dimensions.height}
+			/>
 			{/* Chef */}
 			<Rect
 				x={chefPosition.x}
