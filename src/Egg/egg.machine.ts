@@ -2,7 +2,11 @@ import { setup, assign, sendParent, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
-import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import {
+	CHEF_DIMENSIONS,
+	CHEF_POT_RIM_CONFIG,
+	STAGE_DIMENSIONS,
+} from '../GameLevel/gameConfig';
 import { animationActor } from '../animation';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
@@ -142,8 +146,9 @@ export const eggMachine = setup({
 					guard: ({ context }) => {
 						if (!context.eggRef.current) return false;
 						return (
-							context.eggRef.current.y() >=
-							STAGE_DIMENSIONS.height - CHEF_DIMENSIONS.height
+							context.eggRef.current.y() >= CHEF_POT_RIM_CONFIG.y &&
+							context.eggRef.current.y() <=
+								CHEF_POT_RIM_CONFIG.y + CHEF_POT_RIM_CONFIG.height
 						);
 					},
 					actions: sendParent(({ context }) => ({
