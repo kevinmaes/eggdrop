@@ -15,7 +15,7 @@ import { GameAssets } from './types/assets';
 
 export function getOffScreenStartXPosition(
 	stageWidth: number,
-	buffer: number = 50
+	buffer: number = 200
 ) {
 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
 }
