@@ -169,7 +169,6 @@ export const gameLevelMachine = setup({
 					case 'Caught':
 						updatedHenStats.eggsCaught += 1;
 						updatedLevelStats.totalEggsCaught += 1;
-						console.log('resultStatus Caught');
 						break;
 					case 'Hatched':
 						updatedHenStats.eggsHatched += 1;
@@ -180,12 +179,6 @@ export const gameLevelMachine = setup({
 						updatedLevelStats.totalEggsBroken += 1;
 						break;
 				}
-
-				console.log(
-					'updateHenStatsForEggDone',
-					params.resultStatus,
-					updatedLevelStats.totalEggsCaught
-				);
 
 				updatedHenStatsById[params.henId] = updatedHenStats;
 
@@ -257,7 +250,6 @@ export const gameLevelMachine = setup({
 	},
 	guards: {
 		testPotRimHit: ({ context, event }) => {
-			console.log('testPotRimHit', context.chefPotRimHitRef);
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}
@@ -349,20 +341,18 @@ export const gameLevelMachine = setup({
 				},
 			],
 		},
-		'Egg position updated': [
-			{
-				guard: 'testPotRimHit',
-				actions: [
-					sendTo('chefMachine', { type: 'Catch' }),
-					'playCatchEggSound',
-					// Sending Catch to the eggActor will lead to final state
-					// and automatic removal by this parent machine.
-					sendTo(({ system, event }) => system.get(event.eggId), {
-						type: 'Catch',
-					}),
-				],
-			},
-		],
+		'Egg position updated': {
+			guard: 'testPotRimHit',
+			actions: [
+				sendTo('chefMachine', { type: 'Catch' }),
+				'playCatchEggSound',
+				// Sending Catch to the eggActor will lead to final state
+				// and automatic removal by this parent machine.
+				sendTo(({ system, event }) => system.get(event.eggId), {
+					type: 'Catch',
+				}),
+			],
+		},
 		'Egg done': {
 			actions: [
 				{

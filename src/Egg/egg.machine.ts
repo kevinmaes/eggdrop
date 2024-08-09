@@ -1,4 +1,11 @@
-import { setup, assign, sendParent, log, fromPromise } from 'xstate';
+import {
+	setup,
+	assign,
+	sendParent,
+	log,
+	fromPromise,
+	AnyActorRef,
+} from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
@@ -12,6 +19,7 @@ export const eggMachine = setup({
 			eggRef: React.RefObject<Konva.Image>;
 			id: string;
 			henId: string;
+			initialPosition: Position;
 			position: Position;
 			targetPosition: Position;
 			fallingSpeed: number;
@@ -97,6 +105,7 @@ export const eggMachine = setup({
 		eggRef: { current: null },
 		id: input.id,
 		henId: input.henId,
+		initialPosition: input.position,
 		position: input.position,
 		targetPosition: input.position,
 		fallingSpeed: input.fallingSpeed,
@@ -148,36 +157,38 @@ export const eggMachine = setup({
 				},
 			},
 			invoke: {
-				src: fromPromise<void, { eggRef: React.RefObject<Konva.Image> }>(
-					({ input, self }) => {
-						console.log('invoke fromPromise', input);
-						return new Promise((resolve, reject) => {
-							const animation = new Konva.Animation((frame) => {
-								if (!input.eggRef.current) {
-									animation.stop();
-									return reject('No eggRef');
-								}
-								if (frame) {
-									const yPos = input.eggRef.current.y();
-									console.log('frame.time', frame.time);
-									const newYPos = yPos + frame.time * 0.1;
-									input.eggRef.current.y(newYPos); // Move the ball down
-									self.send({ type: 'Notify of animation position' });
-								}
-
-								if (input.eggRef.current.y() >= STAGE_DIMENSIONS.height) {
-									animation.stop();
-									resolve();
-								}
-							});
-							animation.start();
-						});
+				src: fromPromise<
+					void,
+					{
+						eggRef: React.RefObject<Konva.Image>;
+						initialPosition: Position;
+						parentRef: AnyActorRef;
 					}
-				),
-				input: ({ context }) => {
+				>(({ input }) => {
+					return new Promise((resolve, reject) => {
+						const animation = new Konva.Animation((frame) => {
+							if (!input.eggRef.current) {
+								animation.stop();
+								return reject('No eggRef');
+							} else if (input.eggRef.current.y() >= STAGE_DIMENSIONS.height) {
+								animation.stop();
+								resolve();
+							}
+
+							if (frame) {
+								const newYPos = input.initialPosition.y + frame.time * 0.5;
+								input.eggRef.current.y(newYPos); // Move the ball down
+								input.parentRef.send({ type: 'Notify of animation position' });
+							}
+						});
+						animation.start();
+					});
+				}),
+				input: ({ context, self }) => {
 					return {
-						// animation: context.currentAnimation,
 						eggRef: context.eggRef,
+						initialPosition: context.initialPosition,
+						parentRef: self,
 					};
 				},
 				onDone: {

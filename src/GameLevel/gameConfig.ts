@@ -1,5 +1,5 @@
 export const LEVEL_DURATION_MS = 30_000;
-export const POPULATION_SIZE = 5;
+export const POPULATION_SIZE = 1;
 export const STAGE_DIMENSIONS = { width: 1920, height: 1080 };
 export const CHEF_DIMENSIONS = { width: 224, height: 150 };
 export const CHEF_POT_RIM_CONFIG = {
@@ -21,9 +21,9 @@ export function getInitialChromosomeValues() {
 		speed: Math.random() * 1.2,
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 		maxEggs: -1,
-		stationaryEggLayingRate: Math.random(),
+		stationaryEggLayingRate: 1, //Math.random(),
 		movingEggLayingRate: 1, // Math.random(),
-		hatchRate: Math.random(),
+		hatchRate: 1, // Math.random(),
 		minX,
 		maxX,
 		minStopMS,
