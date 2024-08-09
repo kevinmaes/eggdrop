@@ -21,6 +21,7 @@ export const eggMachine = setup({
 			gamePaused: boolean;
 			hatchRate: number;
 			currentTween: Konva.Tween | null;
+			currentAnimation: Konva.Animation | null;
 		};
 		events:
 			| { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
@@ -109,6 +110,7 @@ export const eggMachine = setup({
 		gamePaused: false,
 		hatchRate: input.hatchRate,
 		currentTween: null,
+		currentAnimation: null,
 	}),
 	on: {
 		'Pause game': {
@@ -128,23 +130,24 @@ export const eggMachine = setup({
 				},
 			},
 		},
-		// FallingWithMotion: {
-		// 	entry: assign({
-		// 		currentTween: ({ context, self }) => {
-		// 			if (!context.eggRef.current) {
-		// 				return null;
-		// 			}
-		// 			return new Konva.Animation((frame) => {
-		// 				const egg = context.eggRef.current!;
-		// 				const y = egg.y() + context.fallingSpeed;
-		// 				egg.y(y);
-		// 				if (y >= context.floorY) {
-		// 					// self.send('Land on floor');
-		// 				}
-		// 			});
-		// 		},
-		// 	}),
-		// },
+		FallingWithMotion: {
+			entry: assign({
+				currentAnimation: ({ context }) => {
+					if (!context.eggRef.current) {
+						return null;
+					}
+					// return new Konva.Animation((frame) => {
+					return new Konva.Animation(() => {
+						const egg = context.eggRef.current!;
+						const y = egg.y() + context.fallingSpeed;
+						egg.y(y);
+						if (y >= context.floorY) {
+							// self.send('Land on floor');
+						}
+					});
+				},
+			}),
+		},
 		FallingWithAnimation: {
 			entry: [
 				'setNewTargetPosition',
