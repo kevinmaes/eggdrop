@@ -1,8 +1,8 @@
-import { setup, assign, sendParent, log } from 'xstate';
+import { setup, assign, sendParent, log, fromPromise } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
-import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
+import { CHEF_POT_RIM_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 import { animationActor } from '../animation';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
@@ -131,22 +131,59 @@ export const eggMachine = setup({
 			},
 		},
 		FallingWithMotion: {
-			entry: assign({
-				currentAnimation: ({ context }) => {
-					if (!context.eggRef.current) {
-						return null;
-					}
-					// return new Konva.Animation((frame) => {
-					return new Konva.Animation(() => {
-						const egg = context.eggRef.current!;
-						const y = egg.y() + context.fallingSpeed;
-						egg.y(y);
-						if (y >= context.floorY) {
-							// self.send('Land on floor');
-						}
-					});
+			on: {
+				'Notify of animation position': {
+					guard: 'isEggNearChefPot',
+					actions: sendParent(({ context }) => ({
+						type: 'Egg position updated',
+						eggId: context.id,
+						position: context.eggRef.current!.getPosition(),
+					})),
 				},
-			}),
+				Catch: {
+					target: 'Done',
+					actions: assign({
+						resultStatus: 'Caught',
+					}),
+				},
+			},
+			invoke: {
+				src: fromPromise<void, { eggRef: React.RefObject<Konva.Image> }>(
+					({ input, self }) => {
+						console.log('invoke fromPromise', input);
+						return new Promise((resolve, reject) => {
+							const animation = new Konva.Animation((frame) => {
+								if (!input.eggRef.current) {
+									animation.stop();
+									return reject('No eggRef');
+								}
+								if (frame) {
+									const yPos = input.eggRef.current.y();
+									console.log('frame.time', frame.time);
+									const newYPos = yPos + frame.time * 0.1;
+									input.eggRef.current.y(newYPos); // Move the ball down
+									self.send({ type: 'Notify of animation position' });
+								}
+
+								if (input.eggRef.current.y() >= STAGE_DIMENSIONS.height) {
+									animation.stop();
+									resolve();
+								}
+							});
+							animation.start();
+						});
+					}
+				),
+				input: ({ context }) => {
+					return {
+						// animation: context.currentAnimation,
+						eggRef: context.eggRef,
+					};
+				},
+				onDone: {
+					target: 'Landed',
+				},
+			},
 		},
 		FallingWithAnimation: {
 			entry: [
