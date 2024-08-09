@@ -121,13 +121,30 @@ export const eggMachine = setup({
 		Idle: {
 			on: {
 				'Set eggRef': {
-					target: 'FallingWithAnimation',
+					target: 'FallingWithMotion',
 					actions: assign({
 						eggRef: ({ event }) => event.eggRef,
 					}),
 				},
 			},
 		},
+		// FallingWithMotion: {
+		// 	entry: assign({
+		// 		currentTween: ({ context, self }) => {
+		// 			if (!context.eggRef.current) {
+		// 				return null;
+		// 			}
+		// 			return new Konva.Animation((frame) => {
+		// 				const egg = context.eggRef.current!;
+		// 				const y = egg.y() + context.fallingSpeed;
+		// 				egg.y(y);
+		// 				if (y >= context.floorY) {
+		// 					// self.send('Land on floor');
+		// 				}
+		// 			});
+		// 		},
+		// 	}),
+		// },
 		FallingWithAnimation: {
 			entry: [
 				'setNewTargetPosition',
