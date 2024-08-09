@@ -203,7 +203,6 @@ export const henMachine = setup({
 			},
 			after: {
 				getRandomStopDurationMS: [
-					{ guard: ({ context }) => context.gamePaused },
 					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
 					{ target: 'Moving' },
 				],

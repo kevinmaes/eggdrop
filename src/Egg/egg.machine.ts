@@ -43,6 +43,17 @@ export const eggMachine = setup({
 	actors: {
 		animationActor,
 	},
+	guards: {
+		eggCanHatch: ({ context }) => Math.random() < context.hatchRate,
+		isEggNearChefPot: ({ context }) => {
+			if (!context.eggRef.current) return false;
+			return (
+				context.eggRef.current.y() >= CHEF_POT_RIM_CONFIG.y &&
+				context.eggRef.current.y() <=
+					CHEF_POT_RIM_CONFIG.y + CHEF_POT_RIM_CONFIG.height
+			);
+		},
+	},
 	actions: {
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
@@ -139,14 +150,7 @@ export const eggMachine = setup({
 			],
 			on: {
 				'Notify of animation position': {
-					guard: ({ context }) => {
-						if (!context.eggRef.current) return false;
-						return (
-							context.eggRef.current.y() >= CHEF_POT_RIM_CONFIG.y &&
-							context.eggRef.current.y() <=
-								CHEF_POT_RIM_CONFIG.y + CHEF_POT_RIM_CONFIG.height
-						);
-					},
+					guard: 'isEggNearChefPot',
 					actions: sendParent(({ context }) => ({
 						type: 'Egg position updated',
 						eggId: context.id,
@@ -174,7 +178,7 @@ export const eggMachine = setup({
 		Landed: {
 			always: [
 				{
-					guard: ({ context }) => Math.random() < context.hatchRate,
+					guard: 'eggCanHatch',
 					target: 'Hatching',
 					actions: [log('should hatch'), 'hatchOnFloor', 'playHatchSound'],
 				},
