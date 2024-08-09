@@ -44,6 +44,7 @@ export const eggMachine = setup({
 		animationActor,
 	},
 	guards: {
+		eggCanHatch: ({ context }) => Math.random() < context.hatchRate,
 		isEggNearChefPot: ({ context }) => {
 			if (!context.eggRef.current) return false;
 			return (
@@ -177,7 +178,7 @@ export const eggMachine = setup({
 		Landed: {
 			always: [
 				{
-					guard: ({ context }) => Math.random() < context.hatchRate,
+					guard: 'eggCanHatch',
 					target: 'Hatching',
 					actions: [log('should hatch'), 'hatchOnFloor', 'playHatchSound'],
 				},
