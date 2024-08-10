@@ -19,7 +19,7 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed: Math.random() * 1.2,
-		speed: Math.random() * 2, // + 0.5,
+		speed: Math.random() * 3, // + 0.5,
 		// speed: 2,
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 		maxEggs: -1,
