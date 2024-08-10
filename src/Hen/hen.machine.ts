@@ -1,4 +1,4 @@
-import { assign, sendParent, setup } from 'xstate';
+import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
@@ -64,42 +64,21 @@ export const henMachine = setup({
 			| { type: 'Pause game' };
 	},
 	guards: {
-		'can lay egg while stopped': ({ context }) => {
-			const withinLimit =
-				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
+		'has more eggs': ({ context }) =>
+			context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
+		'is within stationary laying rate': ({ context }) => {
 			const withinEggLayingRate =
 				Math.random() < context.stationaryEggLayingRate;
-			const canLayEgg = withinLimit && withinEggLayingRate;
-			return canLayEgg;
+			return withinEggLayingRate;
 		},
-		'can lay egg while moving': ({ context }) => {
-			// return true;
-
-			// Check if we're within the total egg limit
-			const withinTotalEggLimit =
-				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-
-			// Check if we're within the egg laying rate
-			const withinEggLayingRate = Math.random() < context.movingEggLayingRate;
-
-			// Check if we're near the end of the tween
+		'is within moving laying rate': ({ context }) => {
+			return Math.random() < context.movingEggLayingRate;
+		},
+		'is not near animation end': ({ context }) => {
 			const currentTime = new Date().getTime();
 			const elapsedMS = currentTime - context.currentTweenStartTime;
 			const remainingMS = context.currentTweenDurationMS - elapsedMS;
-			const notEndingMovement = remainingMS > 500;
-
-			// Determine if we can lay an egg based on all three conditions
-			const canLayEgg =
-				withinTotalEggLimit && withinEggLayingRate && notEndingMovement;
-
-			console.log(
-				'guard',
-				withinTotalEggLimit,
-				withinEggLayingRate,
-				notEndingMovement,
-				canLayEgg
-			);
-			return canLayEgg;
+			return remainingMS > 500;
 		},
 	},
 	actors: {
@@ -251,7 +230,11 @@ export const henMachine = setup({
 					after: {
 						getRandomMidTweenDelay: [
 							{
-								guard: 'can lay egg while moving',
+								guard: and([
+									'has more eggs',
+									'is within moving laying rate',
+									'is not near animation end',
+								]),
 								target: 'Laying egg',
 							},
 							{ target: 'Not laying egg', reenter: true },
@@ -291,7 +274,10 @@ export const henMachine = setup({
 			},
 			after: {
 				getRandomStopDurationMS: [
-					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
+					{
+						guard: and(['has more eggs', 'is within stationary laying rate']),
+						target: 'Laying Egg',
+					},
 					{ target: 'Moving' },
 				],
 			},
