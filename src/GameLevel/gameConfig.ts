@@ -13,6 +13,7 @@ export const STAGGERED_HEN_DELAY_MS = 1000;
 
 export function getInitialChromosomeValues() {
 	const minX = Math.random() * 0.4 * STAGE_DIMENSIONS.width;
+	// const minX = 0.1 * STAGE_DIMENSIONS.width;
 	const maxX = STAGE_DIMENSIONS.width - minX;
 	const minStopMS = 1000; // Math.ceil(Math.random() * 1000);
 	const maxStopMS = 1000; // minStopMS + Math.random() * 5000;
@@ -25,8 +26,8 @@ export function getInitialChromosomeValues() {
 		maxEggs: -1,
 		// stationaryEggLayingRate: Math.random(),
 		stationaryEggLayingRate: 0,
-		movingEggLayingRate: Math.random() * 0.01,
-		// movingEggLayingRate: 0.01,
+		// movingEggLayingRate: Math.random(),
+		movingEggLayingRate: 1,
 		hatchRate: 1, // Math.random(),
 		minX,
 		maxX,

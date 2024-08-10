@@ -170,7 +170,6 @@ export const eggMachine = setup({
 					}
 				>(({ input }) => {
 					return new Promise((resolve, reject) => {
-						// console.log('xSpeed', input.xSpeed);
 						if (!input.eggRef.current) {
 							throw new Error('No eggRef');
 						}
@@ -195,10 +194,6 @@ export const eggMachine = setup({
 					});
 				}),
 				input: ({ context, self }) => {
-					// console.log(
-					// 	'input to egg animation henCurentTweenSpeed',
-					// 	context.henCurentTweenSpeed
-					// );
 					return {
 						eggRef: context.eggRef,
 						initialPosition: context.initialPosition,
@@ -259,12 +254,12 @@ export const eggMachine = setup({
 			},
 		},
 		Landed: {
-			entry: log('Landed'),
+			// entry: log('Landed'),
 			always: [
 				{
 					guard: 'eggCanHatch',
 					target: 'Hatching',
-					actions: [log('should hatch'), 'hatchOnFloor', 'playHatchSound'],
+					actions: ['hatchOnFloor', 'playHatchSound'],
 				},
 				{
 					target: 'Splatting',
