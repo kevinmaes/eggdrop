@@ -1,4 +1,4 @@
-import { assign, log, sendParent, setup } from 'xstate';
+import { assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
@@ -116,6 +116,7 @@ export const henMachine = setup({
 			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
+		restAfterLayingAnEgg: () => 1000,
 		getRandomMidTweenDelay: ({ context }) => {
 			if (!context.currentTween) {
 				throw new Error('No current tween');
@@ -241,14 +242,12 @@ export const henMachine = setup({
 			initial: 'Not laying egg',
 			states: {
 				'Not laying egg': {
-					entry: log('Not laying egg'),
 					after: {
 						// Wait 500ms to delay laying an egg until after tween ease-in
 						500: 'Preparing to lay egg',
 					},
 				},
 				'Preparing to lay egg': {
-					entry: log('Preparing to lay egg'),
 					after: {
 						getRandomMidTweenDelay: [
 							{
@@ -261,7 +260,6 @@ export const henMachine = setup({
 				},
 				'Laying egg': {
 					entry: [
-						log('Laying egg'),
 						sendParent(({ context }) => {
 							return {
 								type: 'Lay an egg',
@@ -281,9 +279,8 @@ export const henMachine = setup({
 					},
 				},
 				'Done laying egg': {
-					entry: log('Done laying egg'),
 					after: {
-						2000: 'Not laying egg',
+						restAfterLayingAnEgg: 'Not laying egg',
 					},
 				},
 			},
@@ -313,7 +310,7 @@ export const henMachine = setup({
 					eggsLaid: ({ context }) => context.eggsLaid + 1,
 				}),
 			],
-			after: { 1000: 'Moving' },
+			after: { restAfterLayingAnEgg: 'Moving' },
 		},
 	},
 });

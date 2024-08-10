@@ -1,11 +1,4 @@
-import {
-	setup,
-	assign,
-	sendParent,
-	log,
-	fromPromise,
-	AnyActorRef,
-} from 'xstate';
+import { setup, assign, sendParent, fromPromise, AnyActorRef } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
@@ -265,11 +258,10 @@ export const eggMachine = setup({
 						tween: context.currentTween,
 					};
 				},
-				onDone: { target: 'Landed', actions: log('Going to Landed') },
+				onDone: 'Landed',
 			},
 		},
 		Landed: {
-			// entry: log('Landed'),
 			always: [
 				{
 					guard: 'eggCanHatch',
@@ -278,7 +270,7 @@ export const eggMachine = setup({
 				},
 				{
 					target: 'Splatting',
-					actions: [log('should splat'), 'splatOnFloor', 'playSplatSound'],
+					actions: ['splatOnFloor', 'playSplatSound'],
 				},
 			],
 		},
