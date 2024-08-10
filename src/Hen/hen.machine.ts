@@ -100,13 +100,10 @@ export const henMachine = setup({
 			if (!context.currentTween) {
 				throw new Error('No current tween');
 			}
-			// const easeInDelay = 500;
 			const currentTime = new Date().getTime();
 			const elapsedTime = currentTime - context.currentTweenStartTime;
 			const remainingTime = context.currentTweenDurationMS - elapsedTime;
-			// const delay = easeInDelay + Math.max(Math.random() * remainingTime, 0);
 			const delay = Math.max(Math.random() * remainingTime, 0);
-
 			return delay;
 		},
 	},
