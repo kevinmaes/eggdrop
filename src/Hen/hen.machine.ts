@@ -9,8 +9,8 @@ import {
 import { animationActor } from '../animation';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
-	const range = maxX - minX;
-	let randomPosition = Math.random() * range + minX;
+	const xDistanceRange = maxX - minX;
+	let randomPosition = Math.random() * xDistanceRange + minX;
 	if (randomPosition < buffer) return buffer;
 	if (randomPosition > maxX - buffer) return maxX - buffer;
 	return randomPosition;
