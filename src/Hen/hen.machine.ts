@@ -25,6 +25,7 @@ export const henMachine = setup({
 			maxEggs: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
+			restAfterLayingEggMS: number;
 			speed: number;
 			baseTweenDurationSeconds: number;
 			hatchRate: number;
@@ -51,6 +52,7 @@ export const henMachine = setup({
 			eggsLaid: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
+			restAfterLayingEggMS: number;
 			gamePaused: boolean;
 			hatchRate: number;
 			minX: number;
@@ -95,7 +97,7 @@ export const henMachine = setup({
 			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
-		restAfterLayingAnEgg: () => 1000,
+		restAfterLayingAnEgg: ({ context }) => context.restAfterLayingEggMS,
 		getRandomMidTweenDelay: ({ context }) => {
 			if (!context.currentTween) {
 				throw new Error('No current tween');
@@ -128,6 +130,7 @@ export const henMachine = setup({
 		eggsLaid: 0,
 		stationaryEggLayingRate: input.stationaryEggLayingRate,
 		movingEggLayingRate: input.movingEggLayingRate,
+		restAfterLayingEggMS: input.restAfterLayingEggMS,
 		gamePaused: false,
 		hatchRate: input.hatchRate,
 		minX: input.minX,

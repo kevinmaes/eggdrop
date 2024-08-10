@@ -62,6 +62,9 @@ export function getInitialChromosomeValues() {
 		movingEggLayingRate: Math.random(),
 		// movingEggLayingRate: 1,
 
+		// The time the hen will rest after laying an egg
+		restAfterLayingEggMS: Math.random() * 2000,
+
 		// The rate at which the eggs will hatch when they land on the ground
 		hatchRate: Math.random(),
 		// hatchRate: 1,
