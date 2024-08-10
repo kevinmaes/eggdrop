@@ -24,6 +24,7 @@ export const eggMachine = setup({
 			targetPosition: Position;
 			fallingSpeed: number;
 			henCurentTweenSpeed: number;
+			rotationDirection: -1 | 0 | 1;
 			exitingSpeed: number;
 			floorY: number;
 			resultStatus: EggResultStatus;
@@ -47,6 +48,7 @@ export const eggMachine = setup({
 			position: Position;
 			fallingSpeed: number;
 			henCurentTweenSpeed: number;
+			rotationDirection: -1 | 0 | 1;
 			floorY: number;
 			hatchRate: number;
 		};
@@ -112,6 +114,7 @@ export const eggMachine = setup({
 		targetPosition: input.position,
 		fallingSpeed: input.fallingSpeed,
 		henCurentTweenSpeed: input.henCurentTweenSpeed,
+		rotationDirection: input.rotationDirection,
 		exitingSpeed: 10,
 		exitPosition: {
 			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
@@ -166,6 +169,7 @@ export const eggMachine = setup({
 						eggRef: React.RefObject<Konva.Image>;
 						initialPosition: Position;
 						xSpeed: number;
+						rotationDirection: -1 | 0 | 1;
 						parentRef: AnyActorRef;
 					}
 				>(({ input }) => {
@@ -183,10 +187,19 @@ export const eggMachine = setup({
 							}
 
 							if (frame) {
+								// Calculate new x and y positions
 								const newXPos = input.eggRef.current.x() + input.xSpeed;
 								input.eggRef.current.x(newXPos);
 								const newYPos = input.initialPosition.y + frame.time * 0.5;
-								input.eggRef.current.y(newYPos); // Move the ball down
+								input.eggRef.current.y(newYPos);
+
+								// Rotate the egg
+								const currentRotation = input.eggRef.current.rotation();
+								const newRotation =
+									currentRotation + input.rotationDirection * 5;
+								input.eggRef.current.rotation(newRotation);
+
+								// Send a message to the parent to update the egg position
 								input.parentRef.send({ type: 'Notify of animation position' });
 							}
 						});
@@ -198,6 +211,7 @@ export const eggMachine = setup({
 						eggRef: context.eggRef,
 						initialPosition: context.initialPosition,
 						xSpeed: context.henCurentTweenSpeed,
+						rotationDirection: context.rotationDirection,
 						parentRef: self,
 					};
 				},
@@ -219,7 +233,7 @@ export const eggMachine = setup({
 							duration: 3,
 							x: context.targetPosition.x,
 							y: context.targetPosition.y,
-							rotation: -720,
+							rotation: Math.random() > 0.5 ? 720 : -720,
 							onUpdate: () =>
 								self.send({ type: 'Notify of animation position' }),
 						});

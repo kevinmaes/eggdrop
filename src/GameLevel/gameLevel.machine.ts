@@ -37,6 +37,7 @@ export const gameLevelMachine = setup({
 					henId: string;
 					henPosition: Position;
 					henCurentTweenSpeed: number;
+					henCurrentTweenDirection: -1 | 0 | 1;
 					hatchRate: number;
 			  }
 			| {
@@ -107,6 +108,7 @@ export const gameLevelMachine = setup({
 					henId: string;
 					henPosition: Position;
 					henCurentTweenSpeed: number;
+					henCurrentTweenDirection: -1 | 0 | 1;
 					hatchRate: number;
 				}
 			) => {
@@ -130,6 +132,10 @@ export const gameLevelMachine = setup({
 							},
 							fallingSpeed: 2,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
+							rotationDirection: (-1 * params.henCurrentTweenDirection) as
+								| -1
+								| 0
+								| 1,
 							floorY: context.stageDimensions.height,
 							hatchRate: params.hatchRate,
 						},
@@ -343,6 +349,7 @@ export const gameLevelMachine = setup({
 						henId: event.henId,
 						henPosition: event.henPosition,
 						henCurentTweenSpeed: event.henCurentTweenSpeed,
+						henCurrentTweenDirection: event.henCurrentTweenDirection,
 						hatchRate: event.hatchRate,
 					}),
 				},

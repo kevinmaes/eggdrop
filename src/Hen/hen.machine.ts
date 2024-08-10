@@ -43,6 +43,7 @@ export const henMachine = setup({
 			currentTweenSpeed: number;
 			currentTweenDurationMS: number;
 			currentTweenStartTime: number;
+			currentTweenDirection: -1 | 0 | 1;
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;
@@ -90,6 +91,14 @@ export const henMachine = setup({
 			// Determine if we can lay an egg based on all three conditions
 			const canLayEgg =
 				withinTotalEggLimit && withinEggLayingRate && notEndingMovement;
+
+			console.log(
+				'guard',
+				withinTotalEggLimit,
+				withinEggLayingRate,
+				notEndingMovement,
+				canLayEgg
+			);
 			return canLayEgg;
 		},
 	},
@@ -134,7 +143,7 @@ export const henMachine = setup({
 		currentTweenSpeed: 0,
 		currentTweenDurationMS: 0,
 		currentTweenStartTime: 0,
-		// remainingTweenDuration: 0,
+		currentTweenDirection: 0,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: input.minStopMS,
 		maxStopMS: input.maxStopMS,
@@ -206,6 +215,7 @@ export const henMachine = setup({
 						currentTweenSpeed: speedPerFrame,
 						currentTweenDurationMS: duration * 1000,
 						currentTweenStartTime: new Date().getTime(),
+						currentTweenDirection: direction,
 						currentTween: tween,
 					};
 				}),
@@ -257,6 +267,7 @@ export const henMachine = setup({
 								type: 'Lay an egg',
 								henId: context.id,
 								henCurentTweenSpeed: context.currentTweenSpeed,
+								henCurrentTweenDirection: context.currentTweenDirection,
 								henPosition: context.henRef.current!.getPosition(),
 								hatchRate: context.hatchRate,
 							};
@@ -294,6 +305,7 @@ export const henMachine = setup({
 					type: 'Lay an egg',
 					henId: context.id,
 					henCurentTweenSpeed: context.currentTweenSpeed,
+					henCurrentTweenDirection: context.currentTweenDirection,
 					henPosition: context.henRef.current!.getPosition(),
 					hatchRate: context.hatchRate,
 				})),
