@@ -1,4 +1,4 @@
-import { assign, sendParent, setup } from 'xstate';
+import { assign, log, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
@@ -41,6 +41,9 @@ export const henMachine = setup({
 			targetPosition: Position;
 			speed: number;
 			currentTweenSpeed: number;
+			currentTweenDuration: number;
+			currentTweenStartTime: number;
+			// remainingTweenDuration: number;
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;
@@ -70,7 +73,7 @@ export const henMachine = setup({
 			return canLayEgg;
 		},
 		'can lay egg while moving': ({ context }) => {
-			return true;
+			// return true;
 			const withinLimit =
 				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
 			const withinEggLayingRate = Math.random() < context.movingEggLayingRate;
@@ -91,6 +94,24 @@ export const henMachine = setup({
 			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
+		getRandomMidTweenDelay: ({ context }) => {
+			if (!context.currentTween) {
+				throw new Error('No current tween');
+			}
+			const currentTime = new Date().getTime();
+			const elapsedTime = currentTime - context.currentTweenStartTime;
+			const remainingTime = context.currentTweenDuration - elapsedTime;
+			const delay = Math.max(Math.random() * remainingTime, 0);
+			// console.log({
+			// 	currentTweenDuration: context.currentTweenDuration,
+			// 	currentTweenStartTime: context.currentTweenStartTime,
+			// 	currentTime,
+			// 	elapsedTime,
+			// 	remainingTime,
+			// 	delay,
+			// });
+			return delay;
+		},
 	},
 }).createMachine({
 	id: 'hen',
@@ -103,6 +124,9 @@ export const henMachine = setup({
 		targetPosition: { x: input.position.x, y: input.position.y },
 		speed: input.speed,
 		currentTweenSpeed: 0,
+		currentTweenDuration: 0,
+		currentTweenStartTime: 0,
+		// remainingTweenDuration: 0,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: input.minStopMS,
 		maxStopMS: input.maxStopMS,
@@ -169,9 +193,11 @@ export const henMachine = setup({
 						easing: Konva.Easings.EaseInOut,
 					});
 
-					console.log('Hen currentTweenSpeed', direction, currentTweenSpeed);
 					return {
 						currentTweenSpeed,
+						currentTweenDuration: duration,
+						currentTweenStartTime: new Date().getTime(),
+						// remainingTweenDuration: duration,
 						currentTween: tween,
 					};
 				}),
@@ -194,14 +220,24 @@ export const henMachine = setup({
 				},
 				onError: { target: 'Stopped' },
 			},
-			// TODO: Start to implement egg laying while moving
-			// Need to include hen speed and more random timing of when to lay eggs.
-			after: {
-				1000: {
-					actions: [
+			initial: 'Not laying egg',
+			states: {
+				'Not laying egg': {
+					after: {
+						getRandomMidTweenDelay: [
+							{
+								guard: 'can lay egg while moving',
+								target: 'Laying egg',
+							},
+							{ target: 'Not laying egg', reenter: true },
+						],
+					},
+				},
+				'Laying egg': {
+					entry: [
 						sendParent(({ context }) => {
 							console.log(
-								'Hen sending parent currentTweenSpeed',
+								'Hen Moving > Laying Egg: sending parent currentTweenSpeed',
 								context.currentTweenSpeed
 							);
 							return {
@@ -216,20 +252,14 @@ export const henMachine = setup({
 							eggsLaid: ({ context }) => context.eggsLaid + 1,
 						}),
 					],
-					// actions:
-					// 		target: 'Moving',
-					// 		actions: [
-					// 			log('Laying while moving'),
-					// 			sendParent(({ context }) => ({
-					// 				type: 'Lay an egg',
-					// 				henId: context.id,
-					// 				henPosition: context.henRef.current!.getPosition(),
-					// 				hatchRate: context.hatchRate,
-					// 			})),
-					// 			assign({
-					// 				eggsLaid: ({ context }) => context.eggsLaid + 1,
-					// 			}),
-					// 		],
+					after: {
+						250: 'Done laying egg',
+					},
+				},
+				'Done laying egg': {
+					after: {
+						500: 'Not laying egg',
+					},
 				},
 			},
 		},

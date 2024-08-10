@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -112,10 +112,10 @@ export const gameLevelMachine = setup({
 			) => {
 				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
-				console.log(
-					'spawning egg henCurentTweenSpeed',
-					params.henCurentTweenSpeed
-				);
+				// console.log(
+				// 	'spawning egg henCurentTweenSpeed',
+				// 	params.henCurentTweenSpeed
+				// );
 				// Spawn and add a new egg.
 				return [
 					...context.eggActorRefs,
@@ -337,7 +337,6 @@ export const gameLevelMachine = setup({
 		},
 		'Lay an egg': {
 			actions: [
-				({ event }) => console.log('Lay an egg event', event),
 				{
 					type: 'spawnNewEggForHen',
 					params: ({ event }) => ({
@@ -438,11 +437,11 @@ export const gameLevelMachine = setup({
 		Done: {
 			tags: 'summary',
 			entry: [
-				log('Game Level summary state'),
+				// log('Game Level summary state'),
 				'calculateLevelStatsAverages',
 				'cleanupLevelRefs',
 				sendParent(({ context }) => {
-					console.log('sending parent context.levelStats', context.levelStats);
+					// console.log('sending parent context.levelStats', context.levelStats);
 					return {
 						type: 'Level complete',
 						levelResults: {

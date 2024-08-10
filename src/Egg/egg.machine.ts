@@ -170,7 +170,7 @@ export const eggMachine = setup({
 					}
 				>(({ input }) => {
 					return new Promise((resolve, reject) => {
-						console.log('xSpeed', input.xSpeed);
+						// console.log('xSpeed', input.xSpeed);
 						if (!input.eggRef.current) {
 							throw new Error('No eggRef');
 						}
@@ -184,10 +184,7 @@ export const eggMachine = setup({
 							}
 
 							if (frame) {
-								const oldXPos = input.eggRef.current.x();
-								// console.log('oldXPos', oldXPos);
-								const newXPos = oldXPos + input.xSpeed;
-								// console.log('newXPos', newXPos);
+								const newXPos = input.eggRef.current.x() + input.xSpeed;
 								input.eggRef.current.x(newXPos);
 								const newYPos = input.initialPosition.y + frame.time * 0.5;
 								input.eggRef.current.y(newYPos); // Move the ball down
@@ -198,10 +195,10 @@ export const eggMachine = setup({
 					});
 				}),
 				input: ({ context, self }) => {
-					console.log(
-						'input to egg animation henCurentTweenSpeed',
-						context.henCurentTweenSpeed
-					);
+					// console.log(
+					// 	'input to egg animation henCurentTweenSpeed',
+					// 	context.henCurentTweenSpeed
+					// );
 					return {
 						eggRef: context.eggRef,
 						initialPosition: context.initialPosition,
