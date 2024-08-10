@@ -10,10 +10,10 @@ import { animationActor } from '../animation';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const xDistanceRange = maxX - minX;
-	let randomPosition = Math.random() * xDistanceRange + minX;
-	if (randomPosition < buffer) return buffer;
-	if (randomPosition > maxX - buffer) return maxX - buffer;
-	return randomPosition;
+	let randomXPosition = Math.random() * xDistanceRange + minX;
+	if (randomXPosition < buffer) return buffer;
+	if (randomXPosition > maxX - buffer) return maxX - buffer;
+	return randomXPosition;
 }
 
 export const henMachine = setup({
