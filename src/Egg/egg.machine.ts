@@ -8,6 +8,16 @@ import { tweenActor } from '../motionActors';
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
+		input: {
+			id: string;
+			henId: string;
+			position: Position;
+			fallingSpeed: number;
+			henCurentTweenSpeed: number;
+			rotationDirection: -1 | 0 | 1;
+			floorY: number;
+			hatchRate: number;
+		};
 		context: {
 			eggRef: React.RefObject<Konva.Image>;
 			id: string;
@@ -34,17 +44,6 @@ export const eggMachine = setup({
 			| { type: 'Resume game' }
 			| { type: 'Pause game' }
 			| { type: 'Notify of animation position' };
-
-		input: {
-			id: string;
-			henId: string;
-			position: Position;
-			fallingSpeed: number;
-			henCurentTweenSpeed: number;
-			rotationDirection: -1 | 0 | 1;
-			floorY: number;
-			hatchRate: number;
-		};
 	},
 	actors: {
 		staticEggFallingActor: tweenActor,

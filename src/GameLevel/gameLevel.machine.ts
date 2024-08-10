@@ -11,6 +11,11 @@ import { countdownTimerMachine } from './countdownTimer.machine';
 
 export const gameLevelMachine = setup({
 	types: {} as {
+		input: {
+			generationIndex: number;
+			levelDuration: number;
+			population: IndividualHen[];
+		};
 		context: {
 			remainingTime: number;
 			stageDimensions: { width: number; height: number };
@@ -51,11 +56,6 @@ export const gameLevelMachine = setup({
 					eggId: string;
 					resultStatus: EggResultStatus;
 			  };
-		input: {
-			generationIndex: number;
-			levelDuration: number;
-			population: IndividualHen[];
-		};
 	},
 	actions: {
 		countdownTick: assign({
