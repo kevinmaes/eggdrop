@@ -200,15 +200,13 @@ export const eggMachine = setup({
 			},
 			invoke: {
 				src: 'movingEggFallingActor',
-				input: ({ context, self }) => {
-					return {
-						eggRef: context.eggRef,
-						initialPosition: context.initialPosition,
-						xSpeed: context.henCurentTweenSpeed,
-						rotationDirection: context.rotationDirection,
-						parentRef: self,
-					};
-				},
+				input: ({ context, self }) => ({
+					eggRef: context.eggRef,
+					initialPosition: context.initialPosition,
+					xSpeed: context.henCurentTweenSpeed,
+					rotationDirection: context.rotationDirection,
+					parentRef: self,
+				}),
 				onDone: {
 					target: 'Landed',
 				},
@@ -252,12 +250,10 @@ export const eggMachine = setup({
 			},
 			invoke: {
 				src: 'staticEggFallingActor',
-				input: ({ context }) => {
-					return {
-						node: context.eggRef.current,
-						tween: context.currentTween,
-					};
-				},
+				input: ({ context }) => ({
+					node: context.eggRef.current,
+					tween: context.currentTween,
+				}),
 				onDone: 'Landed',
 			},
 		},
@@ -294,19 +290,15 @@ export const eggMachine = setup({
 			entry: ['setTargetPositionToExit'],
 			invoke: {
 				src: 'chickExitingStageActor',
-				input: ({ context }) => {
-					const tween = new Konva.Tween({
+				input: ({ context }) => ({
+					node: context.eggRef.current,
+					tween: new Konva.Tween({
 						node: context.eggRef.current!,
 						duration: 1,
 						x: context.targetPosition.x,
 						y: context.targetPosition.y,
-					});
-
-					return {
-						node: context.eggRef.current,
-						tween,
-					};
-				},
+					}),
+				}),
 			},
 		},
 		Done: {
