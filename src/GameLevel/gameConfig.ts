@@ -27,10 +27,15 @@ export const STAGGERED_HEN_DELAY_MS = 1000;
 
 export function getInitialChromosomeValues() {
 	// The minimum xPos the hen can be at
-	const minX = Math.random() * 0.4 * STAGE_DIMENSIONS.width;
+	let minX = Math.round(Math.random() * STAGE_DIMENSIONS.width);
 
 	// The maximum xPos the hen can be at
-	const maxX = STAGE_DIMENSIONS.width - minX;
+	let maxX = Math.round(Math.random() * STAGE_DIMENSIONS.width);
+
+	if (minX > maxX) {
+		[minX, maxX] = [maxX, minX];
+	}
+	console.log('minX/maxX', minX, maxX, maxX - minX);
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
