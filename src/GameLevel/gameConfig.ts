@@ -1,7 +1,7 @@
 // This file contains the configuration for the game
 
 // The duration of each level in milliseconds
-export const LEVEL_DURATION_MS = 30_000;
+export const LEVEL_DURATION_MS = 60_000;
 
 // The number of hens in the game
 export const POPULATION_SIZE = 10;
