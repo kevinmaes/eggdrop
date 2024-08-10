@@ -9,6 +9,9 @@ export function calculateFitness(individual: IndividualHen) {
 		return overallFitness;
 	}
 
+	// Reward hens that lay more eggs
+	overallFitness += individual.eggsLaid / 10;
+
 	const caughtRate = individual.eggsCaught / individual.eggsLaid;
 	overallFitness += 1 - caughtRate;
 
