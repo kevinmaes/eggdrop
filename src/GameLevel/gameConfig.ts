@@ -14,8 +14,8 @@ export const STAGGERED_HEN_DELAY_MS = 1000;
 export function getInitialChromosomeValues() {
 	const minX = Math.random() * 0.4 * STAGE_DIMENSIONS.width;
 	const maxX = STAGE_DIMENSIONS.width - minX;
-	const minStopMS = Math.ceil(Math.random() * 1000);
-	const maxStopMS = minStopMS + Math.random() * 5000;
+	const minStopMS = 1000; // Math.ceil(Math.random() * 1000);
+	const maxStopMS = 1000; // minStopMS + Math.random() * 5000;
 
 	return {
 		// speed: Math.random() * 1.2,

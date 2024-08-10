@@ -146,13 +146,20 @@ export const henMachine = setup({
 				assign(({ context }) => {
 					const { targetPosition } = context;
 					const totalDistance = STAGE_DIMENSIONS.width;
-					const xDistance = Math.abs(targetPosition.x - context.position.x);
+					const xDistance = targetPosition.x - context.position.x;
+					const direction = xDistance > 0 ? 1 : -1;
 					const relativeDistance = xDistance / totalDistance;
+
+					// Calculate current tween speed
+					const currentTweenSpeed =
+						direction * (1 - relativeDistance * context.speed);
+
+					// Calculate absolute distances for tween duration
+					const absoluteXDistance = Math.abs(xDistance);
+					const absoluteRelativeDistance = absoluteXDistance / totalDistance;
 					const duration =
 						context.baseTweenDurationSeconds *
-						(1 - relativeDistance * context.speed);
-
-					const currentTweenSpeed = 1 - relativeDistance * context.speed;
+						(1 - absoluteRelativeDistance * context.speed);
 
 					const tween = new Konva.Tween({
 						node: context.henRef.current!,
@@ -162,7 +169,7 @@ export const henMachine = setup({
 						easing: Konva.Easings.EaseInOut,
 					});
 
-					console.log('Hen currentTweenSpeed', currentTweenSpeed);
+					console.log('Hen currentTweenSpeed', direction, currentTweenSpeed);
 					return {
 						currentTweenSpeed,
 						currentTween: tween,
