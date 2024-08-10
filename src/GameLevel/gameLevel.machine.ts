@@ -114,10 +114,6 @@ export const gameLevelMachine = setup({
 			) => {
 				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
-				// console.log(
-				// 	'spawning egg henCurentTweenSpeed',
-				// 	params.henCurentTweenSpeed
-				// );
 				// Spawn and add a new egg.
 				return [
 					...context.eggActorRefs,
