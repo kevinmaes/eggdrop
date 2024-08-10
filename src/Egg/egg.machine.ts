@@ -23,6 +23,7 @@ export const eggMachine = setup({
 			position: Position;
 			targetPosition: Position;
 			fallingSpeed: number;
+			henCurentTweenSpeed: number;
 			exitingSpeed: number;
 			floorY: number;
 			resultStatus: EggResultStatus;
@@ -45,6 +46,7 @@ export const eggMachine = setup({
 			henId: string;
 			position: Position;
 			fallingSpeed: number;
+			henCurentTweenSpeed: number;
 			floorY: number;
 			hatchRate: number;
 		};
@@ -109,6 +111,7 @@ export const eggMachine = setup({
 		position: input.position,
 		targetPosition: input.position,
 		fallingSpeed: input.fallingSpeed,
+		henCurentTweenSpeed: input.henCurentTweenSpeed,
 		exitingSpeed: 10,
 		exitPosition: {
 			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
@@ -162,10 +165,15 @@ export const eggMachine = setup({
 					{
 						eggRef: React.RefObject<Konva.Image>;
 						initialPosition: Position;
+						xSpeed: number;
 						parentRef: AnyActorRef;
 					}
 				>(({ input }) => {
 					return new Promise((resolve, reject) => {
+						console.log('xSpeed', input.xSpeed);
+						if (!input.eggRef.current) {
+							throw new Error('No eggRef');
+						}
 						const animation = new Konva.Animation((frame) => {
 							if (!input.eggRef.current) {
 								animation.stop();
@@ -176,6 +184,11 @@ export const eggMachine = setup({
 							}
 
 							if (frame) {
+								const oldXPos = input.eggRef.current.x();
+								// console.log('oldXPos', oldXPos);
+								const newXPos = oldXPos + input.xSpeed;
+								// console.log('newXPos', newXPos);
+								input.eggRef.current.x(newXPos);
 								const newYPos = input.initialPosition.y + frame.time * 0.5;
 								input.eggRef.current.y(newYPos); // Move the ball down
 								input.parentRef.send({ type: 'Notify of animation position' });
@@ -185,9 +198,14 @@ export const eggMachine = setup({
 					});
 				}),
 				input: ({ context, self }) => {
+					console.log(
+						'input to egg animation henCurentTweenSpeed',
+						context.henCurentTweenSpeed
+					);
 					return {
 						eggRef: context.eggRef,
 						initialPosition: context.initialPosition,
+						xSpeed: context.henCurentTweenSpeed,
 						parentRef: self,
 					};
 				},
@@ -244,6 +262,7 @@ export const eggMachine = setup({
 			},
 		},
 		Landed: {
+			entry: log('Landed'),
 			always: [
 				{
 					guard: 'eggCanHatch',

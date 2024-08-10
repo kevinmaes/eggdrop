@@ -18,7 +18,9 @@ export function getInitialChromosomeValues() {
 	const maxStopMS = minStopMS + Math.random() * 5000;
 
 	return {
-		speed: Math.random() * 1.2,
+		// speed: Math.random() * 1.2,
+		speed: Math.random() * 1.2 + 0.5,
+		// speed: 2,
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 		maxEggs: -1,
 		stationaryEggLayingRate: 1, //Math.random(),

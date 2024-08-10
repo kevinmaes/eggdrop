@@ -36,6 +36,7 @@ export const gameLevelMachine = setup({
 					type: 'Lay an egg';
 					henId: string;
 					henPosition: Position;
+					henCurentTweenSpeed: number;
 					hatchRate: number;
 			  }
 			| {
@@ -102,10 +103,19 @@ export const gameLevelMachine = setup({
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
 				{ context, spawn },
-				params: { henId: string; henPosition: Position; hatchRate: number }
+				params: {
+					henId: string;
+					henPosition: Position;
+					henCurentTweenSpeed: number;
+					hatchRate: number;
+				}
 			) => {
 				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
+				console.log(
+					'spawning egg henCurentTweenSpeed',
+					params.henCurentTweenSpeed
+				);
 				// Spawn and add a new egg.
 				return [
 					...context.eggActorRefs,
@@ -119,6 +129,7 @@ export const gameLevelMachine = setup({
 								y: params.henPosition.y + eggHenButtYOffset,
 							},
 							fallingSpeed: 2,
+							henCurentTweenSpeed: params.henCurentTweenSpeed,
 							floorY: context.stageDimensions.height,
 							hatchRate: params.hatchRate,
 						},
@@ -326,11 +337,13 @@ export const gameLevelMachine = setup({
 		},
 		'Lay an egg': {
 			actions: [
+				({ event }) => console.log('Lay an egg event', event),
 				{
 					type: 'spawnNewEggForHen',
 					params: ({ event }) => ({
 						henId: event.henId,
 						henPosition: event.henPosition,
+						henCurentTweenSpeed: event.henCurentTweenSpeed,
 						hatchRate: event.hatchRate,
 					}),
 				},

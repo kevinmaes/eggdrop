@@ -40,6 +40,7 @@ export const henMachine = setup({
 			position: Position;
 			targetPosition: Position;
 			speed: number;
+			currentTweenSpeed: number;
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;
@@ -101,6 +102,7 @@ export const henMachine = setup({
 		position: input.position,
 		targetPosition: { x: input.position.x, y: input.position.y },
 		speed: input.speed,
+		currentTweenSpeed: 0,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: input.minStopMS,
 		maxStopMS: input.maxStopMS,
@@ -141,28 +143,35 @@ export const henMachine = setup({
 						y: HEN_Y_POSITION,
 					}),
 				}),
-				assign({
-					currentTween: ({ context }) => {
-						const { targetPosition } = context;
-						const totalDistance = STAGE_DIMENSIONS.width;
-						const xDistance = Math.abs(targetPosition.x - context.position.x);
-						const relativeDistance = xDistance / totalDistance;
-						const duration =
-							context.baseTweenDurationSeconds *
-							(1 - relativeDistance * context.speed);
+				assign(({ context }) => {
+					const { targetPosition } = context;
+					const totalDistance = STAGE_DIMENSIONS.width;
+					const xDistance = Math.abs(targetPosition.x - context.position.x);
+					const relativeDistance = xDistance / totalDistance;
+					const duration =
+						context.baseTweenDurationSeconds *
+						(1 - relativeDistance * context.speed);
 
-						const tween = new Konva.Tween({
-							node: context.henRef.current!,
-							duration,
-							x: targetPosition.x,
-							y: targetPosition.y,
-							easing: Konva.Easings.EaseInOut,
-						});
+					const currentTweenSpeed = 1 - relativeDistance * context.speed;
 
-						return tween;
-					},
+					const tween = new Konva.Tween({
+						node: context.henRef.current!,
+						duration,
+						x: targetPosition.x,
+						y: targetPosition.y,
+						easing: Konva.Easings.EaseInOut,
+					});
+
+					console.log('Hen currentTweenSpeed', currentTweenSpeed);
+					return {
+						currentTweenSpeed,
+						currentTween: tween,
+					};
 				}),
 			],
+			exit: assign({
+				currentTweenSpeed: 0,
+			}),
 			invoke: {
 				src: 'animationActor',
 				input: ({ context }) => ({
@@ -173,29 +182,49 @@ export const henMachine = setup({
 					target: 'Stopped',
 					actions: assign({
 						position: ({ event }) => event.output.endPosition,
+						currentTweenSpeed: 0,
 					}),
 				},
 				onError: { target: 'Stopped' },
 			},
 			// TODO: Start to implement egg laying while moving
 			// Need to include hen speed and more random timing of when to lay eggs.
-			// after: {
-			// 	1000: {
-			// 		target: 'Moving',
-			// 		actions: [
-			// 			log('Laying while moving'),
-			// 			sendParent(({ context }) => ({
-			// 				type: 'Lay an egg',
-			// 				henId: context.id,
-			// 				henPosition: context.henRef.current!.getPosition(),
-			// 				hatchRate: context.hatchRate,
-			// 			})),
-			// 			assign({
-			// 				eggsLaid: ({ context }) => context.eggsLaid + 1,
-			// 			}),
-			// 		],
-			// 	},
-			// },
+			after: {
+				1000: {
+					actions: [
+						sendParent(({ context }) => {
+							console.log(
+								'Hen sending parent currentTweenSpeed',
+								context.currentTweenSpeed
+							);
+							return {
+								type: 'Lay an egg',
+								henId: context.id,
+								henCurentTweenSpeed: context.currentTweenSpeed,
+								henPosition: context.henRef.current!.getPosition(),
+								hatchRate: context.hatchRate,
+							};
+						}),
+						assign({
+							eggsLaid: ({ context }) => context.eggsLaid + 1,
+						}),
+					],
+					// actions:
+					// 		target: 'Moving',
+					// 		actions: [
+					// 			log('Laying while moving'),
+					// 			sendParent(({ context }) => ({
+					// 				type: 'Lay an egg',
+					// 				henId: context.id,
+					// 				henPosition: context.henRef.current!.getPosition(),
+					// 				hatchRate: context.hatchRate,
+					// 			})),
+					// 			assign({
+					// 				eggsLaid: ({ context }) => context.eggsLaid + 1,
+					// 			}),
+					// 		],
+				},
+			},
 		},
 		Stopped: {
 			on: {
@@ -213,6 +242,7 @@ export const henMachine = setup({
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,
+					henCurentTweenSpeed: context.currentTweenSpeed,
 					henPosition: context.henRef.current!.getPosition(),
 					hatchRate: context.hatchRate,
 				})),
