@@ -10,7 +10,7 @@ import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { CHEF_POT_RIM_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
-import { animationActor } from '../animation';
+import { tweenActor } from '../motionActors';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
@@ -54,7 +54,50 @@ export const eggMachine = setup({
 		};
 	},
 	actors: {
-		animationActor,
+		staticEggFallingActor: tweenActor,
+		movingEggFallingActor: fromPromise<
+			void,
+			{
+				eggRef: React.RefObject<Konva.Image>;
+				initialPosition: Position;
+				xSpeed: number;
+				rotationDirection: -1 | 0 | 1;
+				parentRef: AnyActorRef;
+			}
+		>(({ input }) => {
+			return new Promise((resolve, reject) => {
+				if (!input.eggRef.current) {
+					throw new Error('No eggRef');
+				}
+				const animation = new Konva.Animation((frame) => {
+					if (!input.eggRef.current) {
+						animation.stop();
+						return reject('No eggRef');
+					} else if (input.eggRef.current.y() >= STAGE_DIMENSIONS.height) {
+						animation.stop();
+						resolve();
+					}
+
+					if (frame) {
+						// Calculate new x and y positions
+						const newXPos = input.eggRef.current.x() + input.xSpeed;
+						input.eggRef.current.x(newXPos);
+						const newYPos = input.initialPosition.y + frame.time * 0.5;
+						input.eggRef.current.y(newYPos);
+
+						// Rotate the egg
+						const currentRotation = input.eggRef.current.rotation();
+						const newRotation = currentRotation + input.rotationDirection * 5;
+						input.eggRef.current.rotation(newRotation);
+
+						// Send a message to the parent to update the egg position
+						input.parentRef.send({ type: 'Notify of animation position' });
+					}
+				});
+				animation.start();
+			});
+		}),
+		chickExitingStageActor: tweenActor,
 	},
 	guards: {
 		eggCanHatch: ({ context }) => Math.random() < context.hatchRate,
@@ -163,49 +206,7 @@ export const eggMachine = setup({
 				},
 			},
 			invoke: {
-				src: fromPromise<
-					void,
-					{
-						eggRef: React.RefObject<Konva.Image>;
-						initialPosition: Position;
-						xSpeed: number;
-						rotationDirection: -1 | 0 | 1;
-						parentRef: AnyActorRef;
-					}
-				>(({ input }) => {
-					return new Promise((resolve, reject) => {
-						if (!input.eggRef.current) {
-							throw new Error('No eggRef');
-						}
-						const animation = new Konva.Animation((frame) => {
-							if (!input.eggRef.current) {
-								animation.stop();
-								return reject('No eggRef');
-							} else if (input.eggRef.current.y() >= STAGE_DIMENSIONS.height) {
-								animation.stop();
-								resolve();
-							}
-
-							if (frame) {
-								// Calculate new x and y positions
-								const newXPos = input.eggRef.current.x() + input.xSpeed;
-								input.eggRef.current.x(newXPos);
-								const newYPos = input.initialPosition.y + frame.time * 0.5;
-								input.eggRef.current.y(newYPos);
-
-								// Rotate the egg
-								const currentRotation = input.eggRef.current.rotation();
-								const newRotation =
-									currentRotation + input.rotationDirection * 5;
-								input.eggRef.current.rotation(newRotation);
-
-								// Send a message to the parent to update the egg position
-								input.parentRef.send({ type: 'Notify of animation position' });
-							}
-						});
-						animation.start();
-					});
-				}),
+				src: 'movingEggFallingActor',
 				input: ({ context, self }) => {
 					return {
 						eggRef: context.eggRef,
@@ -257,7 +258,7 @@ export const eggMachine = setup({
 				},
 			},
 			invoke: {
-				src: 'animationActor',
+				src: 'staticEggFallingActor',
 				input: ({ context }) => {
 					return {
 						node: context.eggRef.current,
@@ -300,7 +301,7 @@ export const eggMachine = setup({
 		Exiting: {
 			entry: ['setTargetPositionToExit'],
 			invoke: {
-				src: 'animationActor',
+				src: 'chickExitingStageActor',
 				input: ({ context }) => {
 					const tween = new Konva.Tween({
 						node: context.eggRef.current!,

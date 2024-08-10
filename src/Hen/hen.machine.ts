@@ -6,7 +6,7 @@ import {
 	STAGE_DIMENSIONS,
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
-import { animationActor } from '../animation';
+import { tweenActor } from '../motionActors';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	const xDistanceRange = maxX - minX;
@@ -103,7 +103,7 @@ export const henMachine = setup({
 		},
 	},
 	actors: {
-		animationActor,
+		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
 		getRandomStartDelay: () =>
@@ -224,7 +224,7 @@ export const henMachine = setup({
 				currentTweenSpeed: 0,
 			}),
 			invoke: {
-				src: 'animationActor',
+				src: 'henMovingBackAndForthActor',
 				input: ({ context }) => ({
 					node: context.henRef.current,
 					tween: context.currentTween,
