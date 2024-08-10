@@ -81,12 +81,10 @@ const appMachine = setup({
 					// but ensure that minX is less than maxX
 					let minX = Math.round((parent1.minX + parent2.minX) / 2);
 					let maxX = Math.round((parent1.maxX + parent2.maxX) / 2);
-					// console.log('crossover loop iteration', minX, maxX, maxX - minX);
 
 					if (minX > maxX) {
 						[minX, maxX] = [maxX, minX];
 					}
-					console.log('minX/maxX', minX, maxX, maxX - minX);
 
 					const child = {
 						id: nanoid(),
@@ -142,7 +140,6 @@ const appMachine = setup({
 					);
 				});
 
-				console.log('Mutated population:', mutatedNextGenerationPopulation);
 				return mutatedNextGenerationPopulation;
 			},
 		}),
