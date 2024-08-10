@@ -82,6 +82,15 @@ export const henMachine = setup({
 			const remainingMS = context.currentTweenDurationMS - elapsedMS;
 			return remainingMS > 500;
 		},
+		'can lay while stationary': and([
+			'has more eggs',
+			'is within stationary laying rate',
+		]),
+		'can lay while moving': and([
+			'has more eggs',
+			'is within moving laying rate',
+			'is not near animation end',
+		]),
 	},
 	actors: {
 		henMovingBackAndForthActor: tweenActor,
@@ -229,14 +238,7 @@ export const henMachine = setup({
 				'Preparing to lay egg': {
 					after: {
 						getRandomMidTweenDelay: [
-							{
-								guard: and([
-									'has more eggs',
-									'is within moving laying rate',
-									'is not near animation end',
-								]),
-								target: 'Laying egg',
-							},
+							{ guard: 'can lay while moving', target: 'Laying egg' },
 							{ target: 'Not laying egg', reenter: true },
 						],
 					},
@@ -274,10 +276,7 @@ export const henMachine = setup({
 			},
 			after: {
 				getRandomStopDurationMS: [
-					{
-						guard: and(['has more eggs', 'is within stationary laying rate']),
-						target: 'Laying Egg',
-					},
+					{ guard: 'can lay while stationary', target: 'Laying Egg' },
 					{ target: 'Moving' },
 				],
 			},
