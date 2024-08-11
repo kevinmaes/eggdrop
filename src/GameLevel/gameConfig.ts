@@ -19,6 +19,12 @@ export const CHEF_CONFIG = {
 	y: STAGE_DIMENSIONS.height - chefHeight - STAGE_MARGIN,
 	width: chefWidth,
 	height: chefHeight,
+	speedLimit: 1.5,
+	acceleration: 0.4,
+	deceleration: 0.4,
+	minXPos: STAGE_MARGIN,
+	// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
+	maxXPos: STAGE_DIMENSIONS.width - chefWidth - 0.5 * STAGE_MARGIN,
 };
 
 // The dimensions and position of the chef pot rim (catches eggs)
@@ -34,6 +40,8 @@ export const HEN_Y_POSITION = 10;
 
 // The delay between each hen entering the stage
 export const STAGGERED_HEN_DELAY_MS = 1000;
+
+export const EGG_FALLING_SPEED = 1;
 
 export function getInitialChromosomeValues() {
 	// The minimum xPos the hen can be at
