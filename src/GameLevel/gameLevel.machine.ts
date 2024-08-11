@@ -4,7 +4,7 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import { CHEF_CONFIG, STAGE_DIMENSIONS } from './gameConfig';
+import { CHEF_CONFIG, EGG_FALLING_SPEED, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { countdownTimerMachine } from './countdownTimer.machine';
@@ -132,7 +132,7 @@ export const gameLevelMachine = setup({
 								x: params.henPosition.x,
 								y: params.henPosition.y + eggHenButtYOffset,
 							},
-							fallingSpeed: 2,
+							fallingSpeed: EGG_FALLING_SPEED,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
 							rotationDirection: (-1 * params.henCurrentTweenDirection) as
 								| -1
@@ -430,12 +430,11 @@ export const gameLevelMachine = setup({
 							y: CHEF_CONFIG.y,
 						},
 						speed: 0,
-						speedLimit: 3,
-						acceleration: 1,
-						deceleration: 1,
-						minXPos: 10,
-						maxXPos:
-							context.stageDimensions.width - context.chefDimensions.width - 10,
+						speedLimit: CHEF_CONFIG.speedLimit,
+						acceleration: CHEF_CONFIG.acceleration,
+						deceleration: CHEF_CONFIG.acceleration,
+						minXPos: CHEF_CONFIG.minXPos,
+						maxXPos: CHEF_CONFIG.maxXPos,
 					}),
 				},
 			],

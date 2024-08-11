@@ -103,7 +103,7 @@ export function Chef({
 				y={CHEF_POT_RIM_CONFIG.y}
 				width={CHEF_POT_RIM_CONFIG.width}
 				height={CHEF_POT_RIM_CONFIG.height}
-				fill="yellow"
+				fill="transparent"
 			/>
 		</>
 	);
