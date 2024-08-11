@@ -1,4 +1,4 @@
-import { setup, assign, sendParent, log } from 'xstate';
+import { setup, assign, sendParent } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
@@ -177,7 +177,6 @@ export const eggMachine = setup({
 				},
 				'Straight Down': {
 					entry: [
-						log('FallingWith Tween'),
 						'setNewTargetPosition',
 						assign({
 							currentTween: ({ context, self }) => {
