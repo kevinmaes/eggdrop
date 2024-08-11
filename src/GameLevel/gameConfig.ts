@@ -41,8 +41,24 @@ export const HEN_Y_POSITION = 10;
 // The delay between each hen entering the stage
 export const STAGGERED_HEN_DELAY_MS = 1000;
 
-export const EGG_FALLING_SPEED = 1;
+// The duration in seconds for the egg to fall from the hen to the ground
+// Somewhere between 0.1 and 0.5 is reasonable.
+const EGG_FALLING_SPEED = 0.2;
 
+// Create a var EGG_FALLING_DURATION that is a number from 1 to 5 where 1 is the same as EGG_FALLING_SPEED equal to 0.5
+// and 5 is the same as EGG_FALLING_SPEED equal to 0.1
+const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
+
+export const EGG_CONFIG = {
+	fallingSpeed: EGG_FALLING_SPEED,
+	fallingDuration: EGG_FALLING_DURATION,
+};
+
+/**
+ * Sets up initial chromosome values for the hens.
+ * Establishes the initial variation for the hen population.
+ * @returns
+ */
 export function getInitialChromosomeValues() {
 	// The minimum xPos the hen can be at
 	let minX = Math.round(Math.random() * STAGE_DIMENSIONS.width);
@@ -53,7 +69,6 @@ export function getInitialChromosomeValues() {
 	if (minX > maxX) {
 		[minX, maxX] = [maxX, minX];
 	}
-	console.log('minX/maxX', minX, maxX, maxX - minX);
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
@@ -74,7 +89,7 @@ export function getInitialChromosomeValues() {
 
 		// The rate at which the hen lays eggs while stopped
 		stationaryEggLayingRate: Math.random(),
-		// stationaryEggLayingRate: 0,
+		// stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
 		movingEggLayingRate: Math.random(),
