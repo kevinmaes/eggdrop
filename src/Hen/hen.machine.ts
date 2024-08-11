@@ -1,4 +1,4 @@
-import { assign, sendParent, setup } from 'xstate';
+import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import {
@@ -6,15 +6,15 @@ import {
 	STAGE_DIMENSIONS,
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
-import { animationActor } from '../animation';
 import { GameAssets } from '../types/assets';
+import { tweenActor } from '../motionActors';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
-	const range = maxX - minX;
-	let randomPosition = Math.random() * range + minX;
-	if (randomPosition < buffer) return buffer;
-	if (randomPosition > maxX - buffer) return maxX - buffer;
-	return randomPosition;
+	const xDistanceRange = maxX - minX;
+	let randomXPosition = Math.random() * xDistanceRange + minX;
+	if (randomXPosition < buffer) return buffer;
+	if (randomXPosition > maxX - buffer) return maxX - buffer;
+	return randomXPosition;
 }
 
 export const henMachine = setup({
@@ -27,6 +27,7 @@ export const henMachine = setup({
 			maxEggs: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
+			restAfterLayingEggMS: number;
 			speed: number;
 			baseTweenDurationSeconds: number;
 			hatchRate: number;
@@ -43,6 +44,10 @@ export const henMachine = setup({
 			position: Position;
 			targetPosition: Position;
 			speed: number;
+			currentTweenSpeed: number;
+			currentTweenDurationMS: number;
+			currentTweenStartTime: number;
+			currentTweenDirection: -1 | 0 | 1;
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;
@@ -50,6 +55,7 @@ export const henMachine = setup({
 			eggsLaid: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
+			restAfterLayingEggMS: number;
 			gamePaused: boolean;
 			hatchRate: number;
 			minX: number;
@@ -63,24 +69,34 @@ export const henMachine = setup({
 			| { type: 'Pause game' };
 	},
 	guards: {
-		'can lay egg while stopped': ({ context }) => {
-			const withinLimit =
-				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
+		'has more eggs': ({ context }) =>
+			context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
+		'is within stationary laying rate': ({ context }) => {
 			const withinEggLayingRate =
 				Math.random() < context.stationaryEggLayingRate;
-			const canLayEgg = withinLimit && withinEggLayingRate;
-			return canLayEgg;
+			return withinEggLayingRate;
 		},
-		'can lay egg while moving': ({ context }) => {
-			return true;
-			const withinLimit =
-				context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs;
-			const withinEggLayingRate = Math.random() < context.movingEggLayingRate;
-			return withinLimit && withinEggLayingRate;
+		'is within moving laying rate': ({ context }) => {
+			return Math.random() < context.movingEggLayingRate;
 		},
+		'is not near animation end': ({ context }) => {
+			const currentTime = new Date().getTime();
+			const elapsedMS = currentTime - context.currentTweenStartTime;
+			const remainingMS = context.currentTweenDurationMS - elapsedMS;
+			return remainingMS > 500;
+		},
+		'can lay while stationary': and([
+			'has more eggs',
+			'is within stationary laying rate',
+		]),
+		'can lay while moving': and([
+			'has more eggs',
+			'is within moving laying rate',
+			'is not near animation end',
+		]),
 	},
 	actors: {
-		animationActor,
+		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
 		getRandomStartDelay: () => {
@@ -95,6 +111,17 @@ export const henMachine = setup({
 			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
+		restAfterLayingAnEgg: ({ context }) => context.restAfterLayingEggMS,
+		getRandomMidTweenDelay: ({ context }) => {
+			if (!context.currentTween) {
+				throw new Error('No current tween');
+			}
+			const currentTime = new Date().getTime();
+			const elapsedTime = currentTime - context.currentTweenStartTime;
+			const remainingTime = context.currentTweenDurationMS - elapsedTime;
+			const delay = Math.max(Math.random() * remainingTime, 0);
+			return delay;
+		},
 	},
 }).createMachine({
 	id: 'hen',
@@ -107,6 +134,10 @@ export const henMachine = setup({
 		position: input.position,
 		targetPosition: { x: input.position.x, y: input.position.y },
 		speed: input.speed,
+		currentTweenSpeed: 0,
+		currentTweenDurationMS: 0,
+		currentTweenStartTime: 0,
+		currentTweenDirection: 0,
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: input.minStopMS,
 		maxStopMS: input.maxStopMS,
@@ -114,6 +145,7 @@ export const henMachine = setup({
 		eggsLaid: 0,
 		stationaryEggLayingRate: input.stationaryEggLayingRate,
 		movingEggLayingRate: input.movingEggLayingRate,
+		restAfterLayingEggMS: input.restAfterLayingEggMS,
 		gamePaused: false,
 		hatchRate: input.hatchRate,
 		minX: input.minX,
@@ -147,30 +179,47 @@ export const henMachine = setup({
 						y: HEN_Y_POSITION,
 					}),
 				}),
-				assign({
-					currentTween: ({ context }) => {
-						const { targetPosition } = context;
-						const totalDistance = STAGE_DIMENSIONS.width;
-						const xDistance = Math.abs(targetPosition.x - context.position.x);
-						const relativeDistance = xDistance / totalDistance;
-						const duration =
-							context.baseTweenDurationSeconds *
-							(1 - relativeDistance * context.speed);
+				assign(({ context }) => {
+					const { targetPosition } = context;
+					const totalDistance = STAGE_DIMENSIONS.width;
+					const xDistance = targetPosition.x - context.position.x;
+					const direction = xDistance > 0 ? 1 : -1;
 
-						const tween = new Konva.Tween({
-							node: context.henRef.current!,
-							duration,
-							x: targetPosition.x,
-							y: targetPosition.y,
-							easing: Konva.Easings.EaseInOut,
-						});
+					// Calculate absolute distances for tween duration
+					const absoluteXDistance = Math.abs(xDistance);
+					const absoluteRelativeDistance = absoluteXDistance / totalDistance;
 
-						return tween;
-					},
+					const duration =
+						context.baseTweenDurationSeconds *
+						(1 - absoluteRelativeDistance * context.speed);
+
+					// New calculation here...
+					const totalSpeed = xDistance / duration;
+					// TODO: Don't love this magic number 240
+					const speedPerFrame = totalSpeed / 240;
+
+					const tween = new Konva.Tween({
+						node: context.henRef.current!,
+						duration,
+						x: targetPosition.x,
+						y: targetPosition.y,
+						easing: Konva.Easings.EaseInOut,
+					});
+
+					return {
+						currentTweenSpeed: speedPerFrame,
+						currentTweenDurationMS: duration * 1000,
+						currentTweenStartTime: new Date().getTime(),
+						currentTweenDirection: direction,
+						currentTween: tween,
+					};
 				}),
 			],
+			exit: assign({
+				currentTweenSpeed: 0,
+			}),
 			invoke: {
-				src: 'animationActor',
+				src: 'henMovingBackAndForthActor',
 				input: ({ context }) => ({
 					node: context.henRef.current,
 					tween: context.currentTween,
@@ -179,29 +228,53 @@ export const henMachine = setup({
 					target: 'Stopped',
 					actions: assign({
 						position: ({ event }) => event.output.endPosition,
+						currentTweenSpeed: 0,
 					}),
 				},
 				onError: { target: 'Stopped' },
 			},
-			// TODO: Start to implement egg laying while moving
-			// Need to include hen speed and more random timing of when to lay eggs.
-			// after: {
-			// 	1000: {
-			// 		target: 'Moving',
-			// 		actions: [
-			// 			log('Laying while moving'),
-			// 			sendParent(({ context }) => ({
-			// 				type: 'Lay an egg',
-			// 				henId: context.id,
-			// 				henPosition: context.henRef.current!.getPosition(),
-			// 				hatchRate: context.hatchRate,
-			// 			})),
-			// 			assign({
-			// 				eggsLaid: ({ context }) => context.eggsLaid + 1,
-			// 			}),
-			// 		],
-			// 	},
-			// },
+			initial: 'Not laying egg',
+			states: {
+				'Not laying egg': {
+					after: {
+						// Wait 500ms to delay laying an egg until after tween ease-in
+						500: 'Preparing to lay egg',
+					},
+				},
+				'Preparing to lay egg': {
+					after: {
+						getRandomMidTweenDelay: [
+							{ guard: 'can lay while moving', target: 'Laying egg' },
+							{ target: 'Not laying egg', reenter: true },
+						],
+					},
+				},
+				'Laying egg': {
+					entry: [
+						sendParent(({ context }) => {
+							return {
+								type: 'Lay an egg',
+								henId: context.id,
+								henCurentTweenSpeed: context.currentTweenSpeed,
+								henCurrentTweenDirection: context.currentTweenDirection,
+								henPosition: context.henRef.current!.getPosition(),
+								hatchRate: context.hatchRate,
+							};
+						}),
+						assign({
+							eggsLaid: ({ context }) => context.eggsLaid + 1,
+						}),
+					],
+					after: {
+						250: 'Done laying egg',
+					},
+				},
+				'Done laying egg': {
+					after: {
+						restAfterLayingAnEgg: 'Not laying egg',
+					},
+				},
+			},
 		},
 		Stopped: {
 			on: {
@@ -209,8 +282,7 @@ export const henMachine = setup({
 			},
 			after: {
 				getRandomStopDurationMS: [
-					{ guard: ({ context }) => context.gamePaused },
-					{ guard: 'can lay egg while stopped', target: 'Laying Egg' },
+					{ guard: 'can lay while stationary', target: 'Laying Egg' },
 					{ target: 'Moving' },
 				],
 			},
@@ -221,6 +293,8 @@ export const henMachine = setup({
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',
 					henId: context.id,
+					henCurentTweenSpeed: context.currentTweenSpeed,
+					henCurrentTweenDirection: context.currentTweenDirection,
 					henPosition: context.henRef.current!.getPosition(),
 					hatchRate: context.hatchRate,
 				})),
@@ -228,7 +302,7 @@ export const henMachine = setup({
 					eggsLaid: ({ context }) => context.eggsLaid + 1,
 				}),
 			],
-			after: { 1000: 'Moving' },
+			after: { restAfterLayingAnEgg: 'Moving' },
 		},
 	},
 });

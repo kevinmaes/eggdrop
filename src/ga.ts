@@ -1,10 +1,19 @@
 import { IndividualHen, IndividualHenChromosomeKey } from './GameLevel/types';
 
 export function calculateFitness(individual: IndividualHen) {
-	let overallFitness = 0;
+	// Default overall fitness can not be 0
+	let overallFitness = 0.1;
+
+	// Punish hens that lay no eggs
+	if (individual.eggsLaid === 0) {
+		return overallFitness;
+	}
+
+	// Reward hens that lay more eggs
+	overallFitness += individual.eggsLaid / 10;
 
 	const caughtRate = individual.eggsCaught / individual.eggsLaid;
-	individual.fitness = 1 - caughtRate;
+	overallFitness += 1 - caughtRate;
 
 	return overallFitness;
 }
