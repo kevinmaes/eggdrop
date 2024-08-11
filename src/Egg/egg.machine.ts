@@ -184,7 +184,6 @@ export const eggMachine = setup({
 								if (!context.eggRef.current) {
 									return null;
 								}
-								// console.log('context.fallingSpeed', context.fallingSpeed);
 								return new Konva.Tween({
 									node: context.eggRef.current,
 									duration: context.eggConfig.fallingDuration,
