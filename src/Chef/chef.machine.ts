@@ -51,16 +51,17 @@ export const chefMachine = setup({
 			let newSpeed = speed;
 			let newXPos = position.x;
 
+			// Handle stopping movement
 			if (direction === 0) {
 				if (speed > 0) {
-					newSpeed = Math.max(speed * (1 - deceleration), 0);
-					if (newSpeed > speedLimit) {
-						newSpeed = speedLimit;
+					newSpeed = speed - deceleration;
+					if (newSpeed < 0) {
+						newSpeed = 0;
 					}
 				} else if (speed < 0) {
-					newSpeed = Math.min(speed * (1 - deceleration), 0);
-					if (Math.abs(newSpeed) > speedLimit) {
-						newSpeed = -speedLimit;
+					newSpeed = speed + deceleration;
+					if (newSpeed > 0) {
+						newSpeed = 0;
 					}
 				}
 			} else {
@@ -69,8 +70,15 @@ export const chefMachine = setup({
 				}
 			}
 
+			// Restrict the newSpeed to the speedLimit
+			if (Math.abs(newSpeed) > speedLimit) {
+				newSpeed = Math.sign(newSpeed) * speedLimit;
+			}
+
 			newXPos = context.position.x + newSpeed;
 
+			// Constraint the newXPos to the minXPos and maxXPos
+			// to be within the boundaries of the chef's movement
 			if (newXPos < minXPos) {
 				newXPos = minXPos;
 				newSpeed = 0;
@@ -78,7 +86,6 @@ export const chefMachine = setup({
 				newXPos = maxXPos;
 				newSpeed = 0;
 			}
-
 			return {
 				speed: newSpeed,
 				position: { x: newXPos, y: position.y },

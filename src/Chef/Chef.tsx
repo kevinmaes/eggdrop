@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { Ref, useEffect, useRef } from 'react';
+import { Ref, useEffect, useRef, useState } from 'react';
 import { Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
@@ -30,16 +30,25 @@ export function Chef({
 		typeof chefMachine
 	>;
 
-	const { chefFrames, chefFrameNames, position, isCatchingEgg } = useSelector(
-		chefActorRef,
-		(state) => ({
-			chefFrames: state.context.chefAssets.sprite.frames,
-			chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
-			position: state.context.position,
-			isCatchingEgg: state.context.isCatchingEgg,
-		})
-	);
+	const {
+		chefFrames,
+		chefFrameNames,
+		position,
+		isAnimateAsMoving,
+		isCatchingEgg,
+	} = useSelector(chefActorRef, (state) => ({
+		chefFrames: state.context.chefAssets.sprite.frames,
+		chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
+		position: state.context.position,
+		// Use direction here instead of speed so that the chef's leg movement
+		// stops as soon as the user releases the arrow key
+		isAnimateAsMoving: state.context.direction !== 0,
+		isCatchingEgg: state.context.isCatchingEgg,
+	}));
 
+	const [frameIndex, setFrameIndex] = useState(1);
+
+	// Set the chefRef in the chef machine
 	const chefRef = useRef<Konva.Image>(null);
 	useEffect(() => {
 		if (chefRef.current) {
@@ -47,6 +56,7 @@ export function Chef({
 		}
 	}, [chefRef.current]);
 
+	// Set the chefPotRimHitRef in the gameLevel machine
 	const chefPotRimHitRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
 		if (chefPotRimHitRef.current) {
@@ -56,6 +66,29 @@ export function Chef({
 			});
 		}
 	}, [chefPotRimHitRef.current]);
+
+	// Animate the chef's leg movement when the chef is moving
+	useEffect(() => {
+		let interval: ReturnType<typeof setInterval> | null = null;
+
+		if (isAnimateAsMoving && !isCatchingEgg) {
+			// Change frameIndex immediately so if the chef only moves
+			// a tiny bit so we still see leg movement
+			setFrameIndex((prevIndex) => (prevIndex === 1 ? 2 : 1));
+
+			interval = setInterval(() => {
+				setFrameIndex((prevIndex) => (prevIndex === 1 ? 2 : 1));
+			}, 150);
+		} else {
+			setFrameIndex(1);
+		}
+
+		return () => {
+			if (interval) {
+				clearInterval(interval);
+			}
+		};
+	}, [isAnimateAsMoving, isCatchingEgg]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -78,8 +111,11 @@ export function Chef({
 		};
 	}, [chefActorRef]);
 
-	const frameIndex = isCatchingEgg ? 0 : 1;
-	const currentFrame = chefFrames[chefFrameNames[frameIndex]].frame;
+	// Override frameIndex to 0 if isCatchingEgg is true
+	const finalFrameIndex = isCatchingEgg ? 0 : frameIndex;
+
+	const currentFrame = chefFrames[chefFrameNames[finalFrameIndex]].frame;
+
 	return (
 		<>
 			<KonvaImage

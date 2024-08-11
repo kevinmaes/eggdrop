@@ -19,9 +19,13 @@ export const CHEF_CONFIG = {
 	y: STAGE_DIMENSIONS.height - chefHeight - STAGE_MARGIN,
 	width: chefWidth,
 	height: chefHeight,
-	speedLimit: 1.5,
-	acceleration: 0.4,
-	deceleration: 0.4,
+	speedLimit: 20,
+	// Keep the acceleration low so that tapping the arrow keys doesn't
+	// make the chef move too quickly and a small movement is possible.
+	acceleration: 2,
+	// Keep the deceleration is higher than the acceleration so the character
+	// can "stop on a dime"
+	deceleration: 7,
 	minXPos: STAGE_MARGIN,
 	// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
 	maxXPos: STAGE_DIMENSIONS.width - chefWidth - 0.5 * STAGE_MARGIN,
