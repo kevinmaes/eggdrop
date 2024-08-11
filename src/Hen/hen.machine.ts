@@ -16,7 +16,7 @@ export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 	return randomXPosition;
 }
 
-export const henMachine: any = setup({
+export const henMachine = setup({
 	types: {} as {
 		input: {
 			id: string;
