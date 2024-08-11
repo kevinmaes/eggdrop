@@ -7,7 +7,7 @@ export const LEVEL_DURATION_MS = 60_000;
 export const POPULATION_SIZE = 10;
 
 // The dimensions of the stage
-export const STAGE_DIMENSIONS = { width: 1920, height: 1080 };
+export const STAGE_DIMENSIONS = { width: 1280, height: 720 };
 
 // The position and dimensions of the chef
 export const CHEF_CONFIG = {
