@@ -99,10 +99,8 @@ export const henMachine = setup({
 		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
-		getRandomStartDelay: () => {
-			return 2000;
-			return Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS);
-		},
+		getRandomStartDelay: () =>
+			Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS),
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			// If values mutate to cross over, return the min value.
