@@ -74,7 +74,10 @@ export const eggMachine = setup({
 		}),
 		setTargetPositionToExit: assign({
 			targetPosition: ({ context }) => ({
-				x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
+				x:
+					context.position.x > 0.5 * window.innerWidth
+						? window.innerWidth + 50
+						: -50,
 				y: context.floorY - 60,
 			}),
 		}),
@@ -224,6 +227,9 @@ export const eggMachine = setup({
 			onDone: 'Landed',
 		},
 		Landed: {
+			// Set this in the Landed state so the chick is already
+			// facing the right direction based on its exit direction
+			entry: 'setTargetPositionToExit',
 			always: [
 				{
 					guard: 'eggCanHatch',
@@ -237,6 +243,7 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
+			tags: 'chick',
 			entry: assign({
 				resultStatus: 'Hatched',
 			}),
@@ -253,7 +260,7 @@ export const eggMachine = setup({
 			},
 		},
 		Exiting: {
-			entry: ['setTargetPositionToExit'],
+			tags: 'chick',
 			invoke: {
 				src: 'chickExitingStageActor',
 				input: ({ context }) => ({

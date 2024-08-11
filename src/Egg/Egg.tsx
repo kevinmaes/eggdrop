@@ -16,6 +16,11 @@ export function Egg({
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
 	const eggState = useSelector(eggActorRef, (state) => state);
+	const { isFacingLeft } = useSelector(eggActorRef, (state) => ({
+		isFacingLeft:
+			state.hasTag('chick') &&
+			state.context.targetPosition.x < state.context.position.x,
+	}));
 	const eggRef = useRef<Konva.Image>(null);
 
 	const [eggImage] = useImage(eggImageFile);
@@ -38,8 +43,10 @@ export function Egg({
 			image={runningChickImage}
 			width={60}
 			height={60}
+			rotation={0}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
+			scaleX={isFacingLeft ? -1 : 1}
 		/>
 	) : eggState.matches('Exiting') ? (
 		<KonvaImage
@@ -47,8 +54,10 @@ export function Egg({
 			image={runningChickImage}
 			width={60}
 			height={60}
+			rotation={0}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
+			scaleX={isFacingLeft ? -1 : 1}
 		/>
 	) : eggState.matches('Splatting') ? (
 		// Render a rectangle
@@ -56,6 +65,7 @@ export function Egg({
 			image={brokenEggImage}
 			width={60}
 			height={60}
+			rotation={0}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
 		/>
