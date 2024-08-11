@@ -39,6 +39,7 @@ export interface IndividualHen {
 	maxEggs: number;
 	stationaryEggLayingRate: number;
 	movingEggLayingRate: number;
+	restAfterLayingEggMS: number;
 	hatchRate: number;
 	minX: number;
 	maxX: number;

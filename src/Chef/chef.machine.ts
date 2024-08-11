@@ -94,7 +94,7 @@ export const chefMachine = setup({
 		},
 	},
 	actors: {
-		animationActor: fromPromise<{ timeDiff: number }>(() => {
+		movingChefBackAndForthActor: fromPromise<{ timeDiff: number }>(() => {
 			let anim: Animation | null;
 			return new Promise((resolve) => {
 				anim = new Animation((frame) => {
@@ -137,7 +137,7 @@ export const chefMachine = setup({
 	states: {
 		Moving: {
 			invoke: {
-				src: 'animationActor',
+				src: 'movingChefBackAndForthActor',
 				onDone: {
 					target: 'Moving',
 					reenter: true,
