@@ -1,6 +1,6 @@
 import { Image as KonvaImage } from 'react-konva';
 import useImage from 'use-image';
-import henImageFile from '../assets/hen1.png';
+// import imageFile from '../assets/hen1.png';
 import { useSelector } from '@xstate/react';
 import { ActorRefFrom } from 'xstate';
 import { henMachine } from './hen.machine';
@@ -12,14 +12,16 @@ export function Hen({
 }: {
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
-	const { position } = useSelector(henActorRef, (state) => ({
-		position: state.context.position,
-		targetPosition: state.context.targetPosition,
-		speed: state.context.speed,
-		baseTweenDurationSeconds: state.context.baseTweenDurationSeconds,
-		gamePaused: state.context.gamePaused,
-	}));
-	const [henImage] = useImage(henImageFile);
+	const { henFrames, henFrameNames, position, isLaying } = useSelector(
+		henActorRef,
+		(state) => ({
+			henFrames: state.context.henAssets.sprite.frames,
+			henFrameNames: Object.keys(state.context.henAssets.sprite.frames),
+			position: state.context.position,
+			isLaying: state.matches('Laying Egg'),
+		})
+	);
+	const [image] = useImage('images/rectangles.png');
 
 	const henRef = useRef<Konva.Image>(null);
 	useEffect(() => {
@@ -32,14 +34,33 @@ export function Hen({
 		return null;
 	}
 
+	const frameIndex = isLaying ? 1 : 0;
+	const currentFrame = henFrames[henFrameNames[frameIndex]].frame;
+
 	return (
 		<KonvaImage
 			ref={henRef}
-			image={henImage}
+			image={image}
 			x={position.x}
 			y={position.y}
-			width={50}
-			height={50}
+			width={80}
+			height={80}
+			crop={{
+				x: currentFrame.x,
+				y: currentFrame.y,
+				width: currentFrame.w,
+				height: currentFrame.h,
+			}}
 		/>
 	);
+	// return (
+	// 	<KonvaImage
+	// 		ref={henRef}
+	// 		image={image}
+	// 		x={position.x}
+	// 		y={position.y}
+	// 		width={50}
+	// 		height={50}
+	// 	/>
+	// );
 }

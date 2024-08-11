@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { Ref, useEffect, useRef } from 'react';
+import { Ref, useEffect, useRef, useState } from 'react';
 import { Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
@@ -8,7 +8,8 @@ import { Position } from '../GameLevel/types';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
-// import useImage from 'use-image';
+import useImage from 'use-image';
+import { Image as KonvaImage } from 'react-konva';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
 
@@ -19,7 +20,7 @@ export function Chef({
 	layerRef: Ref<Konva.Layer>;
 	initialPosition: Position;
 }) {
-	// const [chefImage] = useImage('path-to-your-chef-image.png');
+	const [image] = useImage('images/chef.sprite.png');
 	const appActorRef = AppActorContext.useActorRef();
 
 	const gameLevelActorRef = appActorRef.system.get(
@@ -29,19 +30,33 @@ export function Chef({
 		typeof chefMachine
 	>;
 
-	const chefState = useSelector(chefActorRef, (state) => state);
-	const chefPosition = useSelector(
-		chefActorRef,
-		(state) => state?.context.position
-	);
+	const {
+		chefFrames,
+		chefFrameNames,
+		position,
+		isAnimateAsMoving,
+		isCatchingEgg,
+	} = useSelector(chefActorRef, (state) => ({
+		chefFrames: state.context.chefAssets.sprite.frames,
+		chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
+		position: state.context.position,
+		// Use direction here instead of speed so that the chef's leg movement
+		// stops as soon as the user releases the arrow key
+		isAnimateAsMoving: state.context.direction !== 0,
+		isCatchingEgg: state.context.isCatchingEgg,
+	}));
 
-	const chefPotRef = useRef<Konva.Rect>(null);
+	const [frameIndex, setFrameIndex] = useState(1);
+
+	// Set the chefRef in the chef machine
+	const chefRef = useRef<Konva.Image>(null);
 	useEffect(() => {
-		if (chefPotRef.current) {
-			chefActorRef.send({ type: 'Set chefPotRef', chefPotRef });
+		if (chefRef.current) {
+			chefActorRef.send({ type: 'Set chefRef', chefRef });
 		}
-	}, [chefPotRef.current]);
+	}, [chefRef.current]);
 
+	// Set the chefPotRimHitRef in the gameLevel machine
 	const chefPotRimHitRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
 		if (chefPotRimHitRef.current) {
@@ -51,6 +66,29 @@ export function Chef({
 			});
 		}
 	}, [chefPotRimHitRef.current]);
+
+	// Animate the chef's leg movement when the chef is moving
+	useEffect(() => {
+		let interval: ReturnType<typeof setInterval> | null = null;
+
+		if (isAnimateAsMoving && !isCatchingEgg) {
+			// Change frameIndex immediately so if the chef only moves
+			// a tiny bit so we still see leg movement
+			setFrameIndex((prevIndex) => (prevIndex === 1 ? 2 : 1));
+
+			interval = setInterval(() => {
+				setFrameIndex((prevIndex) => (prevIndex === 1 ? 2 : 1));
+			}, 150);
+		} else {
+			setFrameIndex(1);
+		}
+
+		return () => {
+			if (interval) {
+				clearInterval(interval);
+			}
+		};
+	}, [isAnimateAsMoving, isCatchingEgg]);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -73,78 +111,36 @@ export function Chef({
 		};
 	}, [chefActorRef]);
 
-	if (!chefState) {
-		return null;
-	}
+	// Override frameIndex to 0 if isCatchingEgg is true
+	const finalFrameIndex = isCatchingEgg ? 0 : frameIndex;
+
+	const currentFrame = chefFrames[chefFrameNames[finalFrameIndex]].frame;
 
 	return (
 		<>
-			{/* Chef */}
-			<Rect
-				x={chefPosition.x}
-				y={chefPosition.y}
+			<KonvaImage
+				ref={chefRef}
+				image={image}
+				x={position.x}
+				y={position.y}
 				width={dimensions.width}
 				height={dimensions.height}
-				fill="gray"
-			></Rect>
-			{/* Pot */}
-			<Rect
-				ref={chefPotRef}
-				x={chefPosition.x + 0.1 * dimensions.width}
-				y={chefPosition.y + 0.4 * dimensions.height}
-				width={dimensions.width * 0.8}
-				height={dimensions.height * 0.5}
-				fill="silver"
+				crop={{
+					x: currentFrame.x,
+					y: currentFrame.y,
+					width: currentFrame.w,
+					height: currentFrame.h,
+				}}
 			/>
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={chefPosition.x + (dimensions.width - CHEF_POT_RIM_CONFIG.width) / 2}
+				x={position.x + CHEF_POT_RIM_CONFIG.xOffset}
 				y={CHEF_POT_RIM_CONFIG.y}
 				width={CHEF_POT_RIM_CONFIG.width}
 				height={CHEF_POT_RIM_CONFIG.height}
-				fill="yellow"
-			/>
-			{/* Left side hit box */}
-			<Rect
-				x={chefPosition.x}
-				y={chefPosition.y + 0.4 * dimensions.height}
-				width={10}
-				height={dimensions.height * 0.5}
-				fill="black"
-			/>
-			{/* Left side broken egg */}
-			<Rect
-				x={chefPosition.x}
-				y={chefPosition.y + 0.4 * dimensions.height}
-				width={5}
-				height={dimensions.height * 0.5}
-			/>
-			{/* Right side hit box */}
-			<Rect
-				x={chefPosition.x + dimensions.width - 10}
-				y={chefPosition.y + 0.4 * dimensions.height}
-				width={10}
-				height={dimensions.height * 0.5}
-				fill="black"
-			/>
-			{/* Right side broken egg */}
-			<Rect
-				x={chefPosition.x + dimensions.width - 5}
-				y={chefPosition.y + 0.4 * dimensions.height}
-				width={5}
-				height={dimensions.height * 0.5}
+				fill="transparent"
 			/>
 		</>
 	);
-
-	// return (
-	// 	<KonvaImage
-	// 		image={chefImage}
-	// 		x={state.context.position.x}
-	// 		y={state.context.position.y}
-	// 		width={50}
-	// 		height={50}
-	// 	/>
-	// );
 }

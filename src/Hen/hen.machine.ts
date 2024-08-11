@@ -6,6 +6,7 @@ import {
 	STAGE_DIMENSIONS,
 	STAGGERED_HEN_DELAY_MS,
 } from '../GameLevel/gameConfig';
+import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
@@ -20,6 +21,7 @@ export const henMachine = setup({
 	types: {} as {
 		input: {
 			id: string;
+			henAssets: GameAssets['hen'];
 			position: Position;
 			stageDimensions: { width: number; height: number };
 			maxEggs: number;
@@ -37,6 +39,7 @@ export const henMachine = setup({
 		context: {
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
+			henAssets: GameAssets['hen'];
 			stageDimensions: { width: number; height: number };
 			position: Position;
 			targetPosition: Position;
@@ -124,6 +127,7 @@ export const henMachine = setup({
 	context: ({ input }) => ({
 		henRef: { current: null },
 		id: input.id,
+		henAssets: input.henAssets,
 		stageDimensions: input.stageDimensions,
 		position: input.position,
 		targetPosition: { x: input.position.x, y: input.position.y },
@@ -282,6 +286,7 @@ export const henMachine = setup({
 			},
 		},
 		'Laying Egg': {
+			tags: 'laying',
 			entry: [
 				sendParent(({ context }) => ({
 					type: 'Lay an egg',

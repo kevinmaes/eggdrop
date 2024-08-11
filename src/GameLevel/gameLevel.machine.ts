@@ -4,19 +4,22 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
+import { CHEF_CONFIG, EGG_CONFIG, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { countdownTimerMachine } from './countdownTimer.machine';
+import { GameAssets } from '../types/assets';
 
 export const gameLevelMachine = setup({
 	types: {} as {
 		input: {
+			gameAssets: GameAssets;
 			generationIndex: number;
 			levelDuration: number;
 			population: IndividualHen[];
 		};
 		context: {
+			gameAssets: GameAssets;
 			remainingTime: number;
 			stageDimensions: { width: number; height: number };
 			chefDimensions: { width: number; height: number };
@@ -84,6 +87,7 @@ export const gameLevelMachine = setup({
 							input: {
 								stageDimensions: context.stageDimensions,
 								id: henId,
+								henAssets: context.gameAssets.hen,
 								position: {
 									x: initialPosition.x,
 									y: initialPosition.y,
@@ -122,13 +126,14 @@ export const gameLevelMachine = setup({
 					spawn(eggMachine, {
 						systemId: eggId,
 						input: {
+							eggConfig: EGG_CONFIG,
 							id: eggId,
-							henId: params.henId,
 							position: {
 								x: params.henPosition.x,
 								y: params.henPosition.y + eggHenButtYOffset,
 							},
-							fallingSpeed: 2,
+							henId: params.henId,
+							henIsMoving: params.henCurentTweenSpeed > 0,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
 							rotationDirection: (-1 * params.henCurrentTweenDirection) as
 								| -1
@@ -296,9 +301,10 @@ export const gameLevelMachine = setup({
 	},
 }).createMachine({
 	context: ({ input }) => ({
+		gameAssets: input.gameAssets,
 		remainingTime: input.levelDuration,
 		stageDimensions: STAGE_DIMENSIONS,
-		chefDimensions: CHEF_DIMENSIONS,
+		chefDimensions: CHEF_CONFIG,
 		// TODO: Increment the generationIndex.
 		generationIndex: input.generationIndex,
 		henActorRefs: [],
@@ -419,22 +425,17 @@ export const gameLevelMachine = setup({
 					src: 'chefMachine',
 					systemId: 'chefMachine',
 					input: ({ context }) => ({
+						chefAssets: context.gameAssets.chef,
 						position: {
-							x:
-								context.stageDimensions.width / 2 -
-								0.5 * context.chefDimensions.width,
-							y:
-								context.stageDimensions.height -
-								context.chefDimensions.height -
-								10,
+							x: CHEF_CONFIG.x,
+							y: CHEF_CONFIG.y,
 						},
 						speed: 0,
-						speedLimit: 3,
-						acceleration: 1,
-						deceleration: 1,
-						minXPos: 10,
-						maxXPos:
-							context.stageDimensions.width - context.chefDimensions.width - 10,
+						speedLimit: CHEF_CONFIG.speedLimit,
+						acceleration: CHEF_CONFIG.acceleration,
+						deceleration: CHEF_CONFIG.acceleration,
+						minXPos: CHEF_CONFIG.minXPos,
+						maxXPos: CHEF_CONFIG.maxXPos,
 					}),
 				},
 			],
