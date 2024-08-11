@@ -126,14 +126,14 @@ export const gameLevelMachine = setup({
 					spawn(eggMachine, {
 						systemId: eggId,
 						input: {
+							eggConfig: EGG_CONFIG,
 							id: eggId,
-							henId: params.henId,
-							henIsMoving: params.henCurentTweenSpeed > 0,
 							position: {
 								x: params.henPosition.x,
 								y: params.henPosition.y + eggHenButtYOffset,
 							},
-							eggConfig: EGG_CONFIG,
+							henId: params.henId,
+							henIsMoving: params.henCurentTweenSpeed > 0,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
 							rotationDirection: (-1 * params.henCurrentTweenDirection) as
 								| -1

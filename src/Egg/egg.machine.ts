@@ -10,11 +10,11 @@ export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		input: {
+			eggConfig: typeof EGG_CONFIG;
 			id: string;
 			henId: string;
 			henIsMoving: boolean;
 			position: Position;
-			eggConfig: typeof EGG_CONFIG;
 			henCurentTweenSpeed: number;
 			rotationDirection: -1 | 0 | 1;
 			floorY: number;
@@ -22,13 +22,13 @@ export const eggMachine = setup({
 		};
 		context: {
 			eggRef: React.RefObject<Konva.Image>;
+			eggConfig: typeof EGG_CONFIG;
 			id: string;
 			henId: string;
 			henIsMoving: boolean;
 			initialPosition: Position;
 			position: Position;
 			targetPosition: Position;
-			eggConfig: typeof EGG_CONFIG;
 			henCurentTweenSpeed: number;
 			rotationDirection: -1 | 0 | 1;
 			exitingSpeed: number;
@@ -108,13 +108,13 @@ export const eggMachine = setup({
 	initial: 'Idle',
 	context: ({ input }) => ({
 		eggRef: { current: null },
+		eggConfig: input.eggConfig,
 		id: input.id,
 		henId: input.henId,
 		henIsMoving: input.henIsMoving,
 		initialPosition: input.position,
 		position: input.position,
 		targetPosition: input.position,
-		eggConfig: input.eggConfig,
 		henCurentTweenSpeed: input.henCurentTweenSpeed,
 		rotationDirection: input.rotationDirection,
 		exitingSpeed: 10,
