@@ -2,7 +2,12 @@ import Konva from 'konva';
 import { fromPromise } from 'xstate';
 import { Position } from './GameLevel/types';
 
-export const animationActor = fromPromise<
+/**
+ * Takes any node and its pre-existing tween and plays the tween
+ * Any tween callbacks may have already been attached to the tween
+ * outside of this actor
+ */
+export const tweenActor = fromPromise<
 	{ endPosition: Position },
 	{
 		node: React.RefObject<any>['current'] | null;
