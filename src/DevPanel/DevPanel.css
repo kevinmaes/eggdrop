@@ -35,6 +35,16 @@
 .grid-item.title {
 	font-weight: bold;
 	background-color: rgba(255, 255, 255, 0.8);
+
+	&.empty-space {
+		border: none;
+		background-color: transparent;
+	}
+}
+
+.empty-space {
+	border: none;
+	background-color: transparent;
 }
 
 .grid-item.header {
