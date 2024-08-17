@@ -2,7 +2,7 @@
 	display: grid;
 
 	/* Default to 3 columns */
-	grid-template-columns: 250px repeat(3, 1fr);
+	grid-template-columns: 250px;
 
 	/* Automatically adjust row heights */
 	grid-template-rows: auto;
