@@ -37,8 +37,14 @@ export function Chef({
 		isAnimateAsMoving,
 		isCatchingEgg,
 	} = useSelector(chefActorRef, (state) => {
-		if (!state.context) {
-			console.log('state', state);
+		if (typeof state === 'undefined') {
+			return {
+				chefFrames: {},
+				chefFrameNames: [],
+				position: { x: 0, y: 0 },
+				isAnimateAsMoving: false,
+				isCatchingEgg: false,
+			};
 		}
 		// console.log('chef state', state);
 		return {
@@ -119,8 +125,11 @@ export function Chef({
 
 	// Override frameIndex to 0 if isCatchingEgg is true
 	const finalFrameIndex = isCatchingEgg ? 0 : frameIndex;
-
-	const currentFrame = chefFrames[chefFrameNames[finalFrameIndex]].frame;
+	const frameName = chefFrameNames[finalFrameIndex];
+	const currentFrame = chefFrames[frameName]?.frame;
+	if (!currentFrame) {
+		return null;
+	}
 
 	return (
 		<>
