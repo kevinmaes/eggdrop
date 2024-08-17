@@ -70,7 +70,6 @@ const App = () => {
 		showGameIntro,
 		showGamePlay,
 		isInitializingLevel,
-		levelResultsHistory,
 		isBetweenLevels,
 	} = AppActorContext.useSelector((state) => ({
 		showError: state.matches('Show Error'),
@@ -78,12 +77,9 @@ const App = () => {
 		showGameIntro: state.matches('Intro'),
 		showGamePlay: state.matches('Game Play'),
 		isInitializingLevel: state.hasTag('init level'),
-		levelResultsHistory: state.context.levelResultsHistory,
 		isBetweenLevels: state.hasTag('between levels'),
 	}));
-	const lastLevelResults = AppActorContext.useSelector(
-		(state) => state.context.levelResultsHistory.slice(-1)[0]
-	);
+
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
@@ -124,9 +120,6 @@ const App = () => {
 			</Stage>
 		);
 	}
-
-	console.log('levelStats', lastLevelResults?.levelStats);
-	const canShowDevPanel = process.env.NODE_ENV === 'development';
 
 	if (showGamePlay) {
 		return (
@@ -177,9 +170,7 @@ const App = () => {
 						/>
 					) : null}
 				</Stage>
-				{canShowDevPanel && (
-					<DevPanel levelResultsHistory={levelResultsHistory} />
-				)}
+				<DevPanel />
 				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
 			</>
 		);

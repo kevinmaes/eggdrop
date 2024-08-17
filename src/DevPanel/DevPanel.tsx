@@ -3,6 +3,8 @@ import { Fragment } from 'react/jsx-runtime';
 import './DevPanel.css';
 import { GenerationStats, LevelResults } from '../GameLevel/types';
 import { sounds } from '../sounds';
+import { useEffect, useState } from 'react';
+import { AppActorContext } from '../app.machine';
 
 function formatGenerationStats(generationStats: GenerationStats) {
 	// Return a clone of generationStats with so that each value is formatted to 2 decimal places.
@@ -40,12 +42,30 @@ function formatGenerationStats(generationStats: GenerationStats) {
 	}, {} as Record<keyof GenerationStats, string>);
 }
 
-export function DevPanel({
-	levelResultsHistory,
-}: {
-	levelResultsHistory: LevelResults[];
-}) {
-	console.log('DevPanel levelResultsHistory', levelResultsHistory);
+export function DevPanel() {
+	const { levelResultsHistory } = AppActorContext.useSelector((state) => ({
+		levelResultsHistory: state.context.levelResultsHistory,
+	}));
+
+	const [showDevPanel, setShowDevPanel] = useState(
+		process.env.NODE_ENV === 'development'
+	);
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			e.preventDefault();
+			// Identify if the command and 'd' keys are pressed
+			if (e.key === 'd' && e.metaKey) {
+				setShowDevPanel((prev) => !prev);
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
+	}, []);
+
 	const statNames = [
 		// Averages
 		'averageEggsBroken',
@@ -67,9 +87,13 @@ export function DevPanel({
 		'catchRate',
 	];
 
+	if (!showDevPanel) {
+		return null;
+	}
+
 	return (
-		<div>
-			<div>
+		<div className="dev-panel">
+			<div className="control-buttons">
 				<button
 					onClick={() => {
 						sounds.yipee.play();
@@ -81,11 +105,11 @@ export function DevPanel({
 			<div
 				className="grid-container"
 				style={{
-					gridTemplateColumns: `250px repeat(${levelResultsHistory.length}, 1fr)`,
+					gridTemplateColumns: `240px repeat(${levelResultsHistory.length}, 1fr)`,
 				}}
 			>
 				{/* Insert the first row for headers */}
-				<div className="grid-item">Generation:</div>{' '}
+				<div className="grid-item header generation-label">Generation</div>{' '}
 				{levelResultsHistory.map((levelResults) => (
 					<div
 						key={`header-${levelResults.generationIndex}`}
