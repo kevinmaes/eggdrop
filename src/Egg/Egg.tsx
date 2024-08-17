@@ -1,7 +1,6 @@
 import { useSelector } from '@xstate/react';
 import { Image as KonvaImage } from 'react-konva';
 
-import eggImageFile from '../assets/egg.png';
 import brokenEggFile from '../assets/broken-egg2.jpeg';
 import runningChickImageFile from '../assets/running-chick.png';
 import useImage from 'use-image';
@@ -22,8 +21,8 @@ export function Egg({
 			state.context.targetPosition.x < state.context.position.x,
 	}));
 	const eggRef = useRef<Konva.Image>(null);
-
-	const [eggImage] = useImage(eggImageFile);
+	const eggImagePath = `../images/egg-${eggState.context.color}.png`;
+	const [eggImage] = useImage(eggImagePath);
 	const [brokenEggImage] = useImage(brokenEggFile);
 	const [runningChickImage] = useImage(runningChickImageFile);
 

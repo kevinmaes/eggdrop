@@ -56,6 +56,11 @@ const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
 export const EGG_CONFIG = {
 	fallingSpeed: EGG_FALLING_SPEED,
 	fallingDuration: EGG_FALLING_DURATION,
+	points: {
+		white: 1,
+		gold: 10,
+		black: -10,
+	},
 };
 
 /**
@@ -80,6 +85,11 @@ export function getInitialChromosomeValues() {
 	// The maximum time the hen will stop at a location
 	const maxStopMS = minStopMS + Math.random() * 5000;
 
+	// Egg color
+	const blackEggRate = Math.floor(Math.random() * 100) / 100;
+	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
+	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
+
 	return {
 		// speed is the x speed of the hen
 		speed: Math.random() * 3,
@@ -102,6 +112,10 @@ export function getInitialChromosomeValues() {
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
+
+		// Egg color rates
+		blackEggRate,
+		goldEggRate,
 
 		// The rate at which the eggs will hatch when they land on the ground
 		// hatchRate: Math.random(),

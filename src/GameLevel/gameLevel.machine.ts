@@ -49,6 +49,7 @@ export const gameLevelMachine = setup({
 					henPosition: Position;
 					henCurentTweenSpeed: number;
 					henCurrentTweenDirection: -1 | 0 | 1;
+					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 			  }
 			| {
@@ -60,6 +61,7 @@ export const gameLevelMachine = setup({
 					type: 'Egg done';
 					henId: string;
 					eggId: string;
+					eggColor: 'white' | 'gold' | 'black';
 					resultStatus: EggResultStatus;
 			  }
 			| { type: 'Tick'; remainingMS: number; done: boolean };
@@ -80,6 +82,8 @@ export const gameLevelMachine = setup({
 						stationaryEggLayingRate,
 						movingEggLayingRate,
 						restAfterLayingEggMS,
+						blackEggRate,
+						goldEggRate,
 						hatchRate,
 						minX,
 						maxX,
@@ -102,6 +106,8 @@ export const gameLevelMachine = setup({
 								stationaryEggLayingRate,
 								movingEggLayingRate,
 								restAfterLayingEggMS,
+								blackEggRate,
+								goldEggRate,
 								hatchRate,
 								minX,
 								maxX,
@@ -119,6 +125,7 @@ export const gameLevelMachine = setup({
 					henPosition: Position;
 					henCurentTweenSpeed: number;
 					henCurrentTweenDirection: -1 | 0 | 1;
+					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 				}
 			) => {
@@ -136,6 +143,7 @@ export const gameLevelMachine = setup({
 								x: params.henPosition.x,
 								y: params.henPosition.y + eggHenButtYOffset,
 							},
+							color: params.eggColor,
 							henId: params.henId,
 							henIsMoving: params.henCurentTweenSpeed > 0,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
@@ -151,7 +159,13 @@ export const gameLevelMachine = setup({
 			},
 		}),
 		updateHenStatsForEggLaid: assign(
-			({ context }, params: { henId: string }) => {
+			(
+				{ context },
+				params: {
+					henId: string;
+					eggColor: 'white' | 'gold' | 'black';
+				}
+			) => {
 				const updatedHenStatsById = {
 					...context.henStatsById,
 				};
@@ -161,6 +175,14 @@ export const gameLevelMachine = setup({
 					...context.levelStats,
 					totalEggsLaid: context.levelStats.totalEggsLaid + 1,
 				};
+
+				if (params.eggColor === 'black') {
+					updatedLevelStats.totalBlackEggsLaid += 1;
+				} else if (params.eggColor === 'gold') {
+					updatedLevelStats.totalGoldEggsLaid += 1;
+				} else {
+					updatedLevelStats.totalWhiteEggsLaid += 1;
+				}
 
 				return {
 					levelStats: updatedLevelStats,
@@ -174,11 +196,12 @@ export const gameLevelMachine = setup({
 				params: {
 					henId: string;
 					eggId: string;
+					eggColor: 'white' | 'gold' | 'black';
 					resultStatus: EggResultStatus;
 				}
 			) => {
 				if (params.resultStatus === 'Caught') {
-					return context.score + 1;
+					return context.score + EGG_CONFIG.points[params.eggColor];
 				}
 				return context.score;
 			},
@@ -189,6 +212,7 @@ export const gameLevelMachine = setup({
 				params: {
 					henId: string;
 					eggId: string;
+					eggColor: 'white' | 'gold' | 'black';
 					resultStatus: EggResultStatus;
 				}
 			) => {
@@ -208,6 +232,13 @@ export const gameLevelMachine = setup({
 					case 'Caught':
 						updatedHenStats.eggsCaught += 1;
 						updatedLevelStats.totalEggsCaught += 1;
+						if (params.eggColor === 'black') {
+							updatedLevelStats.totalBlackEggsCaught += 1;
+						} else if (params.eggColor === 'gold') {
+							updatedLevelStats.totalGoldEggsCaught += 1;
+						} else {
+							updatedLevelStats.totalWhiteEggsCaught += 1;
+						}
 						break;
 					case 'Hatched':
 						updatedHenStats.eggsHatched += 1;
@@ -329,7 +360,6 @@ export const gameLevelMachine = setup({
 		remainingTime: input.levelDuration,
 		stageDimensions: STAGE_DIMENSIONS,
 		chefDimensions: CHEF_CONFIG,
-		// TODO: Increment the generationIndex.
 		generationIndex: input.generationIndex,
 		henActorRefs: [],
 		eggActorRefs: [],
@@ -350,8 +380,14 @@ export const gameLevelMachine = setup({
 			generationIndex: 0,
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,
+			totalBlackEggsCaught: 0,
+			totalGoldEggsCaught: 0,
+			totalWhiteEggsCaught: 0,
 			totalEggsHatched: 0,
 			totalEggsLaid: 0,
+			totalBlackEggsLaid: 0,
+			totalGoldEggsLaid: 0,
+			totalWhiteEggsLaid: 0,
 			totalEggsSplat: 0,
 			catchRate: 0,
 		},
@@ -379,13 +415,17 @@ export const gameLevelMachine = setup({
 						henPosition: event.henPosition,
 						henCurentTweenSpeed: event.henCurentTweenSpeed,
 						henCurrentTweenDirection: event.henCurrentTweenDirection,
+						eggColor: event.eggColor,
 						hatchRate: event.hatchRate,
 					}),
 				},
 				'playEggLaidSound',
 				{
 					type: 'updateHenStatsForEggLaid',
-					params: ({ event }) => ({ henId: event.henId }),
+					params: ({ event }) => ({
+						henId: event.henId,
+						eggColor: event.eggColor,
+					}),
 				},
 			],
 		},
@@ -405,17 +445,10 @@ export const gameLevelMachine = setup({
 			actions: [
 				{
 					type: 'updateScoreForEggDone',
-					params: ({
-						event,
-					}: {
-						event: {
-							henId: string;
-							eggId: string;
-							resultStatus: EggResultStatus;
-						};
-					}) => ({
+					params: ({ event }) => ({
 						henId: event.henId,
 						eggId: event.eggId,
+						eggColor: event.eggColor,
 						resultStatus: event.resultStatus,
 					}),
 				},
@@ -424,6 +457,7 @@ export const gameLevelMachine = setup({
 					params: ({ event }) => ({
 						henId: event.henId,
 						eggId: event.eggId,
+						eggColor: event.eggColor,
 						resultStatus: event.resultStatus,
 					}),
 				},
@@ -496,7 +530,6 @@ export const gameLevelMachine = setup({
 				'calculateLevelStatsAverages',
 				'cleanupLevelRefs',
 				sendParent(({ context }) => {
-					// console.log('sending parent context.levelStats', context.levelStats);
 					return {
 						type: 'Level complete',
 						levelResults: {

@@ -16,6 +16,7 @@ export const eggMachine = setup({
 			henIsMoving: boolean;
 			position: Position;
 			henCurentTweenSpeed: number;
+			color: 'white' | 'gold' | 'black';
 			rotationDirection: -1 | 0 | 1;
 			floorY: number;
 			hatchRate: number;
@@ -29,6 +30,7 @@ export const eggMachine = setup({
 			initialPosition: Position;
 			position: Position;
 			targetPosition: Position;
+			color: 'white' | 'gold' | 'black';
 			henCurentTweenSpeed: number;
 			rotationDirection: -1 | 0 | 1;
 			exitingSpeed: number;
@@ -106,29 +108,32 @@ export const eggMachine = setup({
 }).createMachine({
 	id: 'egg',
 	initial: 'Idle',
-	context: ({ input }) => ({
-		eggRef: { current: null },
-		eggConfig: input.eggConfig,
-		id: input.id,
-		henId: input.henId,
-		henIsMoving: input.henIsMoving,
-		initialPosition: input.position,
-		position: input.position,
-		targetPosition: input.position,
-		henCurentTweenSpeed: input.henCurentTweenSpeed,
-		rotationDirection: input.rotationDirection,
-		exitingSpeed: 10,
-		exitPosition: {
-			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-			y: input.floorY - 50,
-		},
-		floorY: input.floorY,
-		resultStatus: null,
-		gamePaused: false,
-		hatchRate: input.hatchRate,
-		currentTween: null,
-		currentAnimation: null,
-	}),
+	context: ({ input }) => {
+		return {
+			eggRef: { current: null },
+			eggConfig: input.eggConfig,
+			id: input.id,
+			henId: input.henId,
+			henIsMoving: input.henIsMoving,
+			initialPosition: input.position,
+			position: input.position,
+			targetPosition: input.position,
+			henCurentTweenSpeed: input.henCurentTweenSpeed,
+			color: input.color,
+			rotationDirection: input.rotationDirection,
+			exitingSpeed: 10,
+			exitPosition: {
+				x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
+				y: input.floorY - 50,
+			},
+			floorY: input.floorY,
+			resultStatus: null,
+			gamePaused: false,
+			hatchRate: input.hatchRate,
+			currentTween: null,
+			currentAnimation: null,
+		};
+	},
 	on: {
 		'Pause game': {
 			actions: assign({
@@ -283,6 +288,7 @@ export const eggMachine = setup({
 					type: 'Egg done',
 					henId: context.henId,
 					eggId: context.id,
+					eggColor: context.color,
 					resultStatus: context.resultStatus,
 				})),
 			],
