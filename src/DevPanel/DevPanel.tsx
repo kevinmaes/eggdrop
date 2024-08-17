@@ -10,33 +10,24 @@ function formatGenerationStats(generationStats: GenerationStats) {
 	// Return a clone of generationStats with so that each value is formatted to 2 decimal places.
 	return Object.entries(generationStats).reduce((acc, [key, value]) => {
 		switch (key) {
-			case 'generationIndex':
-			case 'totalEggsBroken':
-			case 'totalEggsCaught':
-			case 'totalEggsHatched':
-			case 'totalEggsLaid':
-				acc[key as keyof GenerationStats] = value.toString();
-				break;
-
-			case 'averageMinX':
-			case 'averageMaxX':
-			case 'averageMinStopMS':
-			case 'averageMaxStopMS':
-				acc[key as keyof GenerationStats] = value.toFixed(0).toString();
-				break;
 			case 'averageEggsBroken':
 			case 'averageEggsHatched':
 			case 'averageEggsLaid':
 			case 'averageHenSpeed':
 			case 'averageStationaryEggLayingRate':
 			case 'averageHatchRate':
-				acc[key as keyof GenerationStats] = value.toFixed(1).toString();
+				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
+					minimumFractionDigits: 1,
+					maximumFractionDigits: 1,
+				});
 				break;
 			case 'catchRate':
 				acc[key as keyof GenerationStats] = `${(value * 100).toFixed(0)}%`;
 				break;
 			default:
-				acc[key as keyof GenerationStats] = value.toFixed(2).toString();
+				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
+					maximumFractionDigits: 0,
+				});
 		}
 		return acc;
 	}, {} as Record<keyof GenerationStats, string>);
@@ -67,6 +58,15 @@ export function DevPanel() {
 	}, []);
 
 	const statNames = [
+		'',
+		'catchRate',
+		'',
+		// Totals
+		'totalEggsBroken',
+		'totalEggsCaught',
+		'totalEggsHatched',
+		'totalEggsLaid',
+		'',
 		// Averages
 		'averageEggsBroken',
 		'averageEggsHatched',
@@ -78,13 +78,6 @@ export function DevPanel() {
 		'averageMaxX',
 		'averageMinStopMS',
 		'averageMaxStopMS',
-		// Results
-		'generationIndex',
-		'totalEggsBroken',
-		'totalEggsCaught',
-		'totalEggsHatched',
-		'totalEggsLaid',
-		'catchRate',
 	];
 
 	if (!showDevPanel) {
@@ -121,11 +114,19 @@ export function DevPanel() {
 				{/* Hardcoded prop names in the first column */}
 				{statNames.map((statName, rowIndex) => (
 					<Fragment key={rowIndex}>
-						<div className="grid-item title">{statName}</div>
+						<div
+							className={`grid-item title ${
+								statName.length === 0 ? 'empty-space' : ''
+							}`}
+						>
+							{statName}
+						</div>
 						{levelResultsHistory.map((levelResults, colIndex) => (
 							<div
 								key={`${rowIndex}-${colIndex}`}
-								className="grid-item numeric"
+								className={`grid-item numeric ${
+									statName.length === 0 ? 'empty-space' : ''
+								}`}
 							>
 								{
 									formatGenerationStats(levelResults.levelStats)[
