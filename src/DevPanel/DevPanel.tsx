@@ -38,9 +38,7 @@ export function DevPanel() {
 		levelResultsHistory: state.context.levelResultsHistory,
 	}));
 
-	const [showDevPanel, setShowDevPanel] = useState(
-		process.env.NODE_ENV === 'development'
-	);
+	const [showDevPanel, setShowDevPanel] = useState(false);
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {

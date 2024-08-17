@@ -17,6 +17,10 @@ export const gameLevelMachine = setup({
 			generationIndex: number;
 			levelDuration: number;
 			population: IndividualHen[];
+			score: number;
+		};
+		output: {
+			score: number;
 		};
 		context: {
 			gameAssets: GameAssets;
@@ -30,6 +34,7 @@ export const gameLevelMachine = setup({
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
+			score: number;
 		};
 		events:
 			| { type: 'Pause game' }
@@ -163,6 +168,21 @@ export const gameLevelMachine = setup({
 				};
 			}
 		),
+		updateScoreForEggDone: assign({
+			score: (
+				{ context },
+				params: {
+					henId: string;
+					eggId: string;
+					resultStatus: EggResultStatus;
+				}
+			) => {
+				if (params.resultStatus === 'Caught') {
+					return context.score + 1;
+				}
+				return context.score;
+			},
+		}),
 		updateHenStatsForEggDone: assign(
 			(
 				{ context },
@@ -315,6 +335,7 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		population: input.population,
+		score: input.score,
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -382,6 +403,22 @@ export const gameLevelMachine = setup({
 		},
 		'Egg done': {
 			actions: [
+				{
+					type: 'updateScoreForEggDone',
+					params: ({
+						event,
+					}: {
+						event: {
+							henId: string;
+							eggId: string;
+							resultStatus: EggResultStatus;
+						};
+					}) => ({
+						henId: event.henId,
+						eggId: event.eggId,
+						resultStatus: event.resultStatus,
+					}),
+				},
 				{
 					type: 'updateHenStatsForEggDone',
 					params: ({ event }) => ({
@@ -466,6 +503,7 @@ export const gameLevelMachine = setup({
 							generationIndex: context.generationIndex,
 							levelStats: context.levelStats,
 							henStatsById: context.henStatsById,
+							score: context.score,
 						},
 					};
 				}),
