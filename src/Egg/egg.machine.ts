@@ -270,6 +270,7 @@ export const eggMachine = setup({
 						y: context.targetPosition.y,
 					}),
 				}),
+				onDone: 'Done',
 			},
 		},
 		Done: {
