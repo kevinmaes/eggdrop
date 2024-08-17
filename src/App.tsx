@@ -4,7 +4,10 @@ import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
 import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
-import { sounds } from './sounds';
+
+import './App.css';
+
+console.log('env', process.env.NODE_ENV);
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
@@ -40,20 +43,20 @@ const App = () => {
 
 	if (showGameIntro) {
 		return (
-			<div>
-				<h1>Welcome to the game!</h1>
+			<div className="intro-container">
+				<h1>Egg Drop</h1>
 				<button onClick={() => appActorRef.send({ type: 'Start' })}>
 					Start
 				</button>
-				<button
-					onClick={() => {
-						// sounds.catch.play();
-						// sounds.splat.play();
-						sounds.yipee.play();
-					}}
-				>
-					Play caught
-				</button>
+				{/* {process.env.NODE_ENV === 'development' && (
+					<button
+						onClick={() => {
+							sounds.yipee.play();
+						}}
+					>
+						Play caught
+					</button>
+				)} */}
 			</div>
 		);
 	}
@@ -66,7 +69,7 @@ const App = () => {
 				<Stage
 					width={STAGE_DIMENSIONS.width}
 					height={STAGE_DIMENSIONS.height}
-					style={{ background: 'blue' }}
+					style={{ background: 'pink', border: '1px solid black' }}
 				>
 					{/* Background graphics layer */}
 					<Layer>
@@ -147,8 +150,6 @@ const App = () => {
 			</>
 		);
 	}
-
-	return <div>My game here</div>;
 };
 
 export default App;
