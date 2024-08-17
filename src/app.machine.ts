@@ -30,6 +30,7 @@ const appMachine = setup({
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
+			score: number;
 		};
 		events:
 			| { type: 'Start' }
@@ -41,12 +42,17 @@ const appMachine = setup({
 			  };
 	},
 	actions: {
-		pushLastLevelResultsToHistory: assign({
-			levelResultsHistory: (
-				{ context },
-				params: { levelResults: LevelResults }
-			) => [...context.levelResultsHistory, params.levelResults],
-		}),
+		gatherLastLevelResults: assign(
+			({ context }, params: { levelResults: LevelResults }) => {
+				return {
+					score: context.score + params.levelResults.score,
+					levelResultsHistory: [
+						...context.levelResultsHistory,
+						params.levelResults,
+					],
+				};
+			}
+		),
 		evaluateAndEvolveNextGeneration: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
@@ -193,6 +199,7 @@ const appMachine = setup({
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
+		score: 0,
 	},
 	id: 'Egg Drop Game',
 	initial: 'Loading',
@@ -239,12 +246,14 @@ const appMachine = setup({
 				Playing: {
 					on: {
 						'Level complete': {
-							actions: {
-								type: 'pushLastLevelResultsToHistory',
-								params: ({ event }) => ({
-									levelResults: event.levelResults,
-								}),
-							},
+							actions: [
+								{
+									type: 'gatherLastLevelResults',
+									params: ({ event }) => ({
+										levelResults: event.levelResults,
+									}),
+								},
+							],
 							target: 'Next Generation Evolution',
 						},
 					},
@@ -260,6 +269,7 @@ const appMachine = setup({
 								generationIndex: context.generationIndex,
 								levelDuration: LEVEL_DURATION_MS,
 								population: context.population,
+								score: context.score,
 							};
 						},
 					},

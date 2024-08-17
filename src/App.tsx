@@ -71,6 +71,7 @@ const App = () => {
 		showGamePlay,
 		isInitializingLevel,
 		isBetweenLevels,
+		score,
 	} = AppActorContext.useSelector((state) => ({
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
@@ -78,6 +79,7 @@ const App = () => {
 		showGamePlay: state.matches('Game Play'),
 		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
+		score: state.context.score,
 	}));
 
 	const gameLevelActorRef = appActorRef.system.get(
@@ -162,6 +164,33 @@ const App = () => {
 								fill="orange"
 								onClick={() => appActorRef.send({ type: 'Start next level' })}
 							/>
+							{/* Game score and other UI */}
+							<Layer>
+								<Text
+									x={10}
+									y={300}
+									text={`Score: ${score}`}
+									fontSize={20}
+									fontFamily="Arial"
+									fill="black"
+								/>
+								<Text
+									x={10}
+									y={330}
+									text={`Eggs: ${score}`}
+									fontSize={20}
+									fontFamily="Arial"
+									fill="black"
+								/>
+								<Text
+									x={10}
+									y={360}
+									text={`Gold: ${score}`}
+									fontSize={20}
+									fontFamily="Arial"
+									fill="black"
+								/>
+							</Layer>
 						</Layer>
 					) : gameLevelActorRef ? (
 						<GameLevel

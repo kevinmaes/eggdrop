@@ -26,6 +26,7 @@ export interface GenerationStats {
 
 export interface LevelResults {
 	generationIndex: number;
+	score: number;
 	levelStats: GenerationStats;
 	henStatsById: Record<string, IndividualHen>;
 }
