@@ -40,7 +40,10 @@ export const eggMotionActor = fromPromise<
 				input.node.rotation(newRotation);
 
 				// Send a message to the parent to update the egg position
-				input.parentRef.send({ type: 'Notify of animation position' });
+				// Make sure the egg actor ref is still active
+				if (input.parentRef.getSnapshot().status === 'running') {
+					input.parentRef.send({ type: 'Notify of animation position' });
+				}
 			}
 		});
 		animation.start();
