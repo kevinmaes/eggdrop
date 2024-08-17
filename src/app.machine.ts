@@ -266,7 +266,7 @@ const appMachine = setup({
 					description: 'The main state for game play of each level',
 				},
 				'Next Generation Evolution': {
-					tags: ['level summary'],
+					tags: ['between levels'],
 					on: {
 						'Start next level': 'Playing',
 					},
