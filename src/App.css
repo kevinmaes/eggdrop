@@ -3,28 +3,3 @@
 		animation: logo-spin infinite 20s linear;
 	}
 }
-
-.intro-container {
-	width: 1280px;
-	height: 720px;
-	border: 2px solid pink;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-
-	h1 {
-		font-size: 8em;
-		/* border: 2px solid green; */
-		margin: 2rem auto;
-		line-height: 1.1;
-	}
-
-	button {
-		height: 8rem;
-		width: 30%;
-		margin: 0 auto;
-		border-radius: 8px;
-		cursor: pointer;
-		font-size: 3.2rem;
-	}
-}

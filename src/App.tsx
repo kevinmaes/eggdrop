@@ -122,21 +122,6 @@ const App = () => {
 					/>
 				</Layer>
 			</Stage>
-			// <div className="intro-container">
-			// 	<h1>Egg Drop</h1>
-			// 	<button onClick={() => appActorRef.send({ type: 'Start' })}>
-			// 		Start
-			// 	</button>
-			// 	{/* {process.env.NODE_ENV === 'development' && (
-			// 		<button
-			// 			onClick={() => {
-			// 				sounds.yipee.play();
-			// 			}}
-			// 		>
-			// 			Play caught
-			// 		</button>
-			// 	)} */}
-			// </div>
 		);
 	}
 
