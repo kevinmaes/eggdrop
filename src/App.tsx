@@ -6,6 +6,7 @@ import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 
 import './App.css';
+import { DevPanel } from './DevPanel/DevPanel';
 
 console.log('env', process.env.NODE_ENV);
 
@@ -17,14 +18,16 @@ const App = () => {
 		showGameIntro,
 		showGamePlay,
 		isInitializingLevel,
-		showLevelSummary,
+		levelResultsHistory,
+		isBetweenLevels,
 	} = AppActorContext.useSelector((state) => ({
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
 		showGameIntro: state.matches('Intro'),
 		showGamePlay: state.matches('Game Play'),
 		isInitializingLevel: state.hasTag('init level'),
-		showLevelSummary: state.hasTag('level summary'),
+		levelResultsHistory: state.context.levelResultsHistory,
+		isBetweenLevels: state.hasTag('between levels'),
 	}));
 	const lastLevelResults = AppActorContext.useSelector(
 		(state) => state.context.levelResultsHistory.slice(-1)[0]
@@ -62,6 +65,7 @@ const App = () => {
 	}
 
 	console.log('levelStats', lastLevelResults?.levelStats);
+	const canShowDevPanel = process.env.NODE_ENV === 'development';
 
 	if (showGamePlay) {
 		return (
@@ -95,42 +99,8 @@ const App = () => {
 							/>
 							<Circle x={100} y={100} radius={50} fill="red" />
 						</Layer>
-					) : showLevelSummary ? (
+					) : isBetweenLevels ? (
 						<Layer>
-							<Text
-								x={200}
-								y={50}
-								text="In between levels"
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={400}
-								y={450}
-								text={`Total eggs laid ${lastLevelResults?.levelStats.totalEggsLaid}`}
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={400}
-								y={500}
-								text={`Total eggs caught ${lastLevelResults?.levelStats.totalEggsCaught}`}
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={800}
-								y={500}
-								text={`Catch rate ${Math.round(
-									lastLevelResults?.levelStats.catchRate * 100
-								)}%`}
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
 							<Circle
 								x={100}
 								y={100}
@@ -146,6 +116,9 @@ const App = () => {
 						/>
 					) : null}
 				</Stage>
+				{canShowDevPanel && (
+					<DevPanel levelResultsHistory={levelResultsHistory} />
+				)}
 				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
 			</>
 		);

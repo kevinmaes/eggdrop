@@ -1,7 +1,11 @@
 .grid-container {
 	display: grid;
-	grid-template-columns: 100px 1fr 1fr;
-	grid-template-rows: repeat(3, auto);
+
+	/* Default to 3 columns */
+	grid-template-columns: 250px repeat(3, 1fr);
+
+	/* Automatically adjust row heights */
+	grid-template-rows: auto;
 	gap: 0.2rem;
 	font-size: 0.8rem;
 	width: fit-content;
@@ -10,10 +14,19 @@
 .grid-item {
 	padding: 0.2rem 0.5rem;
 	border: 1px solid #ccc;
-	text-align: right;
 }
 
 .grid-item.title {
 	font-weight: bold;
 	background-color: #f0f0f0;
+}
+
+.grid-item.header {
+	font-weight: bold;
+	text-align: center;
+	background-color: #e0e0e0;
+}
+
+.grid-item.numeric {
+	text-align: right;
 }

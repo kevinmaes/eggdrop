@@ -213,6 +213,7 @@ export const gameLevelMachine = setup({
 
 				return {
 					...context.levelStats,
+					generationIndex: context.generationIndex,
 					averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
 					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
 					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
