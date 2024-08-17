@@ -18,7 +18,6 @@ interface KonvaButtonProps {
 }
 
 function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
-	console.log('x', x, 'width', width);
 	return (
 		<>
 			<Rect
@@ -165,32 +164,30 @@ const App = () => {
 								onClick={() => appActorRef.send({ type: 'Start next level' })}
 							/>
 							{/* Game score and other UI */}
-							<Layer>
-								<Text
-									x={10}
-									y={300}
-									text={`Score: ${score}`}
-									fontSize={20}
-									fontFamily="Arial"
-									fill="black"
-								/>
-								<Text
-									x={10}
-									y={330}
-									text={`Eggs: ${score}`}
-									fontSize={20}
-									fontFamily="Arial"
-									fill="black"
-								/>
-								<Text
-									x={10}
-									y={360}
-									text={`Gold: ${score}`}
-									fontSize={20}
-									fontFamily="Arial"
-									fill="black"
-								/>
-							</Layer>
+							<Text
+								x={10}
+								y={300}
+								text={`Score: ${score}`}
+								fontSize={20}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Text
+								x={10}
+								y={330}
+								text={`Eggs: ${score}`}
+								fontSize={20}
+								fontFamily="Arial"
+								fill="black"
+							/>
+							<Text
+								x={10}
+								y={360}
+								text={`Gold: ${score}`}
+								fontSize={20}
+								fontFamily="Arial"
+								fill="black"
+							/>
 						</Layer>
 					) : gameLevelActorRef ? (
 						<GameLevel

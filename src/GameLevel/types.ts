@@ -19,8 +19,14 @@ export interface GenerationStats {
 	generationIndex: number;
 	totalEggsBroken: number;
 	totalEggsCaught: number;
+	totalBlackEggsCaught: number;
+	totalGoldEggsCaught: number;
+	totalWhiteEggsCaught: number;
 	totalEggsHatched: number;
 	totalEggsLaid: number;
+	totalBlackEggsLaid: number;
+	totalGoldEggsLaid: number;
+	totalWhiteEggsLaid: number;
 	catchRate: number;
 }
 
@@ -41,6 +47,8 @@ export interface IndividualHen {
 	stationaryEggLayingRate: number;
 	movingEggLayingRate: number;
 	restAfterLayingEggMS: number;
+	blackEggRate: number;
+	goldEggRate: number;
 	hatchRate: number;
 	minX: number;
 	maxX: number;

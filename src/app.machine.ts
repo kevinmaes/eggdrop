@@ -114,6 +114,8 @@ const appMachine = setup({
 							(parent1.movingEggLayingRate + parent2.movingEggLayingRate) / 2,
 						restAfterLayingEggMS:
 							(parent1.restAfterLayingEggMS + parent2.restAfterLayingEggMS) / 2,
+						blackEggRate: (parent1.blackEggRate + parent2.blackEggRate) / 2,
+						goldEggRate: (parent1.goldEggRate + parent2.goldEggRate) / 2,
 						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
 						minX,
 						maxX,

@@ -60,10 +60,16 @@ export function DevPanel() {
 		'catchRate',
 		'',
 		// Totals
+		'totalEggsLaid',
+		'totalBlackEggsLaid',
+		'totalGoldEggsLaid',
+		'totalWhiteEggsLaid',
 		'totalEggsBroken',
 		'totalEggsCaught',
+		'totalBlackEggsCaught',
+		'totalGoldEggsCaught',
+		'totalWhiteEggsCaught',
 		'totalEggsHatched',
-		'totalEggsLaid',
 		'',
 		// Averages
 		'averageEggsBroken',
