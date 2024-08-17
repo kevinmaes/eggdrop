@@ -1,10 +1,10 @@
 // This file contains the configuration for the game
 
 // The duration of each level in milliseconds
-export const LEVEL_DURATION_MS = 60_000;
+export const LEVEL_DURATION_MS = 10_000;
 
 // The number of hens in the game
-export const POPULATION_SIZE = 10;
+export const POPULATION_SIZE = 1;
 
 // The dimensions of the stage
 export const STAGE_DIMENSIONS = { width: 1280, height: 720 };
@@ -88,16 +88,17 @@ export function getInitialChromosomeValues() {
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 
 		// maxEggs can range between -1 and 50, -1 means no limit
-		maxEggs: Math.round(Math.random() * 51) - 1,
+		// maxEggs: Math.round(Math.random() * 51) - 1,
 		// maxEggs: -1,
+		maxEggs: 1,
 
 		// The rate at which the hen lays eggs while stopped
 		stationaryEggLayingRate: Math.random(),
 		// stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
-		movingEggLayingRate: Math.random(),
-		// movingEggLayingRate: 1,
+		// movingEggLayingRate: Math.random(),
+		movingEggLayingRate: 0,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,

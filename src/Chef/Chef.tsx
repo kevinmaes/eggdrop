@@ -36,15 +36,21 @@ export function Chef({
 		position,
 		isAnimateAsMoving,
 		isCatchingEgg,
-	} = useSelector(chefActorRef, (state) => ({
-		chefFrames: state.context.chefAssets.sprite.frames,
-		chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
-		position: state.context.position,
-		// Use direction here instead of speed so that the chef's leg movement
-		// stops as soon as the user releases the arrow key
-		isAnimateAsMoving: state.context.direction !== 0,
-		isCatchingEgg: state.context.isCatchingEgg,
-	}));
+	} = useSelector(chefActorRef, (state) => {
+		if (!state.context) {
+			console.log('state', state);
+		}
+		// console.log('chef state', state);
+		return {
+			chefFrames: state.context.chefAssets.sprite.frames,
+			chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
+			position: state.context.position,
+			// Use direction here instead of speed so that the chef's leg movement
+			// stops as soon as the user releases the arrow key
+			isAnimateAsMoving: state.context.direction !== 0,
+			isCatchingEgg: state.context.isCatchingEgg,
+		};
+	});
 
 	const [frameIndex, setFrameIndex] = useState(1);
 
