@@ -30,7 +30,7 @@ function formatGenerationStats(generationStats: GenerationStats) {
 				acc[key as keyof GenerationStats] = value.toFixed(1).toString();
 				break;
 			case 'catchRate':
-				acc[key as keyof GenerationStats] = `${value * 100}%`;
+				acc[key as keyof GenerationStats] = `${(value * 100).toFixed(0)}%`;
 				break;
 			default:
 				acc[key as keyof GenerationStats] = value.toFixed(2).toString();
