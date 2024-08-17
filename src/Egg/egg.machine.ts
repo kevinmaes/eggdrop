@@ -190,7 +190,7 @@ export const eggMachine = setup({
 									y: context.targetPosition.y,
 									rotation: Math.random() > 0.5 ? 720 : -720,
 									onUpdate: () => {
-										if (self.getSnapshot().status !== 'done') {
+										if (self.getSnapshot().status === 'active') {
 											self.send({ type: 'Notify of animation position' });
 										}
 									},
