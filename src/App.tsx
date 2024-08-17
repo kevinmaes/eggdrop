@@ -1,4 +1,4 @@
-import { Circle, Layer, Stage, Text } from 'react-konva';
+import { Circle, Layer, Rect, Stage, Text } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
@@ -8,7 +8,59 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
 
-console.log('env', process.env.NODE_ENV);
+interface KonvaButtonProps {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	text: string;
+	onClick: () => void;
+}
+
+function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
+	console.log('x', x, 'width', width);
+	return (
+		<>
+			<Rect
+				x={x}
+				y={y}
+				width={width}
+				height={height}
+				fill="lightblue"
+				shadowBlur={5}
+				cornerRadius={10}
+				onClick={onClick} // Handle button clicks
+				onMouseEnter={(e) => {
+					// Change cursor to pointer on hover
+					const container = e.target.getStage()?.container();
+					if (container) {
+						container.style.cursor = 'pointer';
+					}
+				}}
+				onMouseLeave={(e) => {
+					// Change cursor back to default when not hovering
+					const container = e.target.getStage()?.container();
+					if (container) {
+						container.style.cursor = 'default';
+					}
+				}}
+			/>
+			<Text
+				listening={false}
+				x={x}
+				y={y}
+				text={text}
+				fontSize={36}
+				fontFamily="Arial"
+				fill="black"
+				align="center"
+				width={width}
+				height={height}
+				verticalAlign="middle"
+			/>
+		</>
+	);
+}
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
@@ -46,21 +98,45 @@ const App = () => {
 
 	if (showGameIntro) {
 		return (
-			<div className="intro-container">
-				<h1>Egg Drop</h1>
-				<button onClick={() => appActorRef.send({ type: 'Start' })}>
-					Start
-				</button>
-				{/* {process.env.NODE_ENV === 'development' && (
-					<button
-						onClick={() => {
-							sounds.yipee.play();
-						}}
-					>
-						Play caught
-					</button>
-				)} */}
-			</div>
+			<Stage
+				width={STAGE_DIMENSIONS.width}
+				height={STAGE_DIMENSIONS.height}
+				style={{ background: 'pink', border: '1px solid black' }}
+			>
+				<Layer>
+					<Text
+						x={STAGE_DIMENSIONS.width / 2 - 200}
+						y={STAGE_DIMENSIONS.height / 2 - 50}
+						text="EGG DROP"
+						fontSize={80}
+						fontFamily="Arial"
+						fill="black"
+					/>
+					<KonvaButton
+						x={STAGE_DIMENSIONS.width / 2 - 150}
+						y={400}
+						width={300}
+						height={100}
+						text="Play"
+						onClick={() => appActorRef.send({ type: 'Start' })}
+					/>
+				</Layer>
+			</Stage>
+			// <div className="intro-container">
+			// 	<h1>Egg Drop</h1>
+			// 	<button onClick={() => appActorRef.send({ type: 'Start' })}>
+			// 		Start
+			// 	</button>
+			// 	{/* {process.env.NODE_ENV === 'development' && (
+			// 		<button
+			// 			onClick={() => {
+			// 				sounds.yipee.play();
+			// 			}}
+			// 		>
+			// 			Play caught
+			// 		</button>
+			// 	)} */}
+			// </div>
 		);
 	}
 
@@ -75,7 +151,7 @@ const App = () => {
 					height={STAGE_DIMENSIONS.height}
 					style={{ background: 'pink', border: '1px solid black' }}
 				>
-					{/* Background graphics layer */}
+					{/* Background graphics layer - static */}
 					<Layer>
 						<Text
 							x={1200}

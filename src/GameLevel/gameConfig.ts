@@ -1,7 +1,7 @@
 // This file contains the configuration for the game
 
 // The duration of each level in milliseconds
-export const LEVEL_DURATION_MS = 60_000;
+export const LEVEL_DURATION_MS = 20_000;
 
 // The number of hens in the game
 export const POPULATION_SIZE = 20;
@@ -104,8 +104,8 @@ export function getInitialChromosomeValues() {
 		restAfterLayingEggMS: Math.random() * 2000,
 
 		// The rate at which the eggs will hatch when they land on the ground
-		hatchRate: Math.random(),
-		// hatchRate: 1,
+		// hatchRate: Math.random(),
+		hatchRate: 1,
 
 		// The minimum xPos the hen can be at
 		minX,
