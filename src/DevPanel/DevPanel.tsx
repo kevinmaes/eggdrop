@@ -2,6 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 
 import './DevPanel.css';
 import { GenerationStats, LevelResults } from '../GameLevel/types';
+import { sounds } from '../sounds';
 
 function formatGenerationStats(generationStats: GenerationStats) {
 	// Return a clone of generationStats with so that each value is formatted to 2 decimal places.
@@ -67,37 +68,51 @@ export function DevPanel({
 	];
 
 	return (
-		<div
-			className="grid-container"
-			style={{
-				gridTemplateColumns: `250px repeat(${levelResultsHistory.length}, 1fr)`,
-			}}
-		>
-			{/* Insert the first row for headers */}
-			<div className="grid-item">Generation:</div>{' '}
-			{levelResultsHistory.map((levelResults) => (
-				<div
-					key={`header-${levelResults.generationIndex}`}
-					className="grid-item header"
+		<div>
+			<div>
+				<button
+					onClick={() => {
+						sounds.yipee.play();
+					}}
 				>
-					{`${levelResults.generationIndex + 1}`}
-				</div>
-			))}
-			{/* Hardcoded prop names in the first column */}
-			{statNames.map((statName, rowIndex) => (
-				<Fragment key={rowIndex}>
-					<div className="grid-item title">{statName}</div>
-					{levelResultsHistory.map((levelResults, colIndex) => (
-						<div key={`${rowIndex}-${colIndex}`} className="grid-item numeric">
-							{
-								formatGenerationStats(levelResults.levelStats)[
-									statName as keyof LevelResults['levelStats']
-								]
-							}
-						</div>
-					))}
-				</Fragment>
-			))}
+					Test sound
+				</button>
+			</div>
+			<div
+				className="grid-container"
+				style={{
+					gridTemplateColumns: `250px repeat(${levelResultsHistory.length}, 1fr)`,
+				}}
+			>
+				{/* Insert the first row for headers */}
+				<div className="grid-item">Generation:</div>{' '}
+				{levelResultsHistory.map((levelResults) => (
+					<div
+						key={`header-${levelResults.generationIndex}`}
+						className="grid-item header"
+					>
+						{`${levelResults.generationIndex + 1}`}
+					</div>
+				))}
+				{/* Hardcoded prop names in the first column */}
+				{statNames.map((statName, rowIndex) => (
+					<Fragment key={rowIndex}>
+						<div className="grid-item title">{statName}</div>
+						{levelResultsHistory.map((levelResults, colIndex) => (
+							<div
+								key={`${rowIndex}-${colIndex}`}
+								className="grid-item numeric"
+							>
+								{
+									formatGenerationStats(levelResults.levelStats)[
+										statName as keyof LevelResults['levelStats']
+									]
+								}
+							</div>
+						))}
+					</Fragment>
+				))}
+			</div>
 		</div>
 	);
 }
