@@ -8,7 +8,21 @@ import { sounds } from './sounds';
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
-	const appState = AppActorContext.useSelector((state) => state);
+	const {
+		isLoading,
+		showError,
+		showGameIntro,
+		showGamePlay,
+		isInitializingLevel,
+		showLevelSummary,
+	} = AppActorContext.useSelector((state) => ({
+		showError: state.matches('Show Error'),
+		isLoading: state.matches('Loading'),
+		showGameIntro: state.matches('Intro'),
+		showGamePlay: state.matches('Game Play'),
+		isInitializingLevel: state.hasTag('init level'),
+		showLevelSummary: state.hasTag('level summary'),
+	}));
 	const lastLevelResults = AppActorContext.useSelector(
 		(state) => state.context.levelResultsHistory.slice(-1)[0]
 	);
@@ -16,15 +30,15 @@ const App = () => {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	if (appState.matches('Show Error')) {
+	if (showError) {
 		return <div>Error loading the game...</div>;
 	}
 
-	if (appState.matches('Loading')) {
+	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 
-	if (appState.matches('Intro')) {
+	if (showGameIntro) {
 		return (
 			<div>
 				<h1>Welcome to the game!</h1>
@@ -46,7 +60,7 @@ const App = () => {
 
 	console.log('levelStats', lastLevelResults?.levelStats);
 
-	if (appState.matches('Game Play')) {
+	if (showGamePlay) {
 		return (
 			<>
 				<Stage
@@ -65,7 +79,7 @@ const App = () => {
 							fill="black"
 						/>
 					</Layer>
-					{appState.hasTag('init level') ? (
+					{isInitializingLevel ? (
 						// Init level UI
 						<Layer>
 							<Text
@@ -78,7 +92,7 @@ const App = () => {
 							/>
 							<Circle x={100} y={100} radius={50} fill="red" />
 						</Layer>
-					) : appState.hasTag('level summary') ? (
+					) : showLevelSummary ? (
 						<Layer>
 							<Text
 								x={200}
