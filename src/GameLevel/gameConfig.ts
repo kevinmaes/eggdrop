@@ -59,7 +59,7 @@ export const EGG_CONFIG = {
 	points: {
 		white: 1,
 		gold: 10,
-		black: -10,
+		black: -5,
 	},
 };
 
@@ -86,7 +86,8 @@ export function getInitialChromosomeValues() {
 	const maxStopMS = minStopMS + Math.random() * 5000;
 
 	// Egg color
-	const blackEggRate = Math.floor(Math.random() * 100) / 100;
+	const maxBlackEggRate = 0.5;
+	const blackEggRate = Math.floor(Math.random() * maxBlackEggRate * 100) / 100;
 	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
 	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
 
