@@ -115,7 +115,7 @@ const App = () => {
 						width={300}
 						height={100}
 						text="Play"
-						onClick={() => appActorRef.send({ type: 'Start' })}
+						onClick={() => appActorRef.send({ type: 'Play' })}
 					/>
 				</Layer>
 			</Stage>
@@ -156,35 +156,20 @@ const App = () => {
 						</Layer>
 					) : isBetweenLevels ? (
 						<Layer>
-							<Circle
-								x={100}
-								y={100}
-								radius={50}
-								fill="orange"
-								onClick={() => appActorRef.send({ type: 'Start next level' })}
+							<KonvaButton
+								x={STAGE_DIMENSIONS.width / 2 - 150}
+								y={STAGE_DIMENSIONS.height / 2 - 50}
+								width={300}
+								height={100}
+								text="Play next level"
+								onClick={() => appActorRef.send({ type: 'Play' })}
 							/>
 							{/* Game score and other UI */}
 							<Text
 								x={10}
 								y={300}
 								text={`Score: ${score}`}
-								fontSize={20}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={10}
-								y={330}
-								text={`Eggs: ${score}`}
-								fontSize={20}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={10}
-								y={360}
-								text={`Gold: ${score}`}
-								fontSize={20}
+								fontSize={30}
 								fontFamily="Arial"
 								fill="black"
 							/>

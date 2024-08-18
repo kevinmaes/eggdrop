@@ -33,8 +33,7 @@ const appMachine = setup({
 			score: number;
 		};
 		events:
-			| { type: 'Start' }
-			| { type: 'Start next level' }
+			| { type: 'Play' }
 			| { type: 'Quit' }
 			| {
 					type: 'Level complete';
@@ -223,7 +222,7 @@ const appMachine = setup({
 		},
 		Intro: {
 			on: {
-				Start: {
+				Play: {
 					target: 'Game Play',
 				},
 			},
@@ -280,7 +279,7 @@ const appMachine = setup({
 				'Next Generation Evolution': {
 					tags: ['between levels'],
 					on: {
-						'Start next level': 'Playing',
+						Play: 'Playing',
 					},
 					entry: [log('Show summary')],
 					exit: [
