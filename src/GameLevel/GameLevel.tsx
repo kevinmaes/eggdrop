@@ -82,6 +82,30 @@ export function GameLevel({
 					fontFamily="Arial"
 					fill="black"
 				/>
+				<Text
+					x={10}
+					y={300}
+					text={`Score: ${score}`}
+					fontSize={20}
+					fontFamily="Arial"
+					fill="black"
+				/>
+				<Text
+					x={10}
+					y={330}
+					text={`Eggs: ${score}`}
+					fontSize={20}
+					fontFamily="Arial"
+					fill="black"
+				/>
+				<Text
+					x={10}
+					y={360}
+					text={`Gold: ${score}`}
+					fontSize={20}
+					fontFamily="Arial"
+					fill="black"
+				/>
 			</Layer>
 		</>
 	);
