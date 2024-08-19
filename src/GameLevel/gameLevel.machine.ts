@@ -7,8 +7,8 @@ import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { CHEF_CONFIG, EGG_CONFIG, STAGE_DIMENSIONS } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
-import { countdownTimerMachine } from './countdownTimer.machine';
 import { GameAssets } from '../types/assets';
+import { countdownTimer } from './countdownTimer.actor';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -32,8 +32,6 @@ export const gameLevelMachine = setup({
 			population: IndividualHen[];
 		};
 		events:
-			| { type: 'Time countdown tick' }
-			| { type: 'Time countdown done' }
 			| { type: 'Pause game' }
 			| { type: 'Resume game' }
 			| {
@@ -58,7 +56,8 @@ export const gameLevelMachine = setup({
 					henId: string;
 					eggId: string;
 					resultStatus: EggResultStatus;
-			  };
+			  }
+			| { type: 'Tick'; remainingMS: number; done: boolean };
 	},
 	actions: {
 		countdownTick: assign({
@@ -266,9 +265,13 @@ export const gameLevelMachine = setup({
 	},
 	actors: {
 		chefMachine,
-		countdownTimerMachine,
+		countdownTimer,
 	},
 	guards: {
+		isCountdownDone: (_, params: { done: boolean }) => {
+			console.log('guard isCountdownDone', params.done);
+			return params.done;
+		},
 		testPotRimHit: ({ context, event }) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
@@ -402,23 +405,31 @@ export const gameLevelMachine = setup({
 		Playing: {
 			entry: ['spawnNewHens', 'startBackgroundMusic'],
 			exit: 'stopBackgroundMusic',
+			on: {
+				Tick: [
+					{
+						guard: {
+							type: 'isCountdownDone',
+							params: ({ event }) => ({ done: event.done }),
+						},
+						target: 'Done',
+					},
+					{
+						actions: {
+							type: 'countdownTick',
+							params: ({ event }) => ({ remainingMS: event.remainingMS }),
+						},
+					},
+				],
+			},
 			invoke: [
 				{
-					src: 'countdownTimerMachine',
+					id: 'countdownTimer',
+					src: 'countdownTimer',
 					input: ({ context }) => ({
 						totalMS: context.remainingTime,
 						tickMS: 1000,
 					}),
-					onSnapshot: {
-						actions: {
-							type: 'countdownTick',
-							params: ({ event }) => ({
-								remainingMS: event.snapshot.context.remainingMS,
-								done: event.snapshot.context.done,
-							}),
-						},
-					},
-					onDone: 'Done',
 				},
 				{
 					id: 'chefMachine',
