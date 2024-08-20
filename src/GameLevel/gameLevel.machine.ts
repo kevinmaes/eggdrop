@@ -201,6 +201,9 @@ export const gameLevelMachine = setup({
 				}
 			) => {
 				if (params.resultStatus === 'Caught') {
+					if (params.eggColor === 'black') {
+						return 0;
+					}
 					return context.score + EGG_CONFIG.points[params.eggColor];
 				}
 				return context.score;

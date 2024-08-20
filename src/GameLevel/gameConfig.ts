@@ -59,7 +59,6 @@ export const EGG_CONFIG = {
 	points: {
 		white: 1,
 		gold: 10,
-		black: -5,
 	},
 	brokenEgg: {
 		width: 50,
