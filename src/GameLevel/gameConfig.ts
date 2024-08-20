@@ -112,11 +112,11 @@ export function getInitialChromosomeValues() {
 
 		// The rate at which the hen lays eggs while stopped
 		stationaryEggLayingRate: Math.random(),
-		// stationaryEggLayingRate: 0,
+		// stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
 		movingEggLayingRate: Math.random(),
-		// movingEggLayingRate: 1,
+		// movingEggLayingRate: 0,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
@@ -126,8 +126,8 @@ export function getInitialChromosomeValues() {
 		goldEggRate,
 
 		// The rate at which the eggs will hatch when they land on the ground
-		hatchRate: Math.random(),
-		// hatchRate: 0.5,
+		// hatchRate: Math.random(),
+		hatchRate: 0.5,
 
 		// The minimum xPos the hen can be at
 		minX,

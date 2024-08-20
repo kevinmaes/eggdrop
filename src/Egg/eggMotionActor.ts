@@ -4,7 +4,7 @@ import Konva from 'konva';
 import { EGG_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export const eggMotionActor = fromPromise<
-	{ endPosition: Position },
+	Position,
 	{
 		node: React.RefObject<any>['current'];
 		initialPosition: Position;
@@ -28,10 +28,8 @@ export const eggMotionActor = fromPromise<
 			) {
 				animation.stop();
 				resolve({
-					endPosition: {
-						x: input.node.x(),
-						y: input.node.y(),
-					},
+					x: input.node.x(),
+					y: input.node.y(),
 				});
 			}
 

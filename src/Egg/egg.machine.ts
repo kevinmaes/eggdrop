@@ -83,6 +83,9 @@ export const eggMachine = setup({
 				y: context.floorY - 60,
 			}),
 		}),
+		setPositionToAnimationEndPostiion: assign({
+			position: (_, params: Position) => params,
+		}),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 0.5 * EGG_CONFIG.brokenEgg.width,
@@ -211,12 +214,10 @@ export const eggMachine = setup({
 						}),
 						onDone: {
 							target: 'Done Falling',
-							actions: assign({
-								position: ({ event }) => ({
-									x: event.output.endPosition.x,
-									y: event.output.endPosition.y,
-								}),
-							}),
+							actions: {
+								type: 'setPositionToAnimationEndPostiion',
+								params: ({ event }) => event.output,
+							},
 						},
 					},
 				},
@@ -233,12 +234,10 @@ export const eggMachine = setup({
 						}),
 						onDone: {
 							target: 'Done Falling',
-							actions: assign({
-								position: ({ event }) => ({
-									x: event.output.endPosition.x,
-									y: event.output.endPosition.y,
-								}),
-							}),
+							actions: {
+								type: 'setPositionToAnimationEndPostiion',
+								params: ({ event }) => event.output,
+							},
 						},
 					},
 				},
