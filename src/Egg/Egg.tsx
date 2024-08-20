@@ -7,7 +7,7 @@ import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
-import { EGG_CONFIG } from '../GameLevel/gameConfig';
+import { EGG_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export function Egg({
 	eggActorRef,
@@ -44,7 +44,7 @@ export function Egg({
 			height={60}
 			rotation={0}
 			x={eggState.context.position.x}
-			y={eggState.context.position.y}
+			y={STAGE_DIMENSIONS.height - EGG_CONFIG.chick.height}
 			scaleX={isFacingLeft ? -1 : 1}
 		/>
 	) : eggState.matches('Exiting') ? (
@@ -55,7 +55,7 @@ export function Egg({
 			height={60}
 			rotation={0}
 			x={eggState.context.position.x}
-			y={eggState.context.position.y}
+			y={STAGE_DIMENSIONS.height - EGG_CONFIG.chick.height}
 			scaleX={isFacingLeft ? -1 : 1}
 		/>
 	) : eggState.matches('Splatting') ? (
@@ -66,7 +66,8 @@ export function Egg({
 			height={EGG_CONFIG.brokenEgg.height}
 			rotation={0}
 			x={eggState.context.position.x}
-			y={eggState.context.position.y}
+			// y={eggState.context.position.y}
+			y={STAGE_DIMENSIONS.height - EGG_CONFIG.brokenEgg.height}
 		/>
 	) : (
 		<KonvaImage

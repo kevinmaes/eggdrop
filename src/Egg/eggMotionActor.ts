@@ -1,7 +1,7 @@
 import { AnyActorRef, fromPromise } from 'xstate';
 import { Position } from '../GameLevel/types';
 import Konva from 'konva';
-import { STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { EGG_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export const eggMotionActor = fromPromise<
 	void,
@@ -22,7 +22,10 @@ export const eggMotionActor = fromPromise<
 			if (!input.node) {
 				animation.stop();
 				return reject('No eggRef');
-			} else if (input.node.y() >= STAGE_DIMENSIONS.height) {
+			} else if (
+				input.node.y() >=
+				STAGE_DIMENSIONS.height - EGG_CONFIG.brokenEgg.height
+			) {
 				animation.stop();
 				resolve();
 			}
