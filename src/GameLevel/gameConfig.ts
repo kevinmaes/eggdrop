@@ -1,10 +1,10 @@
 // This file contains the configuration for the game
 
 // The duration of each level in milliseconds
-export const LEVEL_DURATION_MS = 10_000;
+export const LEVEL_DURATION_MS = 20_000;
 
 // The number of hens in the game
-export const POPULATION_SIZE = 1;
+export const POPULATION_SIZE = 20;
 
 // The dimensions of the stage
 export const STAGE_DIMENSIONS = { width: 1280, height: 720 };
@@ -56,6 +56,19 @@ const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
 export const EGG_CONFIG = {
 	fallingSpeed: EGG_FALLING_SPEED,
 	fallingDuration: EGG_FALLING_DURATION,
+	points: {
+		white: 1,
+		gold: 10,
+		black: -5,
+	},
+	brokenEgg: {
+		width: 50,
+		height: 42,
+	},
+	chick: {
+		width: 60,
+		height: 60,
+	},
 };
 
 /**
@@ -80,6 +93,12 @@ export function getInitialChromosomeValues() {
 	// The maximum time the hen will stop at a location
 	const maxStopMS = minStopMS + Math.random() * 5000;
 
+	// Egg color
+	const maxBlackEggRate = 0.5;
+	const blackEggRate = Math.floor(Math.random() * maxBlackEggRate * 100) / 100;
+	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
+	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
+
 	return {
 		// speed is the x speed of the hen
 		speed: Math.random() * 3,
@@ -88,24 +107,27 @@ export function getInitialChromosomeValues() {
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 
 		// maxEggs can range between -1 and 50, -1 means no limit
-		// maxEggs: Math.round(Math.random() * 51) - 1,
+		maxEggs: Math.round(Math.random() * 51) - 1,
 		// maxEggs: -1,
-		maxEggs: 1,
 
 		// The rate at which the hen lays eggs while stopped
 		stationaryEggLayingRate: Math.random(),
 		// stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
-		// movingEggLayingRate: Math.random(),
-		movingEggLayingRate: 0,
+		movingEggLayingRate: Math.random(),
+		// movingEggLayingRate: 0,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
 
+		// Egg color rates
+		blackEggRate,
+		goldEggRate,
+
 		// The rate at which the eggs will hatch when they land on the ground
-		hatchRate: Math.random(),
-		// hatchRate: 1,
+		// hatchRate: Math.random(),
+		hatchRate: 0.5,
 
 		// The minimum xPos the hen can be at
 		minX,

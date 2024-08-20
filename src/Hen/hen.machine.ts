@@ -30,6 +30,8 @@ export const henMachine = setup({
 			restAfterLayingEggMS: number;
 			speed: number;
 			baseTweenDurationSeconds: number;
+			blackEggRate: number;
+			goldEggRate: number;
 			hatchRate: number;
 			minStopMS: number;
 			maxStopMS: number;
@@ -57,6 +59,8 @@ export const henMachine = setup({
 			movingEggLayingRate: number;
 			restAfterLayingEggMS: number;
 			gamePaused: boolean;
+			blackEggRate: number;
+			goldEggRate: number;
 			hatchRate: number;
 			minX: number;
 			maxX: number;
@@ -145,6 +149,8 @@ export const henMachine = setup({
 		movingEggLayingRate: input.movingEggLayingRate,
 		restAfterLayingEggMS: input.restAfterLayingEggMS,
 		gamePaused: false,
+		blackEggRate: input.blackEggRate,
+		goldEggRate: input.goldEggRate,
 		hatchRate: input.hatchRate,
 		minX: input.minX,
 		maxX: input.maxX,
@@ -225,7 +231,7 @@ export const henMachine = setup({
 				onDone: {
 					target: 'Stopped',
 					actions: assign({
-						position: ({ event }) => event.output.endPosition,
+						position: ({ event }) => event.output,
 						currentTweenSpeed: 0,
 					}),
 				},
@@ -250,12 +256,21 @@ export const henMachine = setup({
 				'Laying egg': {
 					entry: [
 						sendParent(({ context }) => {
+							const randomEggColorNumber = Math.random();
+							const eggColor =
+								randomEggColorNumber < context.blackEggRate
+									? 'black'
+									: randomEggColorNumber < context.goldEggRate
+									? 'gold'
+									: 'white';
+
 							return {
 								type: 'Lay an egg',
 								henId: context.id,
 								henCurentTweenSpeed: context.currentTweenSpeed,
 								henCurrentTweenDirection: context.currentTweenDirection,
 								henPosition: context.henRef.current!.getPosition(),
+								eggColor,
 								hatchRate: context.hatchRate,
 							};
 						}),
@@ -288,14 +303,25 @@ export const henMachine = setup({
 		'Laying Egg': {
 			tags: 'laying',
 			entry: [
-				sendParent(({ context }) => ({
-					type: 'Lay an egg',
-					henId: context.id,
-					henCurentTweenSpeed: context.currentTweenSpeed,
-					henCurrentTweenDirection: context.currentTweenDirection,
-					henPosition: context.henRef.current!.getPosition(),
-					hatchRate: context.hatchRate,
-				})),
+				sendParent(({ context }) => {
+					const randomEggColorNumber = Math.random();
+					const eggColor =
+						randomEggColorNumber < context.blackEggRate
+							? 'black'
+							: randomEggColorNumber < context.goldEggRate
+							? 'gold'
+							: 'white';
+
+					return {
+						type: 'Lay an egg',
+						henId: context.id,
+						henCurentTweenSpeed: context.currentTweenSpeed,
+						henCurrentTweenDirection: context.currentTweenDirection,
+						henPosition: context.henRef.current!.getPosition(),
+						eggColor,
+						hatchRate: context.hatchRate,
+					};
+				}),
 				assign({
 					eggsLaid: ({ context }) => context.eggsLaid + 1,
 				}),

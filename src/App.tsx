@@ -1,60 +1,136 @@
-import { Circle, Layer, Stage, Text } from 'react-konva';
+import { Circle, Layer, Rect, Stage, Text } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
 import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
-import { sounds } from './sounds';
+
+import './App.css';
+import { DevPanel } from './DevPanel/DevPanel';
+
+interface KonvaButtonProps {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	text: string;
+	onClick: () => void;
+}
+
+function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
+	return (
+		<>
+			<Rect
+				x={x}
+				y={y}
+				width={width}
+				height={height}
+				fill="lightblue"
+				shadowBlur={5}
+				cornerRadius={10}
+				onClick={onClick} // Handle button clicks
+				onMouseEnter={(e) => {
+					// Change cursor to pointer on hover
+					const container = e.target.getStage()?.container();
+					if (container) {
+						container.style.cursor = 'pointer';
+					}
+				}}
+				onMouseLeave={(e) => {
+					// Change cursor back to default when not hovering
+					const container = e.target.getStage()?.container();
+					if (container) {
+						container.style.cursor = 'default';
+					}
+				}}
+			/>
+			<Text
+				listening={false}
+				x={x}
+				y={y}
+				text={text}
+				fontSize={36}
+				fontFamily="Arial"
+				fill="black"
+				align="center"
+				width={width}
+				height={height}
+				verticalAlign="middle"
+			/>
+		</>
+	);
+}
 
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
-	const appState = AppActorContext.useSelector((state) => state);
-	const lastLevelResults = AppActorContext.useSelector(
-		(state) => state.context.levelResultsHistory.slice(-1)[0]
-	);
+	const {
+		isLoading,
+		showError,
+		showGameIntro,
+		showGamePlay,
+		isInitializingLevel,
+		isBetweenLevels,
+		score,
+	} = AppActorContext.useSelector((state) => ({
+		showError: state.matches('Show Error'),
+		isLoading: state.matches('Loading'),
+		showGameIntro: state.matches('Intro'),
+		showGamePlay: state.matches('Game Play'),
+		isInitializingLevel: state.hasTag('init level'),
+		isBetweenLevels: state.hasTag('between levels'),
+		score: state.context.score,
+	}));
+
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	if (appState.matches('Show Error')) {
+	if (showError) {
 		return <div>Error loading the game...</div>;
 	}
 
-	if (appState.matches('Loading')) {
+	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 
-	if (appState.matches('Intro')) {
+	if (showGameIntro) {
 		return (
-			<div>
-				<h1>Welcome to the game!</h1>
-				<button onClick={() => appActorRef.send({ type: 'Start' })}>
-					Start
-				</button>
-				<button
-					onClick={() => {
-						// sounds.catch.play();
-						// sounds.splat.play();
-						sounds.yipee.play();
-					}}
-				>
-					Play caught
-				</button>
-			</div>
+			<Stage
+				width={STAGE_DIMENSIONS.width}
+				height={STAGE_DIMENSIONS.height}
+				style={{ background: 'pink', border: '1px solid black' }}
+			>
+				<Layer>
+					<Text
+						x={STAGE_DIMENSIONS.width / 2 - 200}
+						y={STAGE_DIMENSIONS.height / 2 - 50}
+						text="EGG DROP"
+						fontSize={80}
+						fontFamily="Arial"
+						fill="black"
+					/>
+					<KonvaButton
+						x={STAGE_DIMENSIONS.width / 2 - 150}
+						y={400}
+						width={300}
+						height={100}
+						text="Play"
+						onClick={() => appActorRef.send({ type: 'Play' })}
+					/>
+				</Layer>
+			</Stage>
 		);
 	}
 
-	console.log('levelStats', lastLevelResults?.levelStats);
-
-	if (appState.matches('Game Play')) {
+	if (showGamePlay) {
 		return (
 			<>
 				<Stage
 					width={STAGE_DIMENSIONS.width}
 					height={STAGE_DIMENSIONS.height}
-					style={{ background: 'blue' }}
+					style={{ background: 'pink', border: '1px solid black' }}
 				>
-					{/* Background graphics layer */}
+					{/* Background graphics layer - static */}
 					<Layer>
 						<Text
 							x={1200}
@@ -65,7 +141,7 @@ const App = () => {
 							fill="black"
 						/>
 					</Layer>
-					{appState.hasTag('init level') ? (
+					{isInitializingLevel ? (
 						// Init level UI
 						<Layer>
 							<Text
@@ -78,48 +154,24 @@ const App = () => {
 							/>
 							<Circle x={100} y={100} radius={50} fill="red" />
 						</Layer>
-					) : appState.hasTag('level summary') ? (
+					) : isBetweenLevels ? (
 						<Layer>
+							<KonvaButton
+								x={STAGE_DIMENSIONS.width / 2 - 150}
+								y={STAGE_DIMENSIONS.height / 2 - 50}
+								width={300}
+								height={100}
+								text="Play next level"
+								onClick={() => appActorRef.send({ type: 'Play' })}
+							/>
+							{/* Game score and other UI */}
 							<Text
-								x={200}
-								y={50}
-								text="In between levels"
+								x={10}
+								y={300}
+								text={`Score: ${score}`}
 								fontSize={30}
 								fontFamily="Arial"
 								fill="black"
-							/>
-							<Text
-								x={400}
-								y={450}
-								text={`Total eggs laid ${lastLevelResults?.levelStats.totalEggsLaid}`}
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={400}
-								y={500}
-								text={`Total eggs caught ${lastLevelResults?.levelStats.totalEggsCaught}`}
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Text
-								x={800}
-								y={500}
-								text={`Catch rate ${Math.round(
-									lastLevelResults?.levelStats.catchRate * 100
-								)}%`}
-								fontSize={30}
-								fontFamily="Arial"
-								fill="black"
-							/>
-							<Circle
-								x={100}
-								y={100}
-								radius={50}
-								fill="orange"
-								onClick={() => appActorRef.send({ type: 'Start next level' })}
 							/>
 						</Layer>
 					) : gameLevelActorRef ? (
@@ -129,12 +181,11 @@ const App = () => {
 						/>
 					) : null}
 				</Stage>
+				<DevPanel />
 				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
 			</>
 		);
 	}
-
-	return <div>My game here</div>;
 };
 
 export default App;

@@ -30,10 +30,10 @@ const appMachine = setup({
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
+			score: number;
 		};
 		events:
-			| { type: 'Start' }
-			| { type: 'Start next level' }
+			| { type: 'Play' }
 			| { type: 'Quit' }
 			| {
 					type: 'Level complete';
@@ -41,12 +41,17 @@ const appMachine = setup({
 			  };
 	},
 	actions: {
-		pushLastLevelResultsToHistory: assign({
-			levelResultsHistory: (
-				{ context },
-				params: { levelResults: LevelResults }
-			) => [...context.levelResultsHistory, params.levelResults],
-		}),
+		gatherLastLevelResults: assign(
+			({ context }, params: { levelResults: LevelResults }) => {
+				return {
+					score: context.score + params.levelResults.score,
+					levelResultsHistory: [
+						...context.levelResultsHistory,
+						params.levelResults,
+					],
+				};
+			}
+		),
 		evaluateAndEvolveNextGeneration: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
@@ -108,6 +113,8 @@ const appMachine = setup({
 							(parent1.movingEggLayingRate + parent2.movingEggLayingRate) / 2,
 						restAfterLayingEggMS:
 							(parent1.restAfterLayingEggMS + parent2.restAfterLayingEggMS) / 2,
+						blackEggRate: (parent1.blackEggRate + parent2.blackEggRate) / 2,
+						goldEggRate: (parent1.goldEggRate + parent2.goldEggRate) / 2,
 						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
 						minX,
 						maxX,
@@ -193,6 +200,7 @@ const appMachine = setup({
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
+		score: 0,
 	},
 	id: 'Egg Drop Game',
 	initial: 'Loading',
@@ -214,7 +222,7 @@ const appMachine = setup({
 		},
 		Intro: {
 			on: {
-				Start: {
+				Play: {
 					target: 'Game Play',
 				},
 			},
@@ -239,12 +247,14 @@ const appMachine = setup({
 				Playing: {
 					on: {
 						'Level complete': {
-							actions: {
-								type: 'pushLastLevelResultsToHistory',
-								params: ({ event }) => ({
-									levelResults: event.levelResults,
-								}),
-							},
+							actions: [
+								{
+									type: 'gatherLastLevelResults',
+									params: ({ event }) => ({
+										levelResults: event.levelResults,
+									}),
+								},
+							],
 							target: 'Next Generation Evolution',
 						},
 					},
@@ -260,15 +270,16 @@ const appMachine = setup({
 								generationIndex: context.generationIndex,
 								levelDuration: LEVEL_DURATION_MS,
 								population: context.population,
+								score: context.score,
 							};
 						},
 					},
 					description: 'The main state for game play of each level',
 				},
 				'Next Generation Evolution': {
-					tags: ['level summary'],
+					tags: ['between levels'],
 					on: {
-						'Start next level': 'Playing',
+						Play: 'Playing',
 					},
 					entry: [log('Show summary')],
 					exit: [

@@ -1,10 +1,10 @@
 import { AnyActorRef, fromPromise } from 'xstate';
 import { Position } from '../GameLevel/types';
 import Konva from 'konva';
-import { STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
+import { EGG_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export const eggMotionActor = fromPromise<
-	void,
+	Position,
 	{
 		node: React.RefObject<any>['current'];
 		initialPosition: Position;
@@ -22,9 +22,15 @@ export const eggMotionActor = fromPromise<
 			if (!input.node) {
 				animation.stop();
 				return reject('No eggRef');
-			} else if (input.node.y() >= STAGE_DIMENSIONS.height) {
+			} else if (
+				input.node.y() >=
+				STAGE_DIMENSIONS.height - EGG_CONFIG.brokenEgg.height
+			) {
 				animation.stop();
-				resolve();
+				resolve({
+					x: input.node.x(),
+					y: input.node.y(),
+				});
 			}
 
 			if (frame) {
@@ -41,8 +47,11 @@ export const eggMotionActor = fromPromise<
 
 				// Send a message to the parent to update the egg position
 				// Make sure the egg actor ref is still active
-				if (input.parentRef.getSnapshot().status !== 'done') {
-					input.parentRef.send({ type: 'Notify of animation position' });
+				if (input.parentRef.getSnapshot().status === 'active') {
+					input.parentRef.send({
+						type: 'Notify of animation position',
+						position: { x: newXPos, y: newYPos },
+					});
 				}
 			}
 		});

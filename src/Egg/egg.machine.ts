@@ -16,6 +16,7 @@ export const eggMachine = setup({
 			henIsMoving: boolean;
 			position: Position;
 			henCurentTweenSpeed: number;
+			color: 'white' | 'gold' | 'black';
 			rotationDirection: -1 | 0 | 1;
 			floorY: number;
 			hatchRate: number;
@@ -29,6 +30,7 @@ export const eggMachine = setup({
 			initialPosition: Position;
 			position: Position;
 			targetPosition: Position;
+			color: 'white' | 'gold' | 'black';
 			henCurentTweenSpeed: number;
 			rotationDirection: -1 | 0 | 1;
 			exitingSpeed: number;
@@ -46,7 +48,7 @@ export const eggMachine = setup({
 			| { type: 'Finished exiting' }
 			| { type: 'Resume game' }
 			| { type: 'Pause game' }
-			| { type: 'Notify of animation position' };
+			| { type: 'Notify of animation position'; position: Position };
 	},
 	actors: {
 		staticFallingActor: tweenActor,
@@ -69,7 +71,7 @@ export const eggMachine = setup({
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
-				y: context.floorY - 30,
+				y: context.floorY - EGG_CONFIG.brokenEgg.height - 10,
 			}),
 		}),
 		setTargetPositionToExit: assign({
@@ -81,10 +83,20 @@ export const eggMachine = setup({
 				y: context.floorY - 60,
 			}),
 		}),
+		setPositionToAnimationEndPostiion: assign({
+			position: (_, params: Position) => params,
+		}),
+		notifyParentOfPosition: sendParent(
+			(_, params: { eggId: string; position: Position }) => ({
+				type: 'Egg position updated',
+				eggId: params.eggId,
+				position: params.position,
+			})
+		),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
-				x: context.position.x - 20,
-				y: context.floorY - 50,
+				x: context.position.x - 0.5 * EGG_CONFIG.brokenEgg.width,
+				y: context.floorY - EGG_CONFIG.brokenEgg.height,
 			}),
 		}),
 		playSplatSound: () => {
@@ -106,29 +118,32 @@ export const eggMachine = setup({
 }).createMachine({
 	id: 'egg',
 	initial: 'Idle',
-	context: ({ input }) => ({
-		eggRef: { current: null },
-		eggConfig: input.eggConfig,
-		id: input.id,
-		henId: input.henId,
-		henIsMoving: input.henIsMoving,
-		initialPosition: input.position,
-		position: input.position,
-		targetPosition: input.position,
-		henCurentTweenSpeed: input.henCurentTweenSpeed,
-		rotationDirection: input.rotationDirection,
-		exitingSpeed: 10,
-		exitPosition: {
-			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-			y: input.floorY - 50,
-		},
-		floorY: input.floorY,
-		resultStatus: null,
-		gamePaused: false,
-		hatchRate: input.hatchRate,
-		currentTween: null,
-		currentAnimation: null,
-	}),
+	context: ({ input }) => {
+		return {
+			eggRef: { current: null },
+			eggConfig: input.eggConfig,
+			id: input.id,
+			henId: input.henId,
+			henIsMoving: input.henIsMoving,
+			initialPosition: input.position,
+			position: input.position,
+			targetPosition: input.position,
+			henCurentTweenSpeed: input.henCurentTweenSpeed,
+			color: input.color,
+			rotationDirection: input.rotationDirection,
+			exitingSpeed: 10,
+			exitPosition: {
+				x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
+				y: input.floorY - 50,
+			},
+			floorY: input.floorY,
+			resultStatus: null,
+			gamePaused: false,
+			hatchRate: input.hatchRate,
+			currentTween: null,
+			currentAnimation: null,
+		};
+	},
 	on: {
 		'Pause game': {
 			actions: assign({
@@ -151,11 +166,13 @@ export const eggMachine = setup({
 			on: {
 				'Notify of animation position': {
 					guard: 'isEggNearChefPot',
-					actions: sendParent(({ context }) => ({
-						type: 'Egg position updated',
-						eggId: context.id,
-						position: context.eggRef.current!.getPosition(),
-					})),
+					actions: {
+						type: 'notifyParentOfPosition',
+						params: ({ context, event }) => ({
+							eggId: context.id,
+							position: event.position,
+						}),
+					},
 				},
 				Catch: {
 					target: 'Done',
@@ -189,8 +206,17 @@ export const eggMachine = setup({
 									x: context.targetPosition.x,
 									y: context.targetPosition.y,
 									rotation: Math.random() > 0.5 ? 720 : -720,
-									onUpdate: () =>
-										self.send({ type: 'Notify of animation position' }),
+									onUpdate: () => {
+										if (self.getSnapshot().status === 'active') {
+											self.send({
+												type: 'Notify of animation position',
+												position: {
+													x: context.eggRef.current!.x(),
+													y: context.eggRef.current!.y(),
+												},
+											});
+										}
+									},
 								});
 							},
 						}),
@@ -201,7 +227,13 @@ export const eggMachine = setup({
 							node: context.eggRef.current,
 							tween: context.currentTween,
 						}),
-						onDone: 'Done Falling',
+						onDone: {
+							target: 'Done Falling',
+							actions: {
+								type: 'setPositionToAnimationEndPostiion',
+								params: ({ event }) => event.output,
+							},
+						},
 					},
 				},
 				'At an Angle': {
@@ -215,7 +247,13 @@ export const eggMachine = setup({
 							rotationDirection: context.rotationDirection,
 							parentRef: self,
 						}),
-						onDone: 'Done Falling',
+						onDone: {
+							target: 'Done Falling',
+							actions: {
+								type: 'setPositionToAnimationEndPostiion',
+								params: ({ event }) => event.output,
+							},
+						},
 					},
 				},
 				'Done Falling': {
@@ -270,6 +308,7 @@ export const eggMachine = setup({
 						y: context.targetPosition.y,
 					}),
 				}),
+				onDone: 'Done',
 			},
 		},
 		Done: {
@@ -279,6 +318,7 @@ export const eggMachine = setup({
 					type: 'Egg done',
 					henId: context.henId,
 					eggId: context.id,
+					eggColor: context.color,
 					resultStatus: context.resultStatus,
 				})),
 			],
