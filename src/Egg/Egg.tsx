@@ -1,13 +1,13 @@
 import { useSelector } from '@xstate/react';
 import { Image as KonvaImage } from 'react-konva';
 
-import brokenEggFile from '../assets/broken-egg2.jpeg';
 import runningChickImageFile from '../assets/running-chick.png';
 import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
+import { EGG_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export function Egg({
 	eggActorRef,
@@ -23,7 +23,7 @@ export function Egg({
 	const eggRef = useRef<Konva.Image>(null);
 	const eggImagePath = `../images/egg-${eggState.context.color}.png`;
 	const [eggImage] = useImage(eggImagePath);
-	const [brokenEggImage] = useImage(brokenEggFile);
+	const [brokenEggImage] = useImage('images/egg-broken.png');
 	const [runningChickImage] = useImage(runningChickImageFile);
 
 	useEffect(() => {
@@ -44,7 +44,7 @@ export function Egg({
 			height={60}
 			rotation={0}
 			x={eggState.context.position.x}
-			y={eggState.context.position.y}
+			y={STAGE_DIMENSIONS.height - EGG_CONFIG.chick.height}
 			scaleX={isFacingLeft ? -1 : 1}
 		/>
 	) : eggState.matches('Exiting') ? (
@@ -55,18 +55,19 @@ export function Egg({
 			height={60}
 			rotation={0}
 			x={eggState.context.position.x}
-			y={eggState.context.position.y}
+			y={STAGE_DIMENSIONS.height - EGG_CONFIG.chick.height}
 			scaleX={isFacingLeft ? -1 : 1}
 		/>
 	) : eggState.matches('Splatting') ? (
 		// Render a rectangle
 		<KonvaImage
 			image={brokenEggImage}
-			width={60}
-			height={60}
+			width={EGG_CONFIG.brokenEgg.width}
+			height={EGG_CONFIG.brokenEgg.height}
 			rotation={0}
 			x={eggState.context.position.x}
-			y={eggState.context.position.y}
+			// y={eggState.context.position.y}
+			y={STAGE_DIMENSIONS.height - EGG_CONFIG.brokenEgg.height}
 		/>
 	) : (
 		<KonvaImage

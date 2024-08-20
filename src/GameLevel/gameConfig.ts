@@ -61,6 +61,14 @@ export const EGG_CONFIG = {
 		gold: 10,
 		black: -5,
 	},
+	brokenEgg: {
+		width: 50,
+		height: 42,
+	},
+	chick: {
+		width: 60,
+		height: 60,
+	},
 };
 
 /**
@@ -101,7 +109,6 @@ export function getInitialChromosomeValues() {
 		// maxEggs can range between -1 and 50, -1 means no limit
 		maxEggs: Math.round(Math.random() * 51) - 1,
 		// maxEggs: -1,
-		// maxEggs: 1,
 
 		// The rate at which the hen lays eggs while stopped
 		stationaryEggLayingRate: Math.random(),
@@ -120,7 +127,7 @@ export function getInitialChromosomeValues() {
 
 		// The rate at which the eggs will hatch when they land on the ground
 		// hatchRate: Math.random(),
-		hatchRate: 1,
+		hatchRate: 0.5,
 
 		// The minimum xPos the hen can be at
 		minX,

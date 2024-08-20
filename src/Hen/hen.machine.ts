@@ -231,7 +231,7 @@ export const henMachine = setup({
 				onDone: {
 					target: 'Stopped',
 					actions: assign({
-						position: ({ event }) => event.output.endPosition,
+						position: ({ event }) => event.output,
 						currentTweenSpeed: 0,
 					}),
 				},

@@ -8,7 +8,7 @@ import { Position } from './GameLevel/types';
  * outside of this actor
  */
 export const tweenActor = fromPromise<
-	{ endPosition: Position },
+	Position,
 	{
 		node: React.RefObject<any>['current'] | null;
 		tween: Konva.Tween | null;
@@ -20,10 +20,8 @@ export const tweenActor = fromPromise<
 			input.tween.onFinish = () => {
 				input.tween?.destroy();
 				resolve({
-					endPosition: {
-						x: input.node.x(),
-						y: input.node.y(),
-					},
+					x: input.node.x(),
+					y: input.node.y(),
 				});
 			};
 		} else {
