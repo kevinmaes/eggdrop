@@ -17,10 +17,9 @@ export const gameLevelMachine = setup({
 			generationIndex: number;
 			levelDuration: number;
 			population: IndividualHen[];
-			score: number;
 		};
 		output: {
-			score: number;
+			levelScore: number;
 		};
 		context: {
 			gameAssets: GameAssets;
@@ -34,7 +33,7 @@ export const gameLevelMachine = setup({
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
-			score: number;
+			levelScore: number;
 		};
 		events:
 			| { type: 'Pause game' }
@@ -191,7 +190,7 @@ export const gameLevelMachine = setup({
 			}
 		),
 		updateScoreForEggDone: assign({
-			score: (
+			levelScore: (
 				{ context },
 				params: {
 					henId: string;
@@ -204,9 +203,9 @@ export const gameLevelMachine = setup({
 					if (params.eggColor === 'black') {
 						return 0;
 					}
-					return context.score + EGG_CONFIG.points[params.eggColor];
+					return context.levelScore + EGG_CONFIG.points[params.eggColor];
 				}
-				return context.score;
+				return context.levelScore;
 			},
 		}),
 		updateHenStatsForEggDone: assign(
@@ -368,7 +367,7 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		population: input.population,
-		score: input.score,
+		levelScore: 0,
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -539,7 +538,7 @@ export const gameLevelMachine = setup({
 							generationIndex: context.generationIndex,
 							levelStats: context.levelStats,
 							henStatsById: context.henStatsById,
-							score: context.score,
+							score: context.levelScore,
 						},
 					};
 				}),

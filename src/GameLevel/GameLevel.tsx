@@ -21,14 +21,19 @@ export function GameLevel({
 	stageDimensions,
 	gameLevelActorRef,
 }: GameLevelProps) {
-	const { score, generationIndex, remainingTime, henActorRefs, eggActorRefs } =
-		useSelector(gameLevelActorRef, (state) => ({
-			score: state.context.score,
-			generationIndex: state.context.generationIndex,
-			remainingTime: state.context.remainingTime,
-			henActorRefs: state.context.henActorRefs,
-			eggActorRefs: state.context.eggActorRefs,
-		}));
+	const {
+		levelScore,
+		generationIndex,
+		remainingTime,
+		henActorRefs,
+		eggActorRefs,
+	} = useSelector(gameLevelActorRef, (state) => ({
+		levelScore: state.context.levelScore,
+		generationIndex: state.context.generationIndex,
+		remainingTime: state.context.remainingTime,
+		henActorRefs: state.context.henActorRefs,
+		eggActorRefs: state.context.eggActorRefs,
+	}));
 
 	const chefInitialPosition = {
 		x: stageDimensions.width / 2 - 0.5 * CHEF_CONFIG.width,
@@ -77,32 +82,8 @@ export function GameLevel({
 				<Text
 					x={10}
 					y={300}
-					text={`Score: ${score}`}
+					text={`Score: ${levelScore}`}
 					fontSize={30}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={10}
-					y={300}
-					text={`Score: ${score}`}
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={10}
-					y={330}
-					text={`Eggs: ${score}`}
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={10}
-					y={360}
-					text={`Gold: ${score}`}
-					fontSize={20}
 					fontFamily="Arial"
 					fill="black"
 				/>
