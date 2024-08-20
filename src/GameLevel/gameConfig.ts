@@ -62,8 +62,8 @@ export const EGG_CONFIG = {
 		black: -5,
 	},
 	brokenEgg: {
-		width: 40,
-		height: 40,
+		width: 50,
+		height: 42,
 	},
 	chick: {
 		width: 60,
