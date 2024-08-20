@@ -85,7 +85,7 @@ export const eggMachine = setup({
 		}),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
-				x: context.position.x - 20,
+				x: context.position.x - 0.5 * EGG_CONFIG.brokenEgg.width,
 				y: context.floorY - EGG_CONFIG.brokenEgg.height,
 			}),
 		}),
@@ -209,7 +209,15 @@ export const eggMachine = setup({
 							node: context.eggRef.current,
 							tween: context.currentTween,
 						}),
-						onDone: 'Done Falling',
+						onDone: {
+							target: 'Done Falling',
+							actions: assign({
+								position: ({ event }) => ({
+									x: event.output.endPosition.x,
+									y: event.output.endPosition.y,
+								}),
+							}),
+						},
 					},
 				},
 				'At an Angle': {
@@ -223,7 +231,15 @@ export const eggMachine = setup({
 							rotationDirection: context.rotationDirection,
 							parentRef: self,
 						}),
-						onDone: 'Done Falling',
+						onDone: {
+							target: 'Done Falling',
+							actions: assign({
+								position: ({ event }) => ({
+									x: event.output.endPosition.x,
+									y: event.output.endPosition.y,
+								}),
+							}),
+						},
 					},
 				},
 				'Done Falling': {
