@@ -71,7 +71,7 @@ export const eggMachine = setup({
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
-				y: context.floorY - 30,
+				y: context.floorY - EGG_CONFIG.brokenEgg.height - 10,
 			}),
 		}),
 		setTargetPositionToExit: assign({
@@ -86,7 +86,7 @@ export const eggMachine = setup({
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 20,
-				y: context.floorY - 50,
+				y: context.floorY - EGG_CONFIG.brokenEgg.height,
 			}),
 		}),
 		playSplatSound: () => {

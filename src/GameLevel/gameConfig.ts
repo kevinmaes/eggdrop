@@ -61,6 +61,10 @@ export const EGG_CONFIG = {
 		gold: 10,
 		black: -5,
 	},
+	brokenEgg: {
+		width: 30,
+		height: 30,
+	},
 };
 
 /**
@@ -120,7 +124,7 @@ export function getInitialChromosomeValues() {
 
 		// The rate at which the eggs will hatch when they land on the ground
 		// hatchRate: Math.random(),
-		hatchRate: 1,
+		hatchRate: 0,
 
 		// The minimum xPos the hen can be at
 		minX,
