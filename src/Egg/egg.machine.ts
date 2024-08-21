@@ -57,7 +57,15 @@ export const eggMachine = setup({
 	},
 	guards: {
 		isHenMoving: ({ context }) => context.henIsMoving,
-		eggCanHatch: ({ context }) => Math.random() < context.hatchRate,
+		eggCanHatch: ({ context }) => {
+			if (context.color === 'black') {
+				return false;
+			}
+			if (context.color === 'gold') {
+				return true;
+			}
+			return Math.random() < context.hatchRate;
+		},
 		isEggNearChefPot: ({ context }) => {
 			if (!context.eggRef.current) return false;
 			return (
