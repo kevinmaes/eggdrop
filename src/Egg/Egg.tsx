@@ -23,7 +23,9 @@ export function Egg({
 	const eggRef = useRef<Konva.Image>(null);
 	const eggImagePath = `../images/egg-${eggState.context.color}.png`;
 	const [eggImage] = useImage(eggImagePath);
-	const [brokenEggImage] = useImage('images/egg-broken.png');
+	const [brokenEggImage] = useImage(
+		`images/egg-broken-${eggState.context.color}.png`
+	);
 	const [runningChickImage] = useImage(runningChickImageFile);
 
 	useEffect(() => {
