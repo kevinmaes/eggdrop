@@ -12,16 +12,15 @@ export function Hen({
 }: {
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
-	const { henFrames, henFrameNames, position, isLaying } = useSelector(
-		henActorRef,
-		(state) => ({
+	const { henFrames, henFrameNames, position, isMoving, isLaying } =
+		useSelector(henActorRef, (state) => ({
 			henFrames: state.context.henAssets.sprite.frames,
 			henFrameNames: Object.keys(state.context.henAssets.sprite.frames),
 			position: state.context.position,
+			isMoving: state.matches('Moving'),
 			isLaying: state.matches('Laying Egg'),
-		})
-	);
-	const [image] = useImage('images/rectangles.png');
+		}));
+	const [image] = useImage('images/hen.sprite.png');
 
 	const henRef = useRef<Konva.Image>(null);
 	useEffect(() => {
@@ -34,8 +33,17 @@ export function Hen({
 		return null;
 	}
 
-	const frameIndex = isLaying ? 1 : 0;
-	const currentFrame = henFrames[henFrameNames[frameIndex]].frame;
+	const frameIndex = isLaying ? 2 : isMoving ? 5 : 0;
+	let currentFrame = henFrames[henFrameNames[frameIndex]].frame;
+
+	console.log('currentFrame', currentFrame);
+	console.log('frameIndex', frameIndex);
+	console.log('henFrameNames[frameIndex]', henFrameNames[frameIndex]);
+
+	// if (isLaying) {
+	// 	console.log('laying egg...');
+	// 	currentFrame = henFrames['3-hen-back'].frame;
+	// }
 
 	return (
 		<KonvaImage
@@ -53,14 +61,4 @@ export function Hen({
 			}}
 		/>
 	);
-	// return (
-	// 	<KonvaImage
-	// 		ref={henRef}
-	// 		image={image}
-	// 		x={position.x}
-	// 		y={position.y}
-	// 		width={50}
-	// 		height={50}
-	// 	/>
-	// );
 }

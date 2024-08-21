@@ -155,7 +155,7 @@ const appMachine = setup({
 	},
 	actors: {
 		loadAssets: fromPromise<GameAssets>(async () => {
-			const henResult = await fetch('images/rectangles.json');
+			const henResult = await fetch('images/hen.sprite.json');
 			const henSpriteData = await henResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
