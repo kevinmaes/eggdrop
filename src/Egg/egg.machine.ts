@@ -245,6 +245,9 @@ export const eggMachine = setup({
 							xSpeed: context.henCurentTweenSpeed,
 							ySpeed: context.gameConfig.egg.fallingSpeed,
 							rotationDirection: context.rotationDirection,
+							maxYPos:
+								context.gameConfig.stageDimensions.height -
+								context.gameConfig.egg.brokenEgg.height,
 							parentRef: self,
 						}),
 						onDone: {
