@@ -7,11 +7,11 @@ export const LEVEL_DURATION_MS = 10_000;
 export const POPULATION_SIZE = 20;
 
 // The dimensions of the stage
-export const STAGE_DIMENSIONS = { width: 1280, height: 720, margin: 10 };
+// export const STAGE_DIMENSIONS = { width: 1280, height: 720, margin: 10 };
 
 export const gameConfig = {
 	populationSize: POPULATION_SIZE,
-	stageDimensions: STAGE_DIMENSIONS,
+	stageDimensions: { width: 1280, height: 720, margin: 10 },
 	levelDurationMS: LEVEL_DURATION_MS,
 };
 

@@ -94,7 +94,7 @@ export const gameLevelMachine = setup({
 						spawn(henMachine, {
 							systemId: henId,
 							input: {
-								stageDimensions: context.gameConfig.stageDimensions,
+								gameConfig: context.gameConfig,
 								id: henId,
 								henAssets: context.gameAssets.hen,
 								position: {
