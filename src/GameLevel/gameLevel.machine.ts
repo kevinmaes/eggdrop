@@ -4,7 +4,7 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import { CHEF_CONFIG, EGG_CONFIG, gameConfig } from './gameConfig';
+import { CHEF_CONFIG, gameConfig } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
@@ -138,7 +138,7 @@ export const gameLevelMachine = setup({
 					spawn(eggMachine, {
 						systemId: eggId,
 						input: {
-							eggConfig: EGG_CONFIG,
+							gameConfig: context.gameConfig,
 							id: eggId,
 							position: {
 								x: params.henPosition.x,
@@ -202,7 +202,7 @@ export const gameLevelMachine = setup({
 				}
 			) => {
 				if (params.resultStatus === 'Caught') {
-					return context.score + EGG_CONFIG.points[params.eggColor];
+					return context.score + context.gameConfig.egg.points[params.eggColor];
 				}
 				return context.score;
 			},

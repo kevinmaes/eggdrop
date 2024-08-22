@@ -9,10 +9,35 @@ export const POPULATION_SIZE = 20;
 // The dimensions of the stage
 // export const STAGE_DIMENSIONS = { width: 1280, height: 720, margin: 10 };
 
+// The duration in seconds for the egg to fall from the hen to the ground
+// Somewhere between 0.1 and 0.5 is reasonable.
+const EGG_FALLING_SPEED = 0.2;
+
+// Create a var EGG_FALLING_DURATION that is a number from 1 to 5 where 1 is the same as EGG_FALLING_SPEED equal to 0.5
+// and 5 is the same as EGG_FALLING_SPEED equal to 0.1
+const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
+
 export const gameConfig = {
 	populationSize: POPULATION_SIZE,
 	stageDimensions: { width: 1280, height: 720, margin: 10 },
 	levelDurationMS: LEVEL_DURATION_MS,
+	egg: {
+		fallingSpeed: EGG_FALLING_SPEED,
+		fallingDuration: EGG_FALLING_DURATION,
+		points: {
+			white: 1,
+			gold: 10,
+			black: -5,
+		},
+		brokenEgg: {
+			width: 50,
+			height: 42,
+		},
+		chick: {
+			width: 60,
+			height: 60,
+		},
+	},
 };
 
 // The position and dimensions of the chef
@@ -56,31 +81,23 @@ export const HEN_Y_POSITION = 10;
 // The delay between each hen entering the stage
 export const STAGGERED_HEN_DELAY_MS = 1000;
 
-// The duration in seconds for the egg to fall from the hen to the ground
-// Somewhere between 0.1 and 0.5 is reasonable.
-const EGG_FALLING_SPEED = 0.2;
-
-// Create a var EGG_FALLING_DURATION that is a number from 1 to 5 where 1 is the same as EGG_FALLING_SPEED equal to 0.5
-// and 5 is the same as EGG_FALLING_SPEED equal to 0.1
-const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
-
-export const EGG_CONFIG = {
-	fallingSpeed: EGG_FALLING_SPEED,
-	fallingDuration: EGG_FALLING_DURATION,
-	points: {
-		white: 1,
-		gold: 10,
-		black: -5,
-	},
-	brokenEgg: {
-		width: 50,
-		height: 42,
-	},
-	chick: {
-		width: 60,
-		height: 60,
-	},
-};
+// export const EGG_CONFIG = {
+// 	fallingSpeed: EGG_FALLING_SPEED,
+// 	fallingDuration: EGG_FALLING_DURATION,
+// 	points: {
+// 		white: 1,
+// 		gold: 10,
+// 		black: -5,
+// 	},
+// 	brokenEgg: {
+// 		width: 50,
+// 		height: 42,
+// 	},
+// 	chick: {
+// 		width: 60,
+// 		height: 60,
+// 	},
+// };
 
 /**
  * Sets up initial chromosome values for the hens.
