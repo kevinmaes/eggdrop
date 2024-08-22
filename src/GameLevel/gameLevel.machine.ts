@@ -4,7 +4,12 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import { CHEF_CONFIG, EGG_CONFIG, STAGE_DIMENSIONS } from './gameConfig';
+import {
+	CHEF_CONFIG,
+	EGG_CONFIG,
+	gameConfig,
+	STAGE_DIMENSIONS,
+} from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
@@ -13,6 +18,7 @@ import { countdownTimer } from './countdownTimer.actor';
 export const gameLevelMachine = setup({
 	types: {} as {
 		input: {
+			gameConfig: typeof gameConfig;
 			gameAssets: GameAssets;
 			generationIndex: number;
 			levelDuration: number;
@@ -23,6 +29,7 @@ export const gameLevelMachine = setup({
 			score: number;
 		};
 		context: {
+			gameConfig: typeof gameConfig;
 			gameAssets: GameAssets;
 			remainingTime: number;
 			stageDimensions: { width: number; height: number };
@@ -356,6 +363,7 @@ export const gameLevelMachine = setup({
 	},
 }).createMachine({
 	context: ({ input }) => ({
+		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
 		remainingTime: input.levelDuration,
 		stageDimensions: STAGE_DIMENSIONS,

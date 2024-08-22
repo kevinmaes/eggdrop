@@ -276,6 +276,7 @@ const appMachine = setup({
 								throw new Error('Game assets not loaded');
 							}
 							return {
+								gameConfig: context.gameConfig,
 								gameAssets: context.gameAssets,
 								generationIndex: context.generationIndex,
 								levelDuration: LEVEL_DURATION_MS,
