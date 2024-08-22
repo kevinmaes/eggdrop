@@ -7,7 +7,6 @@ import {
 	getInitialChromosomeValues,
 	HEN_Y_POSITION,
 	LEVEL_DURATION_MS,
-	STAGE_DIMENSIONS,
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
@@ -100,7 +99,9 @@ const appMachine = setup({
 					const child = {
 						id: nanoid(),
 						initialPosition: {
-							x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
+							x: getOffScreenStartXPosition(
+								context.gameConfig.stageDimensions.width
+							),
 							y: 10,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,

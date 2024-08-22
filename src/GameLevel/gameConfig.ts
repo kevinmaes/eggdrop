@@ -20,8 +20,11 @@ const chefScale = 0.7;
 const chefWidth = 250 * chefScale;
 const chefHeight = 303 * chefScale;
 export const CHEF_CONFIG = {
-	x: STAGE_DIMENSIONS.width / 2 - 0.5 * chefWidth,
-	y: STAGE_DIMENSIONS.height - chefHeight - gameConfig.stageDimensions.margin,
+	x: gameConfig.stageDimensions.width / 2 - 0.5 * chefWidth,
+	y:
+		gameConfig.stageDimensions.height -
+		chefHeight -
+		gameConfig.stageDimensions.margin,
 	width: chefWidth,
 	height: chefHeight,
 	speedLimit: 20,
@@ -34,7 +37,7 @@ export const CHEF_CONFIG = {
 	minXPos: gameConfig.stageDimensions.margin,
 	// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
 	maxXPos:
-		STAGE_DIMENSIONS.width -
+		gameConfig.stageDimensions.width -
 		chefWidth -
 		0.5 * gameConfig.stageDimensions.margin,
 };
@@ -86,10 +89,10 @@ export const EGG_CONFIG = {
  */
 export function getInitialChromosomeValues() {
 	// The minimum xPos the hen can be at
-	let minX = Math.round(Math.random() * STAGE_DIMENSIONS.width);
+	let minX = Math.round(Math.random() * gameConfig.stageDimensions.width);
 
 	// The maximum xPos the hen can be at
-	let maxX = Math.round(Math.random() * STAGE_DIMENSIONS.width);
+	let maxX = Math.round(Math.random() * gameConfig.stageDimensions.width);
 
 	if (minX > maxX) {
 		[minX, maxX] = [maxX, minX];
