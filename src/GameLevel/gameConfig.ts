@@ -6,9 +6,6 @@ export const LEVEL_DURATION_MS = 10_000;
 // The number of hens in the game
 export const POPULATION_SIZE = 20;
 
-// The dimensions of the stage
-// export const STAGE_DIMENSIONS = { width: 1280, height: 720, margin: 10 };
-
 // The duration in seconds for the egg to fall from the hen to the ground
 // Somewhere between 0.1 and 0.5 is reasonable.
 const EGG_FALLING_SPEED = 0.2;
