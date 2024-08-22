@@ -6,7 +6,6 @@ import {
 	getInitialChromosomeValues,
 	HEN_Y_POSITION,
 	LEVEL_DURATION_MS,
-	POPULATION_SIZE,
 	STAGE_DIMENSIONS,
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
@@ -22,6 +21,9 @@ export function getOffScreenStartXPosition(
 
 const appMachine = setup({
 	types: {} as {
+		input: {
+			populationSize: number;
+		};
 		context: {
 			generationIndex: number;
 			levelResultsHistory: LevelResults[];
@@ -78,6 +80,7 @@ const appMachine = setup({
 
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.populationSize; i++) {
+					console.log('i', i);
 					// Randomly select two parents from the selected parents
 					const parent1 =
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
@@ -175,10 +178,10 @@ const appMachine = setup({
 		gameLevelMachine,
 	},
 }).createMachine({
-	context: {
+	context: ({ input }) => ({
 		generationIndex: 0,
 		levelResultsHistory: [],
-		population: new Array(POPULATION_SIZE).fill(null).map(() => {
+		population: new Array(input.populationSize).fill(null).map(() => {
 			// Pick minimum and maximum X positions for the hen.
 			return {
 				id: nanoid(),
@@ -196,12 +199,12 @@ const appMachine = setup({
 				eggsBroken: 0,
 			};
 		}),
-		populationSize: 10,
+		populationSize: input.populationSize,
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
 		score: 0,
-	},
+	}),
 	id: 'Egg Drop Game',
 	initial: 'Loading',
 	states: {
