@@ -7,7 +7,6 @@ import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef } from 'react';
-// import { EGG_CONFIG, STAGE_DIMENSIONS } from '../GameLevel/gameConfig';
 
 export function Egg({
 	eggActorRef,
