@@ -7,8 +7,14 @@ export const LEVEL_DURATION_MS = 10_000;
 export const POPULATION_SIZE = 20;
 
 // The dimensions of the stage
-export const STAGE_DIMENSIONS = { width: 1280, height: 720 };
+export const STAGE_DIMENSIONS = { width: 1280, height: 720, margin: 10 };
 const STAGE_MARGIN = 10;
+
+export const gameConfig = {
+	populationSize: POPULATION_SIZE,
+	stageDimensions: STAGE_DIMENSIONS,
+	levelDurationMS: LEVEL_DURATION_MS,
+};
 
 // The position and dimensions of the chef
 const chefScale = 0.7;
@@ -16,7 +22,7 @@ const chefWidth = 250 * chefScale;
 const chefHeight = 303 * chefScale;
 export const CHEF_CONFIG = {
 	x: STAGE_DIMENSIONS.width / 2 - 0.5 * chefWidth,
-	y: STAGE_DIMENSIONS.height - chefHeight - STAGE_MARGIN,
+	y: STAGE_DIMENSIONS.height - chefHeight - gameConfig.stageDimensions.margin,
 	width: chefWidth,
 	height: chefHeight,
 	speedLimit: 20,

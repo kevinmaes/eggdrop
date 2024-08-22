@@ -3,6 +3,7 @@ import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import {
+	gameConfig,
 	getInitialChromosomeValues,
 	HEN_Y_POSITION,
 	LEVEL_DURATION_MS,
@@ -22,13 +23,13 @@ export function getOffScreenStartXPosition(
 const appMachine = setup({
 	types: {} as {
 		input: {
-			populationSize: number;
+			gameConfig: typeof gameConfig;
 		};
 		context: {
 			generationIndex: number;
 			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
-			populationSize: number;
+			gameConfig: typeof gameConfig;
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
@@ -79,7 +80,7 @@ const appMachine = setup({
 				const nextGeneration: IndividualHen[] = [];
 
 				// Iterate through the entire population to create the next generation
-				for (let i = 0; i < context.populationSize; i++) {
+				for (let i = 0; i < context.gameConfig.populationSize; i++) {
 					console.log('i', i);
 					// Randomly select two parents from the selected parents
 					const parent1 =
@@ -179,27 +180,32 @@ const appMachine = setup({
 	},
 }).createMachine({
 	context: ({ input }) => ({
+		gameConfig: input.gameConfig,
 		generationIndex: 0,
 		levelResultsHistory: [],
-		population: new Array(input.populationSize).fill(null).map(() => {
-			// Pick minimum and maximum X positions for the hen.
-			return {
-				id: nanoid(),
-				// Configuration
-				initialPosition: {
-					x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
-					y: HEN_Y_POSITION,
-				},
-				...getInitialChromosomeValues(),
-				// Results
-				fitness: 0,
-				eggsLaid: 0,
-				eggsCaught: 0,
-				eggsHatched: 0,
-				eggsBroken: 0,
-			};
-		}),
-		populationSize: input.populationSize,
+		population: new Array(input.gameConfig.populationSize)
+			.fill(null)
+			.map(() => {
+				// Pick minimum and maximum X positions for the hen.
+				return {
+					id: nanoid(),
+					// Configuration
+					initialPosition: {
+						x: getOffScreenStartXPosition(
+							input.gameConfig.stageDimensions.width
+						),
+						y: HEN_Y_POSITION,
+					},
+					...getInitialChromosomeValues(),
+					// Results
+					fitness: 0,
+					eggsLaid: 0,
+					eggsCaught: 0,
+					eggsHatched: 0,
+					eggsBroken: 0,
+				};
+			}),
+		populationSize: input.gameConfig.populationSize,
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
