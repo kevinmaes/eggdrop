@@ -8,7 +8,6 @@ export const POPULATION_SIZE = 20;
 
 // The dimensions of the stage
 export const STAGE_DIMENSIONS = { width: 1280, height: 720, margin: 10 };
-const STAGE_MARGIN = 10;
 
 export const gameConfig = {
 	populationSize: POPULATION_SIZE,
@@ -32,9 +31,12 @@ export const CHEF_CONFIG = {
 	// Keep the deceleration is higher than the acceleration so the character
 	// can "stop on a dime"
 	deceleration: 7,
-	minXPos: STAGE_MARGIN,
+	minXPos: gameConfig.stageDimensions.margin,
 	// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
-	maxXPos: STAGE_DIMENSIONS.width - chefWidth - 0.5 * STAGE_MARGIN,
+	maxXPos:
+		STAGE_DIMENSIONS.width -
+		chefWidth -
+		0.5 * gameConfig.stageDimensions.margin,
 };
 
 // The dimensions and position of the chef pot rim (catches eggs)
