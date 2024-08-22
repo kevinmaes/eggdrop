@@ -240,15 +240,15 @@ export const eggMachine = setup({
 					invoke: {
 						src: 'movingFallingActor',
 						input: ({ context, self }) => ({
+							parentRef: self,
 							node: context.eggRef.current,
 							initialPosition: context.initialPosition,
 							xSpeed: context.henCurentTweenSpeed,
 							ySpeed: context.gameConfig.egg.fallingSpeed,
 							rotationDirection: context.rotationDirection,
-							maxYPos:
-								context.gameConfig.stageDimensions.height -
-								context.gameConfig.egg.brokenEgg.height,
-							parentRef: self,
+							testForDestination: (yPos) =>
+								yPos >=
+								context.floorY - context.gameConfig.egg.brokenEgg.height,
 						}),
 						onDone: {
 							target: 'Done Falling',

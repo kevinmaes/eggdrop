@@ -6,10 +6,10 @@ export const eggMotionActor = fromPromise<
 	Position,
 	{
 		node: React.RefObject<any>['current'];
-		maxYPos: number;
 		initialPosition: Position;
 		xSpeed: number;
 		ySpeed: number;
+		testForDestination: (yPos: number) => boolean;
 		rotationDirection: -1 | 0 | 1;
 		parentRef: AnyActorRef;
 	}
@@ -22,7 +22,7 @@ export const eggMotionActor = fromPromise<
 			if (!input.node) {
 				animation.stop();
 				return reject('No eggRef');
-			} else if (input.node.y() >= input.maxYPos) {
+			} else if (input.testForDestination(input.node.y())) {
 				animation.stop();
 				resolve({
 					x: input.node.x(),
