@@ -36,9 +36,9 @@ export function Hen({
 	const frameIndex = isLaying ? 2 : isMoving ? 5 : 0;
 	let currentFrame = henFrames[henFrameNames[frameIndex]].frame;
 
-	console.log('currentFrame', currentFrame);
-	console.log('frameIndex', frameIndex);
-	console.log('henFrameNames[frameIndex]', henFrameNames[frameIndex]);
+	// console.log('currentFrame', currentFrame);
+	// console.log('frameIndex', frameIndex);
+	// console.log('henFrameNames[frameIndex]', henFrameNames[frameIndex]);
 
 	// if (isLaying) {
 	// 	console.log('laying egg...');
