@@ -4,12 +4,7 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import {
-	CHEF_CONFIG,
-	EGG_CONFIG,
-	gameConfig,
-	STAGE_DIMENSIONS,
-} from './gameConfig';
+import { CHEF_CONFIG, EGG_CONFIG, gameConfig } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
@@ -32,7 +27,6 @@ export const gameLevelMachine = setup({
 			gameConfig: typeof gameConfig;
 			gameAssets: GameAssets;
 			remainingTime: number;
-			stageDimensions: { width: number; height: number };
 			chefDimensions: { width: number; height: number };
 			generationIndex: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
@@ -100,7 +94,7 @@ export const gameLevelMachine = setup({
 						spawn(henMachine, {
 							systemId: henId,
 							input: {
-								stageDimensions: context.stageDimensions,
+								stageDimensions: context.gameConfig.stageDimensions,
 								id: henId,
 								henAssets: context.gameAssets.hen,
 								position: {
@@ -158,7 +152,7 @@ export const gameLevelMachine = setup({
 								| -1
 								| 0
 								| 1,
-							floorY: context.stageDimensions.height,
+							floorY: context.gameConfig.stageDimensions.height,
 							hatchRate: params.hatchRate,
 						},
 					}),
@@ -366,7 +360,6 @@ export const gameLevelMachine = setup({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
 		remainingTime: input.levelDuration,
-		stageDimensions: STAGE_DIMENSIONS,
 		chefDimensions: CHEF_CONFIG,
 		generationIndex: input.generationIndex,
 		henActorRefs: [],
