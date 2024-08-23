@@ -3,11 +3,8 @@ import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import {
+	getGameConfig,
 	getInitialChromosomeValues,
-	HEN_Y_POSITION,
-	LEVEL_DURATION_MS,
-	POPULATION_SIZE,
-	STAGE_DIMENSIONS,
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
@@ -22,11 +19,14 @@ export function getOffScreenStartXPosition(
 
 const appMachine = setup({
 	types: {} as {
+		input: {
+			gameConfig: ReturnType<typeof getGameConfig>;
+		};
 		context: {
 			generationIndex: number;
 			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
-			populationSize: number;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
@@ -77,7 +77,8 @@ const appMachine = setup({
 				const nextGeneration: IndividualHen[] = [];
 
 				// Iterate through the entire population to create the next generation
-				for (let i = 0; i < context.populationSize; i++) {
+				for (let i = 0; i < context.gameConfig.populationSize; i++) {
+					console.log('i', i);
 					// Randomly select two parents from the selected parents
 					const parent1 =
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
@@ -96,7 +97,9 @@ const appMachine = setup({
 					const child = {
 						id: nanoid(),
 						initialPosition: {
-							x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
+							x: getOffScreenStartXPosition(
+								context.gameConfig.stageDimensions.width
+							),
 							y: 10,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,
@@ -175,33 +178,38 @@ const appMachine = setup({
 		gameLevelMachine,
 	},
 }).createMachine({
-	context: {
+	context: ({ input }) => ({
+		gameConfig: input.gameConfig,
 		generationIndex: 0,
 		levelResultsHistory: [],
-		population: new Array(POPULATION_SIZE).fill(null).map(() => {
-			// Pick minimum and maximum X positions for the hen.
-			return {
-				id: nanoid(),
-				// Configuration
-				initialPosition: {
-					x: getOffScreenStartXPosition(STAGE_DIMENSIONS.width),
-					y: HEN_Y_POSITION,
-				},
-				...getInitialChromosomeValues(),
-				// Results
-				fitness: 0,
-				eggsLaid: 0,
-				eggsCaught: 0,
-				eggsHatched: 0,
-				eggsBroken: 0,
-			};
-		}),
-		populationSize: 10,
+		population: new Array(input.gameConfig.populationSize)
+			.fill(null)
+			.map(() => {
+				// Pick minimum and maximum X positions for the hen.
+				return {
+					id: nanoid(),
+					// Configuration
+					initialPosition: {
+						x: getOffScreenStartXPosition(
+							input.gameConfig.stageDimensions.width
+						),
+						y: input.gameConfig.hen.y,
+					},
+					...getInitialChromosomeValues(),
+					// Results
+					fitness: 0,
+					eggsLaid: 0,
+					eggsCaught: 0,
+					eggsHatched: 0,
+					eggsBroken: 0,
+				};
+			}),
+		populationSize: input.gameConfig.populationSize,
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
 		score: 0,
-	},
+	}),
 	id: 'Egg Drop Game',
 	initial: 'Loading',
 	states: {
@@ -266,9 +274,10 @@ const appMachine = setup({
 								throw new Error('Game assets not loaded');
 							}
 							return {
+								gameConfig: context.gameConfig,
 								gameAssets: context.gameAssets,
 								generationIndex: context.generationIndex,
-								levelDuration: LEVEL_DURATION_MS,
+								levelDuration: context.gameConfig.levelDurationMS,
 								population: context.population,
 								score: context.score,
 							};

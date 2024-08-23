@@ -2,7 +2,7 @@ import { setup, assign, sendParent } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
-import { CHEF_POT_RIM_CONFIG, EGG_CONFIG } from '../GameLevel/gameConfig';
+import { getGameConfig } from '../GameLevel/gameConfig';
 import { tweenActor } from '../motionActors';
 import { eggMotionActor } from './eggMotionActor';
 
@@ -10,7 +10,7 @@ export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		input: {
-			eggConfig: typeof EGG_CONFIG;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
 			henId: string;
 			henIsMoving: boolean;
@@ -22,8 +22,8 @@ export const eggMachine = setup({
 			hatchRate: number;
 		};
 		context: {
+			gameConfig: ReturnType<typeof getGameConfig>;
 			eggRef: React.RefObject<Konva.Image>;
-			eggConfig: typeof EGG_CONFIG;
 			id: string;
 			henId: string;
 			henIsMoving: boolean;
@@ -61,9 +61,10 @@ export const eggMachine = setup({
 		isEggNearChefPot: ({ context }) => {
 			if (!context.eggRef.current) return false;
 			return (
-				context.eggRef.current.y() >= CHEF_POT_RIM_CONFIG.y &&
+				context.eggRef.current.y() >= context.gameConfig.chef.potRim.y &&
 				context.eggRef.current.y() <=
-					CHEF_POT_RIM_CONFIG.y + CHEF_POT_RIM_CONFIG.height
+					context.gameConfig.chef.potRim.y +
+						context.gameConfig.chef.potRim.height
 			);
 		},
 	},
@@ -71,7 +72,7 @@ export const eggMachine = setup({
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
-				y: context.floorY - EGG_CONFIG.brokenEgg.height - 10,
+				y: context.floorY - context.gameConfig.egg.brokenEgg.height - 10,
 			}),
 		}),
 		setTargetPositionToExit: assign({
@@ -95,8 +96,8 @@ export const eggMachine = setup({
 		),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
-				x: context.position.x - 0.5 * EGG_CONFIG.brokenEgg.width,
-				y: context.floorY - EGG_CONFIG.brokenEgg.height,
+				x: context.position.x - 0.5 * context.gameConfig.egg.brokenEgg.width,
+				y: context.floorY - context.gameConfig.egg.brokenEgg.height,
 			}),
 		}),
 		playSplatSound: () => {
@@ -120,8 +121,8 @@ export const eggMachine = setup({
 	initial: 'Idle',
 	context: ({ input }) => {
 		return {
+			gameConfig: input.gameConfig,
 			eggRef: { current: null },
-			eggConfig: input.eggConfig,
 			id: input.id,
 			henId: input.henId,
 			henIsMoving: input.henIsMoving,
@@ -202,7 +203,7 @@ export const eggMachine = setup({
 								}
 								return new Konva.Tween({
 									node: context.eggRef.current,
-									duration: context.eggConfig.fallingDuration,
+									duration: context.gameConfig.egg.fallingDuration,
 									x: context.targetPosition.x,
 									y: context.targetPosition.y,
 									rotation: Math.random() > 0.5 ? 720 : -720,
@@ -240,12 +241,15 @@ export const eggMachine = setup({
 					invoke: {
 						src: 'movingFallingActor',
 						input: ({ context, self }) => ({
+							parentRef: self,
 							node: context.eggRef.current,
 							initialPosition: context.initialPosition,
 							xSpeed: context.henCurentTweenSpeed,
-							ySpeed: context.eggConfig.fallingSpeed,
+							ySpeed: context.gameConfig.egg.fallingSpeed,
 							rotationDirection: context.rotationDirection,
-							parentRef: self,
+							testForDestination: (yPos) =>
+								yPos >=
+								context.floorY - context.gameConfig.egg.brokenEgg.height,
 						}),
 						onDone: {
 							target: 'Done Falling',
