@@ -4,7 +4,7 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import { CHEF_CONFIG, gameConfig } from './gameConfig';
+import { getGameConfig } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
@@ -13,7 +13,7 @@ import { countdownTimer } from './countdownTimer.actor';
 export const gameLevelMachine = setup({
 	types: {} as {
 		input: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
 			generationIndex: number;
 			levelDuration: number;
@@ -24,10 +24,9 @@ export const gameLevelMachine = setup({
 			score: number;
 		};
 		context: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
 			remainingTime: number;
-			chefDimensions: { width: number; height: number };
 			generationIndex: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
@@ -360,7 +359,6 @@ export const gameLevelMachine = setup({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
 		remainingTime: input.levelDuration,
-		chefDimensions: CHEF_CONFIG,
 		generationIndex: input.generationIndex,
 		henActorRefs: [],
 		eggActorRefs: [],
@@ -511,15 +509,15 @@ export const gameLevelMachine = setup({
 					input: ({ context }) => ({
 						chefAssets: context.gameAssets.chef,
 						position: {
-							x: CHEF_CONFIG.x,
-							y: CHEF_CONFIG.y,
+							x: context.gameConfig.chef.x,
+							y: context.gameConfig.chef.y,
 						},
 						speed: 0,
-						speedLimit: CHEF_CONFIG.speedLimit,
-						acceleration: CHEF_CONFIG.acceleration,
-						deceleration: CHEF_CONFIG.acceleration,
-						minXPos: CHEF_CONFIG.minXPos,
-						maxXPos: CHEF_CONFIG.maxXPos,
+						speedLimit: context.gameConfig.chef.speedLimit,
+						acceleration: context.gameConfig.chef.acceleration,
+						deceleration: context.gameConfig.chef.acceleration,
+						minXPos: context.gameConfig.chef.minXPos,
+						maxXPos: context.gameConfig.chef.maxXPos,
 					}),
 				},
 			],

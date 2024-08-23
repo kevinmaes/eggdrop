@@ -7,7 +7,6 @@ import { ActorRefFrom } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
-import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
 import useImage from 'use-image';
 import { Image as KonvaImage } from 'react-konva';
 
@@ -22,13 +21,15 @@ export function Chef({
 }) {
 	const [image] = useImage('images/chef.sprite.png');
 	const appActorRef = AppActorContext.useActorRef();
-
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
 		typeof chefMachine
 	>;
+	const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
+		chefPotRimConfig: state.context.gameConfig.chef.potRim,
+	}));
 
 	const {
 		chefFrames,
@@ -150,10 +151,10 @@ export function Chef({
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={position.x + CHEF_POT_RIM_CONFIG.xOffset}
-				y={CHEF_POT_RIM_CONFIG.y}
-				width={CHEF_POT_RIM_CONFIG.width}
-				height={CHEF_POT_RIM_CONFIG.height}
+				x={position.x + chefPotRimConfig.xOffset}
+				y={chefPotRimConfig.y}
+				width={chefPotRimConfig.width}
+				height={chefPotRimConfig.height}
 				fill="transparent"
 			/>
 		</>

@@ -3,9 +3,8 @@ import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import {
-	gameConfig,
+	getGameConfig,
 	getInitialChromosomeValues,
-	HEN_Y_POSITION,
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
@@ -21,13 +20,13 @@ export function getOffScreenStartXPosition(
 const appMachine = setup({
 	types: {} as {
 		input: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 		};
 		context: {
 			generationIndex: number;
 			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
@@ -194,7 +193,7 @@ const appMachine = setup({
 						x: getOffScreenStartXPosition(
 							input.gameConfig.stageDimensions.width
 						),
-						y: HEN_Y_POSITION,
+						y: input.gameConfig.hen.y,
 					},
 					...getInitialChromosomeValues(),
 					// Results

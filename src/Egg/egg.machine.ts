@@ -2,7 +2,7 @@ import { setup, assign, sendParent } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
-import { CHEF_POT_RIM_CONFIG, gameConfig } from '../GameLevel/gameConfig';
+import { getGameConfig } from '../GameLevel/gameConfig';
 import { tweenActor } from '../motionActors';
 import { eggMotionActor } from './eggMotionActor';
 
@@ -10,7 +10,7 @@ export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
 	types: {} as {
 		input: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
 			henId: string;
 			henIsMoving: boolean;
@@ -22,7 +22,7 @@ export const eggMachine = setup({
 			hatchRate: number;
 		};
 		context: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			eggRef: React.RefObject<Konva.Image>;
 			id: string;
 			henId: string;
@@ -61,9 +61,10 @@ export const eggMachine = setup({
 		isEggNearChefPot: ({ context }) => {
 			if (!context.eggRef.current) return false;
 			return (
-				context.eggRef.current.y() >= CHEF_POT_RIM_CONFIG.y &&
+				context.eggRef.current.y() >= context.gameConfig.chef.potRim.y &&
 				context.eggRef.current.y() <=
-					CHEF_POT_RIM_CONFIG.y + CHEF_POT_RIM_CONFIG.height
+					context.gameConfig.chef.potRim.y +
+						context.gameConfig.chef.potRim.height
 			);
 		},
 	},

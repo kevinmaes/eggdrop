@@ -1,11 +1,7 @@
 import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
-import {
-	gameConfig,
-	HEN_Y_POSITION,
-	STAGGERED_HEN_DELAY_MS,
-} from '../GameLevel/gameConfig';
+import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 
@@ -20,7 +16,7 @@ export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 export const henMachine = setup({
 	types: {} as {
 		input: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
 			henAssets: GameAssets['hen'];
 			position: Position;
@@ -39,7 +35,7 @@ export const henMachine = setup({
 			maxX: number;
 		};
 		context: {
-			gameConfig: typeof gameConfig;
+			gameConfig: ReturnType<typeof getGameConfig>;
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
 			henAssets: GameAssets['hen'];
@@ -103,8 +99,8 @@ export const henMachine = setup({
 		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
-		getRandomStartDelay: () =>
-			Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS),
+		getRandomStartDelay: ({ context }) =>
+			Math.ceil(Math.random() * context.gameConfig.hen.staggeredEntranceDelay),
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			// If values mutate to cross over, return the min value.
@@ -180,7 +176,7 @@ export const henMachine = setup({
 				assign({
 					targetPosition: ({ context }) => ({
 						x: pickXPosition(context.minX, context.maxX),
-						y: HEN_Y_POSITION,
+						y: context.gameConfig.hen.y,
 					}),
 				}),
 				assign(({ context }) => {
