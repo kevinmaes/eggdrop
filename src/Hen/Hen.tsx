@@ -30,6 +30,9 @@ export function Hen({
 	}));
 	// console.log('direction', direction);
 	const [image] = useImage('images/hen.sprite.png');
+	if (isLaying && isMoving) {
+		console.error('Hen cannot lay and move at the same time');
+	}
 
 	const henRef = useRef<Konva.Image>(null);
 	useEffect(() => {
@@ -62,6 +65,13 @@ export function Hen({
 				break;
 			}
 			case isMoving && direction === -1: {
+				// First change frameName immediately as soon as the hen starts moving
+				setFrameName((prevFrameName) =>
+					prevFrameName === 'hen-walk-left1.png'
+						? 'hen-walk-left2.png'
+						: 'hen-walk-left1.png'
+				);
+
 				// Calculate intervalMS based on tweenSpeed where higher tweenSpeed results
 				// in a lower intervalMS within the animationIntervalMSRange
 				const intervalMS = Math.max(
@@ -78,6 +88,12 @@ export function Hen({
 				break;
 			}
 			case isMoving && direction === 1: {
+				// First change frameName immediately as soon as the hen starts moving
+				setFrameName((prevFrameName) =>
+					prevFrameName === 'hen-walk-right1.png'
+						? 'hen-walk-right2.png'
+						: 'hen-walk-right1.png'
+				);
 				// Calculate intervalMS based on tweenSpeed where higher tweenSpeed results
 				// in a lower intervalMS within the animationIntervalMSRange
 				const intervalMS = Math.max(
