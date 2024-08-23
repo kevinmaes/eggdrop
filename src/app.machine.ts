@@ -6,7 +6,6 @@ import {
 	gameConfig,
 	getInitialChromosomeValues,
 	HEN_Y_POSITION,
-	LEVEL_DURATION_MS,
 } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
@@ -279,7 +278,7 @@ const appMachine = setup({
 								gameConfig: context.gameConfig,
 								gameAssets: context.gameAssets,
 								generationIndex: context.generationIndex,
-								levelDuration: LEVEL_DURATION_MS,
+								levelDuration: context.gameConfig.levelDurationMS,
 								population: context.population,
 								score: context.score,
 							};

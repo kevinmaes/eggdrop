@@ -1,11 +1,5 @@
 // This file contains the configuration for the game
 
-// The duration of each level in milliseconds
-export const LEVEL_DURATION_MS = 10_000;
-
-// The number of hens in the game
-export const POPULATION_SIZE = 20;
-
 // The duration in seconds for the egg to fall from the hen to the ground
 // Somewhere between 0.1 and 0.5 is reasonable.
 const EGG_FALLING_SPEED = 0.2;
@@ -15,9 +9,11 @@ const EGG_FALLING_SPEED = 0.2;
 const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
 
 export const gameConfig = {
-	populationSize: POPULATION_SIZE,
+	// The number of hens in the game
+	populationSize: 20,
+	// The duration each level lasts in milliseconds
+	levelDurationMS: 10_000,
 	stageDimensions: { width: 1280, height: 720, margin: 10 },
-	levelDurationMS: LEVEL_DURATION_MS,
 	egg: {
 		fallingSpeed: EGG_FALLING_SPEED,
 		fallingDuration: EGG_FALLING_DURATION,
