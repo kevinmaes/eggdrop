@@ -217,6 +217,10 @@ export const henMachine = setup({
 			],
 			exit: assign({
 				currentTweenSpeed: 0,
+				currentTweenDirection: 0,
+				currentTweenDurationMS: 0,
+				currentTweenStartTime: 0,
+				currentTween: null,
 			}),
 			invoke: {
 				src: 'henMovingBackAndForthActor',

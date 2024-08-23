@@ -12,14 +12,19 @@ export function Hen({
 }: {
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
-	const { henFrames, henFrameNames, position, isMoving, isLaying } =
-		useSelector(henActorRef, (state) => ({
+	const { henFrames, position, isLaying, direction, tweenSpeed } = useSelector(
+		henActorRef,
+		(state) => ({
 			henFrames: state.context.henAssets.sprite.frames,
 			henFrameNames: Object.keys(state.context.henAssets.sprite.frames),
 			position: state.context.position,
 			isMoving: state.matches('Moving'),
 			isLaying: state.matches('Laying Egg'),
-		}));
+			direction: state.context.currentTweenDirection,
+			tweenSpeed: state.context.currentTweenSpeed,
+		})
+	);
+	// console.log('direction', direction);
 	const [image] = useImage('images/hen.sprite.png');
 
 	const henRef = useRef<Konva.Image>(null);
@@ -33,17 +38,31 @@ export function Hen({
 		return null;
 	}
 
-	const frameIndex = isLaying ? 2 : isMoving ? 5 : 0;
-	let currentFrame = henFrames[henFrameNames[frameIndex]].frame;
+	let frameName = '1-hen-front.png';
+	switch (true) {
+		case isLaying:
+			// Randomly choose laying frame
+			const layingFrameNames = [
+				'3-hen-back.png',
+				'4-hen-jump1.png',
+				'5-hen-jump2.png',
+			];
+			frameName =
+				layingFrameNames[Math.floor(Math.random() * layingFrameNames.length)];
+			break;
+		case direction === -1:
+			frameName = 'hen-walk-left1.png';
+			// frameName = 'hen-walk-left2.png';
+			break;
+		case direction === 1:
+			frameName = 'hen-walk-right1.png';
+			// frameName = 'hen-walk-right2.png';
+			break;
+		default:
+			frameName = '1-hen-front.png';
+	}
 
-	// console.log('currentFrame', currentFrame);
-	// console.log('frameIndex', frameIndex);
-	// console.log('henFrameNames[frameIndex]', henFrameNames[frameIndex]);
-
-	// if (isLaying) {
-	// 	console.log('laying egg...');
-	// 	currentFrame = henFrames['3-hen-back'].frame;
-	// }
+	let currentFrame = henFrames[frameName].frame;
 
 	return (
 		<KonvaImage
