@@ -21,18 +21,13 @@ export function Hen({
 		absoluteTweenSpeed,
 	} = useSelector(henActorRef, (state) => ({
 		henFrames: state.context.henAssets.sprite.frames,
-		henFrameNames: Object.keys(state.context.henAssets.sprite.frames),
 		position: state.context.position,
 		isMoving: state.matches('Moving'),
 		isLaying: state.matches('Laying Egg'),
 		direction: state.context.currentTweenDirection,
 		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
 	}));
-	// console.log('direction', direction);
 	const [image] = useImage('images/hen.sprite.png');
-	if (isLaying && isMoving) {
-		console.error('Hen cannot lay and move at the same time');
-	}
 
 	const henRef = useRef<Konva.Image>(null);
 	useEffect(() => {
