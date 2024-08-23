@@ -321,10 +321,7 @@ export const gameLevelMachine = setup({
 		countdownTimer,
 	},
 	guards: {
-		isCountdownDone: (_, params: { done: boolean }) => {
-			console.log('guard isCountdownDone', params.done);
-			return params.done;
-		},
+		isCountdownDone: (_, params: { done: boolean }) => params.done,
 		testPotRimHit: ({ context, event }) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
