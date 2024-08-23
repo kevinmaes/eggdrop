@@ -1,11 +1,7 @@
 import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
-import {
-	HEN_Y_POSITION,
-	STAGE_DIMENSIONS,
-	STAGGERED_HEN_DELAY_MS,
-} from '../GameLevel/gameConfig';
+import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 
@@ -20,10 +16,10 @@ export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
 export const henMachine = setup({
 	types: {} as {
 		input: {
+			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
 			henAssets: GameAssets['hen'];
 			position: Position;
-			stageDimensions: { width: number; height: number };
 			maxEggs: number;
 			stationaryEggLayingRate: number;
 			movingEggLayingRate: number;
@@ -39,10 +35,10 @@ export const henMachine = setup({
 			maxX: number;
 		};
 		context: {
+			gameConfig: ReturnType<typeof getGameConfig>;
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
 			henAssets: GameAssets['hen'];
-			stageDimensions: { width: number; height: number };
 			position: Position;
 			targetPosition: Position;
 			speed: number;
@@ -103,8 +99,8 @@ export const henMachine = setup({
 		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
-		getRandomStartDelay: () =>
-			Math.ceil(Math.random() * STAGGERED_HEN_DELAY_MS),
+		getRandomStartDelay: ({ context }) =>
+			Math.ceil(Math.random() * context.gameConfig.hen.staggeredEntranceDelay),
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			// If values mutate to cross over, return the min value.
@@ -129,10 +125,10 @@ export const henMachine = setup({
 	id: 'hen',
 	initial: 'Offscreen',
 	context: ({ input }) => ({
+		gameConfig: input.gameConfig,
 		henRef: { current: null },
 		id: input.id,
 		henAssets: input.henAssets,
-		stageDimensions: input.stageDimensions,
 		position: input.position,
 		targetPosition: { x: input.position.x, y: input.position.y },
 		speed: input.speed,
@@ -180,12 +176,12 @@ export const henMachine = setup({
 				assign({
 					targetPosition: ({ context }) => ({
 						x: pickXPosition(context.minX, context.maxX),
-						y: HEN_Y_POSITION,
+						y: context.gameConfig.hen.y,
 					}),
 				}),
 				assign(({ context }) => {
 					const { targetPosition } = context;
-					const totalDistance = STAGE_DIMENSIONS.width;
+					const totalDistance = context.gameConfig.stageDimensions.width;
 					const xDistance = targetPosition.x - context.position.x;
 					const direction = xDistance > 0 ? 1 : -1;
 
