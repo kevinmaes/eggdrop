@@ -5,7 +5,6 @@ import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
 import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
-import { CHEF_CONFIG } from './gameConfig';
 import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
 
@@ -21,18 +20,25 @@ export function GameLevel({
 	stageDimensions,
 	gameLevelActorRef,
 }: GameLevelProps) {
-	const { score, generationIndex, remainingTime, henActorRefs, eggActorRefs } =
-		useSelector(gameLevelActorRef, (state) => ({
-			score: state.context.score,
-			generationIndex: state.context.generationIndex,
-			remainingTime: state.context.remainingTime,
-			henActorRefs: state.context.henActorRefs,
-			eggActorRefs: state.context.eggActorRefs,
-		}));
+	const {
+		score,
+		generationIndex,
+		remainingTime,
+		henActorRefs,
+		eggActorRefs,
+		chefConfig,
+	} = useSelector(gameLevelActorRef, (state) => ({
+		score: state.context.score,
+		generationIndex: state.context.generationIndex,
+		remainingTime: state.context.remainingTime,
+		henActorRefs: state.context.henActorRefs,
+		eggActorRefs: state.context.eggActorRefs,
+		chefConfig: state.context.gameConfig.chef,
+	}));
 
 	const chefInitialPosition = {
-		x: stageDimensions.width / 2 - 0.5 * CHEF_CONFIG.width,
-		y: stageDimensions.height - CHEF_CONFIG.height - 10,
+		x: stageDimensions.width / 2 - 0.5 * chefConfig.width,
+		y: stageDimensions.height - chefConfig.height - 10,
 	};
 
 	const layerRef = useRef<Konva.Layer>(null);
@@ -46,7 +52,7 @@ export function GameLevel({
 			</Layer>
 			<Layer>
 				<Chef
-					dimensions={CHEF_CONFIG}
+					dimensions={chefConfig}
 					layerRef={layerRef}
 					initialPosition={chefInitialPosition}
 				/>
