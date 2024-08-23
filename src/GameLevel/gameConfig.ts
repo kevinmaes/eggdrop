@@ -1,14 +1,6 @@
 // This file contains the configuration for the game
 
 export function getGameConfig() {
-	// The duration in seconds for the egg to fall from the hen to the ground
-	// Somewhere between 0.1 and 0.5 is reasonable.
-	const EGG_FALLING_SPEED = 0.2;
-
-	// Create a var EGG_FALLING_DURATION that is a number from 1 to 5 where 1 is the same as EGG_FALLING_SPEED equal to 0.5
-	// and 5 is the same as EGG_FALLING_SPEED equal to 0.1
-	const EGG_FALLING_DURATION = 5 - 4 * EGG_FALLING_SPEED;
-
 	const stageDimensions = { width: 1280, height: 720, margin: 10 };
 
 	// The position and dimensions of the chef
@@ -17,6 +9,10 @@ export function getGameConfig() {
 	const chefHeight = 303 * chefScale;
 	const chefYPosition =
 		stageDimensions.height - chefHeight - stageDimensions.margin;
+
+	// The duration in seconds for the egg to fall from the hen to the ground
+	// Somewhere between 0.1 and 0.5 is reasonable.
+	const eggFallingSpeed = 0.2;
 
 	const gameConfig = {
 		// The number of hens in the game
@@ -52,8 +48,10 @@ export function getGameConfig() {
 			staggeredEntranceDelay: 1000,
 		},
 		egg: {
-			fallingSpeed: EGG_FALLING_SPEED,
-			fallingDuration: EGG_FALLING_DURATION,
+			fallingSpeed: eggFallingSpeed,
+			// Create a var EGG_FALLING_DURATION that is a number from 1 to 5 where 1 is the same as eggFallingSpeed equal to 0.5
+			// and 5 is the same as eggFallingSpeed equal to 0.1
+			fallingDuration: 5 - 4 * eggFallingSpeed,
 			points: {
 				white: 1,
 				gold: 10,
