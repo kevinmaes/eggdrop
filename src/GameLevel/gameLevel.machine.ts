@@ -124,12 +124,13 @@ export const gameLevelMachine = setup({
 					henId: string;
 					henPosition: Position;
 					henCurentTweenSpeed: number;
+					henButtXOffset: number;
+					henButtYOffset: number;
 					henCurrentTweenDirection: -1 | 0 | 1;
 					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 				}
 			) => {
-				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
 				// Spawn and add a new egg.
 				return [
@@ -140,8 +141,8 @@ export const gameLevelMachine = setup({
 							gameConfig: context.gameConfig,
 							id: eggId,
 							position: {
-								x: params.henPosition.x,
-								y: params.henPosition.y + eggHenButtYOffset,
+								x: params.henPosition.x + params.henButtXOffset,
+								y: params.henPosition.y + params.henButtYOffset,
 							},
 							color: params.eggColor,
 							henId: params.henId,
@@ -409,9 +410,11 @@ export const gameLevelMachine = setup({
 			actions: [
 				{
 					type: 'spawnNewEggForHen',
-					params: ({ event }) => ({
+					params: ({ context, event }) => ({
 						henId: event.henId,
 						henPosition: event.henPosition,
+						henButtXOffset: context.gameConfig.hen.buttXOffset,
+						henButtYOffset: context.gameConfig.hen.buttYOffset,
 						henCurentTweenSpeed: event.henCurentTweenSpeed,
 						henCurrentTweenDirection: event.henCurrentTweenDirection,
 						eggColor: event.eggColor,
