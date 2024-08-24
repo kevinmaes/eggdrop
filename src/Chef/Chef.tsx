@@ -8,8 +8,10 @@ import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import useImage from 'use-image';
 import { Image as KonvaImage } from 'react-konva';
+import { SpriteData } from '../types/assets';
 
-export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
+type ChefFrameName = 'chef-catch.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
+type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 
 export function Chef({}: // dimensions,
 {
@@ -43,18 +45,19 @@ export function Chef({}: // dimensions,
 					x: 0,
 					y: 0,
 				},
-				chefFrames: {},
+				chefFrames: {} as ChefFrames,
 				chefFrameNames: [],
 				position: { x: 0, y: 0 },
 				isAnimateAsMoving: false,
 				isCatchingEgg: false,
 			};
 		}
-		// console.log('chef state', state);
 		return {
 			chefConfig: state.context.chefConfig,
-			chefFrames: state.context.chefAssets.sprite.frames,
-			chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
+			chefFrames: state.context.chefAssets.sprite.frames as ChefFrames,
+			chefFrameNames: Object.keys(
+				state.context.chefAssets.sprite.frames
+			) as ChefFrameName[],
 			position: state.context.position,
 			// Use direction here instead of speed so that the chef's leg movement
 			// stops as soon as the user releases the arrow key
