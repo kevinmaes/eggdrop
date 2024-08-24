@@ -6,7 +6,7 @@ import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 
 export function pickXPosition(minX: number, maxX: number, buffer: number) {
-	const minDistance = 100;
+	const minDistance = 200;
 	const xDistanceRange = maxX - minX;
 	let randomXPosition = Math.max(
 		Math.random() * xDistanceRange + minX,
@@ -105,7 +105,9 @@ export const henMachine = setup({
 	},
 	delays: {
 		getRandomStartDelay: ({ context }) =>
-			Math.ceil(Math.random() * context.gameConfig.hen.staggeredEntranceDelay),
+			// Need minimum delay to allow for tween to start
+			Math.ceil(Math.random() * context.gameConfig.hen.staggeredEntranceDelay) +
+			1000,
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			// If values mutate to cross over, return the min value.
@@ -181,14 +183,18 @@ export const henMachine = setup({
 			entry: [
 				log('Moving'),
 				assign({
-					targetPosition: ({ context }) => ({
-						x: pickXPosition(
+					targetPosition: ({ context }) => {
+						const x = pickXPosition(
 							context.minX,
 							context.maxX,
 							context.gameConfig.stageDimensions.margin
-						),
-						y: context.gameConfig.hen.y,
-					}),
+						);
+						console.log('picked xTarget:', x);
+						return {
+							x,
+							y: context.gameConfig.hen.y,
+						};
+					},
 				}),
 				assign(({ context }) => {
 					const { targetPosition } = context;

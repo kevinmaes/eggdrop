@@ -29,21 +29,15 @@ export function Hen({
 }: {
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
-	const {
-		henFrames,
-		position,
-		isLaying,
-		isMoving,
-		movingDirection,
-		absoluteTweenSpeed,
-	} = useSelector(henActorRef, (state) => ({
-		henFrames: state.context.henAssets.sprite.frames,
-		position: state.context.position,
-		isMoving: state.matches('Moving'),
-		isLaying: state.matches('Laying Egg'),
-		movingDirection: state.context.movingDirection,
-		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
-	}));
+	const { henFrames, position, isLaying, movingDirection, absoluteTweenSpeed } =
+		useSelector(henActorRef, (state) => ({
+			henFrames: state.context.henAssets.sprite.frames,
+			position: state.context.position,
+			isMoving: state.matches('Moving'),
+			isLaying: state.matches('Laying Egg'),
+			movingDirection: state.context.movingDirection,
+			absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
+		}));
 	const [image] = useImage('images/hen.sprite.png');
 
 	const henRef = useRef<Konva.Image>(null);
@@ -60,7 +54,7 @@ export function Hen({
 	const [frameName, setFrameName] = useState<HenFrameName>('forward.png');
 	useEffect(() => {
 		let interval: ReturnType<typeof setInterval> | null = null;
-		const animationIntervalMSRange = [50, 1000];
+		const animationIntervalMSRange = [50, 750];
 
 		switch (true) {
 			case isLaying: {
@@ -91,11 +85,12 @@ export function Hen({
 					animationIntervalMSRange[0],
 					animationIntervalMSRange[1] - absoluteTweenSpeed * 100
 				);
+				// console.log('intervalMS', intervalMS);
 				interval = setInterval(() => {
 					setFrameName((prevFrameName) => {
 						const index = walkLeftFrameNames.indexOf(prevFrameName);
 						if (index === -1 || index === walkLeftFrameNames.length - 1) {
-							return 'walk-right-1.png';
+							return walkLeftFrameNames[0];
 						}
 						return walkLeftFrameNames[index + 1];
 					});
@@ -117,11 +112,12 @@ export function Hen({
 					animationIntervalMSRange[0],
 					animationIntervalMSRange[1] - absoluteTweenSpeed * 100
 				);
+				// console.log('intervalMS', intervalMS);
 				interval = setInterval(() => {
 					setFrameName((prevFrameName) => {
 						const index = walkRightFrameNames.indexOf(prevFrameName);
 						if (index === -1 || index === walkRightFrameNames.length - 1) {
-							return 'walk-right-1.png';
+							return walkRightFrameNames[0];
 						}
 						return walkRightFrameNames[index + 1];
 					});
@@ -140,7 +136,7 @@ export function Hen({
 		};
 	}, [isLaying, movingDirection, absoluteTweenSpeed]);
 
-	// console.log('frameName', frameName);
+	console.log('movingDirection frameName', movingDirection, frameName);
 	let currentFrame = henFrames[frameName].frame;
 
 	return (
