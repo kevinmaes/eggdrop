@@ -104,10 +104,12 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed is the x speed of the hen
-		speed: Math.random() * 3,
+		// speed: Math.random() * 3,
+		speed: 1,
 
 		// baseTweenDurationSeconds is the base duration for the tween
-		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
+		// baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
+		baseTweenDurationSeconds: 1,
 
 		// maxEggs can range between -1 and 50, -1 means no limit
 		// maxEggs: Math.round(Math.random() * 51) - 1,
