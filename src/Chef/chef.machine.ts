@@ -3,10 +3,12 @@ import { Position } from '../GameLevel/types';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { GameAssets } from '../types/assets';
+import { getGameConfig } from '../GameLevel/gameConfig';
 
 export const chefMachine = setup({
 	types: {} as {
 		input: {
+			chefConfig: ReturnType<typeof getGameConfig>['chef'];
 			chefAssets: GameAssets['chef'];
 			position: Position;
 			speed: number;
@@ -17,6 +19,7 @@ export const chefMachine = setup({
 			maxXPos: number;
 		};
 		context: {
+			chefConfig: ReturnType<typeof getGameConfig>['chef'];
 			chefRef: React.RefObject<Konva.Image>;
 			chefAssets: GameAssets['chef'];
 			position: Position;
@@ -117,6 +120,7 @@ export const chefMachine = setup({
 	id: 'chef',
 	initial: 'Moving',
 	context: ({ input }) => ({
+		chefConfig: input.chefConfig,
 		chefRef: { current: null },
 		chefAssets: input.chefAssets,
 		position: input.position,

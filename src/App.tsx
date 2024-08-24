@@ -70,7 +70,7 @@ const App = () => {
 		showGamePlay,
 		isInitializingLevel,
 		isBetweenLevels,
-		score,
+		gameScore,
 	} = AppActorContext.useSelector((state) => ({
 		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
@@ -79,7 +79,7 @@ const App = () => {
 		showGamePlay: state.matches('Game Play'),
 		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
-		score: state.context.score,
+		gameScore: state.context.gameScore,
 	}));
 
 	const gameLevelActorRef = appActorRef.system.get(
@@ -169,7 +169,7 @@ const App = () => {
 							<Text
 								x={10}
 								y={300}
-								text={`Score: ${score}`}
+								text={`Score: ${gameScore}`}
 								fontSize={30}
 								fontFamily="Arial"
 								fill="black"

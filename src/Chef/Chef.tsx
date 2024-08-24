@@ -4,20 +4,18 @@ import { Ref, useEffect, useRef, useState } from 'react';
 import { Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
-import { Position } from '../GameLevel/types';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import useImage from 'use-image';
 import { Image as KonvaImage } from 'react-konva';
+import { SpriteData } from '../types/assets';
 
-export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
+type ChefFrameName = 'chef-catch.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
+type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 
-export function Chef({
-	dimensions,
-}: {
-	dimensions: { width: number; height: number };
+export function Chef({}: // dimensions,
+{
 	layerRef: Ref<Konva.Layer>;
-	initialPosition: Position;
 }) {
 	const [image] = useImage('images/chef.sprite.png');
 	const appActorRef = AppActorContext.useActorRef();
@@ -32,6 +30,7 @@ export function Chef({
 	}));
 
 	const {
+		chefConfig,
 		chefFrames,
 		chefFrameNames,
 		position,
@@ -40,17 +39,25 @@ export function Chef({
 	} = useSelector(chefActorRef, (state) => {
 		if (typeof state === 'undefined') {
 			return {
-				chefFrames: {},
+				chefConfig: {
+					width: 0,
+					height: 0,
+					x: 0,
+					y: 0,
+				},
+				chefFrames: {} as ChefFrames,
 				chefFrameNames: [],
 				position: { x: 0, y: 0 },
 				isAnimateAsMoving: false,
 				isCatchingEgg: false,
 			};
 		}
-		// console.log('chef state', state);
 		return {
-			chefFrames: state.context.chefAssets.sprite.frames,
-			chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
+			chefConfig: state.context.chefConfig,
+			chefFrames: state.context.chefAssets.sprite.frames as ChefFrames,
+			chefFrameNames: Object.keys(
+				state.context.chefAssets.sprite.frames
+			) as ChefFrameName[],
 			position: state.context.position,
 			// Use direction here instead of speed so that the chef's leg movement
 			// stops as soon as the user releases the arrow key
@@ -139,8 +146,8 @@ export function Chef({
 				image={image}
 				x={position.x}
 				y={position.y}
-				width={dimensions.width}
-				height={dimensions.height}
+				width={chefConfig.width}
+				height={chefConfig.height}
 				crop={{
 					x: currentFrame.x,
 					y: currentFrame.y,
