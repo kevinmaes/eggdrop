@@ -121,9 +121,9 @@ export function getInitialChromosomeValues() {
 		// movingEggLayingRate: Math.random(),
 		movingEggLayingRate: 0,
 
-		// The time the hen will rest after laying an egg
-		// restAfterLayingEggMS: Math.random() * 2000,
-		restAfterLayingEggMS: 0,
+		// The time the hen will rest after laying an egg (minimum 500ms)
+		restAfterLayingEggMS: Math.random() * 2000 + 500,
+		// restAfterLayingEggMS: 0,
 
 		// Egg color rates
 		blackEggRate,
