@@ -1,4 +1,4 @@
-import { and, assign, sendParent, setup } from 'xstate';
+import { and, assign, sendParent, setup, log } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import { getGameConfig } from '../GameLevel/gameConfig';
@@ -173,6 +173,7 @@ export const henMachine = setup({
 		},
 		Moving: {
 			entry: [
+				log('Moving'),
 				assign({
 					targetPosition: ({ context }) => ({
 						x: pickXPosition(context.minX, context.maxX),
@@ -286,6 +287,7 @@ export const henMachine = setup({
 			},
 		},
 		Stopped: {
+			entry: log('Stopped'),
 			on: {
 				'Resume game': 'Moving',
 			},
@@ -299,6 +301,7 @@ export const henMachine = setup({
 		'Laying Egg': {
 			tags: 'laying',
 			entry: [
+				log('Laying Egg'),
 				sendParent(({ context }) => {
 					const randomEggColorNumber = Math.random();
 					const eggColor =

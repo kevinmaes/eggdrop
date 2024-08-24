@@ -16,9 +16,9 @@ export function getGameConfig() {
 
 	const gameConfig = {
 		// The number of hens in the game
-		populationSize: 20,
+		populationSize: 1,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 10_000,
+		levelDurationMS: 100_000,
 		stageDimensions,
 		chef: {
 			x: stageDimensions.width / 2 - 0.5 * chefWidth,
@@ -108,19 +108,20 @@ export function getInitialChromosomeValues() {
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
 
 		// maxEggs can range between -1 and 50, -1 means no limit
-		maxEggs: Math.round(Math.random() * 51) - 1,
-		// maxEggs: -1,
+		// maxEggs: Math.round(Math.random() * 51) - 1,
+		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped
-		stationaryEggLayingRate: Math.random(),
-		// stationaryEggLayingRate: 1,
+		// stationaryEggLayingRate: Math.random(),
+		stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
-		movingEggLayingRate: Math.random(),
-		// movingEggLayingRate: 0,
+		// movingEggLayingRate: Math.random(),
+		movingEggLayingRate: 0,
 
 		// The time the hen will rest after laying an egg
-		restAfterLayingEggMS: Math.random() * 2000,
+		// restAfterLayingEggMS: Math.random() * 2000,
+		restAfterLayingEggMS: 0,
 
 		// Egg color rates
 		blackEggRate,

@@ -5,6 +5,7 @@ import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { tweenActor } from '../motionActors';
 import { eggMotionActor } from './eggMotionActor';
+import { GameAssets } from '../types/assets';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 export const eggMachine = setup({
@@ -12,6 +13,7 @@ export const eggMachine = setup({
 		input: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
+			eggAssets: GameAssets['egg'];
 			henId: string;
 			henIsMoving: boolean;
 			position: Position;
@@ -26,6 +28,7 @@ export const eggMachine = setup({
 			eggRef: React.RefObject<Konva.Image>;
 			id: string;
 			henId: string;
+			eggAssets: GameAssets['egg'];
 			henIsMoving: boolean;
 			initialPosition: Position;
 			position: Position;
@@ -133,6 +136,7 @@ export const eggMachine = setup({
 			eggRef: { current: null },
 			id: input.id,
 			henId: input.henId,
+			eggAssets: input.eggAssets,
 			henIsMoving: input.henIsMoving,
 			initialPosition: input.position,
 			position: input.position,

@@ -14,15 +14,18 @@ export function Egg({
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
 	const eggState = useSelector(eggActorRef, (state) => state);
-	const { gameConfig, isFacingLeft } = useSelector(eggActorRef, (state) => ({
-		gameConfig: state.context.gameConfig,
-		isFacingLeft:
-			state.hasTag('chick') &&
-			state.context.targetPosition.x < state.context.position.x,
-	}));
+	const { gameConfig, isFacingLeft, eggFrames, eggFrameNames, color } =
+		useSelector(eggActorRef, (state) => ({
+			gameConfig: state.context.gameConfig,
+			isFacingLeft:
+				state.hasTag('chick') &&
+				state.context.targetPosition.x < state.context.position.x,
+			eggFrames: state.context.eggAssets.sprite.frames,
+			eggFrameNames: Object.keys(state.context.eggAssets.sprite.frames),
+			color: state.context.color,
+		}));
 	const eggRef = useRef<Konva.Image>(null);
-	const eggImagePath = `../images/egg-${eggState.context.color}.png`;
-	const [eggImage] = useImage(eggImagePath);
+	const [eggImage] = useImage(`../images/egg.sprite.png`);
 	const [brokenEggImage] = useImage(
 		`images/egg-broken-${eggState.context.color}.png`
 	);
@@ -38,49 +41,71 @@ export function Egg({
 		return null;
 	}
 
-	return eggState.matches('Hatching') ? (
-		<KonvaImage
-			ref={eggRef}
-			image={runningChickImage}
-			width={60}
-			height={60}
-			rotation={0}
-			x={eggState.context.position.x}
-			y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
-			scaleX={isFacingLeft ? -1 : 1}
-		/>
-	) : eggState.matches('Exiting') ? (
-		<KonvaImage
-			ref={eggRef}
-			image={runningChickImage}
-			width={60}
-			height={60}
-			rotation={0}
-			x={eggState.context.position.x}
-			y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
-			scaleX={isFacingLeft ? -1 : 1}
-		/>
-	) : eggState.matches('Splatting') ? (
-		// Render a rectangle
-		<KonvaImage
-			image={brokenEggImage}
-			width={gameConfig.egg.brokenEgg.width}
-			height={gameConfig.egg.brokenEgg.height}
-			rotation={0}
-			x={eggState.context.position.x}
-			// y={eggState.context.position.y}
-			y={gameConfig.stageDimensions.height - gameConfig.egg.brokenEgg.height}
-		/>
-	) : (
+	// if (eggState.matches('Hatching')) {
+	// 	return (
+	// 		<KonvaImage
+	// 			ref={eggRef}
+	// 			image={runningChickImage}
+	// 			width={60}
+	// 			height={60}
+	// 			rotation={0}
+	// 			x={eggState.context.position.x}
+	// 			y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
+	// 			scaleX={isFacingLeft ? -1 : 1}
+	// 		/>
+	// 	);
+	// }
+
+	// if (eggState.matches('Exiting')) {
+	// 	return (
+	// 		<KonvaImage
+	// 			ref={eggRef}
+	// 			image={runningChickImage}
+	// 			width={60}
+	// 			height={60}
+	// 			rotation={0}
+	// 			x={eggState.context.position.x}
+	// 			y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
+	// 			scaleX={isFacingLeft ? -1 : 1}
+	// 		/>
+	// 	);
+	// }
+	// if (eggState.matches('Splatting')) {
+	// 	return (
+	// 		// Render a rectangle
+	// 		<KonvaImage
+	// 			image={brokenEggImage}
+	// 			width={gameConfig.egg.brokenEgg.width}
+	// 			height={gameConfig.egg.brokenEgg.height}
+	// 			rotation={0}
+	// 			x={eggState.context.position.x}
+	// 			// y={eggState.context.position.y}
+	// 			y={gameConfig.stageDimensions.height - gameConfig.egg.brokenEgg.height}
+	// 		/>
+	// 	);
+	// }
+
+	console.log('eggState color, eggFrameNames', color, eggFrameNames);
+	console.log('eggState eggFrames', color, eggFrameNames);
+	const currentEggFrame = eggFrames[`egg-${color}.png`].frame;
+	console.log('currentEggFrame', currentEggFrame);
+	return (
 		<KonvaImage
 			ref={eggRef}
 			image={eggImage}
-			width={20}
-			height={25}
+			width={30}
+			height={30}
 			x={eggState.context.position.x}
 			y={eggState.context.position.y}
-			offsetX={10}
-			offsetY={12.5}
+			offsetX={15}
+			offsetY={15}
+			border="1px solid red"
+			crop={{
+				x: currentEggFrame.x,
+				y: currentEggFrame.y,
+				width: currentEggFrame.w,
+				height: currentEggFrame.h,
+			}}
 		/>
 	);
 }
