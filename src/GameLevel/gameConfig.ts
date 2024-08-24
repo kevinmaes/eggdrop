@@ -18,7 +18,7 @@ export function getGameConfig() {
 
 	const gameConfig = {
 		// The number of hens in the game
-		populationSize: 1,
+		populationSize: 10,
 		// The duration each level lasts in milliseconds
 		levelDurationMS: 100_000,
 		stageDimensions,
@@ -66,8 +66,8 @@ export function getGameConfig() {
 				black: -5,
 			},
 			brokenEgg: {
-				width: 50,
-				height: 42,
+				width: 60,
+				height: 60,
 			},
 			chick: {
 				width: 60,
@@ -124,24 +124,22 @@ export function getInitialChromosomeValues() {
 		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped
-		// stationaryEggLayingRate: Math.random(),
-		stationaryEggLayingRate: 1,
+		stationaryEggLayingRate: Math.random(),
+		// stationaryEggLayingRate: 0,
 
 		// The rate at which the hen lays eggs while moving
-		// movingEggLayingRate: Math.random(),
-		movingEggLayingRate: 0,
+		movingEggLayingRate: Math.random(),
+		// movingEggLayingRate: 1,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
-		// restAfterLayingEggMS: 0,
 
 		// Egg color rates
 		blackEggRate,
 		goldEggRate,
 
 		// The rate at which the eggs will hatch when they land on the ground
-		// hatchRate: Math.random(),
-		hatchRate: 0.5,
+		hatchRate: Math.random(),
 
 		// The minimum xPos the hen can be at
 		minX,

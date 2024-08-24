@@ -159,6 +159,8 @@ const appMachine = setup({
 			const henSpriteData = await henResult.json();
 			const eggResult = await fetch('images/egg.sprite.json');
 			const eggSpriteData = await eggResult.json();
+			const chickResult = await fetch('images/chick.sprite.json');
+			const chickSpriteData = await chickResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
 
@@ -168,6 +170,9 @@ const appMachine = setup({
 				},
 				egg: {
 					sprite: eggSpriteData,
+				},
+				chick: {
+					sprite: chickSpriteData,
 				},
 				chef: {
 					sprite: chefSpriteData,

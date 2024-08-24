@@ -14,6 +14,7 @@ export const eggMachine = setup({
 			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
 			eggAssets: GameAssets['egg'];
+			chickAssets: GameAssets['chick'];
 			henId: string;
 			henIsMoving: boolean;
 			position: Position;
@@ -29,6 +30,7 @@ export const eggMachine = setup({
 			id: string;
 			henId: string;
 			eggAssets: GameAssets['egg'];
+			chickAssets: GameAssets['chick'];
 			henIsMoving: boolean;
 			initialPosition: Position;
 			position: Position;
@@ -137,6 +139,7 @@ export const eggMachine = setup({
 			id: input.id,
 			henId: input.henId,
 			eggAssets: input.eggAssets,
+			chickAssets: input.chickAssets,
 			henIsMoving: input.henIsMoving,
 			initialPosition: input.position,
 			position: input.position,
@@ -176,6 +179,7 @@ export const eggMachine = setup({
 			},
 		},
 		Falling: {
+			tags: 'falling',
 			on: {
 				'Notify of animation position': {
 					guard: 'isEggNearChefPot',

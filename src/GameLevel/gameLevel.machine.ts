@@ -141,6 +141,7 @@ export const gameLevelMachine = setup({
 							gameConfig: context.gameConfig,
 							id: eggId,
 							eggAssets: context.gameAssets.egg,
+							chickAssets: context.gameAssets.chick,
 							position: {
 								x: params.henPosition.x + params.henButtXOffset,
 								y: params.henPosition.y + params.henButtYOffset,

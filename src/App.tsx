@@ -99,7 +99,7 @@ const App = () => {
 			<Stage
 				width={gameConfig.stageDimensions.width}
 				height={gameConfig.stageDimensions.height}
-				style={{ background: 'darkblue', border: '1px solid black' }}
+				style={{ background: 'blue', border: '1px solid black' }}
 			>
 				<Layer>
 					<Text
@@ -129,7 +129,7 @@ const App = () => {
 				<Stage
 					width={gameConfig.stageDimensions.width}
 					height={gameConfig.stageDimensions.height}
-					style={{ background: 'darkblue', border: '1px solid black' }}
+					style={{ background: 'blue', border: '1px solid black' }}
 				>
 					{/* Background graphics layer - static */}
 					<Layer>

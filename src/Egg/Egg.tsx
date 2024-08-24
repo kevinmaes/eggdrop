@@ -1,7 +1,6 @@
 import { useSelector } from '@xstate/react';
 import { Image as KonvaImage } from 'react-konva';
 
-import runningChickImageFile from '../assets/running-chick.png';
 import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
@@ -14,22 +13,33 @@ export function Egg({
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
 	const eggState = useSelector(eggActorRef, (state) => state);
-	const { gameConfig, isFacingLeft, eggFrames, eggFrameNames, color } =
-		useSelector(eggActorRef, (state) => ({
+
+	const {
+		gameConfig,
+		isFacingLeft,
+		isHatching,
+		isBroken,
+		eggFrames,
+		chickFrames,
+		// chickFrameNames,
+		color,
+	} = useSelector(eggActorRef, (state) => {
+		return {
 			gameConfig: state.context.gameConfig,
 			isFacingLeft:
 				state.hasTag('chick') &&
 				state.context.targetPosition.x < state.context.position.x,
+			isHatching: state.matches('Hatching'),
+			isBroken: state.matches('Splatting'),
 			eggFrames: state.context.eggAssets.sprite.frames,
-			eggFrameNames: Object.keys(state.context.eggAssets.sprite.frames),
+			chickFrames: state.context.chickAssets.sprite.frames,
+			chickFrameNames: Object.keys(state.context.chickAssets.sprite.frames),
 			color: state.context.color,
-		}));
+		};
+	});
 	const eggRef = useRef<Konva.Image>(null);
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
-	const [brokenEggImage] = useImage(
-		`images/egg-broken-${eggState.context.color}.png`
-	);
-	const [runningChickImage] = useImage(runningChickImageFile);
+	const [chickImage] = useImage(`../images/chick.sprite.png`);
 
 	useEffect(() => {
 		if (eggRef.current) {
@@ -38,52 +48,77 @@ export function Egg({
 	}, [eggRef.current]);
 
 	if (eggState.matches('Done')) {
+		console.log('eggState.matches Done');
 		return null;
 	}
 
-	// if (eggState.matches('Hatching')) {
-	// 	return (
-	// 		<KonvaImage
-	// 			ref={eggRef}
-	// 			image={runningChickImage}
-	// 			width={60}
-	// 			height={60}
-	// 			rotation={0}
-	// 			x={eggState.context.position.x}
-	// 			y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
-	// 			scaleX={isFacingLeft ? -1 : 1}
-	// 		/>
-	// 	);
-	// }
+	if (isHatching) {
+		const currentChickFrame = chickFrames[`chick-forward-1.png`].frame;
+		return (
+			<KonvaImage
+				ref={eggRef}
+				image={chickImage}
+				width={60}
+				height={60}
+				rotation={0}
+				x={eggState.context.position.x}
+				y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
+				offsetX={0.5 * gameConfig.egg.chick.width}
+				crop={{
+					x: currentChickFrame.x,
+					y: currentChickFrame.y,
+					width: currentChickFrame.w,
+					height: currentChickFrame.h,
+				}}
+			/>
+		);
+	}
 
-	// if (eggState.matches('Exiting')) {
-	// 	return (
-	// 		<KonvaImage
-	// 			ref={eggRef}
-	// 			image={runningChickImage}
-	// 			width={60}
-	// 			height={60}
-	// 			rotation={0}
-	// 			x={eggState.context.position.x}
-	// 			y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
-	// 			scaleX={isFacingLeft ? -1 : 1}
-	// 		/>
-	// 	);
-	// }
-	// if (eggState.matches('Splatting')) {
-	// 	return (
-	// 		// Render a rectangle
-	// 		<KonvaImage
-	// 			image={brokenEggImage}
-	// 			width={gameConfig.egg.brokenEgg.width}
-	// 			height={gameConfig.egg.brokenEgg.height}
-	// 			rotation={0}
-	// 			x={eggState.context.position.x}
-	// 			// y={eggState.context.position.y}
-	// 			y={gameConfig.stageDimensions.height - gameConfig.egg.brokenEgg.height}
-	// 		/>
-	// 	);
-	// }
+	if (eggState.matches('Exiting')) {
+		const frameName = isFacingLeft
+			? 'chick-run-left-1.png'
+			: 'chick-run-right-1.png';
+		const chickFrame = chickFrames[frameName].frame;
+		return (
+			<KonvaImage
+				ref={eggRef}
+				image={chickImage}
+				width={60}
+				height={60}
+				rotation={0}
+				x={eggState.context.position.x}
+				y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
+				crop={{
+					x: chickFrame.x,
+					y: chickFrame.y,
+					width: chickFrame.w,
+					height: chickFrame.h,
+				}}
+			/>
+		);
+	}
+
+	if (isBroken) {
+		const brokenEggFrame = chickFrames[`egg-broken-${color}.png`].frame;
+		return (
+			<KonvaImage
+				image={chickImage}
+				width={gameConfig.egg.brokenEgg.width}
+				height={gameConfig.egg.brokenEgg.height}
+				x={eggState.context.position.x}
+				y={gameConfig.stageDimensions.height - gameConfig.egg.brokenEgg.height}
+				offsetY={0}
+				// Always set rotation to 0 in case egg was rotating
+				rotation={0}
+				crop={{
+					x: brokenEggFrame.x,
+					y: brokenEggFrame.y,
+					width: brokenEggFrame.w,
+					height: brokenEggFrame.h,
+				}}
+			/>
+		);
+	}
 
 	const currentEggFrame = eggFrames[`egg-${color}.png`].frame;
 	return (

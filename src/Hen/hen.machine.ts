@@ -88,7 +88,7 @@ export const henMachine = setup({
 			const currentTime = new Date().getTime();
 			const elapsedMS = currentTime - context.currentTweenStartTime;
 			const remainingMS = context.currentTweenDurationMS - elapsedMS;
-			return remainingMS > 500;
+			return remainingMS > 400;
 		},
 		'can lay while stationary': and([
 			'has more eggs',
@@ -277,8 +277,8 @@ export const henMachine = setup({
 			states: {
 				'Not laying egg': {
 					after: {
-						// Wait 500ms to delay laying an egg until after tween ease-in
-						500: 'Preparing to lay egg',
+						// Wait 400ms to delay laying an egg until after tween ease-in
+						400: 'Preparing to lay egg',
 					},
 				},
 				'Preparing to lay egg': {
