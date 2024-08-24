@@ -34,14 +34,14 @@ export function Hen({
 		position,
 		isLaying,
 		isMoving,
-		direction,
+		movingDirection,
 		absoluteTweenSpeed,
 	} = useSelector(henActorRef, (state) => ({
 		henFrames: state.context.henAssets.sprite.frames,
 		position: state.context.position,
 		isMoving: state.matches('Moving'),
 		isLaying: state.matches('Laying Egg'),
-		direction: state.context.currentTweenDirection,
+		movingDirection: state.context.movingDirection,
 		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
 	}));
 	const [image] = useImage('images/hen.sprite.png');
@@ -76,7 +76,7 @@ export function Hen({
 				setFrameName(frameName);
 				break;
 			}
-			case isMoving && direction === -1: {
+			case movingDirection === 'left': {
 				const walkLeftFrameNames: HenFrameName[] = [
 					'walk-left-1.png',
 					'walk-left-2.png',
@@ -102,7 +102,7 @@ export function Hen({
 				}, intervalMS);
 				break;
 			}
-			case isMoving && direction === 1: {
+			case movingDirection === 'right': {
 				const walkRightFrameNames: HenFrameName[] = [
 					'walk-right-1.png',
 					'walk-right-2.png',
@@ -138,7 +138,7 @@ export function Hen({
 				clearInterval(interval);
 			}
 		};
-	}, [isLaying, direction, isMoving, absoluteTweenSpeed]);
+	}, [isLaying, movingDirection, absoluteTweenSpeed]);
 
 	// console.log('frameName', frameName);
 	let currentFrame = henFrames[frameName].frame;

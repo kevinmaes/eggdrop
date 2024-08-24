@@ -5,9 +5,13 @@ import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 
-export function pickXPosition(minX: number, maxX: number, buffer: number = 50) {
+export function pickXPosition(minX: number, maxX: number, buffer: number) {
+	const minDistance = 100;
 	const xDistanceRange = maxX - minX;
-	let randomXPosition = Math.random() * xDistanceRange + minX;
+	let randomXPosition = Math.max(
+		Math.random() * xDistanceRange + minX,
+		minDistance
+	);
 	if (randomXPosition < buffer) return buffer;
 	if (randomXPosition > maxX - buffer) return maxX - buffer;
 	return randomXPosition;
@@ -46,6 +50,7 @@ export const henMachine = setup({
 			currentTweenDurationMS: number;
 			currentTweenStartTime: number;
 			currentTweenDirection: -1 | 0 | 1;
+			movingDirection: 'left' | 'right' | 'none';
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;
@@ -136,6 +141,7 @@ export const henMachine = setup({
 		currentTweenDurationMS: 0,
 		currentTweenStartTime: 0,
 		currentTweenDirection: 0,
+		movingDirection: 'none',
 		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
 		minStopMS: input.minStopMS,
 		maxStopMS: input.maxStopMS,
@@ -176,7 +182,11 @@ export const henMachine = setup({
 				log('Moving'),
 				assign({
 					targetPosition: ({ context }) => ({
-						x: pickXPosition(context.minX, context.maxX),
+						x: pickXPosition(
+							context.minX,
+							context.maxX,
+							context.gameConfig.stageDimensions.margin
+						),
 						y: context.gameConfig.hen.y,
 					}),
 				}),
@@ -213,6 +223,7 @@ export const henMachine = setup({
 						currentTweenStartTime: new Date().getTime(),
 						currentTweenDirection: direction,
 						currentTween: tween,
+						movingDirection: direction === 1 ? 'right' : 'left',
 					};
 				}),
 			],
@@ -222,6 +233,7 @@ export const henMachine = setup({
 				currentTweenDurationMS: 0,
 				currentTweenStartTime: 0,
 				currentTween: null,
+				movingDirection: 'none',
 			}),
 			invoke: {
 				src: 'henMovingBackAndForthActor',
