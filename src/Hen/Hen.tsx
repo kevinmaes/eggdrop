@@ -140,7 +140,7 @@ export function Hen({
 		};
 	}, [isLaying, direction, isMoving, absoluteTweenSpeed]);
 
-	console.log('frameName', frameName);
+	// console.log('frameName', frameName);
 	let currentFrame = henFrames[frameName].frame;
 
 	return (

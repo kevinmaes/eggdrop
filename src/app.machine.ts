@@ -78,7 +78,6 @@ const appMachine = setup({
 
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.gameConfig.populationSize; i++) {
-					console.log('i', i);
 					// Randomly select two parents from the selected parents
 					const parent1 =
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
@@ -160,6 +159,8 @@ const appMachine = setup({
 		loadAssets: fromPromise<GameAssets>(async () => {
 			const henResult = await fetch('images/hen.sprite.json');
 			const henSpriteData = await henResult.json();
+			const eggResult = await fetch('images/egg.sprite.json');
+			const eggSpriteData = await eggResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
 
@@ -168,7 +169,7 @@ const appMachine = setup({
 					sprite: henSpriteData,
 				},
 				egg: {
-					sprite: henSpriteData,
+					sprite: eggSpriteData,
 				},
 				chef: {
 					sprite: chefSpriteData,

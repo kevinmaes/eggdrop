@@ -18,7 +18,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: 1,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 60_000,
+		levelDurationMS: 100_000,
 		stageDimensions,
 		chef: {
 			x: stageDimensions.width / 2 - 0.5 * chefWidth,
@@ -123,7 +123,7 @@ export function getInitialChromosomeValues() {
 
 		// The time the hen will rest after laying an egg
 		// restAfterLayingEggMS: Math.random() * 2000,
-		restAfterLayingEggMS: 1000,
+		restAfterLayingEggMS: 0,
 
 		// Egg color rates
 		blackEggRate,
