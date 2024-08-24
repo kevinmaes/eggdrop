@@ -1,6 +1,5 @@
 import { Circle, Layer, Rect, Stage, Text } from 'react-konva';
 import { AppActorContext } from './app.machine';
-import { STAGE_DIMENSIONS } from './GameLevel/gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
 import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
@@ -64,6 +63,7 @@ function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
 const App = () => {
 	const appActorRef = AppActorContext.useActorRef();
 	const {
+		gameConfig,
 		isLoading,
 		showError,
 		showGameIntro,
@@ -72,6 +72,7 @@ const App = () => {
 		isBetweenLevels,
 		gameScore,
 	} = AppActorContext.useSelector((state) => ({
+		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
 		showGameIntro: state.matches('Intro'),
@@ -96,21 +97,21 @@ const App = () => {
 	if (showGameIntro) {
 		return (
 			<Stage
-				width={STAGE_DIMENSIONS.width}
-				height={STAGE_DIMENSIONS.height}
+				width={gameConfig.stageDimensions.width}
+				height={gameConfig.stageDimensions.height}
 				style={{ background: 'pink', border: '1px solid black' }}
 			>
 				<Layer>
 					<Text
-						x={STAGE_DIMENSIONS.width / 2 - 200}
-						y={STAGE_DIMENSIONS.height / 2 - 50}
+						x={gameConfig.stageDimensions.width / 2 - 200}
+						y={gameConfig.stageDimensions.height / 2 - 50}
 						text="EGG DROP"
 						fontSize={80}
 						fontFamily="Arial"
 						fill="black"
 					/>
 					<KonvaButton
-						x={STAGE_DIMENSIONS.width / 2 - 150}
+						x={gameConfig.stageDimensions.width / 2 - 150}
 						y={400}
 						width={300}
 						height={100}
@@ -126,8 +127,8 @@ const App = () => {
 		return (
 			<>
 				<Stage
-					width={STAGE_DIMENSIONS.width}
-					height={STAGE_DIMENSIONS.height}
+					width={gameConfig.stageDimensions.width}
+					height={gameConfig.stageDimensions.height}
 					style={{ background: 'pink', border: '1px solid black' }}
 				>
 					{/* Background graphics layer - static */}
@@ -157,8 +158,8 @@ const App = () => {
 					) : isBetweenLevels ? (
 						<Layer>
 							<KonvaButton
-								x={STAGE_DIMENSIONS.width / 2 - 150}
-								y={STAGE_DIMENSIONS.height / 2 - 50}
+								x={gameConfig.stageDimensions.width / 2 - 150}
+								y={gameConfig.stageDimensions.height / 2 - 50}
 								width={300}
 								height={100}
 								text="Play next level"
@@ -176,7 +177,7 @@ const App = () => {
 						</Layer>
 					) : gameLevelActorRef ? (
 						<GameLevel
-							stageDimensions={STAGE_DIMENSIONS}
+							stageDimensions={gameConfig.stageDimensions}
 							gameLevelActorRef={gameLevelActorRef}
 						/>
 					) : null}

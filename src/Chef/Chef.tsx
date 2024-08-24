@@ -4,33 +4,31 @@ import { Ref, useEffect, useRef, useState } from 'react';
 import { Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
-import { Position } from '../GameLevel/types';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
-import { CHEF_POT_RIM_CONFIG } from '../GameLevel/gameConfig';
 import useImage from 'use-image';
 import { Image as KonvaImage } from 'react-konva';
 
 export type EggHitTestResult = 'caught' | 'broke-left' | 'broke-right' | 'none';
 
-export function Chef({
-	dimensions,
-}: {
-	dimensions: { width: number; height: number };
+export function Chef({}: // dimensions,
+{
 	layerRef: Ref<Konva.Layer>;
-	initialPosition: Position;
 }) {
 	const [image] = useImage('images/chef.sprite.png');
 	const appActorRef = AppActorContext.useActorRef();
-
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
 		typeof chefMachine
 	>;
+	const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
+		chefPotRimConfig: state.context.gameConfig.chef.potRim,
+	}));
 
 	const {
+		chefConfig,
 		chefFrames,
 		chefFrameNames,
 		position,
@@ -39,6 +37,12 @@ export function Chef({
 	} = useSelector(chefActorRef, (state) => {
 		if (typeof state === 'undefined') {
 			return {
+				chefConfig: {
+					width: 0,
+					height: 0,
+					x: 0,
+					y: 0,
+				},
 				chefFrames: {},
 				chefFrameNames: [],
 				position: { x: 0, y: 0 },
@@ -48,6 +52,7 @@ export function Chef({
 		}
 		// console.log('chef state', state);
 		return {
+			chefConfig: state.context.chefConfig,
 			chefFrames: state.context.chefAssets.sprite.frames,
 			chefFrameNames: Object.keys(state.context.chefAssets.sprite.frames),
 			position: state.context.position,
@@ -138,8 +143,8 @@ export function Chef({
 				image={image}
 				x={position.x}
 				y={position.y}
-				width={dimensions.width}
-				height={dimensions.height}
+				width={chefConfig.width}
+				height={chefConfig.height}
 				crop={{
 					x: currentFrame.x,
 					y: currentFrame.y,
@@ -150,10 +155,10 @@ export function Chef({
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={position.x + CHEF_POT_RIM_CONFIG.xOffset}
-				y={CHEF_POT_RIM_CONFIG.y}
-				width={CHEF_POT_RIM_CONFIG.width}
-				height={CHEF_POT_RIM_CONFIG.height}
+				x={position.x + chefPotRimConfig.xOffset}
+				y={chefPotRimConfig.y}
+				width={chefPotRimConfig.width}
+				height={chefPotRimConfig.height}
 				fill="transparent"
 			/>
 		</>

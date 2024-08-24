@@ -4,7 +4,7 @@ import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
-import { CHEF_CONFIG, EGG_CONFIG, STAGE_DIMENSIONS } from './gameConfig';
+import { getGameConfig } from './gameConfig';
 import { GenerationStats, IndividualHen, Position } from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
@@ -13,6 +13,7 @@ import { countdownTimer } from './countdownTimer.actor';
 export const gameLevelMachine = setup({
 	types: {} as {
 		input: {
+			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
 			generationIndex: number;
 			levelDuration: number;
@@ -22,10 +23,9 @@ export const gameLevelMachine = setup({
 			levelScore: number;
 		};
 		context: {
+			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
 			remainingTime: number;
-			stageDimensions: { width: number; height: number };
-			chefDimensions: { width: number; height: number };
 			generationIndex: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
@@ -92,7 +92,7 @@ export const gameLevelMachine = setup({
 						spawn(henMachine, {
 							systemId: henId,
 							input: {
-								stageDimensions: context.stageDimensions,
+								gameConfig: context.gameConfig,
 								id: henId,
 								henAssets: context.gameAssets.hen,
 								position: {
@@ -136,7 +136,7 @@ export const gameLevelMachine = setup({
 					spawn(eggMachine, {
 						systemId: eggId,
 						input: {
-							eggConfig: EGG_CONFIG,
+							gameConfig: context.gameConfig,
 							id: eggId,
 							position: {
 								x: params.henPosition.x,
@@ -150,7 +150,7 @@ export const gameLevelMachine = setup({
 								| -1
 								| 0
 								| 1,
-							floorY: context.stageDimensions.height,
+							floorY: context.gameConfig.stageDimensions.height,
 							hatchRate: params.hatchRate,
 						},
 					}),
@@ -203,7 +203,9 @@ export const gameLevelMachine = setup({
 					if (params.eggColor === 'black') {
 						return 0;
 					}
-					return context.levelScore + EGG_CONFIG.points[params.eggColor];
+					return (
+						context.levelScore + context.gameConfig.egg.points[params.eggColor]
+					);
 				}
 				return context.levelScore;
 			},
@@ -358,10 +360,9 @@ export const gameLevelMachine = setup({
 	},
 }).createMachine({
 	context: ({ input }) => ({
+		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
 		remainingTime: input.levelDuration,
-		stageDimensions: STAGE_DIMENSIONS,
-		chefDimensions: CHEF_CONFIG,
 		generationIndex: input.generationIndex,
 		henActorRefs: [],
 		eggActorRefs: [],
@@ -510,17 +511,18 @@ export const gameLevelMachine = setup({
 					src: 'chefMachine',
 					systemId: 'chefMachine',
 					input: ({ context }) => ({
+						chefConfig: context.gameConfig.chef,
 						chefAssets: context.gameAssets.chef,
 						position: {
-							x: CHEF_CONFIG.x,
-							y: CHEF_CONFIG.y,
+							x: context.gameConfig.chef.x,
+							y: context.gameConfig.chef.y,
 						},
 						speed: 0,
-						speedLimit: CHEF_CONFIG.speedLimit,
-						acceleration: CHEF_CONFIG.acceleration,
-						deceleration: CHEF_CONFIG.acceleration,
-						minXPos: CHEF_CONFIG.minXPos,
-						maxXPos: CHEF_CONFIG.maxXPos,
+						speedLimit: context.gameConfig.chef.speedLimit,
+						acceleration: context.gameConfig.chef.acceleration,
+						deceleration: context.gameConfig.chef.acceleration,
+						minXPos: context.gameConfig.chef.minXPos,
+						maxXPos: context.gameConfig.chef.maxXPos,
 					}),
 				},
 			],
