@@ -14,6 +14,8 @@ export function getGameConfig() {
 	// Somewhere between 0.1 and 0.5 is reasonable.
 	const eggFallingSpeed = 0.2;
 
+	const henSize = 150;
+
 	const gameConfig = {
 		// The number of hens in the game
 		populationSize: 1,
@@ -43,10 +45,10 @@ export function getGameConfig() {
 			},
 		},
 		hen: {
-			width: 150,
-			height: 150,
-			offstageLeftX: -150,
-			offstageRightX: stageDimensions.width + 150,
+			width: henSize,
+			height: henSize,
+			offstageLeftX: -henSize,
+			offstageRightX: stageDimensions.width + henSize,
 			y: 10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
