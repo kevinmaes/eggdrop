@@ -5,7 +5,20 @@ import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
 import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+// type EggFrameName = 'egg-white.png' | 'egg-gold.png' | 'egg-black.png';
+
+type ChickFrameName =
+	| 'egg-broken-white.png'
+	| 'egg-broken-black.png'
+	| 'chick-forward-1.png'
+	| 'chick-run-left-1.png'
+	| 'chick-run-left-2.png'
+	| 'chick-run-right-1.png'
+	| 'chick-run-right-2.png';
+
+// type EggOrChickFrameName = EggFrameName | ChickFrameName;
 
 export function Egg({
 	eggActorRef,
@@ -19,7 +32,10 @@ export function Egg({
 		isFacingLeft,
 		isHatching,
 		isBroken,
+		isExiting,
+		isDone,
 		eggFrames,
+		// eggFrameNames,
 		chickFrames,
 		// chickFrameNames,
 		color,
@@ -31,7 +47,10 @@ export function Egg({
 				state.context.targetPosition.x < state.context.position.x,
 			isHatching: state.matches('Hatching'),
 			isBroken: state.matches('Splatting'),
+			isExiting: state.matches('Exiting'),
+			isDone: state.matches('Done'),
 			eggFrames: state.context.eggAssets.sprite.frames,
+			eggFrameNames: Object.keys(state.context.eggAssets.sprite.frames),
 			chickFrames: state.context.chickAssets.sprite.frames,
 			chickFrameNames: Object.keys(state.context.chickAssets.sprite.frames),
 			color: state.context.color,
@@ -41,19 +60,58 @@ export function Egg({
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 	const [chickImage] = useImage(`../images/chick.sprite.png`);
 
+	const [currentChickFrameName, setCurrentChickFrameName] =
+		useState<ChickFrameName>('chick-forward-1.png');
+
 	useEffect(() => {
 		if (eggRef.current) {
 			eggActorRef.send({ type: 'Set eggRef', eggRef });
 		}
 	}, [eggRef.current]);
 
-	if (eggState.matches('Done')) {
+	useEffect(() => {
+		let interval: ReturnType<typeof setInterval> | null = null;
+
+		switch (true) {
+			case isHatching: {
+				setCurrentChickFrameName('chick-forward-1.png');
+				break;
+			}
+			case isExiting && isFacingLeft: {
+				const chickRunLeftFrameNames: ChickFrameName[] = [
+					'chick-run-left-1.png',
+					'chick-run-left-2.png',
+				];
+				setCurrentChickFrameName(chickRunLeftFrameNames[0]);
+				interval = setInterval(() => {
+					setCurrentChickFrameName((prevFrameName) => {
+						const index = chickRunLeftFrameNames.indexOf(prevFrameName);
+						if (index === -1 || index === chickRunLeftFrameNames.length - 1) {
+							return chickRunLeftFrameNames[0];
+						}
+						return chickRunLeftFrameNames[index + 1];
+					});
+				}, 100);
+				break;
+			}
+			default:
+				break;
+		}
+
+		return () => {
+			if (interval) {
+				clearInterval(interval);
+			}
+		};
+	}, [isExiting]);
+
+	if (isDone) {
 		console.log('eggState.matches Done');
 		return null;
 	}
 
 	if (isHatching) {
-		const currentChickFrame = chickFrames[`chick-forward-1.png`].frame;
+		const currentChickFrame = chickFrames[currentChickFrameName].frame;
 		return (
 			<KonvaImage
 				ref={eggRef}
@@ -74,7 +132,7 @@ export function Egg({
 		);
 	}
 
-	if (eggState.matches('Exiting')) {
+	if (isExiting) {
 		const frameName = isFacingLeft
 			? 'chick-run-left-1.png'
 			: 'chick-run-right-1.png';
