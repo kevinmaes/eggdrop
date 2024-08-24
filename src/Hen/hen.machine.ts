@@ -329,6 +329,9 @@ export const henMachine = setup({
 					eggsLaid: ({ context }) => context.eggsLaid + 1,
 				}),
 			],
+			after: { 500: 'Rest After Laying Egg' },
+		},
+		'Rest After Laying Egg': {
 			after: { restAfterLayingAnEgg: 'Moving' },
 		},
 	},
