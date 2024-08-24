@@ -18,10 +18,9 @@ export const gameLevelMachine = setup({
 			generationIndex: number;
 			levelDuration: number;
 			population: IndividualHen[];
-			score: number;
 		};
 		output: {
-			score: number;
+			levelScore: number;
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
@@ -34,7 +33,7 @@ export const gameLevelMachine = setup({
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
-			score: number;
+			levelScore: number;
 		};
 		events:
 			| { type: 'Pause game' }
@@ -194,7 +193,7 @@ export const gameLevelMachine = setup({
 			}
 		),
 		updateScoreForEggDone: assign({
-			score: (
+			levelScore: (
 				{ context },
 				params: {
 					henId: string;
@@ -204,9 +203,14 @@ export const gameLevelMachine = setup({
 				}
 			) => {
 				if (params.resultStatus === 'Caught') {
-					return context.score + context.gameConfig.egg.points[params.eggColor];
+					if (params.eggColor === 'black') {
+						return 0;
+					}
+					return (
+						context.levelScore + context.gameConfig.egg.points[params.eggColor]
+					);
 				}
-				return context.score;
+				return context.levelScore;
 			},
 		}),
 		updateHenStatsForEggDone: assign(
@@ -364,7 +368,7 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		population: input.population,
-		score: input.score,
+		levelScore: 0,
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -509,6 +513,7 @@ export const gameLevelMachine = setup({
 					src: 'chefMachine',
 					systemId: 'chefMachine',
 					input: ({ context }) => ({
+						chefConfig: context.gameConfig.chef,
 						chefAssets: context.gameAssets.chef,
 						position: {
 							x: context.gameConfig.chef.x,
@@ -537,7 +542,7 @@ export const gameLevelMachine = setup({
 							generationIndex: context.generationIndex,
 							levelStats: context.levelStats,
 							henStatsById: context.henStatsById,
-							score: context.score,
+							score: context.levelScore,
 						},
 					};
 				}),

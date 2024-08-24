@@ -17,29 +17,22 @@ interface GameLevelProps {
 }
 
 export function GameLevel({
-	stageDimensions,
+	// stageDimensions,
 	gameLevelActorRef,
 }: GameLevelProps) {
 	const {
-		score,
+		levelScore,
 		generationIndex,
 		remainingTime,
 		henActorRefs,
 		eggActorRefs,
-		chefConfig,
 	} = useSelector(gameLevelActorRef, (state) => ({
-		score: state.context.score,
+		levelScore: state.context.levelScore,
 		generationIndex: state.context.generationIndex,
 		remainingTime: state.context.remainingTime,
 		henActorRefs: state.context.henActorRefs,
 		eggActorRefs: state.context.eggActorRefs,
-		chefConfig: state.context.gameConfig.chef,
 	}));
-
-	const chefInitialPosition = {
-		x: stageDimensions.width / 2 - 0.5 * chefConfig.width,
-		y: stageDimensions.height - chefConfig.height - 10,
-	};
 
 	const layerRef = useRef<Konva.Layer>(null);
 
@@ -51,11 +44,7 @@ export function GameLevel({
 				))}
 			</Layer>
 			<Layer>
-				<Chef
-					dimensions={chefConfig}
-					layerRef={layerRef}
-					initialPosition={chefInitialPosition}
-				/>
+				<Chef layerRef={layerRef} />
 			</Layer>
 			<Layer>
 				{eggActorRefs.map((eggActorRef) => (
@@ -83,32 +72,8 @@ export function GameLevel({
 				<Text
 					x={10}
 					y={300}
-					text={`Score: ${score}`}
+					text={`Score: ${levelScore}`}
 					fontSize={30}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={10}
-					y={300}
-					text={`Score: ${score}`}
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={10}
-					y={330}
-					text={`Eggs: ${score}`}
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={10}
-					y={360}
-					text={`Gold: ${score}`}
-					fontSize={20}
 					fontFamily="Arial"
 					fill="black"
 				/>

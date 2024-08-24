@@ -30,7 +30,7 @@ const appMachine = setup({
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
-			score: number;
+			gameScore: number;
 		};
 		events:
 			| { type: 'Play' }
@@ -44,7 +44,7 @@ const appMachine = setup({
 		gatherLastLevelResults: assign(
 			({ context }, params: { levelResults: LevelResults }) => {
 				return {
-					score: context.score + params.levelResults.score,
+					gameScore: context.gameScore + params.levelResults.score,
 					levelResultsHistory: [
 						...context.levelResultsHistory,
 						params.levelResults,
@@ -210,7 +210,7 @@ const appMachine = setup({
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
-		score: 0,
+		gameScore: 0,
 	}),
 	id: 'Egg Drop Game',
 	initial: 'Loading',
@@ -281,7 +281,6 @@ const appMachine = setup({
 								generationIndex: context.generationIndex,
 								levelDuration: context.gameConfig.levelDurationMS,
 								population: context.population,
-								score: context.score,
 							};
 						},
 					},
