@@ -45,7 +45,7 @@ export function getGameConfig() {
 		hen: {
 			y: 10,
 			// The delay between each hen entering the stage
-			staggeredEntranceDelay: 1000,
+			staggeredEntranceDelay: 2000,
 			buttXOffset: 40,
 			buttYOffset: 65,
 		},
@@ -107,7 +107,7 @@ export function getInitialChromosomeValues() {
 		speed: Math.random() * 3,
 
 		// baseTweenDurationSeconds is the base duration for the tween
-		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
+		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
 
 		// maxEggs can range between -1 and 50, -1 means no limit
 		// maxEggs: Math.round(Math.random() * 51) - 1,
