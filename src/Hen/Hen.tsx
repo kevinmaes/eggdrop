@@ -136,8 +136,10 @@ export function Hen({
 		};
 	}, [isLaying, movingDirection, absoluteTweenSpeed]);
 
-	console.log('movingDirection frameName', movingDirection, frameName);
+	// console.log('movingDirection frameName', movingDirection, frameName);
 	let currentFrame = henFrames[frameName].frame;
+
+	console.log('Hen x', position.x);
 
 	return (
 		<KonvaImage

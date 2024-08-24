@@ -182,21 +182,50 @@ export const henMachine = setup({
 		Moving: {
 			entry: [
 				log('Moving'),
-				assign({
-					targetPosition: ({ context }) => {
-						const x = pickXPosition(
-							context.minX,
-							context.maxX,
-							context.gameConfig.stageDimensions.margin
+				assign(({ context }) => {
+					// console.log('context.position.x:', context.position.x);
+					const targetPosition = { ...context.position };
+					const newPosition = { ...context.position };
+
+					const minDistance = 200;
+					const xDistanceRange = context.maxX - context.minX;
+					targetPosition.x =
+						Math.max(minDistance, Math.round(Math.random() * xDistanceRange)) +
+						context.minX;
+
+					// let newPosition = context.position;
+					// Check if the hen is in its original offstage position (first time animation)
+					if (context.position.x === context.gameConfig.hen.offstageLeftX) {
+						if (
+							targetPosition.x >=
+							0.5 * context.gameConfig.stageDimensions.width
+						) {
+							newPosition.x = context.gameConfig.hen.offstageRightX;
+						}
+					}
+
+					if (
+						context.targetPosition.x >
+						0.5 * context.gameConfig.stageDimensions.width
+					) {
+						console.log(
+							'picked target/newPos:',
+							targetPosition.x,
+							newPosition.x
 						);
-						console.log('picked xTarget:', x);
-						return {
-							x,
-							y: context.gameConfig.hen.y,
-						};
-					},
+					}
+					return {
+						position: newPosition,
+						targetPosition,
+					};
 				}),
 				assign(({ context }) => {
+					if (
+						context.targetPosition.x >
+						0.5 * context.gameConfig.stageDimensions.width
+					) {
+						console.log('next assign', context.position.x);
+					}
 					const { targetPosition } = context;
 					const totalDistance = context.gameConfig.stageDimensions.width;
 					const xDistance = targetPosition.x - context.position.x;
@@ -215,12 +244,19 @@ export const henMachine = setup({
 					// TODO: Don't love this magic number 240
 					const speedPerFrame = totalSpeed / 240;
 
+					// Important! Make sure the hen node is positioned at the current context.position
+					// before starting the tween
+					context.henRef.current!.setPosition(context.position);
+
 					const tween = new Konva.Tween({
 						node: context.henRef.current!,
 						duration,
 						x: targetPosition.x,
 						y: targetPosition.y,
 						easing: Konva.Easings.EaseInOut,
+						// onUpdate: () => {
+						// 	console.log('Tween onUpdate', context.henRef.current!.x());
+						// },
 					});
 
 					return {

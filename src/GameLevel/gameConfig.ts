@@ -43,6 +43,10 @@ export function getGameConfig() {
 			},
 		},
 		hen: {
+			width: 150,
+			height: 150,
+			offstageLeftX: -150,
+			offstageRightX: stageDimensions.width + 150,
 			y: 10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
@@ -81,14 +85,16 @@ export function getGameConfig() {
 export function getInitialChromosomeValues() {
 	const gameConfig = getGameConfig();
 	// The minimum xPos the hen can be at
-	let minX = Math.round(Math.random() * gameConfig.stageDimensions.width);
+	let minX = Math.round(
+		Math.random() * 0.25 * gameConfig.stageDimensions.width
+	);
 
 	// The maximum xPos the hen can be at
-	let maxX = Math.round(Math.random() * gameConfig.stageDimensions.width);
+	let maxX = gameConfig.stageDimensions.width - minX;
 
-	if (minX > maxX) {
-		[minX, maxX] = [maxX, minX];
-	}
+	// if (minX > maxX) {
+	// 	[minX, maxX] = [maxX, minX];
+	// }
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);

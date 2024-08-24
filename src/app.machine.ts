@@ -10,12 +10,12 @@ import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 import { GameAssets } from './types/assets';
 
-export function getOffScreenStartXPosition(
-	stageWidth: number,
-	buffer: number = 200
-) {
-	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
-}
+// export function getOffScreenStartXPosition(
+// 	stageWidth: number,
+// 	buffer: number = 200
+// ) {
+// 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
+// }
 
 const appMachine = setup({
 	types: {} as {
@@ -96,9 +96,7 @@ const appMachine = setup({
 					const child = {
 						id: nanoid(),
 						initialPosition: {
-							x: getOffScreenStartXPosition(
-								context.gameConfig.stageDimensions.width
-							),
+							x: context.gameConfig.hen.offstageLeftX,
 							y: 10,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,
@@ -191,9 +189,7 @@ const appMachine = setup({
 					id: nanoid(),
 					// Configuration
 					initialPosition: {
-						x: getOffScreenStartXPosition(
-							input.gameConfig.stageDimensions.width
-						),
+						x: input.gameConfig.hen.offstageLeftX,
 						y: input.gameConfig.hen.y,
 					},
 					...getInitialChromosomeValues(),
