@@ -1,4 +1,4 @@
-import { Circle, Layer, Rect, Stage, Text } from 'react-konva';
+import { Circle, Image, Layer, Rect, Stage, Text } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
 import { ActorRefFrom } from 'xstate';
@@ -6,6 +6,7 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
+import useImage from 'use-image';
 
 interface KonvaButtonProps {
 	x: number;
@@ -86,6 +87,10 @@ const App = () => {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
+	// const [bgImage] = useImage('images/kitchen-bg-1.png');
+	const [bgImage] = useImage('images/kitchen-bg-2.png');
+	// const [bgImage] = useImage('images/kitchen-bg-3.png');
+
 	if (showError) {
 		return <div>Error loading the game...</div>;
 	}
@@ -132,14 +137,11 @@ const App = () => {
 					style={{ background: 'blue', border: '1px solid black' }}
 				>
 					{/* Background graphics layer - static */}
-					<Layer>
-						<Text
-							x={1200}
-							y={50}
-							text="Kitchen bg"
-							fontSize={30}
-							fontFamily="Arial"
-							fill="black"
+					<Layer listening={false}>
+						<Image
+							image={bgImage}
+							width={gameConfig.stageDimensions.width}
+							height={gameConfig.stageDimensions.height}
 						/>
 					</Layer>
 					{isInitializingLevel ? (
