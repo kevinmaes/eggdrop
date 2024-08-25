@@ -72,21 +72,8 @@ export const eggMachine = setup({
 			return Math.random() < context.hatchRate;
 		},
 		isEggNearChefPot: ({ context }) => {
-			return true;
 			if (!context.eggRef.current) return false;
-			// console.log('isEggNearChefPot guard', context.eggRef.current.y());
-			const isEggNearChefPot =
-				context.eggRef.current.y() >= context.gameConfig.chef.potRim.y &&
-				context.eggRef.current.y() <=
-					context.gameConfig.chef.potRim.y +
-						context.gameConfig.chef.potRim.height;
-
-			console.log(
-				'isEggNearChefPot',
-				isEggNearChefPot,
-				context.eggRef.current.y()
-			);
-			return isEggNearChefPot;
+			return context.eggRef.current.y() >= context.gameConfig.chef.y;
 		},
 	},
 	actions: {
@@ -202,7 +189,7 @@ export const eggMachine = setup({
 				'Notify of animation position': {
 					guard: 'isEggNearChefPot',
 					actions: [
-						// log('Notify of animation position recevied in egg.machine'),
+						log('Notify of animation position recevied in egg.machine'),
 						{
 							type: 'notifyParentOfPosition',
 							params: ({ context, event }) => ({
