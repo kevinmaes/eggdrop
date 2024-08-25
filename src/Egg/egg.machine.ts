@@ -21,7 +21,6 @@ export const eggMachine = setup({
 			henCurentTweenSpeed: number;
 			color: 'white' | 'gold' | 'black';
 			rotationDirection: -1 | 0 | 1;
-			floorY: number;
 			hatchRate: number;
 		};
 		context: {
@@ -39,7 +38,6 @@ export const eggMachine = setup({
 			henCurentTweenSpeed: number;
 			rotationDirection: -1 | 0 | 1;
 			exitingSpeed: number;
-			floorY: number;
 			resultStatus: EggResultStatus;
 			gamePaused: boolean;
 			hatchRate: number;
@@ -81,7 +79,10 @@ export const eggMachine = setup({
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
-				y: context.floorY - context.gameConfig.egg.brokenEgg.height - 10,
+				y:
+					context.gameConfig.stageDimensions.height -
+					context.gameConfig.egg.brokenEgg.height -
+					context.gameConfig.stageDimensions.margin,
 			}),
 		}),
 		setTargetPositionToExit: assign({
@@ -116,7 +117,9 @@ export const eggMachine = setup({
 		splatOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x - 0.5 * context.gameConfig.egg.brokenEgg.width,
-				y: context.floorY - context.gameConfig.egg.brokenEgg.height,
+				y:
+					context.gameConfig.stageDimensions.height -
+					context.gameConfig.egg.brokenEgg.height,
 			}),
 		}),
 		playSplatSound: () => {
@@ -125,7 +128,10 @@ export const eggMachine = setup({
 		hatchOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x,
-				y: context.floorY - 60,
+				y:
+					context.gameConfig.stageDimensions.height -
+					context.gameConfig.egg.chick.height -
+					context.gameConfig.stageDimensions.margin,
 			}),
 		}),
 		playHatchSound: () => {
@@ -154,11 +160,6 @@ export const eggMachine = setup({
 			color: input.color,
 			rotationDirection: input.rotationDirection,
 			exitingSpeed: 10,
-			exitPosition: {
-				x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-				y: input.floorY - 50,
-			},
-			floorY: input.floorY,
 			resultStatus: null,
 			gamePaused: false,
 			hatchRate: input.hatchRate,
@@ -271,7 +272,9 @@ export const eggMachine = setup({
 							rotationDirection: context.rotationDirection,
 							testForDestination: (yPos) =>
 								yPos >=
-								context.floorY - context.gameConfig.egg.brokenEgg.height,
+								context.gameConfig.stageDimensions.height -
+									context.gameConfig.egg.brokenEgg.height -
+									context.gameConfig.stageDimensions.margin,
 						}),
 						onDone: {
 							target: 'Done Falling',

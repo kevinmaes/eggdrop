@@ -153,7 +153,6 @@ export const gameLevelMachine = setup({
 								| -1
 								| 0
 								| 1,
-							floorY: context.gameConfig.stageDimensions.height,
 							hatchRate: params.hatchRate,
 						},
 					}),
