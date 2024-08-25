@@ -87,10 +87,10 @@ export const eggMachine = setup({
 		setTargetPositionToExit: assign({
 			targetPosition: ({ context }) => ({
 				x:
-					context.position.x > 0.5 * window.innerWidth
-						? window.innerWidth + 50
+					context.position.x > 0.5 * context.gameConfig.stageDimensions.width
+						? context.gameConfig.stageDimensions.width + 50
 						: -50,
-				y: context.floorY - 60,
+				y: context.position.y,
 			}),
 		}),
 		setPositionToAnimationEndPostiion: assign({
@@ -289,9 +289,6 @@ export const eggMachine = setup({
 			onDone: 'Landed',
 		},
 		Landed: {
-			// Set this in the Landed state so the chick is already
-			// facing the right direction based on its exit direction
-			entry: 'setTargetPositionToExit',
 			always: [
 				{
 					guard: 'eggCanHatch',
@@ -367,7 +364,7 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			tags: 'chick',
-			entry: log('Exiting'),
+			entry: [log('Exiting'), 'setTargetPositionToExit'],
 			invoke: {
 				src: 'chickExitingStageActor',
 				input: ({ context }) => ({
