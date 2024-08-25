@@ -29,15 +29,21 @@ export function Hen({
 }: {
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
-	const { henFrames, position, isLaying, movingDirection, absoluteTweenSpeed } =
-		useSelector(henActorRef, (state) => ({
-			henFrames: state.context.henAssets.sprite.frames,
-			position: state.context.position,
-			isMoving: state.matches('Moving'),
-			isLaying: state.matches('Laying Egg'),
-			movingDirection: state.context.movingDirection,
-			absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
-		}));
+	const {
+		henFrames,
+		position,
+		isLaying,
+		isMoving,
+		movingDirection,
+		absoluteTweenSpeed,
+	} = useSelector(henActorRef, (state) => ({
+		henFrames: state.context.henAssets.sprite.frames,
+		position: state.context.position,
+		isMoving: state.matches('Moving'),
+		isLaying: state.matches('Laying Egg'),
+		movingDirection: state.context.movingDirection,
+		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
+	}));
 	const [image] = useImage('images/hen.sprite.png');
 
 	const henRef = useRef<Konva.Image>(null);
@@ -70,15 +76,18 @@ export function Hen({
 				setFrameName(frameName);
 				break;
 			}
-			case movingDirection === 'left': {
-				const walkLeftFrameNames: HenFrameName[] = [
-					'walk-left-1.png',
-					'walk-left-2.png',
-					'walk-left-3.png',
-					'walk-left-4.png',
+			case isMoving: {
+				if (movingDirection === 'none') {
+					return;
+				}
+				const walkFrameNames: HenFrameName[] = [
+					`walk-${movingDirection}-1.png`,
+					`walk-${movingDirection}-2.png`,
+					`walk-${movingDirection}-3.png`,
+					`walk-${movingDirection}-4.png`,
 				];
 				// First change frameName immediately as soon as the hen starts moving
-				setFrameName('walk-left-1.png');
+				setFrameName(walkFrameNames[0]);
 				// Calculate intervalMS based on tweenSpeed where higher tweenSpeed results
 				// in a lower intervalMS within the animationIntervalMSRange
 				const intervalMS = Math.max(
@@ -87,37 +96,11 @@ export function Hen({
 				);
 				interval = setInterval(() => {
 					setFrameName((prevFrameName) => {
-						const index = walkLeftFrameNames.indexOf(prevFrameName);
-						if (index === -1 || index === walkLeftFrameNames.length - 1) {
-							return walkLeftFrameNames[0];
+						const index = walkFrameNames.indexOf(prevFrameName);
+						if (index === -1 || index === walkFrameNames.length - 1) {
+							return walkFrameNames[0];
 						}
-						return walkLeftFrameNames[index + 1];
-					});
-				}, intervalMS);
-				break;
-			}
-			case movingDirection === 'right': {
-				const walkRightFrameNames: HenFrameName[] = [
-					'walk-right-1.png',
-					'walk-right-2.png',
-					'walk-right-3.png',
-					'walk-right-4.png',
-				];
-				// First change frameName immediately as soon as the hen starts moving
-				setFrameName('walk-right-1.png');
-				// Calculate intervalMS based on tweenSpeed where higher tweenSpeed results
-				// in a lower intervalMS within the animationIntervalMSRange
-				const intervalMS = Math.max(
-					animationIntervalMSRange[0],
-					animationIntervalMSRange[1] - absoluteTweenSpeed * 100
-				);
-				interval = setInterval(() => {
-					setFrameName((prevFrameName) => {
-						const index = walkRightFrameNames.indexOf(prevFrameName);
-						if (index === -1 || index === walkRightFrameNames.length - 1) {
-							return walkRightFrameNames[0];
-						}
-						return walkRightFrameNames[index + 1];
+						return walkFrameNames[index + 1];
 					});
 				}, intervalMS);
 				break;
@@ -132,7 +115,7 @@ export function Hen({
 				clearInterval(interval);
 			}
 		};
-	}, [isLaying, movingDirection, absoluteTweenSpeed]);
+	}, [isLaying, isMoving, movingDirection, absoluteTweenSpeed]);
 
 	let currentFrame = henFrames[frameName].frame;
 
