@@ -188,16 +188,13 @@ export const eggMachine = setup({
 			on: {
 				'Notify of animation position': {
 					guard: 'isEggNearChefPot',
-					actions: [
-						log('Notify of animation position recevied in egg.machine'),
-						{
-							type: 'notifyParentOfPosition',
-							params: ({ context, event }) => ({
-								eggId: context.id,
-								position: event.position,
-							}),
-						},
-					],
+					actions: {
+						type: 'notifyParentOfPosition',
+						params: ({ context, event }) => ({
+							eggId: context.id,
+							position: event.position,
+						}),
+					},
 				},
 				Catch: {
 					target: 'Done',
