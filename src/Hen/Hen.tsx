@@ -66,8 +66,8 @@ export function Hen({
 			case isLaying: {
 				// Randomly choose laying frame
 				const layingFrameNames: HenFrameName[] = [
-					// 'back-left.png',
-					// 'back-right.png',
+					'back-left.png',
+					'back-right.png',
 					'jump-1.png',
 					'jump-2.png',
 				];
