@@ -87,11 +87,6 @@ function App() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	// const [bgImage] = useImage('images/kitchen-bg-1.png');
-	// const [bgImage] = useImage('images/kitchen-bg-2.png');
-	// const [bgImage] = useImage('images/kitchen-bg-3.png');
-	const [bgImage] = useImage('images/kitchen-bg-4.png');
-
 	if (showError) {
 		return <div>Error loading the game...</div>;
 	}
@@ -100,13 +95,9 @@ function App() {
 		return <div>Loading...</div>;
 	}
 
-	if (showGameIntro) {
-		return (
-			<Stage
-				width={gameConfig.stageDimensions.width}
-				height={gameConfig.stageDimensions.height}
-				style={{ background: 'blue', border: '1px solid black' }}
-			>
+	return (
+		<KonvaStageAndBackground>
+			{showGameIntro ? (
 				<Layer>
 					<Text
 						x={gameConfig.stageDimensions.width / 2 - 200}
@@ -125,26 +116,8 @@ function App() {
 						onClick={() => appActorRef.send({ type: 'Play' })}
 					/>
 				</Layer>
-			</Stage>
-		);
-	}
-
-	if (showGamePlay) {
-		return (
-			<>
-				<Stage
-					width={gameConfig.stageDimensions.width}
-					height={gameConfig.stageDimensions.height}
-					style={{ background: 'blue', border: '1px solid black' }}
-				>
-					{/* Background graphics layer - static */}
-					<Layer listening={false}>
-						<Image
-							image={bgImage}
-							width={gameConfig.stageDimensions.width}
-							height={gameConfig.stageDimensions.height}
-						/>
-					</Layer>
+			) : (
+				<>
 					{isInitializingLevel ? (
 						// Init level UI
 						<Layer>
@@ -184,12 +157,64 @@ function App() {
 							gameLevelActorRef={gameLevelActorRef}
 						/>
 					) : null}
-				</Stage>
-				<DevPanel />
-				<button onClick={() => appActorRef.send({ type: 'Quit' })}>Quit</button>
-			</>
-		);
-	}
+				</>
+			)}
+		</KonvaStageAndBackground>
+	);
+}
+
+function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
+	const { gameConfig } = AppActorContext.useSelector((state) => ({
+		gameConfig: state.context.gameConfig,
+		showError: state.matches('Show Error'),
+		isLoading: state.matches('Loading'),
+		showGameIntro: state.matches('Intro'),
+		showGamePlay: state.matches('Game Play'),
+		isInitializingLevel: state.hasTag('init level'),
+		isBetweenLevels: state.hasTag('between levels'),
+		gameScore: state.context.gameScore,
+	}));
+
+	// const [bgImage] = useImage('images/kitchen-bg-1.png');
+	// const [bgImage] = useImage('images/kitchen-bg-2.png');
+	// const [bgImage] = useImage('images/kitchen-bg-3.png');
+	const [bgImage] = useImage('images/kitchen-bg-4.png');
+	// const [henBeamImage] = useImage('images/hen-beam-brown.png');
+	const [henBeamImage] = useImage('images/hen-beam-gray.png');
+
+	return (
+		<>
+			<Stage
+				width={gameConfig.stageDimensions.width}
+				height={gameConfig.stageDimensions.height}
+				style={{ background: 'blue', border: '1px solid black' }}
+			>
+				{/* Background graphics layer - static */}
+				<Layer listening={false}>
+					<Image
+						image={bgImage}
+						width={gameConfig.stageDimensions.width}
+						height={gameConfig.stageDimensions.height}
+					/>
+					<Rect
+						width={gameConfig.stageDimensions.width}
+						height={gameConfig.stageDimensions.height}
+						opacity={0.5}
+						fill="black"
+						y={0}
+					/>
+					<Image
+						image={henBeamImage}
+						width={gameConfig.stageDimensions.width}
+						height={35}
+						y={80}
+					/>
+				</Layer>
+				{children}
+			</Stage>
+			<DevPanel />
+		</>
+	);
 }
 
 export default App;
