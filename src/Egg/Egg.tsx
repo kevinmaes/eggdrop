@@ -77,37 +77,18 @@ export function Egg({
 				setCurrentChickFrameName('chick-forward-1.png');
 				break;
 			}
-			case isExiting && isFacingLeft: {
-				const chickRunLeftFrameNames: ChickFrameName[] = [
-					'chick-run-left-1.png',
-					'chick-run-left-2.png',
-				];
-				console.log('isExiting && isFacingLeft');
-				setCurrentChickFrameName(chickRunLeftFrameNames[0]);
+			case isExiting: {
+				const chikRunFrame: ChickFrameName[] = isFacingLeft
+					? ['chick-run-left-1.png', 'chick-run-left-2.png']
+					: ['chick-run-right-1.png', 'chick-run-right-2.png'];
+				setCurrentChickFrameName(chikRunFrame[0]);
 				interval = setInterval(() => {
 					setCurrentChickFrameName((prevFrameName) => {
-						const index = chickRunLeftFrameNames.indexOf(prevFrameName);
-						if (index === -1 || index === chickRunLeftFrameNames.length - 1) {
-							return chickRunLeftFrameNames[0];
+						const index = chikRunFrame.indexOf(prevFrameName);
+						if (index === -1 || index === chikRunFrame.length - 1) {
+							return chikRunFrame[0];
 						}
-						return chickRunLeftFrameNames[index + 1];
-					});
-				}, 100);
-				break;
-			}
-			case isExiting && !isFacingLeft: {
-				const chickRunRightFrameNames: ChickFrameName[] = [
-					'chick-run-right-1.png',
-					'chick-run-right-2.png',
-				];
-				setCurrentChickFrameName(chickRunRightFrameNames[0]);
-				interval = setInterval(() => {
-					setCurrentChickFrameName((prevFrameName) => {
-						const index = chickRunRightFrameNames.indexOf(prevFrameName);
-						if (index === -1 || index === chickRunRightFrameNames.length - 1) {
-							return chickRunRightFrameNames[0];
-						}
-						return chickRunRightFrameNames[index + 1];
+						return chikRunFrame[index + 1];
 					});
 				}, 100);
 				break;
