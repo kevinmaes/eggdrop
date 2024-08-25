@@ -11,8 +11,8 @@ export function getGameConfig() {
 		stageDimensions.height - chefHeight - stageDimensions.margin;
 
 	// The duration in seconds for the egg to fall from the hen to the ground
-	// Somewhere between 0.1 and 0.5 is reasonable.
-	const eggFallingSpeed = 0.2;
+	// Somewhere between 0.25 and 0.75 is reasonable.
+	const eggFallingSpeed = 0.5;
 
 	const henSize = 150;
 
