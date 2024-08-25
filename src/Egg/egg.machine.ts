@@ -130,9 +130,9 @@ export const eggMachine = setup({
 		}),
 		playHatchSound: () => {
 			sounds.hatch.play();
-			setTimeout(() => {
-				sounds.yipee.play();
-			}, 500);
+		},
+		playHatchYipeeSound: () => {
+			sounds.yipee.play();
 		},
 	},
 }).createMachine({
@@ -305,6 +305,7 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
+			entry: 'playHatchYipeeSound',
 			initial: 'Jumping Up',
 			states: {
 				'Jumping Up': {
