@@ -1,4 +1,4 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, log } from 'xstate';
 import { Position } from '../GameLevel/types';
 import { sounds } from '../sounds';
 import Konva from 'konva';
@@ -72,13 +72,21 @@ export const eggMachine = setup({
 			return Math.random() < context.hatchRate;
 		},
 		isEggNearChefPot: ({ context }) => {
+			return true;
 			if (!context.eggRef.current) return false;
-			return (
+			// console.log('isEggNearChefPot guard', context.eggRef.current.y());
+			const isEggNearChefPot =
 				context.eggRef.current.y() >= context.gameConfig.chef.potRim.y &&
 				context.eggRef.current.y() <=
 					context.gameConfig.chef.potRim.y +
-						context.gameConfig.chef.potRim.height
+						context.gameConfig.chef.potRim.height;
+
+			console.log(
+				'isEggNearChefPot',
+				isEggNearChefPot,
+				context.eggRef.current.y()
 			);
+			return isEggNearChefPot;
 		},
 	},
 	actions: {
@@ -100,12 +108,22 @@ export const eggMachine = setup({
 		setPositionToAnimationEndPostiion: assign({
 			position: (_, params: Position) => params,
 		}),
+		// notifyParentOfPosition: sendParent(
+		// 	(_, params: { eggId: string; position: Position }) => ({
+		// 		type: 'Egg position updated',
+		// 		eggId: params.eggId,
+		// 		position: params.position,
+		// 	})
+		// ),
 		notifyParentOfPosition: sendParent(
-			(_, params: { eggId: string; position: Position }) => ({
-				type: 'Egg position updated',
-				eggId: params.eggId,
-				position: params.position,
-			})
+			(_, params: { eggId: string; position: Position }) => {
+				// console.log('notifyParentOfPosition', params);
+				return {
+					type: 'Egg position updated',
+					eggId: params.eggId,
+					position: params.position,
+				};
+			}
 		),
 		splatOnFloor: assign({
 			position: ({ context }) => ({
@@ -183,13 +201,16 @@ export const eggMachine = setup({
 			on: {
 				'Notify of animation position': {
 					guard: 'isEggNearChefPot',
-					actions: {
-						type: 'notifyParentOfPosition',
-						params: ({ context, event }) => ({
-							eggId: context.id,
-							position: event.position,
-						}),
-					},
+					actions: [
+						// log('Notify of animation position recevied in egg.machine'),
+						{
+							type: 'notifyParentOfPosition',
+							params: ({ context, event }) => ({
+								eggId: context.id,
+								position: event.position,
+							}),
+						},
+					],
 				},
 				Catch: {
 					target: 'Done',
@@ -203,10 +224,10 @@ export const eggMachine = setup({
 				'Init Falling': {
 					always: [
 						{
-							target: 'Straight Down',
 							guard: 'isHenMoving',
+							target: 'At an Angle',
 						},
-						{ target: 'At an Angle' },
+						{ target: 'Straight Down' },
 					],
 				},
 				'Straight Down': {

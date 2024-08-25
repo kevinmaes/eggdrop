@@ -18,7 +18,7 @@ export function getGameConfig() {
 
 	const gameConfig = {
 		// The number of hens in the game
-		populationSize: 10,
+		populationSize: 1,
 		// The duration each level lasts in milliseconds
 		levelDurationMS: 100_000,
 		stageDimensions,
@@ -64,6 +64,10 @@ export function getGameConfig() {
 				white: 1,
 				gold: 10,
 				black: -5,
+			},
+			fallingEgg: {
+				width: 30,
+				height: 30,
 			},
 			brokenEgg: {
 				width: 60,
@@ -112,8 +116,7 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed is the x speed of the hen
-		// speed: Math.random() * 3,
-		speed: 1,
+		speed: Math.random(),
 
 		// baseTweenDurationSeconds is the base duration for the tween
 		// baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
@@ -124,12 +127,12 @@ export function getInitialChromosomeValues() {
 		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped
-		stationaryEggLayingRate: Math.random(),
-		// stationaryEggLayingRate: 0,
+		// stationaryEggLayingRate: Math.random(),
+		stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
-		movingEggLayingRate: Math.random(),
-		// movingEggLayingRate: 1,
+		// movingEggLayingRate: Math.random(),
+		movingEggLayingRate: 0,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,

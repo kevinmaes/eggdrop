@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -346,15 +346,19 @@ export const gameLevelMachine = setup({
 				height: potRimHitHeight,
 			} = context.chefPotRimHitRef.current?.getClientRect();
 
-			if (position.y < potRimHitY) {
+			// Consider the leading edge of the egg for the hit test
+			const eggLeadingEdgeYPos =
+				position.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+
+			if (eggLeadingEdgeYPos < potRimHitY) {
 				return false;
 			}
 
 			return (
 				position.x >= potRimHitX &&
 				position.x <= potRimHitX + potRimHitWidth &&
-				position.y >= potRimHitY &&
-				position.y <= potRimHitY + potRimHitHeight
+				eggLeadingEdgeYPos >= potRimHitY &&
+				eggLeadingEdgeYPos <= potRimHitY + potRimHitHeight
 			);
 		},
 	},
@@ -437,6 +441,7 @@ export const gameLevelMachine = setup({
 		'Egg position updated': {
 			guard: 'testPotRimHit',
 			actions: [
+				log('gameLevelMachine: Egg position updated'),
 				sendTo('chefMachine', { type: 'Catch' }),
 				'playCatchEggSound',
 				// Sending Catch to the eggActor will lead to final state
