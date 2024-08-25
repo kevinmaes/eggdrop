@@ -97,7 +97,7 @@ const appMachine = setup({
 						id: nanoid(),
 						initialPosition: {
 							x: context.gameConfig.hen.offstageLeftX,
-							y: 10,
+							y: context.gameConfig.hen.y,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,
 						baseTweenDurationSeconds:
