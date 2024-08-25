@@ -13,6 +13,7 @@ type ChickFrameName =
 	| 'egg-broken-white.png'
 	| 'egg-broken-black.png'
 	| 'chick-forward-1.png'
+	| 'chick-forward-2.png'
 	| 'chick-run-left-1.png'
 	| 'chick-run-left-2.png'
 	| 'chick-run-right-1.png'
@@ -29,8 +30,9 @@ export function Egg({
 
 	const {
 		gameConfig,
-		isFacingLeft,
+		exitingDirection,
 		isHatching,
+		isHatched,
 		isBroken,
 		isExiting,
 		isDone,
@@ -40,14 +42,22 @@ export function Egg({
 		// chickFrameNames,
 		color,
 	} = useSelector(eggActorRef, (state) => {
+		const isExiting = state.matches('Exiting');
+		let exitingDirection: 'none' | 'left' | 'right' = 'none';
+		if (isExiting) {
+			if (state.context.targetPosition.x < state.context.position.x) {
+				exitingDirection = 'left';
+			} else {
+				exitingDirection = 'right';
+			}
+		}
 		return {
 			gameConfig: state.context.gameConfig,
-			isFacingLeft:
-				state.hasTag('chick') &&
-				state.context.targetPosition.x < state.context.position.x,
+			isExiting,
+			exitingDirection,
 			isHatching: state.matches('Hatching'),
+			isHatched: state.matches('Hatched'),
 			isBroken: state.matches('Splatting'),
-			isExiting: state.matches('Exiting'),
 			isDone: state.matches('Done'),
 			eggFrames: state.context.eggAssets.sprite.frames,
 			eggFrameNames: Object.keys(state.context.eggAssets.sprite.frames),
@@ -74,13 +84,18 @@ export function Egg({
 
 		switch (true) {
 			case isHatching: {
+				setCurrentChickFrameName('chick-forward-2.png');
+				break;
+			}
+			case isHatched: {
 				setCurrentChickFrameName('chick-forward-1.png');
 				break;
 			}
-			case isExiting: {
-				const chikRunFrame: ChickFrameName[] = isFacingLeft
-					? ['chick-run-left-1.png', 'chick-run-left-2.png']
-					: ['chick-run-right-1.png', 'chick-run-right-2.png'];
+			case isExiting && exitingDirection !== 'none': {
+				const chikRunFrame: ChickFrameName[] = [
+					`chick-run-${exitingDirection}-1.png`,
+					`chick-run-${exitingDirection}-2.png`,
+				];
 				setCurrentChickFrameName(chikRunFrame[0]);
 				interval = setInterval(() => {
 					setCurrentChickFrameName((prevFrameName) => {
@@ -102,14 +117,14 @@ export function Egg({
 				clearInterval(interval);
 			}
 		};
-	}, [isExiting]);
+	}, [isHatching, isHatched, isExiting, exitingDirection]);
 
 	if (isDone) {
 		console.log('eggState.matches Done');
 		return null;
 	}
 
-	if (isHatching) {
+	if (isHatching || isHatched) {
 		const currentChickFrame = chickFrames[currentChickFrameName].frame;
 		return (
 			<KonvaImage

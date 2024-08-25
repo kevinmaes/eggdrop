@@ -59,6 +59,7 @@ export const eggMachine = setup({
 		staticFallingActor: tweenActor,
 		movingFallingActor: eggMotionActor,
 		chickExitingStageActor: tweenActor,
+		hatchingAnimation: tweenActor,
 	},
 	guards: {
 		isHenMoving: ({ context }) => context.henIsMoving,
@@ -304,12 +305,55 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
-			tags: 'chick',
-			entry: assign({
-				resultStatus: 'Hatched',
-			}),
+			initial: 'Jumping Up',
+			states: {
+				'Jumping Up': {
+					invoke: {
+						src: 'hatchingAnimation',
+						input: ({ context }) => ({
+							node: context.eggRef.current,
+							tween: new Konva.Tween({
+								node: context.eggRef.current!,
+								duration: 0.4,
+								x: context.position.x,
+								y: context.position.y - 70,
+								easing: Konva.Easings.EaseOut,
+							}),
+						}),
+						onDone: 'Bouncing Down',
+					},
+				},
+				'Bouncing Down': {
+					invoke: {
+						src: 'hatchingAnimation',
+						input: ({ context }) => ({
+							node: context.eggRef.current,
+							tween: new Konva.Tween({
+								node: context.eggRef.current!,
+								y: context.eggRef.current!.y() + 70,
+								duration: 0.4,
+								easing: Konva.Easings.BounceEaseOut,
+							}),
+						}),
+						onDone: 'Animation Done',
+					},
+				},
+				'Animation Done': {
+					entry: log('Animation Done'),
+					type: 'final',
+				},
+			},
+			onDone: 'Hatched',
+		},
+		Hatched: {
+			entry: [
+				log('Hatched'),
+				assign({
+					resultStatus: 'Hatched',
+				}),
+			],
 			after: {
-				1000: 'Exiting',
+				500: 'Exiting',
 			},
 		},
 		Splatting: {
@@ -322,6 +366,7 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			tags: 'chick',
+			entry: log('Exiting'),
 			invoke: {
 				src: 'chickExitingStageActor',
 				input: ({ context }) => ({
