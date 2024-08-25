@@ -82,6 +82,7 @@ export function Egg({
 					'chick-run-left-1.png',
 					'chick-run-left-2.png',
 				];
+				console.log('isExiting && isFacingLeft');
 				setCurrentChickFrameName(chickRunLeftFrameNames[0]);
 				interval = setInterval(() => {
 					setCurrentChickFrameName((prevFrameName) => {
@@ -90,6 +91,23 @@ export function Egg({
 							return chickRunLeftFrameNames[0];
 						}
 						return chickRunLeftFrameNames[index + 1];
+					});
+				}, 100);
+				break;
+			}
+			case isExiting && !isFacingLeft: {
+				const chickRunRightFrameNames: ChickFrameName[] = [
+					'chick-run-right-1.png',
+					'chick-run-right-2.png',
+				];
+				setCurrentChickFrameName(chickRunRightFrameNames[0]);
+				interval = setInterval(() => {
+					setCurrentChickFrameName((prevFrameName) => {
+						const index = chickRunRightFrameNames.indexOf(prevFrameName);
+						if (index === -1 || index === chickRunRightFrameNames.length - 1) {
+							return chickRunRightFrameNames[0];
+						}
+						return chickRunRightFrameNames[index + 1];
 					});
 				}, 100);
 				break;
@@ -133,10 +151,7 @@ export function Egg({
 	}
 
 	if (isExiting) {
-		const frameName = isFacingLeft
-			? 'chick-run-left-1.png'
-			: 'chick-run-right-1.png';
-		const chickFrame = chickFrames[frameName].frame;
+		const chickFrame = chickFrames[currentChickFrameName].frame;
 		return (
 			<KonvaImage
 				ref={eggRef}

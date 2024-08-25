@@ -142,7 +142,8 @@ export function getInitialChromosomeValues() {
 		goldEggRate,
 
 		// The rate at which the eggs will hatch when they land on the ground
-		hatchRate: Math.random(),
+		// hatchRate: Math.random(),
+		hatchRate: 1,
 
 		// The minimum xPos the hen can be at
 		minX,
