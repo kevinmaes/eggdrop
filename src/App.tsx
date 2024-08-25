@@ -61,7 +61,7 @@ function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
 	);
 }
 
-const App = () => {
+function App() {
 	const appActorRef = AppActorContext.useActorRef();
 	const {
 		gameConfig,
@@ -190,6 +190,6 @@ const App = () => {
 			</>
 		);
 	}
-};
+}
 
 export default App;
