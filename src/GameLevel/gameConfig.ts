@@ -49,7 +49,7 @@ export function getGameConfig() {
 			height: henSize,
 			offstageLeftX: -henSize,
 			offstageRightX: stageDimensions.width + henSize,
-			y: 7,
+			y: 8,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
 			buttXOffset: 40,

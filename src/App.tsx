@@ -88,8 +88,9 @@ const App = () => {
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
 	// const [bgImage] = useImage('images/kitchen-bg-1.png');
-	const [bgImage] = useImage('images/kitchen-bg-2.png');
+	// const [bgImage] = useImage('images/kitchen-bg-2.png');
 	// const [bgImage] = useImage('images/kitchen-bg-3.png');
+	const [bgImage] = useImage('images/kitchen-bg-4.png');
 
 	if (showError) {
 		return <div>Error loading the game...</div>;
