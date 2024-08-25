@@ -328,15 +328,10 @@ export const gameLevelMachine = setup({
 	},
 	guards: {
 		isCountdownDone: (_, params: { done: boolean }) => params.done,
-		testPotRimHit: ({ context, event }) => {
+		testPotRimHit: ({ context }, params: Position) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}
-			if (!('position' in event)) {
-				return false;
-			}
-
-			const { position } = event;
 
 			// Pot rim hit box
 			const {
@@ -348,15 +343,15 @@ export const gameLevelMachine = setup({
 
 			// Consider the leading edge of the egg for the hit test
 			const eggLeadingEdgeYPos =
-				position.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+				params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
 
 			if (eggLeadingEdgeYPos < potRimHitY) {
 				return false;
 			}
 
 			return (
-				position.x >= potRimHitX &&
-				position.x <= potRimHitX + potRimHitWidth &&
+				params.x >= potRimHitX &&
+				params.x <= potRimHitX + potRimHitWidth &&
 				eggLeadingEdgeYPos >= potRimHitY &&
 				eggLeadingEdgeYPos <= potRimHitY + potRimHitHeight
 			);
@@ -439,7 +434,10 @@ export const gameLevelMachine = setup({
 			],
 		},
 		'Egg position updated': {
-			guard: 'testPotRimHit',
+			guard: {
+				type: 'testPotRimHit',
+				params: ({ event }) => event.position,
+			},
 			actions: [
 				log('gameLevelMachine: Egg position updated'),
 				sendTo('chefMachine', { type: 'Catch' }),
