@@ -83,6 +83,8 @@ function App() {
 		gameScore: state.context.gameScore,
 	}));
 
+	const [titleImage] = useImage('images/egg-drop-title-0.png');
+
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
@@ -99,19 +101,30 @@ function App() {
 		<KonvaStageAndBackground>
 			{showGameIntro ? (
 				<Layer>
-					<Text
-						x={gameConfig.stageDimensions.width / 2 - 200}
-						y={gameConfig.stageDimensions.height / 2 - 50}
-						text="EGG DROP"
-						fontSize={80}
-						fontFamily="Arial"
+					<Rect
+						width={1000}
+						height={500}
+						x={0.5 * gameConfig.stageDimensions.width - 500}
+						y={0.5 * gameConfig.stageDimensions.height - 250}
+						borderRadius={60}
 						fill="black"
+						opacity={0.5}
+						stroke="white"
+						strokeWidth={10}
+						cornerRadius={20}
+					/>
+					<Image
+						image={titleImage}
+						width={900}
+						height={405}
+						x={0.5 * gameConfig.stageDimensions.width - 450}
+						y={0.5 * gameConfig.stageDimensions.height - 202}
 					/>
 					<KonvaButton
-						x={gameConfig.stageDimensions.width / 2 - 150}
-						y={400}
-						width={300}
-						height={100}
+						x={gameConfig.stageDimensions.width / 2 - 60}
+						y={490}
+						width={200}
+						height={60}
 						text="Play"
 						onClick={() => appActorRef.send({ type: 'Play' })}
 					/>
