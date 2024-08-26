@@ -7,7 +7,7 @@ import { ActorRefFrom } from 'xstate';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import useImage from 'use-image';
-import { Image as KonvaImage } from 'react-konva';
+import { Image } from 'react-konva';
 import { SpriteData } from '../types/assets';
 
 type ChefFrameName = 'chef-catch.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
@@ -141,7 +141,7 @@ export function Chef({}: // dimensions,
 
 	return (
 		<>
-			<KonvaImage
+			<Image
 				ref={chefRef}
 				image={image}
 				x={position.x}

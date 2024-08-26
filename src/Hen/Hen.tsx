@@ -1,4 +1,4 @@
-import { Image as KonvaImage } from 'react-konva';
+import { Image } from 'react-konva';
 import useImage from 'use-image';
 // import imageFile from '../assets/hen1.png';
 import { useSelector } from '@xstate/react';
@@ -120,7 +120,7 @@ export function Hen({
 	let currentFrame = henFrames[frameName].frame;
 
 	return (
-		<KonvaImage
+		<Image
 			ref={henRef}
 			image={image}
 			x={position.x}
