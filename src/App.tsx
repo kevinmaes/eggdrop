@@ -68,7 +68,6 @@ function App() {
 		isLoading,
 		showError,
 		showGameIntro,
-		showGamePlay,
 		isInitializingLevel,
 		isBetweenLevels,
 		gameScore,
@@ -88,10 +87,6 @@ function App() {
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
-
-	// const [bgImage] = useImage('images/kitchen-bg-1.png');
-	const [bgImage] = useImage('images/kitchen-bg-2.png');
-	// const [bgImage] = useImage('images/kitchen-bg-3.png');
 
 	if (showError) {
 		return <div>Error loading the game...</div>;
@@ -192,11 +187,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 		gameScore: state.context.gameScore,
 	}));
 
-	// const [bgImage] = useImage('images/kitchen-bg-1.png');
-	// const [bgImage] = useImage('images/kitchen-bg-2.png');
-	// const [bgImage] = useImage('images/kitchen-bg-3.png');
 	const [bgImage] = useImage('images/kitchen-bg-4.png');
-	// const [henBeamImage] = useImage('images/hen-beam-brown.png');
 	const [henBeamImage] = useImage('images/hen-beam-gray.png');
 
 	return (
