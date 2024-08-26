@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendParent, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
@@ -123,12 +123,13 @@ export const gameLevelMachine = setup({
 					henId: string;
 					henPosition: Position;
 					henCurentTweenSpeed: number;
+					henButtXOffset: number;
+					henButtYOffset: number;
 					henCurrentTweenDirection: -1 | 0 | 1;
 					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 				}
 			) => {
-				const eggHenButtYOffset = 35;
 				const eggId = nanoid();
 				// Spawn and add a new egg.
 				return [
@@ -138,9 +139,11 @@ export const gameLevelMachine = setup({
 						input: {
 							gameConfig: context.gameConfig,
 							id: eggId,
+							eggAssets: context.gameAssets.egg,
+							chickAssets: context.gameAssets.chick,
 							position: {
-								x: params.henPosition.x,
-								y: params.henPosition.y + eggHenButtYOffset,
+								x: params.henPosition.x + params.henButtXOffset,
+								y: params.henPosition.y + params.henButtYOffset,
 							},
 							color: params.eggColor,
 							henId: params.henId,
@@ -150,7 +153,6 @@ export const gameLevelMachine = setup({
 								| -1
 								| 0
 								| 1,
-							floorY: context.gameConfig.stageDimensions.height,
 							hatchRate: params.hatchRate,
 						},
 					}),
@@ -324,19 +326,11 @@ export const gameLevelMachine = setup({
 		countdownTimer,
 	},
 	guards: {
-		isCountdownDone: (_, params: { done: boolean }) => {
-			console.log('guard isCountdownDone', params.done);
-			return params.done;
-		},
-		testPotRimHit: ({ context, event }) => {
+		isCountdownDone: (_, params: { done: boolean }) => params.done,
+		testPotRimHit: ({ context }, params: Position) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
 			}
-			if (!('position' in event)) {
-				return false;
-			}
-
-			const { position } = event;
 
 			// Pot rim hit box
 			const {
@@ -346,15 +340,19 @@ export const gameLevelMachine = setup({
 				height: potRimHitHeight,
 			} = context.chefPotRimHitRef.current?.getClientRect();
 
-			if (position.y < potRimHitY) {
+			// Consider the leading edge of the egg for the hit test
+			const eggLeadingEdgeYPos =
+				params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+
+			if (eggLeadingEdgeYPos < potRimHitY) {
 				return false;
 			}
 
 			return (
-				position.x >= potRimHitX &&
-				position.x <= potRimHitX + potRimHitWidth &&
-				position.y >= potRimHitY &&
-				position.y <= potRimHitY + potRimHitHeight
+				params.x >= potRimHitX &&
+				params.x <= potRimHitX + potRimHitWidth &&
+				eggLeadingEdgeYPos >= potRimHitY &&
+				eggLeadingEdgeYPos <= potRimHitY + potRimHitHeight
 			);
 		},
 	},
@@ -413,9 +411,11 @@ export const gameLevelMachine = setup({
 			actions: [
 				{
 					type: 'spawnNewEggForHen',
-					params: ({ event }) => ({
+					params: ({ context, event }) => ({
 						henId: event.henId,
 						henPosition: event.henPosition,
+						henButtXOffset: context.gameConfig.hen.buttXOffset,
+						henButtYOffset: context.gameConfig.hen.buttYOffset,
 						henCurentTweenSpeed: event.henCurentTweenSpeed,
 						henCurrentTweenDirection: event.henCurrentTweenDirection,
 						eggColor: event.eggColor,
@@ -433,8 +433,12 @@ export const gameLevelMachine = setup({
 			],
 		},
 		'Egg position updated': {
-			guard: 'testPotRimHit',
+			guard: {
+				type: 'testPotRimHit',
+				params: ({ event }) => event.position,
+			},
 			actions: [
+				log('gameLevelMachine: Egg position updated'),
 				sendTo('chefMachine', { type: 'Catch' }),
 				'playCatchEggSound',
 				// Sending Catch to the eggActor will lead to final state

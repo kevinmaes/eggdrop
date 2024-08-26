@@ -11,14 +11,16 @@ export function getGameConfig() {
 		stageDimensions.height - chefHeight - stageDimensions.margin;
 
 	// The duration in seconds for the egg to fall from the hen to the ground
-	// Somewhere between 0.1 and 0.5 is reasonable.
-	const eggFallingSpeed = 0.2;
+	// Somewhere between 0.25 and 0.75 is reasonable.
+	const eggFallingSpeed = 0.5;
+
+	const henSize = 150;
 
 	const gameConfig = {
 		// The number of hens in the game
-		populationSize: 20,
+		populationSize: 10,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 10_000,
+		levelDurationMS: 100_000,
 		stageDimensions,
 		chef: {
 			x: stageDimensions.width / 2 - 0.5 * chefWidth,
@@ -43,9 +45,15 @@ export function getGameConfig() {
 			},
 		},
 		hen: {
-			y: 10,
+			width: henSize,
+			height: henSize,
+			offstageLeftX: -henSize,
+			offstageRightX: stageDimensions.width + henSize,
+			y: 8,
 			// The delay between each hen entering the stage
-			staggeredEntranceDelay: 1000,
+			staggeredEntranceDelay: 2000,
+			buttXOffset: 40,
+			buttYOffset: 65,
 		},
 		egg: {
 			fallingSpeed: eggFallingSpeed,
@@ -57,9 +65,13 @@ export function getGameConfig() {
 				gold: 10,
 				black: -5,
 			},
+			fallingEgg: {
+				width: 30,
+				height: 30,
+			},
 			brokenEgg: {
-				width: 50,
-				height: 42,
+				width: 60,
+				height: 60,
 			},
 			chick: {
 				width: 60,
@@ -79,14 +91,16 @@ export function getGameConfig() {
 export function getInitialChromosomeValues() {
 	const gameConfig = getGameConfig();
 	// The minimum xPos the hen can be at
-	let minX = Math.round(Math.random() * gameConfig.stageDimensions.width);
+	let minX = Math.round(
+		Math.random() * 0.25 * gameConfig.stageDimensions.width
+	);
 
 	// The maximum xPos the hen can be at
-	let maxX = Math.round(Math.random() * gameConfig.stageDimensions.width);
+	let maxX = gameConfig.stageDimensions.width - minX;
 
-	if (minX > maxX) {
-		[minX, maxX] = [maxX, minX];
-	}
+	// if (minX > maxX) {
+	// 	[minX, maxX] = [maxX, minX];
+	// }
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
@@ -102,22 +116,23 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed is the x speed of the hen
-		speed: Math.random() * 3,
+		speed: Math.random(),
 
 		// baseTweenDurationSeconds is the base duration for the tween
-		baseTweenDurationSeconds: Math.ceil(Math.random() * 10),
+		// baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
+		baseTweenDurationSeconds: 1,
 
 		// maxEggs can range between -1 and 50, -1 means no limit
-		maxEggs: Math.round(Math.random() * 51) - 1,
-		// maxEggs: -1,
+		// maxEggs: Math.round(Math.random() * 51) - 1,
+		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped
-		stationaryEggLayingRate: Math.random(),
-		// stationaryEggLayingRate: 1,
+		// stationaryEggLayingRate: Math.random(),
+		stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
-		movingEggLayingRate: Math.random(),
-		// movingEggLayingRate: 0,
+		// movingEggLayingRate: Math.random(),
+		movingEggLayingRate: 0,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
@@ -128,7 +143,7 @@ export function getInitialChromosomeValues() {
 
 		// The rate at which the eggs will hatch when they land on the ground
 		// hatchRate: Math.random(),
-		hatchRate: 0.5,
+		hatchRate: 1,
 
 		// The minimum xPos the hen can be at
 		minX,
