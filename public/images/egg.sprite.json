@@ -1,0 +1,39 @@
+{"frames": {
+
+"egg-black.png":
+{
+	"frame": {"x":1,"y":1,"w":30,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":30},
+	"sourceSize": {"w":30,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"egg-gold.png":
+{
+	"frame": {"x":33,"y":1,"w":30,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":30},
+	"sourceSize": {"w":30,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"egg-white.png":
+{
+	"frame": {"x":65,"y":1,"w":30,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":30,"h":30},
+	"sourceSize": {"w":30,"h":30},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "Egg Sprite.png",
+	"format": "RGBA8888",
+	"size": {"w":96,"h":32},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:62b65e61f6bc50447e4d4319199c5b2e:be1afdecb0f10af26bf9321d09621c8f:4095107e052d47ef7aa014fbd47b1c60$"
+}
+}
