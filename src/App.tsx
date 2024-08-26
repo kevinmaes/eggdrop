@@ -89,6 +89,10 @@ function App() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
+	// const [bgImage] = useImage('images/kitchen-bg-1.png');
+	const [bgImage] = useImage('images/kitchen-bg-2.png');
+	// const [bgImage] = useImage('images/kitchen-bg-3.png');
+
 	if (showError) {
 		return <div>Error loading the game...</div>;
 	}
@@ -209,6 +213,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 						width={gameConfig.stageDimensions.width}
 						height={gameConfig.stageDimensions.height}
 					/>
+					{/* Translucent overlay to mute the background image */}
 					<Rect
 						width={gameConfig.stageDimensions.width}
 						height={gameConfig.stageDimensions.height}
