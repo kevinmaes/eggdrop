@@ -7,7 +7,7 @@ import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
 import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
-import { ScoreBox } from '../ScoreBox/ScoreBox';
+import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 
 interface GameLevelProps {
 	stageDimensions: {
@@ -61,7 +61,7 @@ export function GameLevel({ gameLevelActorRef }: GameLevelProps) {
 					fontFamily="Arial"
 					fill="black"
 				/>
-				<ScoreBox />
+				<LevelScoreBox />
 			</Layer>
 		</>
 	);

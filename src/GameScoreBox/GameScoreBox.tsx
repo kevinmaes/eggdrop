@@ -1,36 +1,21 @@
-import { useSelector } from '@xstate/react';
 import { Group, Rect, Text, Image } from 'react-konva';
 import useImage from 'use-image';
 import { AppActorContext } from '../app.machine';
-import { ActorRefFrom } from 'xstate';
-import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
-export function ScoreBox() {
-	const appActorRef = AppActorContext.useActorRef();
-	const gameLevelActorRef = appActorRef.system.get(
-		'gameLevelMachine'
-	) as ActorRefFrom<typeof gameLevelMachine>;
-
-	const { gameConfig, eggFrames, levelScore } = useSelector(
-		gameLevelActorRef,
-		(state) => ({
-			gameConfig: state.context.gameConfig,
-			eggFrames: state.context.gameAssets.egg.sprite.frames,
-			levelScore: state.context.levelScore,
-			generationIndex: state.context.generationIndex,
-			remainingTime: state.context.remainingTime,
-			henActorRefs: state.context.henActorRefs,
-			eggActorRefs: state.context.eggActorRefs,
-		})
-	);
+export function GameScoreBox() {
+	const { gameConfig, eggFrames } = AppActorContext.useSelector((state) => ({
+		gameConfig: state.context.gameConfig,
+		eggFrames: state.context.gameAssets?.egg.sprite.frames ?? {},
+		generationIndex: state.context.generationIndex,
+	}));
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 	const whiteEggFrame = eggFrames['egg-white.png'].frame;
 	const goldEggFrame = eggFrames['egg-gold.png'].frame;
 
 	return (
-		<Group x={gameConfig.stageDimensions.width - 210} y={120}>
+		<Group x={0.5 * gameConfig.stageDimensions.width - 200} y={275}>
 			<Rect
-				width={200}
+				width={400}
 				height={150}
 				x={0}
 				y={0}
@@ -38,24 +23,6 @@ export function ScoreBox() {
 				fill="white"
 				cornerRadius={10}
 			/>
-			<Group x={10} y={10}>
-				<Text
-					x={0}
-					y={5}
-					text="Level Score:"
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
-				/>
-				<Text
-					x={120}
-					y={0}
-					text={`${levelScore}`}
-					fontSize={30}
-					fontFamily="Arial"
-					fill="black"
-				/>
-			</Group>
 			<Group x={10} y={50}>
 				<Text
 					x={0}
@@ -68,13 +35,12 @@ export function ScoreBox() {
 				<Text
 					x={120}
 					y={0}
-					text={`${levelScore}`}
+					text={`${1000}`}
 					fontSize={30}
 					fontFamily="Arial"
 					fill="black"
 				/>
 			</Group>
-
 			<Group y={100}>
 				<Group x={10}>
 					<Image

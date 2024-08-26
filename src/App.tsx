@@ -7,6 +7,7 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
 import useImage from 'use-image';
+import { GameScoreBox } from './GameScoreBox/GameScoreBox';
 
 interface KonvaButtonProps {
 	x: number;
@@ -145,9 +146,10 @@ function App() {
 						</Layer>
 					) : isBetweenLevels ? (
 						<Layer>
+							<GameScoreBox />
 							<KonvaButton
 								x={gameConfig.stageDimensions.width / 2 - 150}
-								y={gameConfig.stageDimensions.height / 2 - 50}
+								y={gameConfig.stageDimensions.height / 2 + 100}
 								width={300}
 								height={100}
 								text="Play next level"
