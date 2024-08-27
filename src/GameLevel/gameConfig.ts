@@ -21,7 +21,11 @@ export function getGameConfig() {
 		populationSize: 10,
 		// The duration each level lasts in milliseconds
 		levelDurationMS: 5_000,
-		stageDimensions,
+		stageDimensions: {
+			...stageDimensions,
+			midX: stageDimensions.width / 2,
+			midY: stageDimensions.height / 2,
+		},
 		chef: {
 			x: stageDimensions.width / 2 - 0.5 * chefWidth,
 			y: chefYPosition,

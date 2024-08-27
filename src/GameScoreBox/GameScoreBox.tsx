@@ -13,7 +13,7 @@ export function GameScoreBox() {
 	const goldEggFrame = eggFrames['egg-gold.png'].frame;
 
 	return (
-		<Group x={0.5 * gameConfig.stageDimensions.width - 200} y={275}>
+		<Group x={gameConfig.stageDimensions.midX - 200} y={275}>
 			<Rect
 				width={400}
 				height={150}

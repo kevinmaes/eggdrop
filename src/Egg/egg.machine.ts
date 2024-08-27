@@ -88,7 +88,7 @@ export const eggMachine = setup({
 		setTargetPositionToExit: assign({
 			targetPosition: ({ context }) => ({
 				x:
-					context.position.x > 0.5 * context.gameConfig.stageDimensions.width
+					context.position.x > context.gameConfig.stageDimensions.midX
 						? context.gameConfig.stageDimensions.width + 50
 						: -50,
 				y: context.position.y,

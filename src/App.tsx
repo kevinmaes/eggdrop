@@ -104,8 +104,8 @@ function App() {
 					<Rect
 						width={1000}
 						height={500}
-						x={0.5 * gameConfig.stageDimensions.width - 500}
-						y={0.5 * gameConfig.stageDimensions.height - 250}
+						x={gameConfig.stageDimensions.midX - 500}
+						y={gameConfig.stageDimensions.midY - 250}
 						borderRadius={60}
 						fill="black"
 						opacity={0.5}
@@ -117,8 +117,8 @@ function App() {
 						image={titleImage}
 						width={900}
 						height={405}
-						x={0.5 * gameConfig.stageDimensions.width - 450}
-						y={0.5 * gameConfig.stageDimensions.height - 202}
+						x={gameConfig.stageDimensions.midX - 450}
+						y={gameConfig.stageDimensions.midY - 202}
 					/>
 					<KonvaButton
 						x={gameConfig.stageDimensions.width / 2 - 60}
