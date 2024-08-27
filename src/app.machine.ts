@@ -10,12 +10,12 @@ import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 import { GameAssets } from './types/assets';
 
-export function getOffScreenStartXPosition(
-	stageWidth: number,
-	buffer: number = 200
-) {
-	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
-}
+// export function getOffScreenStartXPosition(
+// 	stageWidth: number,
+// 	buffer: number = 200
+// ) {
+// 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
+// }
 
 const appMachine = setup({
 	types: {} as {
@@ -78,7 +78,6 @@ const appMachine = setup({
 
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.gameConfig.populationSize; i++) {
-					console.log('i', i);
 					// Randomly select two parents from the selected parents
 					const parent1 =
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
@@ -97,10 +96,8 @@ const appMachine = setup({
 					const child = {
 						id: nanoid(),
 						initialPosition: {
-							x: getOffScreenStartXPosition(
-								context.gameConfig.stageDimensions.width
-							),
-							y: 10,
+							x: context.gameConfig.hen.offstageLeftX,
+							y: context.gameConfig.hen.y,
 						},
 						speed: (parent1.speed + parent2.speed) / 2,
 						baseTweenDurationSeconds:
@@ -158,8 +155,12 @@ const appMachine = setup({
 	},
 	actors: {
 		loadAssets: fromPromise<GameAssets>(async () => {
-			const henResult = await fetch('images/rectangles.json');
+			const henResult = await fetch('images/hen.sprite.json');
 			const henSpriteData = await henResult.json();
+			const eggResult = await fetch('images/egg.sprite.json');
+			const eggSpriteData = await eggResult.json();
+			const chickResult = await fetch('images/chick.sprite.json');
+			const chickSpriteData = await chickResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
 
@@ -168,7 +169,10 @@ const appMachine = setup({
 					sprite: henSpriteData,
 				},
 				egg: {
-					sprite: henSpriteData,
+					sprite: eggSpriteData,
+				},
+				chick: {
+					sprite: chickSpriteData,
 				},
 				chef: {
 					sprite: chefSpriteData,
@@ -190,9 +194,7 @@ const appMachine = setup({
 					id: nanoid(),
 					// Configuration
 					initialPosition: {
-						x: getOffScreenStartXPosition(
-							input.gameConfig.stageDimensions.width
-						),
+						x: input.gameConfig.hen.offstageLeftX,
 						y: input.gameConfig.hen.y,
 					},
 					...getInitialChromosomeValues(),
