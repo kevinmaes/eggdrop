@@ -82,9 +82,7 @@ export function getGameConfig() {
 	};
 
 	// Set the audio mute according to the isMuted value
-	if (gameConfig.isMuted) {
-		Howler.mute(true);
-	}
+	Howler.mute(gameConfig.isMuted);
 
 	return gameConfig;
 }
