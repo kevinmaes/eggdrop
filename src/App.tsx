@@ -71,7 +71,6 @@ function App() {
 		isInitializingLevel,
 		isBetweenLevels,
 		gameScore,
-		isMuted,
 	} = AppActorContext.useSelector((state) => ({
 		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
@@ -81,7 +80,6 @@ function App() {
 		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
 		gameScore: state.context.gameScore,
-		isMuted: state.context.isMuted,
 	}));
 
 	const [titleImage] = useImage('images/egg-drop-title-0.png');
