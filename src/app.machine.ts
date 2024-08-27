@@ -23,6 +23,7 @@ const appMachine = setup({
 			gameConfig: ReturnType<typeof getGameConfig>;
 		};
 		context: {
+			isMuted: boolean;
 			generationIndex: number;
 			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
@@ -33,6 +34,7 @@ const appMachine = setup({
 			gameScore: number;
 		};
 		events:
+			| { type: 'Toggle mute' }
 			| { type: 'Play' }
 			| { type: 'Quit' }
 			| {
@@ -41,6 +43,13 @@ const appMachine = setup({
 			  };
 	},
 	actions: {
+		toggleMute: assign({
+			isMuted: ({ context }) => {
+				const isNowMuted = !context.isMuted;
+				Howler.mute(isNowMuted);
+				return isNowMuted;
+			},
+		}),
 		gatherLastLevelResults: assign(
 			({ context }, params: { levelResults: LevelResults }) => {
 				return {
@@ -211,8 +220,14 @@ const appMachine = setup({
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
 		gameScore: 0,
+		isMuted: input.gameConfig.isMuted,
 	}),
 	id: 'Egg Drop Game',
+	on: {
+		'Toggle mute': {
+			actions: { type: 'toggleMute' },
+		},
+	},
 	initial: 'Loading',
 	states: {
 		Loading: {

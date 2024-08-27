@@ -176,7 +176,8 @@ function App() {
 }
 
 function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
-	const { gameConfig } = AppActorContext.useSelector((state) => ({
+	const appActorRef = AppActorContext.useActorRef();
+	const { gameConfig, isMuted } = AppActorContext.useSelector((state) => ({
 		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
@@ -185,6 +186,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
 		gameScore: state.context.gameScore,
+		isMuted: state.context.isMuted,
 	}));
 
 	// const [bgImage] = useImage('images/kitchen-bg-1.png');
@@ -201,7 +203,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 				height={gameConfig.stageDimensions.height}
 				style={{ background: 'blue', border: '1px solid black' }}
 			>
-				{/* Background graphics layer - static */}
+				{/* Background graphics layer - static (no events) */}
 				<Layer listening={false}>
 					<Image
 						image={bgImage}
@@ -224,6 +226,17 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 					/>
 				</Layer>
 				{children}
+				<Layer>
+					<Circle
+						x={200}
+						y={200}
+						radius={20}
+						onClick={() => {
+							appActorRef.send({ type: 'Toggle mute' });
+						}}
+						fill={isMuted ? 'black' : 'green'}
+					/>
+				</Layer>
 			</Stage>
 			<DevPanel />
 		</>
