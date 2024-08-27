@@ -17,6 +17,7 @@ export function getGameConfig() {
 	const henSize = 150;
 
 	const gameConfig = {
+		isMuted: true,
 		// The number of hens in the game
 		populationSize: 10,
 		// The duration each level lasts in milliseconds
@@ -79,6 +80,11 @@ export function getGameConfig() {
 			},
 		},
 	};
+
+	// Set the audio mute according to the isMuted value
+	if (gameConfig.isMuted) {
+		Howler.mute(true);
+	}
 
 	return gameConfig;
 }

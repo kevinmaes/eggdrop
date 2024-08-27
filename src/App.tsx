@@ -71,6 +71,7 @@ function App() {
 		isInitializingLevel,
 		isBetweenLevels,
 		gameScore,
+		isMuted,
 	} = AppActorContext.useSelector((state) => ({
 		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
@@ -80,6 +81,7 @@ function App() {
 		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
 		gameScore: state.context.gameScore,
+		isMuted: state.context.isMuted,
 	}));
 
 	const [titleImage] = useImage('images/egg-drop-title-0.png');
@@ -176,7 +178,8 @@ function App() {
 }
 
 function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
-	const { gameConfig } = AppActorContext.useSelector((state) => ({
+	const appActorRef = AppActorContext.useActorRef();
+	const { gameConfig, isMuted } = AppActorContext.useSelector((state) => ({
 		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
@@ -185,6 +188,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
 		gameScore: state.context.gameScore,
+		isMuted: state.context.isMuted,
 	}));
 
 	// const [bgImage] = useImage('images/kitchen-bg-1.png');
@@ -224,6 +228,18 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 					/>
 				</Layer>
 				{children}
+				<Layer>
+					<Circle
+						x={200}
+						y={200}
+						radius={20}
+						onClick={() => {
+							console.log('Clicked circle');
+							appActorRef.send({ type: 'Toggle mute' });
+						}}
+						fill={isMuted ? 'black' : 'green'}
+					/>
+				</Layer>
 			</Stage>
 			<DevPanel />
 		</>
