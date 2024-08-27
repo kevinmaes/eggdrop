@@ -203,7 +203,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 				height={gameConfig.stageDimensions.height}
 				style={{ background: 'blue', border: '1px solid black' }}
 			>
-				{/* Background graphics layer - static */}
+				{/* Background graphics layer - static (no events) */}
 				<Layer listening={false}>
 					<Image
 						image={bgImage}
@@ -232,7 +232,6 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 						y={200}
 						radius={20}
 						onClick={() => {
-							console.log('Clicked circle');
 							appActorRef.send({ type: 'Toggle mute' });
 						}}
 						fill={isMuted ? 'black' : 'green'}
