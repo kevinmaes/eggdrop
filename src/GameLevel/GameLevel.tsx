@@ -38,20 +38,22 @@ export function GameLevel({
 
 	return (
 		<>
+			{/* Hen layer */}
 			<Layer ref={layerRef}>
 				{henActorRefs.map((henActorRef) => (
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
 			</Layer>
+
+			{/* Chef and Egg layers (they interact) */}
 			<Layer>
 				<Chef layerRef={layerRef} />
-			</Layer>
-			<Layer>
 				{eggActorRefs.map((eggActorRef) => (
 					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
 				))}
 			</Layer>
-			{/* Game Timer UI layer */}
+
+			{/* Game UI: Level Score, Timer */}
 			<Layer>
 				<Text
 					x={100}
