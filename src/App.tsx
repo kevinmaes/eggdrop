@@ -62,19 +62,19 @@ function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
 function App() {
 	const appActorRef = AppActorContext.useActorRef();
 	const {
+		stateValue,
 		gameConfig,
 		isLoading,
 		showError,
-		isInitializingLevel,
 		isBetweenLevels,
 		gameScore,
 	} = AppActorContext.useSelector((state) => ({
+		stateValue: state.value,
 		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
 		showGameIntro: state.matches('Intro'),
 		showGamePlay: state.matches('Game Play'),
-		isInitializingLevel: state.hasTag('init level'),
 		isBetweenLevels: state.hasTag('between levels'),
 		gameScore: state.context.gameScore,
 	}));
@@ -86,24 +86,12 @@ function App() {
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
+	console.log('App render', stateValue);
 
 	return (
 		<KonvaStageAndBackground>
 			<>
-				{isInitializingLevel ? (
-					// Init level UI
-					<Layer>
-						<Text
-							x={200}
-							y={50}
-							text="Init Level"
-							fontSize={30}
-							fontFamily="Arial"
-							fill="black"
-						/>
-						<Circle x={100} y={100} radius={50} fill="red" />
-					</Layer>
-				) : isBetweenLevels ? (
+				{isBetweenLevels ? (
 					<Layer>
 						<KonvaButton
 							x={gameConfig.stageDimensions.width / 2 - 150}

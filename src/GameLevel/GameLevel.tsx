@@ -23,6 +23,7 @@ export function GameLevel() {
 		eggActorRefs,
 	} = useSelector(gameLevelActorRef, (state) => {
 		if (!state) {
+			console.log('GameLevel: state is null');
 			return {
 				levelScore: 0,
 				generationIndex: 0,

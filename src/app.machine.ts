@@ -264,10 +264,7 @@ const appMachine = setup({
 			states: {
 				'Init Level': {
 					tags: ['init level'],
-					after: {
-						// 2000: 'Playing',
-						10: 'Playing',
-					},
+					always: 'Playing',
 				},
 				Playing: {
 					on: {
