@@ -1,4 +1,4 @@
-import { Circle, Group, Image, Layer, Rect, Stage } from 'react-konva';
+import { Group, Image, Layer, Rect, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
 
@@ -7,6 +7,7 @@ import { DevPanel } from './DevPanel/DevPanel';
 import useImage from 'use-image';
 import { Button } from './Button/Button';
 import { BetweenLevels } from './BetweenLevels/BetweenLevels';
+import { MuteButton } from './MuteButton/MuteButton';
 
 function App() {
 	const { isLoading, showError } = AppActorContext.useSelector((state) => ({
@@ -37,7 +38,7 @@ function App() {
 
 function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, isMuted, showGameIntro } = AppActorContext.useSelector(
+	const { gameConfig, showGameIntro } = AppActorContext.useSelector(
 		(state) => ({
 			gameConfig: state.context.gameConfig,
 			showGameIntro: state.matches('Intro'),
@@ -108,15 +109,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 				{children}
 				{/* Dynamic App UI Layer */}
 				<Layer>
-					<Circle
-						x={200}
-						y={200}
-						radius={20}
-						onClick={() => {
-							appActorRef.send({ type: 'Toggle mute' });
-						}}
-						fill={isMuted ? 'black' : 'green'}
-					/>
+					<MuteButton />
 					{showGameIntro && (
 						// Play button
 						<Button

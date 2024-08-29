@@ -123,8 +123,8 @@ export const henMachine = setup({
 			}
 			const currentTime = new Date().getTime();
 			const elapsedTime = currentTime - context.currentTweenStartTime;
-			const remainingTime = context.currentTweenDurationMS - elapsedTime;
-			const delay = Math.max(Math.random() * remainingTime, 0);
+			const remainingMS = context.currentTweenDurationMS - elapsedTime;
+			const delay = Math.max(Math.random() * remainingMS, 0);
 			return delay;
 		},
 	},

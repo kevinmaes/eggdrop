@@ -9,9 +9,16 @@ import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
+import { CountdownTimer } from '../CountdownTimer/CountdownTimer';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
+	const { gameConfig, generationIndex } = AppActorContext.useSelector(
+		(state) => ({
+			gameConfig: state.context.gameConfig,
+			generationIndex: state.context.generationIndex,
+		})
+	);
 	const isPlaying = AppActorContext.useSelector((state) =>
 		state.hasTag('actively playing')
 	);
@@ -19,24 +26,24 @@ export function GameLevel() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { generationIndex, remainingTime, henActorRefs, eggActorRefs } =
-		useSelector(gameLevelActorRef, (state) => {
+	const { remainingMS, henActorRefs, eggActorRefs } = useSelector(
+		gameLevelActorRef,
+		(state) => {
 			if (!state) {
 				console.log('GameLevel: state is null');
 				return {
-					generationIndex: 0,
-					remainingTime: 0,
+					remainingMS: 0,
 					henActorRefs: [],
 					eggActorRefs: [],
 				};
 			}
 			return {
-				generationIndex: state.context.generationIndex,
-				remainingTime: state.context.remainingTime,
+				remainingMS: state.context.remainingMS,
 				henActorRefs: state.context.henActorRefs,
 				eggActorRefs: state.context.eggActorRefs,
 			};
-		});
+		}
+	);
 
 	const layerRef = useRef<Konva.Layer>(null);
 
@@ -74,10 +81,16 @@ export function GameLevel() {
 				<Text
 					x={200}
 					y={250}
-					text={`Time: ${remainingTime / 1000} seconds`}
+					text={`Time: ${remainingMS / 1000} seconds`}
 					fontSize={20}
 					fontFamily="Arial"
 					fill="white"
+				/>
+				<CountdownTimer
+					x={70}
+					y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
+					width={gameConfig.countdownTimer.width}
+					height={gameConfig.countdownTimer.height}
 				/>
 				<LevelScoreBox />
 			</Layer>

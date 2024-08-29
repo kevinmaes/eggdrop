@@ -27,6 +27,7 @@ export function getGameConfig() {
 			midY: stageDimensions.height / 2,
 		},
 		colors: {
+			primaryOrange: '#e6ae3b',
 			primaryBlue: '#a5c4fa',
 			secondaryBlue: '#455579',
 		},
@@ -91,6 +92,10 @@ export function getGameConfig() {
 				width: 60,
 				height: 60,
 			},
+		},
+		countdownTimer: {
+			width: 100,
+			height: 50,
 		},
 	};
 
