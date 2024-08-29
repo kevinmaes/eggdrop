@@ -4,9 +4,8 @@ export function getGameConfig() {
 	const stageDimensions = { width: 1280, height: 720, margin: 10 };
 
 	// The position and dimensions of the chef
-	const chefScale = 0.7;
-	const chefWidth = 250 * chefScale;
-	const chefHeight = 303 * chefScale;
+	const chefWidth = 254;
+	const chefHeight = 344;
 	const chefYPosition =
 		stageDimensions.height - chefHeight - stageDimensions.margin;
 
@@ -43,10 +42,10 @@ export function getGameConfig() {
 			// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
 			maxXPos: stageDimensions.width - chefWidth - 0.5 * stageDimensions.margin,
 			potRim: {
-				width: 0.6 * chefWidth,
-				height: 15,
-				xOffset: 15,
-				y: chefYPosition + 155,
+				width: 150,
+				height: 30,
+				xOffset: 25,
+				y: chefYPosition + 240,
 			},
 		},
 		hen: {
