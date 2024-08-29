@@ -9,6 +9,7 @@ import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
+import { CountdownTimer } from '../CountdownTimer/CountdownTimer';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
@@ -79,6 +80,7 @@ export function GameLevel() {
 					fontFamily="Arial"
 					fill="white"
 				/>
+				<CountdownTimer x={100} y={100} width={200} height={50} />
 				<LevelScoreBox />
 			</Layer>
 		</>
