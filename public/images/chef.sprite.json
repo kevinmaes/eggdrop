@@ -1,36 +1,36 @@
 {"frames": {
 
-"chef-catch.png":
+"chef-catching.png":
 {
-	"frame": {"x":1,"y":1,"w":242,"h":292},
+	"frame": {"x":1,"y":1,"w":254,"h":344},
 	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":6,"y":11,"w":242,"h":292},
-	"sourceSize": {"w":250,"h":303}
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":254,"h":344},
+	"sourceSize": {"w":254,"h":344}
 },
 "chef-leg-1.png":
 {
-	"frame": {"x":1,"y":295,"w":214,"h":291},
+	"frame": {"x":1,"y":347,"w":254,"h":344},
 	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":29,"y":11,"w":214,"h":291},
-	"sourceSize": {"w":250,"h":303}
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":254,"h":344},
+	"sourceSize": {"w":254,"h":344}
 },
 "chef-leg-2.png":
 {
-	"frame": {"x":1,"y":588,"w":214,"h":291},
+	"frame": {"x":1,"y":693,"w":254,"h":344},
 	"rotated": false,
-	"trimmed": true,
-	"spriteSourceSize": {"x":29,"y":11,"w":214,"h":291},
-	"sourceSize": {"w":250,"h":303}
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":254,"h":344},
+	"sourceSize": {"w":254,"h":344}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "chef.sprite.png",
 	"format": "RGBA8888",
-	"size": {"w":244,"h":880},
+	"size": {"w":256,"h":1038},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:419d1205116f1bb563e2f5de8a7afa56:596a8d5521a8eddbaa1fe04d25b7ba62:09f740166a1f47cbee89a65747e4fcd0$"
+	"smartupdate": "$TexturePacker:SmartUpdate:ded5612406b721a43b623ba7b1dc66fc:f0002294d59335bcb793540a6bb03db9:09f740166a1f47cbee89a65747e4fcd0$"
 }
 }
