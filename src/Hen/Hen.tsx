@@ -30,6 +30,7 @@ export function Hen({
 	henActorRef: ActorRefFrom<typeof henMachine>;
 }) {
 	const {
+		henSize,
 		henFrames,
 		position,
 		isLaying,
@@ -37,6 +38,10 @@ export function Hen({
 		movingDirection,
 		absoluteTweenSpeed,
 	} = useSelector(henActorRef, (state) => ({
+		henSize: {
+			width: state.context.gameConfig.hen.width,
+			height: state.context.gameConfig.hen.height,
+		},
 		henFrames: state.context.henAssets.sprite.frames,
 		position: state.context.position,
 		isMoving: state.matches('Moving'),
@@ -125,8 +130,8 @@ export function Hen({
 			image={image}
 			x={position.x}
 			y={position.y}
-			width={80}
-			height={80}
+			width={henSize.width}
+			height={henSize.height}
 			crop={{
 				x: currentFrame.x,
 				y: currentFrame.y,

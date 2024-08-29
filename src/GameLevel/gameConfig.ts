@@ -13,7 +13,7 @@ export function getGameConfig() {
 	// Somewhere between 0.25 and 0.75 is reasonable.
 	const eggFallingSpeed = 0.5;
 
-	const henSize = 150;
+	const henSize = 120;
 
 	const gameConfig = {
 		isMuted: true,
@@ -53,11 +53,17 @@ export function getGameConfig() {
 			height: henSize,
 			offstageLeftX: -henSize,
 			offstageRightX: stageDimensions.width + henSize,
-			y: 8,
+			y: -10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
 			buttXOffset: 40,
 			buttYOffset: 65,
+		},
+		henBeam: {
+			width: stageDimensions.width,
+			height: 35,
+			x: 0,
+			y: 98,
 		},
 		egg: {
 			fallingSpeed: eggFallingSpeed,
