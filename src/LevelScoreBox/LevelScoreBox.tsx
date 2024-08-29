@@ -13,7 +13,6 @@ export function LevelScoreBox() {
 
 	const { gameConfig, levelScore } = useSelector(gameLevelActorRef, (state) => {
 		if (!state) {
-			console.log('state', state);
 			return {};
 		}
 		return {
@@ -104,7 +103,6 @@ export function EggTally({
 	const eggFrames = AppActorContext.useSelector((state) => {
 		return state?.context?.gameAssets?.egg?.sprite?.frames ?? {};
 	});
-
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 
 	if (!eggFrames) {
