@@ -1,5 +1,5 @@
 import { useSelector } from '@xstate/react';
-import { Image as KonvaImage } from 'react-konva';
+import { Image } from 'react-konva';
 
 import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
@@ -127,7 +127,7 @@ export function Egg({
 	if (isHatching || isHatched) {
 		const currentChickFrame = chickFrames[currentChickFrameName].frame;
 		return (
-			<KonvaImage
+			<Image
 				ref={eggRef}
 				image={chickImage}
 				width={60}
@@ -149,7 +149,7 @@ export function Egg({
 	if (isExiting) {
 		const chickFrame = chickFrames[currentChickFrameName].frame;
 		return (
-			<KonvaImage
+			<Image
 				ref={eggRef}
 				image={chickImage}
 				width={60}
@@ -170,7 +170,7 @@ export function Egg({
 	if (isBroken) {
 		const brokenEggFrame = chickFrames[`egg-broken-${color}.png`].frame;
 		return (
-			<KonvaImage
+			<Image
 				image={chickImage}
 				width={gameConfig.egg.brokenEgg.width}
 				height={gameConfig.egg.brokenEgg.height}
@@ -191,7 +191,7 @@ export function Egg({
 
 	const currentEggFrame = eggFrames[`egg-${color}.png`].frame;
 	return (
-		<KonvaImage
+		<Image
 			ref={eggRef}
 			image={eggImage}
 			width={30}

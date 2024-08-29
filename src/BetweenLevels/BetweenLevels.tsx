@@ -1,37 +1,38 @@
-import { Layer, Text } from 'react-konva';
+import { Group, Layer } from 'react-konva';
 import { Button } from '../Button/Button';
 import { AppActorContext } from '../app.machine';
 import { useSelector } from '@xstate/react';
+import { GameScoreBox } from '../GameScoreBox/GameScoreBox';
 
 export function BetweenLevels() {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameScore, gameConfig } = useSelector(appActorRef, (state) => {
-		return {
-			gameScore: state.context.gameScore,
-			gameConfig: state.context.gameConfig,
-		};
-	});
+	const { gameConfig, isBetweenLevels } = useSelector(appActorRef, (state) => ({
+		gameConfig: state.context.gameConfig,
+		isBetweenLevels: state.hasTag('between levels'),
+	}));
+
+	if (!isBetweenLevels) {
+		return null;
+	}
+
+	const xPos = gameConfig.stageDimensions.midX - 200;
+	const yPos = gameConfig.stageDimensions.midY - 130;
 
 	return (
 		<Layer>
-			{/* Play button */}
-			<Button
-				x={gameConfig.stageDimensions.width / 2 - 150}
-				y={gameConfig.stageDimensions.height / 2 - 50}
-				width={300}
-				height={100}
-				text="Play next level"
-				onClick={() => appActorRef.send({ type: 'Play' })}
-			/>
 			{/* Game score and other UI */}
-			<Text
-				x={10}
-				y={300}
-				text={`Score: ${gameScore}`}
-				fontSize={30}
-				fontFamily="Arial"
-				fill="black"
-			/>
+			<Group x={xPos} y={yPos}>
+				<GameScoreBox x={0} y={0} width={400} height={150} />
+				{/* Play button */}
+				<Button
+					x={0}
+					y={160}
+					width={400}
+					height={100}
+					text="Play next level"
+					onClick={() => appActorRef.send({ type: 'Play' })}
+				/>
+			</Group>
 		</Layer>
 	);
 }

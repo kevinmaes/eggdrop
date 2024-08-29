@@ -7,41 +7,42 @@ import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
 import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
+import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
+	const isPlaying = AppActorContext.useSelector((state) =>
+		state.hasTag('actively playing')
+	);
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const {
-		levelScore,
-		generationIndex,
-		remainingTime,
-		henActorRefs,
-		eggActorRefs,
-	} = useSelector(gameLevelActorRef, (state) => {
-		if (!state) {
-			console.log('GameLevel: state is null');
+	const { generationIndex, remainingTime, henActorRefs, eggActorRefs } =
+		useSelector(gameLevelActorRef, (state) => {
+			if (!state) {
+				console.log('GameLevel: state is null');
+				return {
+					generationIndex: 0,
+					remainingTime: 0,
+					henActorRefs: [],
+					eggActorRefs: [],
+				};
+			}
 			return {
-				levelScore: 0,
-				generationIndex: 0,
-				remainingTime: 0,
-				henActorRefs: [],
-				eggActorRefs: [],
+				generationIndex: state.context.generationIndex,
+				remainingTime: state.context.remainingTime,
+				henActorRefs: state.context.henActorRefs,
+				eggActorRefs: state.context.eggActorRefs,
 			};
-		}
-		return {
-			levelScore: state?.context?.levelScore ?? 0,
-			generationIndex: state.context.generationIndex,
-			remainingTime: state.context.remainingTime,
-			henActorRefs: state.context.henActorRefs,
-			eggActorRefs: state.context.eggActorRefs,
-		};
-	});
+		});
 
 	const layerRef = useRef<Konva.Layer>(null);
+
+	if (!isPlaying) {
+		return null;
+	}
 
 	return (
 		<>
@@ -65,10 +66,10 @@ export function GameLevel() {
 				<Text
 					x={100}
 					y={250}
-					text={`Gen: ${generationIndex}`}
+					text={`Level: ${generationIndex + 1}`}
 					fontSize={20}
 					fontFamily="Arial"
-					fill="black"
+					fill="white"
 				/>
 				<Text
 					x={200}
@@ -76,16 +77,9 @@ export function GameLevel() {
 					text={`Time: ${remainingTime / 1000} seconds`}
 					fontSize={20}
 					fontFamily="Arial"
-					fill="black"
+					fill="white"
 				/>
-				<Text
-					x={10}
-					y={300}
-					text={`Score: ${levelScore}`}
-					fontSize={30}
-					fontFamily="Arial"
-					fill="black"
-				/>
+				<LevelScoreBox />
 			</Layer>
 		</>
 	);

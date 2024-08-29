@@ -1,4 +1,4 @@
-import { Circle, Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
+import { Circle, Group, Image, Layer, Rect, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
 
@@ -6,25 +6,15 @@ import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
 import useImage from 'use-image';
 import { Button } from './Button/Button';
+import { BetweenLevels } from './BetweenLevels/BetweenLevels';
 
 function App() {
-	const appActorRef = AppActorContext.useActorRef();
-	const {
-		stateValue,
-		gameConfig,
-		isLoading,
-		showError,
-		isBetweenLevels,
-		gameScore,
-	} = AppActorContext.useSelector((state) => ({
+	const { isLoading, showError } = AppActorContext.useSelector((state) => ({
 		stateValue: state.value,
-		gameConfig: state.context.gameConfig,
 		showError: state.matches('Show Error'),
 		isLoading: state.matches('Loading'),
 		showGameIntro: state.matches('Intro'),
 		showGamePlay: state.matches('Game Play'),
-		isBetweenLevels: state.hasTag('between levels'),
-		gameScore: state.context.gameScore,
 	}));
 
 	if (showError) {
@@ -34,34 +24,12 @@ function App() {
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
-	console.log('App render', stateValue);
 
 	return (
 		<KonvaStageAndBackground>
 			<>
-				{isBetweenLevels ? (
-					<Layer>
-						<Button
-							x={gameConfig.stageDimensions.width / 2 - 150}
-							y={gameConfig.stageDimensions.height / 2 - 50}
-							width={300}
-							height={100}
-							text="Play next level"
-							onClick={() => appActorRef.send({ type: 'Play' })}
-						/>
-						{/* Game score and other UI */}
-						<Text
-							x={10}
-							y={300}
-							text={`Score: ${gameScore}`}
-							fontSize={30}
-							fontFamily="Arial"
-							fill="black"
-						/>
-					</Layer>
-				) : (
-					<GameLevel />
-				)}
+				<BetweenLevels />
+				<GameLevel />
 			</>
 		</KonvaStageAndBackground>
 	);

@@ -194,10 +194,7 @@ export const henMachine = setup({
 
 					// Check if the hen is in its original offstage position (first time animation)
 					if (context.position.x === context.gameConfig.hen.offstageLeftX) {
-						if (
-							targetPosition.x >=
-							0.5 * context.gameConfig.stageDimensions.width
-						) {
+						if (targetPosition.x >= context.gameConfig.stageDimensions.midX) {
 							// Swith the hen's offstage position to be on the right side
 							// closer to the target position (if also on the right side)
 							newPosition.x = context.gameConfig.hen.offstageRightX;
