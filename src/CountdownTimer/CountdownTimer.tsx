@@ -42,8 +42,6 @@ export function CountdownTimer({
 			? `${minutes} m ${seconds.toString().padStart(2, '0')} s`
 			: `${seconds.toString().padStart(2, '0')} s`;
 
-	console.log('remainingTimeString', remainingTimeString);
-
 	return (
 		<Group x={x} y={y}>
 			<Rect
