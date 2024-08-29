@@ -1,6 +1,5 @@
-import { Group, Rect, Text, Image } from 'react-konva';
-import useImage from 'use-image';
-import { AppActorContext } from '../app.machine';
+import { Group, Rect, Text } from 'react-konva';
+import { EggTally } from '../LevelScoreBox/LevelScoreBox';
 
 export function GameScoreBox({
 	x,
@@ -13,16 +12,9 @@ export function GameScoreBox({
 	width: number;
 	height: number;
 }) {
-	const { eggFrames } = AppActorContext.useSelector((state) => ({
-		eggFrames: state.context.gameAssets?.egg.sprite.frames ?? {},
-		generationIndex: state.context.generationIndex,
-	}));
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
-	const whiteEggFrame = eggFrames['egg-white.png'].frame;
-	const goldEggFrame = eggFrames['egg-gold.png'].frame;
-
 	return (
 		<Group x={x} y={y}>
+			{/* Background box */}
 			<Rect
 				width={width}
 				height={height}
@@ -32,6 +24,7 @@ export function GameScoreBox({
 				fill="white"
 				cornerRadius={10}
 			/>
+			{/* Game Score */}
 			<Group x={10} y={50}>
 				<Text
 					x={0}
@@ -51,50 +44,8 @@ export function GameScoreBox({
 				/>
 			</Group>
 			<Group y={100}>
-				<Group x={10}>
-					<Image
-						image={eggImage}
-						width={30}
-						height={30}
-						border="5px solid red"
-						crop={{
-							x: whiteEggFrame.x,
-							y: whiteEggFrame.y,
-							width: whiteEggFrame.w,
-							height: whiteEggFrame.h,
-						}}
-					/>
-					<Text
-						x={35}
-						y={5}
-						text={`${12}`}
-						fontSize={20}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Group>
-				<Group x={100}>
-					<Image
-						image={eggImage}
-						width={30}
-						height={30}
-						border="5px solid red"
-						crop={{
-							x: goldEggFrame.x,
-							y: goldEggFrame.y,
-							width: goldEggFrame.w,
-							height: goldEggFrame.h,
-						}}
-					/>
-					<Text
-						x={35}
-						y={5}
-						text={`${12}`}
-						fontSize={20}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Group>
+				<EggTally eggColor="white" count={10} x={10} y={0} />
+				<EggTally eggColor="gold" count={5} x={100} y={0} />
 			</Group>
 		</Group>
 	);
