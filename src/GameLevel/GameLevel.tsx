@@ -8,42 +8,53 @@ import { Egg } from '../Egg/Egg';
 import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
+import { AppActorContext } from '../app.machine';
 
-interface GameLevelProps {
-	stageDimensions: {
-		width: number;
-		height: number;
-	};
-	gameLevelActorRef: ActorRefFrom<typeof gameLevelMachine>;
-}
+export function GameLevel() {
+	const appActorRef = AppActorContext.useActorRef();
+	const gameLevelActorRef = appActorRef.system.get(
+		'gameLevelMachine'
+	) as ActorRefFrom<typeof gameLevelMachine>;
 
-export function GameLevel({ gameLevelActorRef }: GameLevelProps) {
 	const { generationIndex, remainingTime, henActorRefs, eggActorRefs } =
-		useSelector(gameLevelActorRef, (state) => ({
-			generationIndex: state.context.generationIndex,
-			remainingTime: state.context.remainingTime,
-			henActorRefs: state.context.henActorRefs,
-			eggActorRefs: state.context.eggActorRefs,
-		}));
+		useSelector(gameLevelActorRef, (state) => {
+			if (!state) {
+				console.log('GameLevel: state is null');
+				return {
+					generationIndex: 0,
+					remainingTime: 0,
+					henActorRefs: [],
+					eggActorRefs: [],
+				};
+			}
+			return {
+				generationIndex: state.context.generationIndex,
+				remainingTime: state.context.remainingTime,
+				henActorRefs: state.context.henActorRefs,
+				eggActorRefs: state.context.eggActorRefs,
+			};
+		});
 
 	const layerRef = useRef<Konva.Layer>(null);
 
 	return (
 		<>
+			{/* Hen layer */}
 			<Layer ref={layerRef}>
 				{henActorRefs.map((henActorRef) => (
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
 			</Layer>
+
+			{/* Chef and Egg layers (they interact) */}
 			<Layer>
 				<Chef layerRef={layerRef} />
-			</Layer>
-			<Layer>
 				{eggActorRefs.map((eggActorRef) => (
 					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
 				))}
 			</Layer>
-			{/* Game Timer UI layer */}
+
+			{/* Game UI: Level Score, Timer */}
 			<Layer>
 				<Text
 					x={100}
