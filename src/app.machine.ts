@@ -267,6 +267,7 @@ const appMachine = setup({
 					always: 'Playing',
 				},
 				Playing: {
+					tags: ['actively playing'],
 					on: {
 						'Level complete': {
 							actions: [

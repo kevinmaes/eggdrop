@@ -12,6 +12,9 @@ import { AppActorContext } from '../app.machine';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
+	const isPlaying = AppActorContext.useSelector((state) =>
+		state.hasTag('actively playing')
+	);
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
@@ -36,6 +39,10 @@ export function GameLevel() {
 		});
 
 	const layerRef = useRef<Konva.Layer>(null);
+
+	if (!isPlaying) {
+		return null;
+	}
 
 	return (
 		<>
