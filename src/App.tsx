@@ -7,6 +7,7 @@ import { DevPanel } from './DevPanel/DevPanel';
 import useImage from 'use-image';
 import { Button } from './Button/Button';
 import { BetweenLevels } from './BetweenLevels/BetweenLevels';
+import { MuteButton } from './MuteButton/MuteButton';
 
 function App() {
 	const { isLoading, showError } = AppActorContext.useSelector((state) => ({
@@ -37,7 +38,7 @@ function App() {
 
 function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, isMuted, showGameIntro } = AppActorContext.useSelector(
+	const { gameConfig, showGameIntro } = AppActorContext.useSelector(
 		(state) => ({
 			gameConfig: state.context.gameConfig,
 			showGameIntro: state.matches('Intro'),
@@ -48,11 +49,6 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 	const [kitchenBgImage] = useImage('images/kitchen-bg-4.png');
 	const [henBeamImage] = useImage('images/hen-beam-gray.png');
 	const [titleImage] = useImage('images/egg-drop-title-0.png');
-
-	console.log(
-		'mute x',
-		gameConfig.stageDimensions.margin + gameConfig.countdownTimer.width + 20
-	);
 
 	return (
 		<>
@@ -113,32 +109,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 				{children}
 				{/* Dynamic App UI Layer */}
 				<Layer>
-					<Group
-						x={10}
-						y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
-					>
-						<Rect
-							stroke="white"
-							x={0}
-							y={0}
-							width={50}
-							height={50}
-							strokeWidth={2}
-							cornerRadius={8}
-						/>
-						<Rect
-							x={5}
-							y={5}
-							width={40}
-							height={40}
-							cornerRadius={4}
-							onClick={() => {
-								appActorRef.send({ type: 'Toggle mute' });
-							}}
-							fill="white"
-							opacity={isMuted ? 0.7 : 0.3}
-						/>
-					</Group>
+					<MuteButton />
 					{showGameIntro && (
 						// Play button
 						<Button
