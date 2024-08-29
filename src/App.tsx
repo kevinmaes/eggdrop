@@ -5,59 +5,7 @@ import { GameLevel } from './GameLevel/GameLevel';
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
 import useImage from 'use-image';
-
-interface KonvaButtonProps {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	text: string;
-	onClick: () => void;
-}
-
-function KonvaButton({ x, y, width, height, text, onClick }: KonvaButtonProps) {
-	return (
-		<>
-			<Rect
-				x={x}
-				y={y}
-				width={width}
-				height={height}
-				fill="lightblue"
-				shadowBlur={5}
-				cornerRadius={10}
-				onClick={onClick} // Handle button clicks
-				onMouseEnter={(e) => {
-					// Change cursor to pointer on hover
-					const container = e.target.getStage()?.container();
-					if (container) {
-						container.style.cursor = 'pointer';
-					}
-				}}
-				onMouseLeave={(e) => {
-					// Change cursor back to default when not hovering
-					const container = e.target.getStage()?.container();
-					if (container) {
-						container.style.cursor = 'default';
-					}
-				}}
-			/>
-			<Text
-				listening={false}
-				x={x}
-				y={y}
-				text={text}
-				fontSize={36}
-				fontFamily="Arial"
-				fill="black"
-				align="center"
-				width={width}
-				height={height}
-				verticalAlign="middle"
-			/>
-		</>
-	);
-}
+import { Button } from './Button/Button';
 
 function App() {
 	const appActorRef = AppActorContext.useActorRef();
@@ -93,7 +41,7 @@ function App() {
 			<>
 				{isBetweenLevels ? (
 					<Layer>
-						<KonvaButton
+						<Button
 							x={gameConfig.stageDimensions.width / 2 - 150}
 							y={gameConfig.stageDimensions.height / 2 - 50}
 							width={300}
@@ -202,7 +150,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 					/>
 					{showGameIntro && (
 						// Play button
-						<KonvaButton
+						<Button
 							x={gameConfig.stageDimensions.width / 2 - 60}
 							y={490}
 							width={200}
