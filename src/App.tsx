@@ -45,7 +45,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 		})
 	);
 
-	const [bgImage] = useImage('images/kitchen-bg-4.png');
+	const [kitchenBgImage] = useImage('images/kitchen-bg-4.png');
 	const [henBeamImage] = useImage('images/hen-beam-gray.png');
 	const [titleImage] = useImage('images/egg-drop-title-0.png');
 
@@ -61,7 +61,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 					{/* Background kitchen image */}
 					<Group>
 						<Image
-							image={bgImage}
+							image={kitchenBgImage}
 							width={gameConfig.stageDimensions.width}
 							height={gameConfig.stageDimensions.height}
 						/>
@@ -75,9 +75,10 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 						/>
 						<Image
 							image={henBeamImage}
-							width={gameConfig.stageDimensions.width}
-							height={35}
-							y={80}
+							width={gameConfig.henBeam.width}
+							height={gameConfig.henBeam.height}
+							x={gameConfig.henBeam.x}
+							y={gameConfig.henBeam.y}
 						/>
 					</Group>
 					{showGameIntro && (
