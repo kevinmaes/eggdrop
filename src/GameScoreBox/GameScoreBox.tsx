@@ -2,9 +2,18 @@ import { Group, Rect, Text, Image } from 'react-konva';
 import useImage from 'use-image';
 import { AppActorContext } from '../app.machine';
 
-export function GameScoreBox() {
-	const { gameConfig, eggFrames } = AppActorContext.useSelector((state) => ({
-		gameConfig: state.context.gameConfig,
+export function GameScoreBox({
+	x,
+	y,
+	width,
+	height,
+}: {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}) {
+	const { eggFrames } = AppActorContext.useSelector((state) => ({
 		eggFrames: state.context.gameAssets?.egg.sprite.frames ?? {},
 		generationIndex: state.context.generationIndex,
 	}));
@@ -13,10 +22,10 @@ export function GameScoreBox() {
 	const goldEggFrame = eggFrames['egg-gold.png'].frame;
 
 	return (
-		<Group x={gameConfig.stageDimensions.midX - 200} y={275}>
+		<Group x={x} y={y}>
 			<Rect
-				width={400}
-				height={150}
+				width={width}
+				height={height}
 				x={0}
 				y={0}
 				opacity={0.5}

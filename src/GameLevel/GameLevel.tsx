@@ -59,10 +59,10 @@ export function GameLevel() {
 				<Text
 					x={100}
 					y={250}
-					text={`Gen: ${generationIndex}`}
+					text={`Level: ${generationIndex + 1}`}
 					fontSize={20}
 					fontFamily="Arial"
-					fill="black"
+					fill="white"
 				/>
 				<Text
 					x={200}
@@ -70,7 +70,7 @@ export function GameLevel() {
 					text={`Time: ${remainingTime / 1000} seconds`}
 					fontSize={20}
 					fontFamily="Arial"
-					fill="black"
+					fill="white"
 				/>
 				<LevelScoreBox />
 			</Layer>
