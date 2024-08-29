@@ -7,32 +7,38 @@ import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
 import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
+import { AppActorContext } from '../app.machine';
 
-interface GameLevelProps {
-	stageDimensions: {
-		width: number;
-		height: number;
-	};
-	gameLevelActorRef: ActorRefFrom<typeof gameLevelMachine>;
-}
+export function GameLevel() {
+	const appActorRef = AppActorContext.useActorRef();
+	const gameLevelActorRef = appActorRef.system.get(
+		'gameLevelMachine'
+	) as ActorRefFrom<typeof gameLevelMachine>;
 
-export function GameLevel({
-	// stageDimensions,
-	gameLevelActorRef,
-}: GameLevelProps) {
 	const {
 		levelScore,
 		generationIndex,
 		remainingTime,
 		henActorRefs,
 		eggActorRefs,
-	} = useSelector(gameLevelActorRef, (state) => ({
-		levelScore: state.context.levelScore,
-		generationIndex: state.context.generationIndex,
-		remainingTime: state.context.remainingTime,
-		henActorRefs: state.context.henActorRefs,
-		eggActorRefs: state.context.eggActorRefs,
-	}));
+	} = useSelector(gameLevelActorRef, (state) => {
+		if (!state) {
+			return {
+				levelScore: 0,
+				generationIndex: 0,
+				remainingTime: 0,
+				henActorRefs: [],
+				eggActorRefs: [],
+			};
+		}
+		return {
+			levelScore: state?.context?.levelScore ?? 0,
+			generationIndex: state.context.generationIndex,
+			remainingTime: state.context.remainingTime,
+			henActorRefs: state.context.henActorRefs,
+			eggActorRefs: state.context.eggActorRefs,
+		};
+	});
 
 	const layerRef = useRef<Konva.Layer>(null);
 

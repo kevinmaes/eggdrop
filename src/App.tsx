@@ -1,8 +1,6 @@
 import { Circle, Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
-import { ActorRefFrom } from 'xstate';
-import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
@@ -67,7 +65,6 @@ function App() {
 		gameConfig,
 		isLoading,
 		showError,
-		showGameIntro,
 		isInitializingLevel,
 		isBetweenLevels,
 		gameScore,
@@ -81,10 +78,6 @@ function App() {
 		isBetweenLevels: state.hasTag('between levels'),
 		gameScore: state.context.gameScore,
 	}));
-
-	const gameLevelActorRef = appActorRef.system.get(
-		'gameLevelMachine'
-	) as ActorRefFrom<typeof gameLevelMachine>;
 
 	if (showError) {
 		return <div>Error loading the game...</div>;
@@ -130,12 +123,9 @@ function App() {
 							fill="black"
 						/>
 					</Layer>
-				) : gameLevelActorRef ? (
-					<GameLevel
-						stageDimensions={gameConfig.stageDimensions}
-						gameLevelActorRef={gameLevelActorRef}
-					/>
-				) : null}
+				) : (
+					<GameLevel />
+				)}
 			</>
 		</KonvaStageAndBackground>
 	);
