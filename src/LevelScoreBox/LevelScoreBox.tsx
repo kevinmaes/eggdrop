@@ -34,7 +34,7 @@ export function LevelScoreBox() {
 				height={150}
 				x={0}
 				y={0}
-				opacity={0.6}
+				opacity={0.75}
 				fill="white"
 				stroke="#a5c4fa"
 				strokeWidth={4}
