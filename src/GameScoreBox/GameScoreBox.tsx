@@ -48,8 +48,22 @@ export function GameScoreBox({
 				/>
 			</Group>
 			<Group x={0.5 * width - 75} y={90} width={width}>
-				<EggTally eggColor="white" count={10} x={0} y={0} width={100} />
-				<EggTally eggColor="gold" count={5} x={100} y={0} width={100} />
+				<EggTally
+					eggColor="white"
+					count={10}
+					x={0}
+					y={0}
+					width={100}
+					eggSize={40}
+				/>
+				<EggTally
+					eggColor="gold"
+					count={5}
+					x={100}
+					y={0}
+					width={100}
+					eggSize={40}
+				/>
 			</Group>
 		</Group>
 	);

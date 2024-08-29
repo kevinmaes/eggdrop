@@ -86,6 +86,7 @@ export function LevelScoreBox() {
 
 export function EggTally({
 	eggColor,
+	eggSize = 30,
 	count,
 	x,
 	y,
@@ -93,6 +94,7 @@ export function EggTally({
 	height,
 }: {
 	eggColor: 'white' | 'gold';
+	eggSize?: number;
 	count: number;
 	x: number;
 	y: number;
@@ -105,7 +107,6 @@ export function EggTally({
 
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 
-	console.log('EggTally eggFrames', eggFrames);
 	if (!eggFrames) {
 		return null;
 	}
@@ -116,9 +117,13 @@ export function EggTally({
 		<Group x={x} y={y} width={width} height={height}>
 			<Image
 				image={eggImage}
-				width={40}
-				height={40}
+				width={eggSize}
+				height={eggSize}
 				border="5px solid red"
+				shadowColor="black"
+				shadowBlur={10}
+				shadowOffset={{ x: 3, y: 3 }}
+				shadowOpacity={0.5}
 				crop={{
 					x: eggFrame.x,
 					y: eggFrame.y,
@@ -127,10 +132,11 @@ export function EggTally({
 				}}
 			/>
 			<Text
-				x={40}
+				x={50}
 				y={10}
 				text={count.toLocaleString()}
 				fontSize={20}
+				fontStyle="bold"
 				fontFamily="Arial"
 				fill="black"
 			/>
