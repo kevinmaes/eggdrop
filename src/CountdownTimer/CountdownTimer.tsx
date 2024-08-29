@@ -32,8 +32,10 @@ export function CountdownTimer({
 	const minutes = Math.floor(remainingMS / 60000);
 	const seconds = Math.floor((remainingMS % 60000) / 1000);
 
+	const barInsetWidth = 5;
 	const remainingPercentage = remainingMS / totalLevelMS;
-	const remainingTimeBarWidth = (width - 10) * remainingPercentage;
+	const barWithTotal = width - 2 * barInsetWidth;
+	const remainingTimeBarWidth = barWithTotal * remainingPercentage;
 
 	const remainingTimeString =
 		minutes > 0
@@ -52,6 +54,7 @@ export function CountdownTimer({
 				fill="transparent"
 				stroke="white"
 				strokeWidth={2}
+				cornerRadius={8}
 			/>
 			{/* Timer text */}
 			<Text
@@ -68,9 +71,15 @@ export function CountdownTimer({
 				x={5}
 				y={35}
 				width={remainingTimeBarWidth}
-				height={10} // height of the progress bar
+				height={10}
 				fill="white"
 				opacity={0.5}
+				cornerRadius={[
+					0,
+					0,
+					remainingTimeBarWidth > barWithTotal - barInsetWidth ? 5 : 0,
+					5,
+				]}
 			/>
 		</Group>
 	);

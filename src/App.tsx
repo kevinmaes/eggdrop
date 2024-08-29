@@ -1,4 +1,4 @@
-import { Circle, Group, Image, Layer, Rect, Stage } from 'react-konva';
+import { Group, Image, Layer, Rect, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
 
@@ -48,6 +48,11 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 	const [kitchenBgImage] = useImage('images/kitchen-bg-4.png');
 	const [henBeamImage] = useImage('images/hen-beam-gray.png');
 	const [titleImage] = useImage('images/egg-drop-title-0.png');
+
+	console.log(
+		'mute x',
+		gameConfig.stageDimensions.margin + gameConfig.countdownTimer.width + 20
+	);
 
 	return (
 		<>
@@ -108,15 +113,32 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 				{children}
 				{/* Dynamic App UI Layer */}
 				<Layer>
-					<Circle
-						x={200}
-						y={200}
-						radius={20}
-						onClick={() => {
-							appActorRef.send({ type: 'Toggle mute' });
-						}}
-						fill={isMuted ? 'black' : 'green'}
-					/>
+					<Group
+						x={10}
+						y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
+					>
+						<Rect
+							stroke="white"
+							x={0}
+							y={0}
+							width={50}
+							height={50}
+							strokeWidth={2}
+							cornerRadius={8}
+						/>
+						<Rect
+							x={5}
+							y={5}
+							width={40}
+							height={40}
+							cornerRadius={4}
+							onClick={() => {
+								appActorRef.send({ type: 'Toggle mute' });
+							}}
+							fill="white"
+							opacity={isMuted ? 0.7 : 0.3}
+						/>
+					</Group>
 					{showGameIntro && (
 						// Play button
 						<Button

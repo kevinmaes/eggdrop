@@ -13,6 +13,12 @@ import { CountdownTimer } from '../CountdownTimer/CountdownTimer';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
+	const { gameConfig, generationIndex } = AppActorContext.useSelector(
+		(state) => ({
+			gameConfig: state.context.gameConfig,
+			generationIndex: state.context.generationIndex,
+		})
+	);
 	const isPlaying = AppActorContext.useSelector((state) =>
 		state.hasTag('actively playing')
 	);
@@ -20,24 +26,24 @@ export function GameLevel() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { generationIndex, remainingMS, henActorRefs, eggActorRefs } =
-		useSelector(gameLevelActorRef, (state) => {
+	const { remainingMS, henActorRefs, eggActorRefs } = useSelector(
+		gameLevelActorRef,
+		(state) => {
 			if (!state) {
 				console.log('GameLevel: state is null');
 				return {
-					generationIndex: 0,
 					remainingMS: 0,
 					henActorRefs: [],
 					eggActorRefs: [],
 				};
 			}
 			return {
-				generationIndex: state.context.generationIndex,
 				remainingMS: state.context.remainingMS,
 				henActorRefs: state.context.henActorRefs,
 				eggActorRefs: state.context.eggActorRefs,
 			};
-		});
+		}
+	);
 
 	const layerRef = useRef<Konva.Layer>(null);
 
@@ -80,7 +86,12 @@ export function GameLevel() {
 					fontFamily="Arial"
 					fill="white"
 				/>
-				<CountdownTimer x={100} y={100} width={100} height={50} />
+				<CountdownTimer
+					x={70}
+					y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
+					width={gameConfig.countdownTimer.width}
+					height={gameConfig.countdownTimer.height}
+				/>
 				<LevelScoreBox />
 			</Layer>
 		</>

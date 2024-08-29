@@ -88,6 +88,10 @@ export function getGameConfig() {
 				height: 60,
 			},
 		},
+		countdownTimer: {
+			width: 100,
+			height: 50,
+		},
 	};
 
 	// Set the audio mute according to the isMuted value
