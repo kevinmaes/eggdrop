@@ -162,8 +162,7 @@ export function Chef({}: // dimensions,
 				y={chefPotRimConfig.y}
 				width={chefPotRimConfig.width}
 				height={chefPotRimConfig.height}
-				// fill="transparent"
-				fill="black"
+				fill="transparent"
 			/>
 		</>
 	);
