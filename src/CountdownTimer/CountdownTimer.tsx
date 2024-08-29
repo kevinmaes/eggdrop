@@ -19,10 +19,11 @@ export function CountdownTimer({
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
-	const { totalLevelMS, remainingMS } = useSelector(
+	const { totalLevelMS, remainingMS, gameConfig } = useSelector(
 		gameLevelActorRef,
 		(state) => {
 			return {
+				gameConfig: state.context.gameConfig,
 				totalLevelMS: state.context.gameConfig.levelDurationMS,
 				remainingMS: state.context.remainingMS,
 			};
@@ -34,8 +35,8 @@ export function CountdownTimer({
 
 	const barInsetWidth = 5;
 	const remainingPercentage = remainingMS / totalLevelMS;
-	const barWithTotal = width - 2 * barInsetWidth;
-	const remainingTimeBarWidth = barWithTotal * remainingPercentage;
+	const totalBarWidth = width - 2 * barInsetWidth;
+	const remainingTimeBarWidth = totalBarWidth * remainingPercentage;
 
 	const remainingTimeString =
 		minutes > 0
@@ -68,14 +69,26 @@ export function CountdownTimer({
 			<Rect
 				x={5}
 				y={35}
+				width={totalBarWidth}
+				height={10}
+				opacity={0.5}
+				stroke="white"
+				strokeWidth={1}
+				cornerRadius={[0, 0, 5, 5]}
+			/>
+			<Rect
+				x={5}
+				y={35}
 				width={remainingTimeBarWidth}
 				height={10}
-				fill="white"
+				fill={gameConfig.colors.primaryOrange}
 				opacity={0.5}
+				stroke="white"
+				strokeWidth={1}
 				cornerRadius={[
 					0,
 					0,
-					remainingTimeBarWidth > barWithTotal - barInsetWidth ? 5 : 0,
+					remainingTimeBarWidth > totalBarWidth - barInsetWidth ? 5 : 0,
 					5,
 				]}
 			/>
