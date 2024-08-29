@@ -20,7 +20,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: 10,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 120_000,
+		levelDurationMS: 5_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -28,6 +28,8 @@ export function getGameConfig() {
 		},
 		colors: {
 			primaryOrange: '#e6ae3b',
+			primaryBlue: '#a5c4fa',
+			secondaryBlue: '#455579',
 		},
 		chef: {
 			x: stageDimensions.width / 2 - 0.5 * chefWidth,

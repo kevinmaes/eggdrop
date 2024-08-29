@@ -117,6 +117,9 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 							y={490}
 							width={200}
 							height={60}
+							bgColor={gameConfig.colors.secondaryBlue}
+							borderColor="white"
+							textColor="white"
 							text="Play"
 							onClick={() => appActorRef.send({ type: 'Play' })}
 						/>
