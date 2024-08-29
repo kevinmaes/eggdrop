@@ -11,41 +11,37 @@ export function LevelScoreBox() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { gameConfig, eggFrames, levelScore } = useSelector(
-		gameLevelActorRef,
-		(state) => {
-			if (!state) {
-				console.log('state', state);
-				return {};
-			}
-			return {
-				gameConfig: state.context?.gameConfig,
-				eggFrames: state.context.gameAssets.egg.sprite.frames,
-				levelScore: state.context.levelScore,
-			};
+	const { gameConfig, levelScore } = useSelector(gameLevelActorRef, (state) => {
+		if (!state) {
+			return {};
 		}
-	);
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
+		return {
+			gameConfig: state.context?.gameConfig,
+			eggFrames: state.context.gameAssets.egg.sprite.frames,
+			levelScore: state.context.levelScore,
+		};
+	});
 
 	if (!gameConfig) {
 		return null;
 	}
 
-	const whiteEggFrame = eggFrames['egg-white.png'].frame;
-	const goldEggFrame = eggFrames['egg-gold.png'].frame;
-
 	return (
 		<Group x={gameConfig.stageDimensions.width - 210} y={120}>
+			{/* Background box */}
 			<Rect
 				width={200}
 				height={150}
 				x={0}
 				y={0}
-				opacity={0.5}
+				opacity={0.75}
 				fill="white"
+				stroke="#a5c4fa"
+				strokeWidth={4}
 				cornerRadius={10}
 			/>
-			<Group x={10} y={10}>
+			{/* Level Score */}
+			<Group x={20} y={10}>
 				<Text
 					x={0}
 					y={5}
@@ -63,7 +59,8 @@ export function LevelScoreBox() {
 					fill="black"
 				/>
 			</Group>
-			<Group x={10} y={50}>
+			{/* Game Score */}
+			<Group x={20} y={50}>
 				<Text
 					x={0}
 					y={5}
@@ -81,53 +78,68 @@ export function LevelScoreBox() {
 					fill="black"
 				/>
 			</Group>
+			{/* Egg Tally */}
+			<EggTally eggColor="white" count={10} x={30} y={90} />
+			<EggTally eggColor="gold" count={5} x={110} y={90} />
+		</Group>
+	);
+}
 
-			<Group y={100}>
-				<Group x={10}>
-					<Image
-						image={eggImage}
-						width={30}
-						height={30}
-						border="5px solid red"
-						crop={{
-							x: whiteEggFrame.x,
-							y: whiteEggFrame.y,
-							width: whiteEggFrame.w,
-							height: whiteEggFrame.h,
-						}}
-					/>
-					<Text
-						x={35}
-						y={5}
-						text={`${12}`}
-						fontSize={20}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Group>
-				<Group x={100}>
-					<Image
-						image={eggImage}
-						width={30}
-						height={30}
-						border="5px solid red"
-						crop={{
-							x: goldEggFrame.x,
-							y: goldEggFrame.y,
-							width: goldEggFrame.w,
-							height: goldEggFrame.h,
-						}}
-					/>
-					<Text
-						x={35}
-						y={5}
-						text={`${12}`}
-						fontSize={20}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Group>
-			</Group>
+export function EggTally({
+	eggColor,
+	eggSize = 30,
+	count,
+	x,
+	y,
+	width,
+	height,
+}: {
+	eggColor: 'white' | 'gold';
+	eggSize?: number;
+	count: number;
+	x: number;
+	y: number;
+	width?: number;
+	height?: number;
+}) {
+	const eggFrames = AppActorContext.useSelector((state) => {
+		return state?.context?.gameAssets?.egg?.sprite?.frames ?? {};
+	});
+	const [eggImage] = useImage(`../images/egg.sprite.png`);
+
+	if (!eggFrames) {
+		return null;
+	}
+
+	const eggFrame = eggFrames[`egg-${eggColor}.png`].frame;
+
+	return (
+		<Group x={x} y={y} width={width} height={height}>
+			<Image
+				image={eggImage}
+				width={eggSize}
+				height={eggSize}
+				border="5px solid red"
+				shadowColor="black"
+				shadowBlur={10}
+				shadowOffset={{ x: 3, y: 3 }}
+				shadowOpacity={0.5}
+				crop={{
+					x: eggFrame.x,
+					y: eggFrame.y,
+					width: eggFrame.w,
+					height: eggFrame.h,
+				}}
+			/>
+			<Text
+				x={50}
+				y={10}
+				text={count.toLocaleString()}
+				fontSize={20}
+				fontStyle="bold"
+				fontFamily="Arial"
+				fill="black"
+			/>
 		</Group>
 	);
 }

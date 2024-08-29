@@ -1,10 +1,13 @@
 import { Rect, Text } from 'react-konva';
 
-interface KonvaButtonProps {
+interface ButtonProps {
 	x: number;
 	y: number;
 	width: number;
 	height: number;
+	bgColor: string;
+	textColor: string;
+	borderColor: string;
 	text: string;
 	onClick: () => void;
 }
@@ -14,9 +17,12 @@ export function Button({
 	y,
 	width,
 	height,
+	bgColor,
+	borderColor,
+	textColor,
 	text,
 	onClick,
-}: KonvaButtonProps) {
+}: ButtonProps) {
 	return (
 		<>
 			<Rect
@@ -26,6 +32,9 @@ export function Button({
 				height={height}
 				fill="lightblue"
 				shadowBlur={5}
+				stroke={borderColor}
+				strokeWidth={5}
+				backgroundColor={bgColor}
 				cornerRadius={10}
 				onClick={onClick} // Handle button clicks
 				onMouseEnter={(e) => {
@@ -50,7 +59,7 @@ export function Button({
 				text={text}
 				fontSize={36}
 				fontFamily="Arial"
-				fill="black"
+				fill={textColor}
 				align="center"
 				width={width}
 				height={height}

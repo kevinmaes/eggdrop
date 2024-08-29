@@ -1,6 +1,5 @@
-import { Group, Rect, Text, Image } from 'react-konva';
-import useImage from 'use-image';
-import { AppActorContext } from '../app.machine';
+import { Group, Rect, Text } from 'react-konva';
+import { EggTally } from '../LevelScoreBox/LevelScoreBox';
 
 export function GameScoreBox({
 	x,
@@ -13,88 +12,60 @@ export function GameScoreBox({
 	width: number;
 	height: number;
 }) {
-	const { eggFrames } = AppActorContext.useSelector((state) => ({
-		eggFrames: state.context.gameAssets?.egg.sprite.frames ?? {},
-		generationIndex: state.context.generationIndex,
-	}));
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
-	const whiteEggFrame = eggFrames['egg-white.png'].frame;
-	const goldEggFrame = eggFrames['egg-gold.png'].frame;
-
 	return (
 		<Group x={x} y={y}>
+			{/* Background box */}
 			<Rect
 				width={width}
 				height={height}
 				x={0}
 				y={0}
-				opacity={0.5}
+				opacity={0.75}
 				fill="white"
+				stroke="#a5c4fa"
+				strokeWidth={5}
 				cornerRadius={10}
 			/>
-			<Group x={10} y={50}>
+			{/* Game Score */}
+			<Group x={40} y={20} width={width}>
 				<Text
 					x={0}
-					y={5}
-					text="Total Score:"
+					y={15}
+					// width={width}
+					align="center"
+					text="Total Score"
 					fontSize={20}
 					fontFamily="Arial"
 					fill="black"
 				/>
 				<Text
 					x={120}
-					y={0}
+					y={5}
+					// width={width}
+					align="center"
 					text={`${1000}`}
-					fontSize={30}
+					fontSize={40}
 					fontFamily="Arial"
 					fill="black"
 				/>
 			</Group>
-			<Group y={100}>
-				<Group x={10}>
-					<Image
-						image={eggImage}
-						width={30}
-						height={30}
-						border="5px solid red"
-						crop={{
-							x: whiteEggFrame.x,
-							y: whiteEggFrame.y,
-							width: whiteEggFrame.w,
-							height: whiteEggFrame.h,
-						}}
-					/>
-					<Text
-						x={35}
-						y={5}
-						text={`${12}`}
-						fontSize={20}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Group>
-				<Group x={100}>
-					<Image
-						image={eggImage}
-						width={30}
-						height={30}
-						border="5px solid red"
-						crop={{
-							x: goldEggFrame.x,
-							y: goldEggFrame.y,
-							width: goldEggFrame.w,
-							height: goldEggFrame.h,
-						}}
-					/>
-					<Text
-						x={35}
-						y={5}
-						text={`${12}`}
-						fontSize={20}
-						fontFamily="Arial"
-						fill="black"
-					/>
-				</Group>
+			<Group x={0.5 * width - 75} y={90} width={width}>
+				<EggTally
+					eggColor="white"
+					count={10}
+					x={0}
+					y={0}
+					width={100}
+					eggSize={40}
+				/>
+				<EggTally
+					eggColor="gold"
+					count={5}
+					x={100}
+					y={0}
+					width={100}
+					eggSize={40}
+				/>
 			</Group>
 		</Group>
 	);
