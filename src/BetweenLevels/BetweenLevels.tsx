@@ -15,9 +15,10 @@ export function BetweenLevels() {
 		return null;
 	}
 
-	const xPos = gameConfig.stageDimensions.midX - 150;
-	const yPos = gameConfig.stageDimensions.midY - 130;
 	const groupWidth = 300;
+	const groupHeight = 250;
+	const xPos = gameConfig.stageDimensions.midX - 0.5 * groupWidth;
+	const yPos = gameConfig.stageDimensions.midY - 0.5 * groupHeight;
 
 	return (
 		<Layer>
