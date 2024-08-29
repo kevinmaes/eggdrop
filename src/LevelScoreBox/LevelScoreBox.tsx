@@ -36,6 +36,8 @@ export function LevelScoreBox() {
 				y={0}
 				opacity={0.6}
 				fill="white"
+				stroke="#a5c4fa"
+				strokeWidth={4}
 				cornerRadius={10}
 			/>
 			{/* Level Score */}

@@ -22,6 +22,8 @@ export function GameScoreBox({
 				y={0}
 				opacity={0.6}
 				fill="white"
+				stroke="#a5c4fa"
+				strokeWidth={5}
 				cornerRadius={10}
 			/>
 			{/* Game Score */}

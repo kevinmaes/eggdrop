@@ -26,6 +26,9 @@ export function Button({
 				height={height}
 				fill="lightblue"
 				shadowBlur={5}
+				stroke="white"
+				strokeWidth={5}
+				backgroundColor="#a5c4fa"
 				cornerRadius={10}
 				onClick={onClick} // Handle button clicks
 				onMouseEnter={(e) => {
@@ -50,7 +53,7 @@ export function Button({
 				text={text}
 				fontSize={36}
 				fontFamily="Arial"
-				fill="black"
+				fill="#455579"
 				align="center"
 				width={width}
 				height={height}
