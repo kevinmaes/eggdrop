@@ -15,19 +15,20 @@ export function BetweenLevels() {
 		return null;
 	}
 
-	const xPos = gameConfig.stageDimensions.midX - 200;
+	const xPos = gameConfig.stageDimensions.midX - 150;
 	const yPos = gameConfig.stageDimensions.midY - 130;
+	const groupWidth = 300;
 
 	return (
 		<Layer>
 			{/* Game score and other UI */}
 			<Group x={xPos} y={yPos}>
-				<GameScoreBox x={0} y={0} width={400} height={150} />
+				<GameScoreBox x={0} y={0} width={groupWidth} height={150} />
 				{/* Play button */}
 				<Button
 					x={0}
 					y={160}
-					width={400}
+					width={groupWidth}
 					height={100}
 					text="Play next level"
 					onClick={() => appActorRef.send({ type: 'Play' })}

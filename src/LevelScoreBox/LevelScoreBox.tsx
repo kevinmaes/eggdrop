@@ -89,11 +89,15 @@ export function EggTally({
 	count,
 	x,
 	y,
+	width,
+	height,
 }: {
 	eggColor: 'white' | 'gold';
 	count: number;
 	x: number;
 	y: number;
+	width?: number;
+	height?: number;
 }) {
 	const eggFrames = AppActorContext.useSelector((state) => {
 		return state?.context?.gameAssets?.egg?.sprite?.frames ?? {};
@@ -109,7 +113,7 @@ export function EggTally({
 	const eggFrame = eggFrames[`egg-${eggColor}.png`].frame;
 
 	return (
-		<Group x={x} y={y}>
+		<Group x={x} y={y} width={width} height={height}>
 			<Image
 				image={eggImage}
 				width={40}
