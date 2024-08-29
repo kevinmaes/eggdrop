@@ -31,6 +31,9 @@ export function BetweenLevels() {
 					y={160}
 					width={groupWidth}
 					height={100}
+					bgColor={gameConfig.colors.secondaryBlue}
+					borderColor="white"
+					textColor="white"
 					text="Play next level"
 					onClick={() => appActorRef.send({ type: 'Play' })}
 				/>

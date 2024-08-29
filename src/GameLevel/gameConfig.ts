@@ -26,6 +26,10 @@ export function getGameConfig() {
 			midX: stageDimensions.width / 2,
 			midY: stageDimensions.height / 2,
 		},
+		colors: {
+			primaryBlue: '#a5c4fa',
+			secondaryBlue: '#455579',
+		},
 		chef: {
 			x: stageDimensions.width / 2 - 0.5 * chefWidth,
 			y: chefYPosition,
