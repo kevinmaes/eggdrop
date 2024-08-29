@@ -20,20 +20,20 @@ export function GameLevel() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { generationIndex, remainingTime, henActorRefs, eggActorRefs } =
+	const { generationIndex, remainingMS, henActorRefs, eggActorRefs } =
 		useSelector(gameLevelActorRef, (state) => {
 			if (!state) {
 				console.log('GameLevel: state is null');
 				return {
 					generationIndex: 0,
-					remainingTime: 0,
+					remainingMS: 0,
 					henActorRefs: [],
 					eggActorRefs: [],
 				};
 			}
 			return {
 				generationIndex: state.context.generationIndex,
-				remainingTime: state.context.remainingTime,
+				remainingMS: state.context.remainingMS,
 				henActorRefs: state.context.henActorRefs,
 				eggActorRefs: state.context.eggActorRefs,
 			};
@@ -75,12 +75,12 @@ export function GameLevel() {
 				<Text
 					x={200}
 					y={250}
-					text={`Time: ${remainingTime / 1000} seconds`}
+					text={`Time: ${remainingMS / 1000} seconds`}
 					fontSize={20}
 					fontFamily="Arial"
 					fill="white"
 				/>
-				<CountdownTimer x={100} y={100} width={200} height={50} />
+				<CountdownTimer x={100} y={100} width={100} height={50} />
 				<LevelScoreBox />
 			</Layer>
 		</>

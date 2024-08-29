@@ -25,7 +25,7 @@ export const gameLevelMachine = setup({
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
-			remainingTime: number;
+			remainingMS: number;
 			generationIndex: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
@@ -67,7 +67,7 @@ export const gameLevelMachine = setup({
 	},
 	actions: {
 		countdownTick: assign({
-			remainingTime: (_, params: { remainingMS: number }) => params.remainingMS,
+			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
 		}),
 		spawnNewHens: assign({
 			henActorRefs: ({ context, spawn }) =>
@@ -360,7 +360,7 @@ export const gameLevelMachine = setup({
 	context: ({ input }) => ({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
-		remainingTime: input.levelDuration,
+		remainingMS: input.levelDuration,
 		generationIndex: input.generationIndex,
 		henActorRefs: [],
 		eggActorRefs: [],
@@ -506,7 +506,7 @@ export const gameLevelMachine = setup({
 					id: 'countdownTimer',
 					src: 'countdownTimer',
 					input: ({ context }) => ({
-						totalMS: context.remainingTime,
+						totalMS: context.remainingMS,
 						tickMS: 1000,
 					}),
 				},

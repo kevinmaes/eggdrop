@@ -1,4 +1,8 @@
+import { useSelector } from '@xstate/react';
 import { Group, Rect, Text } from 'react-konva';
+import { ActorRefFrom } from 'xstate';
+import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+import { AppActorContext } from '../app.machine';
 
 export function CountdownTimer({
 	x,
@@ -11,8 +15,32 @@ export function CountdownTimer({
 	width: number;
 	height: number;
 }) {
-	const timerText = 'Time left: 5m 10s';
-	let progressBarWidth = width;
+	const appActorRef = AppActorContext.useActorRef();
+	const gameLevelActorRef = appActorRef.system.get(
+		'gameLevelMachine'
+	) as ActorRefFrom<typeof gameLevelMachine>;
+	const { totalLevelMS, remainingMS } = useSelector(
+		gameLevelActorRef,
+		(state) => {
+			return {
+				totalLevelMS: state.context.gameConfig.levelDurationMS,
+				remainingMS: state.context.remainingMS,
+			};
+		}
+	);
+
+	const minutes = Math.floor(remainingMS / 60000);
+	const seconds = Math.floor((remainingMS % 60000) / 1000);
+
+	const remainingPercentage = remainingMS / totalLevelMS;
+	const remainingTimeBarWidth = (width - 10) * remainingPercentage;
+
+	const remainingTimeString =
+		minutes > 0
+			? `${minutes} m ${seconds.toString().padStart(2, '0')} s`
+			: `${seconds.toString().padStart(2, '0')} s`;
+
+	console.log('remainingTimeString', remainingTimeString);
 
 	return (
 		<Group x={x} y={y}>
@@ -21,26 +49,28 @@ export function CountdownTimer({
 				y={0}
 				width={width}
 				height={height}
-				fill="white"
-				stroke="black"
+				fill="transparent"
+				stroke="white"
 				strokeWidth={2}
 			/>
 			{/* Timer text */}
 			<Text
-				x={10}
 				y={10}
-				text={timerText}
+				text={remainingTimeString}
 				fontSize={20}
-				fontFamily="Calibri"
-				fill="black"
+				fontStyle="bold"
+				width={0.9 * width}
+				align="right"
+				fill="white"
 			/>
 			{/* Progress bar */}
 			<Rect
-				x={0}
-				y={40}
-				width={progressBarWidth}
+				x={5}
+				y={35}
+				width={remainingTimeBarWidth}
 				height={10} // height of the progress bar
-				fill="green"
+				fill="white"
+				opacity={0.5}
 			/>
 		</Group>
 	);
