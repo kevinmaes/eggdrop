@@ -18,7 +18,7 @@ export function getGameConfig() {
 	const gameConfig = {
 		isMuted: true,
 		// The number of hens in the game
-		populationSize: 50,
+		populationSize: 10,
 		// The duration each level lasts in milliseconds
 		levelDurationMS: 50_000,
 		stageDimensions: {
