@@ -84,7 +84,6 @@ export function GameScoreBox({
 				bgColor={gameConfig.colors.secondaryBlue}
 				borderColor="white"
 				textColor="white"
-				// text="Play next level"
 				text="Play"
 				onClick={() => appActorRef.send({ type: 'Play' })}
 			/>
