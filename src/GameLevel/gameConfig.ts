@@ -18,9 +18,9 @@ export function getGameConfig() {
 	const gameConfig = {
 		isMuted: true,
 		// The number of hens in the game
-		populationSize: 10,
+		populationSize: 1,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 5_000,
+		levelDurationMS: 50_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -61,8 +61,8 @@ export function getGameConfig() {
 			y: -10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
-			buttXOffset: 40,
-			buttYOffset: 65,
+			buttXOffset: 60,
+			buttYOffset: 85,
 		},
 		henBeam: {
 			width: stageDimensions.width,
