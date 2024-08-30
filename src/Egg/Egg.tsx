@@ -59,10 +59,10 @@ export function Egg({
 			isHatched: state.matches('Hatched'),
 			isBroken: state.matches('Splatting'),
 			isDone: state.matches('Done'),
-			eggFrames: state.context.eggAssets.sprite.frames,
-			eggFrameNames: Object.keys(state.context.eggAssets.sprite.frames),
-			chickFrames: state.context.chickAssets.sprite.frames,
-			chickFrameNames: Object.keys(state.context.chickAssets.sprite.frames),
+			eggFrames: state.context.eggAssets.frames,
+			eggFrameNames: Object.keys(state.context.eggAssets.frames),
+			chickFrames: state.context.chickAssets.frames,
+			chickFrameNames: Object.keys(state.context.chickAssets.frames),
 			color: state.context.color,
 		};
 	});

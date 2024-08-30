@@ -54,9 +54,9 @@ export function Chef({}: // dimensions,
 		}
 		return {
 			chefConfig: state.context.chefConfig,
-			chefFrames: state.context.chefAssets.sprite.frames as ChefFrames,
+			chefFrames: state.context.chefAssets.frames as ChefFrames,
 			chefFrameNames: Object.keys(
-				state.context.chefAssets.sprite.frames
+				state.context.chefAssets.frames
 			) as ChefFrameName[],
 			position: state.context.position,
 			// Use direction here instead of speed so that the chef's leg movement
