@@ -438,7 +438,6 @@ export const gameLevelMachine = setup({
 				params: ({ event }) => event.position,
 			},
 			actions: [
-				// log('gameLevelMachine: Egg position updated'),
 				sendTo('chefMachine', { type: 'Catch' }),
 				'playCatchEggSound',
 				// Sending Catch to the eggActor will lead to final state
