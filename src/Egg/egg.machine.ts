@@ -340,7 +340,6 @@ export const eggMachine = setup({
 					},
 				},
 				'Animation Done': {
-					entry: log('Animation Done'),
 					type: 'final',
 				},
 			},
@@ -348,7 +347,6 @@ export const eggMachine = setup({
 		},
 		Hatched: {
 			entry: [
-				log('Hatched'),
 				assign({
 					resultStatus: 'Hatched',
 				}),
@@ -367,7 +365,7 @@ export const eggMachine = setup({
 		},
 		Exiting: {
 			tags: 'chick',
-			entry: [log('Exiting'), 'setTargetPositionToExit'],
+			entry: ['setTargetPositionToExit'],
 			invoke: {
 				src: 'chickExitingStageActor',
 				input: ({ context }) => ({
