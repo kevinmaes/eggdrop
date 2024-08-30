@@ -1,13 +1,13 @@
-import { Group, Image, Layer, Rect, Stage } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
 
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
-import useImage from 'use-image';
 import { Button } from './Button/Button';
 import { BetweenLevels } from './BetweenLevels/BetweenLevels';
 import { MuteButton } from './MuteButton/MuteButton';
+import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 
 function App() {
 	const { isLoading, showError } = AppActorContext.useSelector((state) => ({
@@ -28,10 +28,8 @@ function App() {
 
 	return (
 		<KonvaStageAndBackground>
-			<>
-				<BetweenLevels />
-				<GameLevel />
-			</>
+			<BetweenLevels />
+			<GameLevel />
 		</KonvaStageAndBackground>
 	);
 }
@@ -46,10 +44,6 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 		})
 	);
 
-	const [kitchenBgImage] = useImage('images/kitchen-bg-4.png');
-	const [henBeamImage] = useImage('images/hen-beam-gray.png');
-	const [titleImage] = useImage('images/egg-drop-title-0.png');
-
 	return (
 		<>
 			<Stage
@@ -58,54 +52,7 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 				style={{ background: 'blue', border: '1px solid black' }}
 			>
 				{/* Background graphics layer - static (no events) */}
-				<Layer listening={false}>
-					{/* Background kitchen image */}
-					<Group>
-						<Image
-							image={kitchenBgImage}
-							width={gameConfig.stageDimensions.width}
-							height={gameConfig.stageDimensions.height}
-						/>
-						{/* Translucent overlay to mute the background image */}
-						<Rect
-							width={gameConfig.stageDimensions.width}
-							height={gameConfig.stageDimensions.height}
-							opacity={0.5}
-							fill="black"
-							y={0}
-						/>
-						<Image
-							image={henBeamImage}
-							width={gameConfig.henBeam.width}
-							height={gameConfig.henBeam.height}
-							x={gameConfig.henBeam.x}
-							y={gameConfig.henBeam.y}
-						/>
-					</Group>
-					{showGameIntro && (
-						<Group>
-							<Rect
-								width={1000}
-								height={500}
-								x={0.5 * gameConfig.stageDimensions.width - 500}
-								y={0.5 * gameConfig.stageDimensions.height - 250}
-								borderRadius={60}
-								fill="black"
-								opacity={0.5}
-								stroke="white"
-								strokeWidth={10}
-								cornerRadius={20}
-							/>
-							<Image
-								image={titleImage}
-								width={900}
-								height={405}
-								x={0.5 * gameConfig.stageDimensions.width - 450}
-								y={0.5 * gameConfig.stageDimensions.height - 202}
-							/>
-						</Group>
-					)}
-				</Layer>
+				<BackgroundLayer />
 				{children}
 				{/* Dynamic App UI Layer */}
 				<Layer>
