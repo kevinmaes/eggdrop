@@ -173,6 +173,8 @@ export const henMachine = setup({
 					const targetPosition = { ...context.position };
 					const newPosition = { ...context.position };
 
+					// Pick a new x target position within the hen motion range
+					// and with a minimum distance from the current position
 					const minDistance = 200;
 					let newXPos: number;
 					do {
