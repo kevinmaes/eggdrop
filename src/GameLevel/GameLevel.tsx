@@ -70,21 +70,16 @@ export function GameLevel() {
 
 			{/* Game UI: Level Score, Timer */}
 			<Layer>
+				{/* Level number */}
 				<Text
-					x={100}
-					y={250}
-					text={`Level: ${generationIndex + 1}`}
-					fontSize={20}
+					x={gameConfig.stageDimensions.margin}
+					y={gameConfig.henBeam.y + 5}
+					text={`LEVEL ${generationIndex + 1}`}
+					fontSize={18}
+					fontStyle="bold"
 					fontFamily="Arial"
 					fill="white"
-				/>
-				<Text
-					x={200}
-					y={250}
-					text={`Time: ${remainingMS / 1000} seconds`}
-					fontSize={20}
-					fontFamily="Arial"
-					fill="white"
+					opacity={0.75}
 				/>
 				<CountdownTimer
 					x={70}

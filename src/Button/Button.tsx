@@ -31,7 +31,6 @@ export function Button({
 				width={width}
 				height={height}
 				fill="lightblue"
-				shadowBlur={5}
 				stroke={borderColor}
 				strokeWidth={5}
 				backgroundColor={bgColor}
