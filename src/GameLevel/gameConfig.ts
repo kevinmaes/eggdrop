@@ -61,7 +61,7 @@ export function getGameConfig() {
 			y: -10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
-			buttXOffset: 60,
+			buttXOffset: 0.5 * henSize,
 			buttYOffset: 85,
 		},
 		henBeam: {
