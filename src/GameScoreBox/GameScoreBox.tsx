@@ -32,6 +32,7 @@ export function GameScoreBox({
 				stroke="#a5c4fa"
 				strokeWidth={5}
 				cornerRadius={10}
+				shadowBlur={5}
 			/>
 			{/* Game Score */}
 			<Group x={40} y={20} width={width}>
@@ -83,7 +84,8 @@ export function GameScoreBox({
 				bgColor={gameConfig.colors.secondaryBlue}
 				borderColor="white"
 				textColor="white"
-				text="Play next level"
+				// text="Play next level"
+				text="Play"
 				onClick={() => appActorRef.send({ type: 'Play' })}
 			/>
 		</Group>
