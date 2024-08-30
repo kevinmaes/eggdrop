@@ -5,7 +5,7 @@ import { GameLevel } from './GameLevel/GameLevel';
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
 import { Button } from './Button/Button';
-import { BetweenLevels } from './BetweenLevels/BetweenLevels';
+import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
 import { MuteButton } from './MuteButton/MuteButton';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 
@@ -28,7 +28,7 @@ function App() {
 
 	return (
 		<KonvaStageAndBackground>
-			<BetweenLevels />
+			<BetweenLevelsLayer />
 			<GameLevel />
 		</KonvaStageAndBackground>
 	);
