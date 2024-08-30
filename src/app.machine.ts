@@ -10,13 +10,6 @@ import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 import { GameAssets } from './types/assets';
 
-// export function getOffScreenStartXPosition(
-// 	stageWidth: number,
-// 	buffer: number = 200
-// ) {
-// 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
-// }
-
 const appMachine = setup({
 	types: {} as {
 		input: {
@@ -172,20 +165,15 @@ const appMachine = setup({
 			const chickSpriteData = await chickResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
+			const controlsResult = await fetch('images/controls.sprite.json');
+			const controlsSpriteData = await controlsResult.json();
 
 			return {
-				hen: {
-					sprite: henSpriteData,
-				},
-				egg: {
-					sprite: eggSpriteData,
-				},
-				chick: {
-					sprite: chickSpriteData,
-				},
-				chef: {
-					sprite: chefSpriteData,
-				},
+				controls: controlsSpriteData,
+				hen: henSpriteData,
+				egg: eggSpriteData,
+				chick: chickSpriteData,
+				chef: chefSpriteData,
 			};
 		}),
 		gameLevelMachine,

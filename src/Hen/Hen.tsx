@@ -1,6 +1,5 @@
 import { Image } from 'react-konva';
 import useImage from 'use-image';
-// import imageFile from '../assets/hen1.png';
 import { useSelector } from '@xstate/react';
 import { ActorRefFrom } from 'xstate';
 import { henMachine } from './hen.machine';
@@ -42,7 +41,7 @@ export function Hen({
 			width: state.context.gameConfig.hen.width,
 			height: state.context.gameConfig.hen.height,
 		},
-		henFrames: state.context.henAssets.sprite.frames,
+		henFrames: state.context.henAssets.frames,
 		position: state.context.position,
 		isMoving: state.matches('Moving'),
 		isLaying: state.matches('Laying Egg'),

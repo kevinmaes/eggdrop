@@ -27,7 +27,7 @@ export function LevelScoreBox({
 		}
 		return {
 			gameConfig: state.context?.gameConfig,
-			eggFrames: state.context.gameAssets.egg.sprite.frames,
+			eggFrames: state.context.gameAssets.egg.frames,
 			levelScore: state.context.levelScore,
 		};
 	});
@@ -113,7 +113,7 @@ export function EggTally({
 	height?: number;
 }) {
 	const eggFrames = AppActorContext.useSelector((state) => {
-		return state?.context?.gameAssets?.egg?.sprite?.frames ?? {};
+		return state?.context?.gameAssets?.egg?.frames ?? {};
 	});
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 

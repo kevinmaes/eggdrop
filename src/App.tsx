@@ -40,7 +40,6 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 		(state) => ({
 			gameConfig: state.context.gameConfig,
 			showGameIntro: state.matches('Intro'),
-			isMuted: state.context.isMuted,
 		})
 	);
 
