@@ -27,7 +27,7 @@ export function LevelScoreBox({
 		}
 		return {
 			gameConfig: state.context?.gameConfig,
-			eggFrames: state.context.gameAssets.egg.frames,
+			eggFrames: state.context.gameAssets.egg.sprite.frames,
 			levelScore: state.context.levelScore,
 		};
 	});

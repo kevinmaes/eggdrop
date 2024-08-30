@@ -28,9 +28,8 @@ export interface SpriteData {
 }
 
 export interface GameAssets {
-	controls: SpriteData;
-	hen: SpriteData;
-	egg: SpriteData;
-	chick: SpriteData;
-	chef: SpriteData;
+	hen: { sprite: SpriteData };
+	egg: { sprite: SpriteData };
+	chick: { sprite: SpriteData };
+	chef: { sprite: SpriteData };
 }

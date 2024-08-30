@@ -165,15 +165,20 @@ const appMachine = setup({
 			const chickSpriteData = await chickResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
-			const controlsResult = await fetch('images/controls.sprite.json');
-			const controlsSpriteData = await controlsResult.json();
 
 			return {
-				controls: controlsSpriteData,
-				hen: henSpriteData,
-				egg: eggSpriteData,
-				chick: chickSpriteData,
-				chef: chefSpriteData,
+				hen: {
+					sprite: henSpriteData,
+				},
+				egg: {
+					sprite: eggSpriteData,
+				},
+				chick: {
+					sprite: chickSpriteData,
+				},
+				chef: {
+					sprite: chefSpriteData,
+				},
 			};
 		}),
 		gameLevelMachine,
