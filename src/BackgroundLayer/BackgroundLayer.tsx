@@ -6,7 +6,6 @@ import { IntroImage } from '../IntroImage/IntroImage';
 export function BackgroundLayer() {
 	const { gameConfig } = AppActorContext.useSelector((state) => ({
 		gameConfig: state.context.gameConfig,
-		isMuted: state.context.isMuted,
 	}));
 
 	const [kitchenBgImage] = useImage('images/kitchen-bg-4.png');
