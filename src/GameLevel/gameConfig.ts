@@ -5,7 +5,7 @@ export function getGameConfig() {
 		width: 1280,
 		height: 720,
 		margin: 10,
-		movementMargin: 50,
+		movementMargin: 25,
 	};
 
 	// The position and dimensions of the chef
