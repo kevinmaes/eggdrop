@@ -5,7 +5,17 @@ import { AppActorContext } from '../app.machine';
 import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
-export function LevelScoreBox() {
+export function LevelScoreBox({
+	x,
+	y,
+	width,
+	height,
+}: {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}) {
 	const appActorRef = AppActorContext.useActorRef();
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
@@ -27,11 +37,11 @@ export function LevelScoreBox() {
 	}
 
 	return (
-		<Group x={gameConfig.stageDimensions.width - 210} y={120}>
+		<Group x={x} y={y}>
 			{/* Background box */}
 			<Rect
-				width={200}
-				height={150}
+				width={width}
+				height={height}
 				x={0}
 				y={0}
 				opacity={0.75}
