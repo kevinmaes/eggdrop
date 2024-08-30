@@ -10,13 +10,6 @@ import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 import { GameAssets } from './types/assets';
 
-// export function getOffScreenStartXPosition(
-// 	stageWidth: number,
-// 	buffer: number = 200
-// ) {
-// 	return Math.random() > 0.5 ? -buffer : stageWidth + buffer;
-// }
-
 const appMachine = setup({
 	types: {} as {
 		input: {
