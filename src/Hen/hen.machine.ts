@@ -1,21 +1,9 @@
-import { and, assign, sendParent, setup, log } from 'xstate';
+import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { Position } from '../GameLevel/types';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
-
-export function pickXPosition(minX: number, maxX: number, buffer: number) {
-	const minDistance = 200;
-	const xDistanceRange = maxX - minX;
-	let randomXPosition = Math.max(
-		Math.random() * xDistanceRange + minX,
-		minDistance
-	);
-	if (randomXPosition < buffer) return buffer;
-	if (randomXPosition > maxX - buffer) return maxX - buffer;
-	return randomXPosition;
-}
 
 export const henMachine = setup({
 	types: {} as {
@@ -181,16 +169,21 @@ export const henMachine = setup({
 		},
 		Moving: {
 			entry: [
-				log('Moving'),
 				assign(({ context }) => {
 					const targetPosition = { ...context.position };
 					const newPosition = { ...context.position };
 
+					// Pick a new x target position within the hen motion range
+					// and with a minimum distance from the current position
 					const minDistance = 200;
-					const xDistanceRange = context.maxX - context.minX;
-					targetPosition.x =
-						Math.max(minDistance, Math.round(Math.random() * xDistanceRange)) +
-						context.minX;
+					let newXPos: number;
+					do {
+						// Generate a random x position between minX and maxX
+						newXPos =
+							Math.round(Math.random() * (context.maxX - context.minX)) +
+							context.minX;
+					} while (Math.abs(newXPos - context.position.x) < minDistance);
+					targetPosition.x = newXPos;
 
 					// Check if the hen is in its original offstage position (first time animation)
 					if (context.position.x === context.gameConfig.hen.offstageLeftX) {
@@ -263,10 +256,12 @@ export const henMachine = setup({
 				}),
 				onDone: {
 					target: 'Stopped',
-					actions: assign({
-						position: ({ event }) => event.output,
-						currentTweenSpeed: 0,
-					}),
+					actions: [
+						assign({
+							position: ({ event }) => event.output,
+							currentTweenSpeed: 0,
+						}),
+					],
 				},
 				onError: { target: 'Stopped' },
 			},
@@ -323,7 +318,6 @@ export const henMachine = setup({
 			},
 		},
 		Stopped: {
-			entry: log('Stopped'),
 			on: {
 				'Resume game': 'Moving',
 			},
@@ -337,7 +331,6 @@ export const henMachine = setup({
 		'Laying Egg': {
 			tags: 'laying',
 			entry: [
-				log('Laying Egg'),
 				sendParent(({ context }) => {
 					const randomEggColorNumber = Math.random();
 					const eggColor =

@@ -1,7 +1,12 @@
 // This file contains the configuration for the game
 
 export function getGameConfig() {
-	const stageDimensions = { width: 1280, height: 720, margin: 10 };
+	const stageDimensions = {
+		width: 1280,
+		height: 720,
+		margin: 10,
+		movementMargin: 25,
+	};
 
 	// The position and dimensions of the chef
 	const chefWidth = 254;
@@ -112,17 +117,18 @@ export function getGameConfig() {
  */
 export function getInitialChromosomeValues() {
 	const gameConfig = getGameConfig();
+
+	const totalMovementRange =
+		gameConfig.stageDimensions.width -
+		2 * gameConfig.stageDimensions.movementMargin;
+
 	// The minimum xPos the hen can be at
-	let minX = Math.round(
-		Math.random() * 0.25 * gameConfig.stageDimensions.width
-	);
+	let minX =
+		Math.round(Math.random() * 0.25 * totalMovementRange) +
+		gameConfig.stageDimensions.movementMargin;
 
 	// The maximum xPos the hen can be at
-	let maxX = gameConfig.stageDimensions.width - minX;
-
-	// if (minX > maxX) {
-	// 	[minX, maxX] = [maxX, minX];
-	// }
+	let maxX = gameConfig.stageDimensions.width - minX - gameConfig.hen.width;
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
