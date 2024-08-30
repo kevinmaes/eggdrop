@@ -1,5 +1,7 @@
 import { Group, Rect, Text } from 'react-konva';
 import { EggTally } from '../LevelScoreBox/LevelScoreBox';
+import { Button } from '../Button/Button';
+import { AppActorContext } from '../app.machine';
 
 export function GameScoreBox({
 	x,
@@ -12,6 +14,11 @@ export function GameScoreBox({
 	width: number;
 	height: number;
 }) {
+	const appActorRef = AppActorContext.useActorRef();
+	const gameConfig = AppActorContext.useSelector(
+		(state) => state.context.gameConfig
+	);
+
 	return (
 		<Group x={x} y={y}>
 			{/* Background box */}
@@ -67,6 +74,18 @@ export function GameScoreBox({
 					eggSize={40}
 				/>
 			</Group>
+
+			<Button
+				x={0.5 * width - 100}
+				y={180}
+				width={200}
+				height={100}
+				bgColor={gameConfig.colors.secondaryBlue}
+				borderColor="white"
+				textColor="white"
+				text="Play next level"
+				onClick={() => appActorRef.send({ type: 'Play' })}
+			/>
 		</Group>
 	);
 }
