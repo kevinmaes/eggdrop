@@ -1,30 +1,37 @@
-# React + TypeScript + Vite
+# Egg Drop Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Egg Drop Title](public/images/egg-drop-title.png)
 
-Currently, two official plugins are available:
+This game is a fun side project of building a game for web. It was created using a standard Vite React project.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+It uses the following:
 
-## Expanding the ESLint configuration
+- [React](https://react.dev)
+- [Konva](https://konvajs.org)
+- [XState](https://xstate.js.org) and [Stately.ai](https://stately.ai)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+More coming soon...
 
-- Configure the top-level `parserOptions` property like this:
+## Start the dev server
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+`yarn dev`
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Build the app
+
+`yarn build`
+
+This game is a fun side project of building a game for web. It was created using a standard Vite React project.
+
+It uses the following:
+
+- React
+- Konva
+- XState
+
+## Start the dev server
+
+`yarn dev`
+
+## Build the app
+
+`yarn build`
