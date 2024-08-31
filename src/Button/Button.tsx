@@ -9,6 +9,7 @@ interface ButtonProps {
 	textColor: string;
 	borderColor: string;
 	text: string;
+	fontFamily?: string;
 	onClick: () => void;
 }
 
@@ -21,6 +22,7 @@ export function Button({
 	borderColor,
 	textColor,
 	text,
+	fontFamily,
 	onClick,
 }: ButtonProps) {
 	return (
@@ -57,7 +59,7 @@ export function Button({
 				y={y}
 				text={text}
 				fontSize={36}
-				fontFamily="Arial"
+				fontFamily={fontFamily}
 				fill={textColor}
 				align="center"
 				width={width}
