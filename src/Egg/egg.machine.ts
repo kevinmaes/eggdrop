@@ -20,7 +20,7 @@ export const eggMachine = setup({
 			position: Position;
 			henCurentTweenSpeed: number;
 			color: 'white' | 'gold' | 'black';
-			rotationDirection: Direction;
+			rotationDirection: Direction['value'];
 			hatchRate: number;
 		};
 		context: {
@@ -36,7 +36,7 @@ export const eggMachine = setup({
 			targetPosition: Position;
 			color: 'white' | 'gold' | 'black';
 			henCurentTweenSpeed: number;
-			rotationDirection: Direction;
+			rotationDirection: Direction['value'];
 			exitingSpeed: number;
 			resultStatus: EggResultStatus;
 			gamePaused: boolean;

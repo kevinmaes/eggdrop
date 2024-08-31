@@ -3,7 +3,7 @@ import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
-import { Direction, MovingDirection, Position } from '../types';
+import { Direction, Position } from '../types';
 
 export const henMachine = setup({
 	types: {} as {
@@ -37,8 +37,8 @@ export const henMachine = setup({
 			currentTweenSpeed: number;
 			currentTweenDurationMS: number;
 			currentTweenStartTime: number;
-			currentTweenDirection: Direction;
-			movingDirection: MovingDirection;
+			currentTweenDirection: Direction['value'];
+			movingDirection: Direction['label'];
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;

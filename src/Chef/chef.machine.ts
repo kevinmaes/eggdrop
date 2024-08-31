@@ -3,8 +3,7 @@ import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
-import { MovingDirection, Position } from '../types';
-import { Direction } from 'readline';
+import { Position, Direction } from '../types';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -26,8 +25,8 @@ export const chefMachine = setup({
 			position: Position;
 			speed: number;
 			speedLimit: number;
-			direction: Direction;
-			movingDirection: MovingDirection;
+			direction: Direction['value'];
+			movingDirection: Direction['label'];
 			acceleration: number;
 			deceleration: number;
 			minXPos: number;
@@ -37,7 +36,7 @@ export const chefMachine = setup({
 		events:
 			| { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
 			| { type: 'Catch' }
-			| { type: 'Set direction'; direction: Direction }
+			| { type: 'Set direction'; direction: Direction['value'] }
 			| { type: 'Reset isCatchingEgg' };
 	},
 	actions: {
@@ -95,9 +94,9 @@ export const chefMachine = setup({
 				position: { x: newXPos, y: position.y },
 			};
 		}),
-		setDirectionProps: assign((_, params: Direction) => {
+		setDirectionProps: assign((_, params: Direction['value']) => {
 			const direction = params;
-			const movingDirection: MovingDirection =
+			const movingDirection: Direction['label'] =
 				direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
 			return {
 				direction,

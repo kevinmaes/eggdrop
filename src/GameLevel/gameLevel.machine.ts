@@ -53,7 +53,7 @@ export const gameLevelMachine = setup({
 					henId: string;
 					henPosition: Position;
 					henCurentTweenSpeed: number;
-					henCurrentTweenDirection: Direction;
+					henCurrentTweenDirection: Direction['value'];
 					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 			  }
@@ -131,7 +131,7 @@ export const gameLevelMachine = setup({
 					henCurentTweenSpeed: number;
 					henButtXOffset: number;
 					henButtYOffset: number;
-					henCurrentTweenDirection: Direction;
+					henCurrentTweenDirection: Direction['value'];
 					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 				}
@@ -156,7 +156,7 @@ export const gameLevelMachine = setup({
 							henIsMoving: params.henCurentTweenSpeed > 0,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
 							rotationDirection: (-1 *
-								params.henCurrentTweenDirection) as Direction,
+								params.henCurrentTweenDirection) as Direction['value'],
 							hatchRate: params.hatchRate,
 						},
 					}),

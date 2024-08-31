@@ -3,5 +3,7 @@ export interface Position {
 	y: number;
 }
 
-export type Direction = -1 | 0 | 1;
-export type MovingDirection = 'left' | 'none' | 'right';
+export interface Direction {
+	value: -1 | 0 | 1;
+	label: 'left' | 'right' | 'none';
+}

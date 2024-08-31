@@ -10,7 +10,7 @@ export const eggMotionActor = fromPromise<
 		xSpeed: number;
 		ySpeed: number;
 		testForDestination: (yPos: number) => boolean;
-		rotationDirection: Direction;
+		rotationDirection: Direction['value'];
 		parentRef: AnyActorRef;
 	}
 >(({ input }) => {
