@@ -32,6 +32,7 @@ export function getGameConfig() {
 			midY: stageDimensions.height / 2,
 		},
 		colors: {
+			primaryYellow: '#fceb50',
 			primaryOrange: '#e6ae3b',
 			primaryBlue: '#a5c4fa',
 			secondaryBlue: '#455579',

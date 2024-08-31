@@ -4,10 +4,10 @@ import { GameLevel } from './GameLevel/GameLevel';
 
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
-import { Button } from './Button/Button';
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
 import { MuteButton } from './MuteButton/MuteButton';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
+import { TransparentButton } from './TransparentButton/TransparentButton';
 
 function App() {
 	const { isLoading, showError, showGamePlayLevel } =
@@ -60,15 +60,11 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 					<MuteButton />
 					{showGameIntro && (
 						// Play button
-						<Button
-							x={gameConfig.stageDimensions.width / 2 - 60}
-							y={490}
-							width={200}
-							height={60}
-							bgColor={gameConfig.colors.secondaryBlue}
-							borderColor="white"
-							textColor="white"
-							text="Play"
+						<TransparentButton
+							x={0.5 * gameConfig.stageDimensions.width - 500}
+							y={0.5 * gameConfig.stageDimensions.height - 250}
+							width={1000}
+							height={500}
 							onClick={() => appActorRef.send({ type: 'Play' })}
 						/>
 					)}
