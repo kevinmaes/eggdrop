@@ -16,7 +16,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			}}
 		>
 			<App />
-			<div>testing</div>
 		</AppActorContext.Provider>
 	</React.StrictMode>
 );
