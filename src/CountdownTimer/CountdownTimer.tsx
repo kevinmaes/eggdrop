@@ -51,8 +51,8 @@ export function CountdownTimer({
 
 	const remainingTimeString =
 		minutes > 0
-			? `${minutes} m ${seconds.toString().padStart(2, '0')} s`
-			: `${seconds.toString().padStart(2, '0')} s`;
+			? `${minutes}m ${seconds.toString().padStart(2, '0')}s`
+			: `${seconds.toString().padStart(2, '0')}s`;
 
 	return (
 		<Group x={x} y={y}>
@@ -74,10 +74,11 @@ export function CountdownTimer({
 				fontStyle="bold"
 				width={0.9 * width}
 				align="right"
-				fill="white"
-				fontFamily="Arial"
+				// fill="white"
+				fill={gameConfig.colors.primaryBlue}
+				fontFamily="JetBrains Mono"
 			/>
-			{/* Progress bar */}
+			{/* Progress bar outline */}
 			<Rect
 				x={5}
 				y={35}
@@ -88,6 +89,7 @@ export function CountdownTimer({
 				strokeWidth={1}
 				cornerRadius={[0, 0, 5, 5]}
 			/>
+			{/* Progress bar fill */}
 			<Rect
 				x={5}
 				y={35}
