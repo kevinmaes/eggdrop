@@ -82,10 +82,14 @@ export function GameLevel() {
 					height={gameConfig.countdownTimer.height}
 				/>
 				<LevelScoreBox
-					x={gameConfig.stageDimensions.width - 210}
+					x={
+						gameConfig.stageDimensions.width -
+						120 -
+						gameConfig.stageDimensions.margin
+					}
 					y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
-					width={200}
-					height={150}
+					width={120}
+					height={320}
 				/>
 			</Layer>
 		</>

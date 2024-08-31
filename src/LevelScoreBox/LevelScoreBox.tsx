@@ -60,7 +60,9 @@ export function LevelScoreBox({
 				<Text
 					x={0}
 					y={0}
-					text="Score:"
+					width={100}
+					align="center"
+					text="Score"
 					fontSize={24}
 					fontFamily="Arco"
 					height={24}
@@ -68,45 +70,20 @@ export function LevelScoreBox({
 					fill={gameConfig.colors.secondaryOrange}
 				/>
 				<Text
-					x={95}
-					y={0}
+					x={0}
+					y={40}
+					width={100}
+					align="center"
 					text={`${scoreData.levelScore.toLocaleString()}`}
 					fontSize={32}
 					fontFamily="Arco"
 					fill={gameConfig.colors.secondaryOrange}
-					align="right"
 					height={24}
 					verticalAlign="bottom"
-					width={80}
-				/>
-			</Group>
-			{/* Game Score */}
-			<Group x={10} y={50}>
-				<Text
-					x={0}
-					y={0}
-					verticalAlign="bottom"
-					height={24}
-					text="Total Score:"
-					fontSize={16}
-					fontFamily="Arco"
-					fill={gameConfig.colors.secondaryBlue}
-				/>
-				<Text
-					x={95}
-					y={0}
-					text={`${anticipatedGameScore.toLocaleString()}`}
-					fontSize={16}
-					fontFamily="Arco"
-					fill={gameConfig.colors.secondaryBlue}
-					align="right"
-					height={24}
-					verticalAlign="bottom"
-					width={80}
 				/>
 			</Group>
 			{/* Egg Tally for white, gold, black eggs */}
-			<Group x={10} y={95}>
+			<Group x={20} y={100}>
 				<EggTally
 					eggColor="white"
 					count={scoreData.eggsCaught.white}
@@ -116,14 +93,41 @@ export function LevelScoreBox({
 				<EggTally
 					eggColor="gold"
 					count={scoreData.eggsCaught.gold}
-					x={60}
-					y={0}
+					x={0}
+					y={45}
 				/>
 				<EggTally
 					eggColor="black"
 					count={scoreData.eggsCaught.black}
-					x={120}
+					x={0}
+					y={90}
+				/>
+			</Group>
+			{/* Game Score */}
+			<Group x={10} y={210}>
+				<Text
+					x={0}
 					y={0}
+					verticalAlign="bottom"
+					width={100}
+					height={64}
+					align="center"
+					text="Total Score"
+					fontSize={16}
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
+				/>
+				<Text
+					x={0}
+					y={65}
+					width={100}
+					align="center"
+					text={`${anticipatedGameScore.toLocaleString()}`}
+					fontSize={16}
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
+					height={24}
+					verticalAlign="bottom"
 				/>
 			</Group>
 		</Group>
