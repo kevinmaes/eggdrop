@@ -15,12 +15,13 @@ export function GameScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, gameScoreData } = AppActorContext.useSelector(
-		(state) => ({
+	const { gameConfig, gameScoreData, lastLevelScoreData } =
+		AppActorContext.useSelector((state) => ({
 			gameConfig: state.context.gameConfig,
 			gameScoreData: state.context.gameScoreData,
-		})
-	);
+			lastLevelScoreData:
+				state.context.levelResultsHistory.slice(-1)[0]?.scoreData,
+		}));
 
 	return (
 		<Group x={x} y={y}>
@@ -37,28 +38,75 @@ export function GameScoreBox({
 				cornerRadius={10}
 				shadowBlur={5}
 			/>
-			{/* Game Score */}
-			<Group x={40} y={20} width={width}>
+			{/* Level Score */}
+			<Group x={10} y={30}>
 				<Text
 					x={0}
-					y={15}
+					y={0}
+					width={width - 20}
+					align="center"
+					text="Last Level"
+					fontSize={24}
+					fontFamily="Arco"
+					height={24}
+					verticalAlign="bottom"
+					fill={gameConfig.colors.secondaryOrange}
+				/>
+				<Text
+					x={0}
+					y={40}
+					width={width - 20}
+					align="center"
+					text={`${lastLevelScoreData.levelScore.toLocaleString()} points`}
+					fontSize={32}
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryOrange}
+					height={24}
+					verticalAlign="bottom"
+				/>
+			</Group>
+			{/* Play Next Level Button */}
+			<Button
+				x={0.5 * width - 100}
+				y={120}
+				width={200}
+				height={70}
+				bgColor={gameConfig.colors.secondaryBlue}
+				borderColor="white"
+				textColor="white"
+				text="Play"
+				fontFamily="Arco"
+				onClick={() => appActorRef.send({ type: 'Play' })}
+			/>
+			{/* Game Score */}
+			<Group x={10} y={200}>
+				<Text
+					x={0}
+					y={0}
+					width={width - 20}
 					align="center"
 					text="Total Score"
 					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
+					height={40}
+					verticalAlign="bottom"
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
 				/>
 				<Text
-					x={120}
-					y={5}
+					x={0}
+					y={50}
+					width={width - 20}
 					align="center"
 					text={`${gameScoreData.gameScore.toLocaleString()}`}
+					height={40}
+					verticalAlign="bottom"
 					fontSize={40}
-					fontFamily="Arial"
-					fill="black"
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
 				/>
 			</Group>
-			<Group x={20} y={90} width={width}>
+			{/* Game Egg Totals */}
+			<Group x={12} y={310} width={width}>
 				<EggTally
 					eggColor="white"
 					count={gameScoreData.eggsCaught.white}
@@ -70,7 +118,7 @@ export function GameScoreBox({
 				<EggTally
 					eggColor="gold"
 					count={gameScoreData.eggsCaught.gold}
-					x={85}
+					x={94}
 					y={0}
 					width={100}
 					eggSize={40}
@@ -78,24 +126,12 @@ export function GameScoreBox({
 				<EggTally
 					eggColor="black"
 					count={gameScoreData.eggsCaught.black}
-					x={170}
+					x={188}
 					y={0}
 					width={100}
 					eggSize={40}
 				/>
 			</Group>
-
-			<Button
-				x={0.5 * width - 100}
-				y={180}
-				width={200}
-				height={100}
-				bgColor={gameConfig.colors.secondaryBlue}
-				borderColor="white"
-				textColor="white"
-				text="Play"
-				onClick={() => appActorRef.send({ type: 'Play' })}
-			/>
 		</Group>
 	);
 }

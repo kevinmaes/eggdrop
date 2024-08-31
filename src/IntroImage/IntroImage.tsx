@@ -10,7 +10,7 @@ export function IntroImage() {
 		})
 	);
 
-	const [titleImage] = useImage('images/egg-drop-title-0.png');
+	const [titleImage] = useImage('images/egg-drop-title.png');
 
 	if (!showGameIntro) {
 		return null;
@@ -20,24 +20,25 @@ export function IntroImage() {
 			x={0.5 * gameConfig.stageDimensions.width - 500}
 			y={0.5 * gameConfig.stageDimensions.height - 250}
 		>
+			{/* Border stroke */}
 			<Rect
 				width={1000}
 				height={500}
-				borderRadius={60}
-				stroke="#fceb50"
-				strokeWidth={10}
 				cornerRadius={20}
+				stroke={gameConfig.colors.primaryYellow}
+				strokeWidth={10}
 			/>
+			{/* Transparent background overlay */}
 			<Rect
 				width={980}
 				height={480}
 				x={10}
 				y={10}
-				borderRadius={60}
 				fill="#222d57"
 				opacity={0.5}
 				cornerRadius={20}
 			/>
+			{/* Main title image */}
 			<Image image={titleImage} width={900} height={405} x={50} y={47} />
 		</Group>
 	);

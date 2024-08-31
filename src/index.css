@@ -1,3 +1,14 @@
+@font-face {
+	font-family: 'Arco';
+	src: local('Arco-Regular'), url('./src/assets/fonts/ARCO.ttf');
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: local('JetBrains-Mono-Regular'),
+		url('./src/assets/fonts/JetBrainsMonoNL-Regular.ttf');
+}
+
 body {
 	display: flex;
 	flex-direction: column;
