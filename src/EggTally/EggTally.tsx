@@ -19,9 +19,10 @@ export function EggTally({
 	width?: number;
 	height?: number;
 }) {
-	const eggFrames = AppActorContext.useSelector((state) => {
-		return state?.context?.gameAssets?.egg?.frames ?? {};
-	});
+	const eggFrames = AppActorContext.useSelector(
+		(state) => state?.context?.gameAssets?.egg?.frames ?? null
+	);
+
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 
 	if (!eggFrames) {

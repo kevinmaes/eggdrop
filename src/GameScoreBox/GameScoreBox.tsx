@@ -15,10 +15,12 @@ export function GameScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, gameScore } = AppActorContext.useSelector((state) => ({
-		gameConfig: state.context.gameConfig,
-		gameScore: state.context.gameScore,
-	}));
+	const { gameConfig, gameScoreData } = AppActorContext.useSelector(
+		(state) => ({
+			gameConfig: state.context.gameConfig,
+			gameScoreData: state.context.gameScoreData,
+		})
+	);
 
 	return (
 		<Group x={x} y={y}>
@@ -40,7 +42,6 @@ export function GameScoreBox({
 				<Text
 					x={0}
 					y={15}
-					// width={width}
 					align="center"
 					text="Total Score"
 					fontSize={20}
@@ -50,9 +51,8 @@ export function GameScoreBox({
 				<Text
 					x={120}
 					y={5}
-					// width={width}
 					align="center"
-					text={`${gameScore}`}
+					text={`${gameScoreData.gameScore.toLocaleString()}`}
 					fontSize={40}
 					fontFamily="Arial"
 					fill="black"
@@ -61,7 +61,7 @@ export function GameScoreBox({
 			<Group x={0.5 * width - 75} y={90} width={width}>
 				<EggTally
 					eggColor="white"
-					count={10}
+					count={gameScoreData.eggsCaught.white}
 					x={0}
 					y={0}
 					width={100}
@@ -69,7 +69,7 @@ export function GameScoreBox({
 				/>
 				<EggTally
 					eggColor="gold"
-					count={5}
+					count={gameScoreData.eggsCaught.gold}
 					x={100}
 					y={0}
 					width={100}

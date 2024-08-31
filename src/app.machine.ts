@@ -24,7 +24,14 @@ const appMachine = setup({
 			mutationRate: number;
 			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
-			gameScore: number;
+			gameScoreData: {
+				gameScore: number;
+				eggsCaught: {
+					white: number;
+					gold: number;
+					black: number;
+				};
+			};
 		};
 		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
 		// | {
@@ -43,7 +50,21 @@ const appMachine = setup({
 		gatherLastLevelResults: assign(({ context }, params: LevelResults) => {
 			console.log('gatherLastLevelResults', params);
 			return {
-				gameScore: context.gameScore + params.scoreData.levelScore,
+				gameScoreData: {
+					gameScore:
+						context.gameScoreData.gameScore + params.scoreData.levelScore,
+					eggsCaught: {
+						white:
+							context.gameScoreData.eggsCaught.white +
+							params.scoreData.eggsCaught.white,
+						gold:
+							context.gameScoreData.eggsCaught.gold +
+							params.scoreData.eggsCaught.gold,
+						black:
+							context.gameScoreData.eggsCaught.black +
+							params.scoreData.eggsCaught.black,
+					},
+				},
 				levelResultsHistory: [...context.levelResultsHistory, params],
 			};
 		}),
@@ -200,7 +221,14 @@ const appMachine = setup({
 		gameAssets: null,
 		mutationRate: 0.1,
 		mutationVariancePercentage: 8,
-		gameScore: 0,
+		gameScoreData: {
+			gameScore: 0,
+			eggsCaught: {
+				white: 0,
+				gold: 0,
+				black: 0,
+			},
+		},
 		isMuted: input.gameConfig.isMuted,
 	}),
 	id: 'Egg Drop Game',

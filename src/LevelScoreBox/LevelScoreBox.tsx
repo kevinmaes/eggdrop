@@ -17,20 +17,25 @@ export function LevelScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
+	const gameScoreData = AppActorContext.useSelector(
+		(state) => state.context.gameScoreData
+	);
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { gameConfig, levelScore } = useSelector(gameLevelActorRef, (state) => {
+	const { gameConfig, scoreData } = useSelector(gameLevelActorRef, (state) => {
 		if (!state) {
 			return {};
 		}
 		return {
 			gameConfig: state.context?.gameConfig,
-			eggFrames: state.context.gameAssets.egg.frames,
-			levelScore: state.context.scoreData.levelScore,
+			scoreData: state.context.scoreData,
 		};
 	});
+
+	const anticipatedGameScore =
+		gameScoreData.gameScore + (scoreData?.levelScore ?? 0);
 
 	if (!gameConfig) {
 		return null;
@@ -63,7 +68,7 @@ export function LevelScoreBox({
 				<Text
 					x={120}
 					y={0}
-					text={`${levelScore}`}
+					text={`${scoreData.levelScore}`}
 					fontSize={30}
 					fontFamily="Arial"
 					fill="black"
@@ -82,15 +87,25 @@ export function LevelScoreBox({
 				<Text
 					x={120}
 					y={0}
-					text={`${levelScore}`}
+					text={`${anticipatedGameScore}`}
 					fontSize={30}
 					fontFamily="Arial"
 					fill="black"
 				/>
 			</Group>
 			{/* Egg Tally */}
-			<EggTally eggColor="white" count={10} x={30} y={90} />
-			<EggTally eggColor="gold" count={5} x={110} y={90} />
+			<EggTally
+				eggColor="white"
+				count={scoreData.eggsCaught.white}
+				x={30}
+				y={90}
+			/>
+			<EggTally
+				eggColor="gold"
+				count={scoreData.eggsCaught.gold}
+				x={110}
+				y={90}
+			/>
 		</Group>
 	);
 }
