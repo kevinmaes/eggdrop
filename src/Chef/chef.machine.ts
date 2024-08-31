@@ -5,6 +5,9 @@ import { Animation } from 'konva/lib/Animation';
 import { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
 
+type Direction = -1 | 0 | 1;
+type MovingDirection = 'left' | 'none' | 'right';
+
 export const chefMachine = setup({
 	types: {} as {
 		input: {
@@ -25,7 +28,8 @@ export const chefMachine = setup({
 			position: Position;
 			speed: number;
 			speedLimit: number;
-			direction: -1 | 0 | 1;
+			direction: Direction;
+			movingDirection: MovingDirection;
 			acceleration: number;
 			deceleration: number;
 			minXPos: number;
@@ -35,11 +39,10 @@ export const chefMachine = setup({
 		events:
 			| { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
 			| { type: 'Catch' }
-			| { type: 'Set direction'; direction: -1 | 0 | 1 }
+			| { type: 'Set direction'; direction: Direction }
 			| { type: 'Reset isCatchingEgg' };
 	},
 	actions: {
-		// Stub for a provided action
 		updateChefPosition: assign(({ context }) => {
 			const {
 				speed,
@@ -94,6 +97,15 @@ export const chefMachine = setup({
 				position: { x: newXPos, y: position.y },
 			};
 		}),
+		setDirectionProps: assign((_, params: Direction) => {
+			const direction = params;
+			const movingDirection: MovingDirection =
+				direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
+			return {
+				direction,
+				movingDirection,
+			};
+		}),
 		setIsCatchingEgg: assign({
 			isCatchingEgg: true,
 		}),
@@ -127,6 +139,7 @@ export const chefMachine = setup({
 		speed: input.speed,
 		speedLimit: input.speedLimit,
 		direction: 0,
+		movingDirection: 'none',
 		acceleration: input.acceleration,
 		deceleration: input.deceleration,
 		minXPos: input.minXPos,
@@ -140,9 +153,10 @@ export const chefMachine = setup({
 			}),
 		},
 		'Set direction': {
-			actions: assign({
-				direction: ({ event }) => ('direction' in event ? event.direction : 0),
-			}),
+			actions: {
+				type: 'setDirectionProps',
+				params: ({ event }) => event.direction,
+			},
 		},
 	},
 	states: {

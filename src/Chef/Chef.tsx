@@ -25,6 +25,10 @@ export function Chef({}: // dimensions,
 	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
 		typeof chefMachine
 	>;
+	const movingDirection = useSelector(
+		chefActorRef,
+		(state) => state.context.movingDirection
+	);
 	const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
 		chefPotRimConfig: state.context.gameConfig.chef.potRim,
 	}));
@@ -146,8 +150,10 @@ export function Chef({}: // dimensions,
 				image={image}
 				x={position.x}
 				y={position.y}
+				offsetX={chefConfig.width / 2}
 				width={chefConfig.width}
 				height={chefConfig.height}
+				scaleX={movingDirection === 'right' ? -1 : 1}
 				crop={{
 					x: currentFrame.x,
 					y: currentFrame.y,
@@ -158,11 +164,16 @@ export function Chef({}: // dimensions,
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={position.x + chefPotRimConfig.xOffset}
+				x={position.x}
 				y={chefPotRimConfig.y}
+				offsetX={
+					movingDirection === 'right'
+						? chefPotRimConfig.xOffset
+						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.xOffset
+				}
 				width={chefPotRimConfig.width}
 				height={chefPotRimConfig.height}
-				fill="transparent"
+				fill="blue"
 			/>
 		</>
 	);
