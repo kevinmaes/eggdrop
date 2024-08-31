@@ -15,9 +15,10 @@ export function GameScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const gameConfig = AppActorContext.useSelector(
-		(state) => state.context.gameConfig
-	);
+	const { gameConfig, gameScore } = AppActorContext.useSelector((state) => ({
+		gameConfig: state.context.gameConfig,
+		gameScore: state.context.gameScore,
+	}));
 
 	return (
 		<Group x={x} y={y}>
@@ -51,7 +52,7 @@ export function GameScoreBox({
 					y={5}
 					// width={width}
 					align="center"
-					text={`${1000}`}
+					text={`${gameScore}`}
 					fontSize={40}
 					fontFamily="Arial"
 					fill="black"
