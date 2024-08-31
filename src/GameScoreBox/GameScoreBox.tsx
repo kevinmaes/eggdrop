@@ -1,7 +1,7 @@
 import { Group, Rect, Text } from 'react-konva';
-import { EggTally } from '../LevelScoreBox/LevelScoreBox';
 import { Button } from '../Button/Button';
 import { AppActorContext } from '../app.machine';
+import { EggTally } from '../EggTally/EggTally';
 
 export function GameScoreBox({
 	x,
