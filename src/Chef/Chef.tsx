@@ -27,7 +27,7 @@ export function Chef({}: // dimensions,
 	>;
 	const movingDirection = useSelector(
 		chefActorRef,
-		(state) => state.context.movingDirection
+		(state) => state?.context?.movingDirection ?? 'none'
 	);
 	const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
 		chefPotRimConfig: state.context.gameConfig.chef.potRim,
