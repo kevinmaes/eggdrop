@@ -11,7 +11,7 @@ export function EggTally({
 	width,
 	height,
 }: {
-	eggColor: 'white' | 'gold';
+	eggColor: 'white' | 'gold' | 'black';
 	eggSize?: number;
 	count: number;
 	x: number;
@@ -50,8 +50,8 @@ export function EggTally({
 				}}
 			/>
 			<Text
-				x={50}
-				y={10}
+				x={40}
+				y={8}
 				text={count.toLocaleString()}
 				fontSize={20}
 				fontStyle="bold"

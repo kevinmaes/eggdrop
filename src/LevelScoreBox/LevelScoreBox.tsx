@@ -56,7 +56,7 @@ export function LevelScoreBox({
 				cornerRadius={10}
 			/>
 			{/* Level Score */}
-			<Group x={20} y={10}>
+			<Group x={10} y={10}>
 				<Text
 					x={0}
 					y={5}
@@ -75,7 +75,7 @@ export function LevelScoreBox({
 				/>
 			</Group>
 			{/* Game Score */}
-			<Group x={20} y={50}>
+			<Group x={10} y={50}>
 				<Text
 					x={0}
 					y={5}
@@ -93,19 +93,27 @@ export function LevelScoreBox({
 					fill="black"
 				/>
 			</Group>
-			{/* Egg Tally */}
-			<EggTally
-				eggColor="white"
-				count={scoreData.eggsCaught.white}
-				x={30}
-				y={90}
-			/>
-			<EggTally
-				eggColor="gold"
-				count={scoreData.eggsCaught.gold}
-				x={110}
-				y={90}
-			/>
+			{/* Egg Tally for white, gold, black eggs */}
+			<Group x={10} y={95}>
+				<EggTally
+					eggColor="white"
+					count={scoreData.eggsCaught.white}
+					x={0}
+					y={0}
+				/>
+				<EggTally
+					eggColor="gold"
+					count={scoreData.eggsCaught.gold}
+					x={60}
+					y={0}
+				/>
+				<EggTally
+					eggColor="black"
+					count={scoreData.eggsCaught.black}
+					x={120}
+					y={0}
+				/>
+			</Group>
 		</Group>
 	);
 }
