@@ -22,6 +22,13 @@ export function CountdownTimer({
 	const { totalLevelMS, remainingMS, gameConfig } = useSelector(
 		gameLevelActorRef,
 		(state) => {
+			if (!state) {
+				return {
+					gameConfig: null,
+					totalLevelMS: 0,
+					remainingMS: 0,
+				};
+			}
 			return {
 				gameConfig: state.context.gameConfig,
 				totalLevelMS: state.context.gameConfig.levelDurationMS,
@@ -29,6 +36,10 @@ export function CountdownTimer({
 			};
 		}
 	);
+
+	if (!gameConfig) {
+		return null;
+	}
 
 	const minutes = Math.floor(remainingMS / 60000);
 	const seconds = Math.floor((remainingMS % 60000) / 1000);

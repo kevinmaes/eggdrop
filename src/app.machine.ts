@@ -26,14 +26,11 @@ const appMachine = setup({
 			gameAssets: GameAssets | null;
 			gameScore: number;
 		};
-		events:
-			| { type: 'Toggle mute' }
-			| { type: 'Play' }
-			| { type: 'Quit' }
-			| {
-					type: 'Level complete';
-					levelResults: LevelResults;
-			  };
+		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
+		// | {
+		// 		type: 'Level complete';
+		// 		levelResults: LevelResults;
+		//   };
 	},
 	actions: {
 		toggleMute: assign({
@@ -43,18 +40,13 @@ const appMachine = setup({
 				return isNowMuted;
 			},
 		}),
-		gatherLastLevelResults: assign(
-			({ context }, params: { levelResults: LevelResults }) => {
-				return {
-					gameScore:
-						context.gameScore + params.levelResults.scoreData.levelScore,
-					levelResultsHistory: [
-						...context.levelResultsHistory,
-						params.levelResults,
-					],
-				};
-			}
-		),
+		gatherLastLevelResults: assign(({ context }, params: LevelResults) => {
+			console.log('gatherLastLevelResults', params);
+			return {
+				gameScore: context.gameScore + params.scoreData.levelScore,
+				levelResultsHistory: [...context.levelResultsHistory, params],
+			};
+		}),
 		evaluateAndEvolveNextGeneration: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
@@ -257,19 +249,6 @@ const appMachine = setup({
 				},
 				Playing: {
 					tags: ['actively playing'],
-					on: {
-						'Level complete': {
-							actions: [
-								{
-									type: 'gatherLastLevelResults',
-									params: ({ event }) => ({
-										levelResults: event.levelResults,
-									}),
-								},
-							],
-							target: 'Next Generation Evolution',
-						},
-					},
 					invoke: {
 						src: 'gameLevelMachine',
 						systemId: 'gameLevelMachine',
@@ -285,6 +264,13 @@ const appMachine = setup({
 								population: context.population,
 							};
 						},
+						onDone: {
+							target: 'Next Generation Evolution',
+							actions: {
+								type: 'gatherLastLevelResults',
+								params: ({ event }) => event.output,
+							},
+						},
 					},
 					description: 'The main state for game play of each level',
 				},
@@ -295,7 +281,6 @@ const appMachine = setup({
 					},
 					entry: [log('Show summary')],
 					exit: [
-						log('Leave summary and prep next gen'),
 						'evaluateAndEvolveNextGeneration',
 						assign({
 							generationIndex: ({ context }) => context.generationIndex + 1,

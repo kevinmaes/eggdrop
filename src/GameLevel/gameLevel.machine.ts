@@ -1,11 +1,16 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
-import { GenerationStats, IndividualHen, Position } from './types';
+import {
+	GenerationStats,
+	IndividualHen,
+	LevelResults,
+	Position,
+} from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
@@ -19,9 +24,7 @@ export const gameLevelMachine = setup({
 			levelDuration: number;
 			population: IndividualHen[];
 		};
-		output: {
-			levelScore: number;
-		};
+		output: LevelResults;
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
@@ -423,6 +426,12 @@ export const gameLevelMachine = setup({
 			{}
 		),
 	}),
+	output: ({ context }) => ({
+		generationIndex: context.generationIndex,
+		levelStats: context.levelStats,
+		henStatsById: context.henStatsById,
+		scoreData: context.scoreData,
+	}),
 	initial: 'Playing',
 	on: {
 		'Set chefPotRimHitRef': {
@@ -554,22 +563,12 @@ export const gameLevelMachine = setup({
 			],
 		},
 		Done: {
+			type: 'final',
 			tags: 'summary',
 			entry: [
-				// log('Game Level summary state'),
+				log('Game Level summary state'),
 				'calculateLevelStatsAverages',
 				'cleanupLevelRefs',
-				sendParent(({ context }) => {
-					return {
-						type: 'Level complete',
-						levelResults: {
-							generationIndex: context.generationIndex,
-							levelStats: context.levelStats,
-							henStatsById: context.henStatsById,
-							scoreData: context.scoreData,
-						},
-					};
-				}),
 			],
 		},
 	},
