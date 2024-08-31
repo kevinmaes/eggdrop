@@ -27,6 +27,7 @@ export const chefMachine = setup({
 			speedLimit: number;
 			direction: Direction['value'];
 			movingDirection: Direction['label'];
+			lastMovingDirection: Direction['label'];
 			acceleration: number;
 			deceleration: number;
 			minXPos: number;
@@ -94,13 +95,22 @@ export const chefMachine = setup({
 				position: { x: newXPos, y: position.y },
 			};
 		}),
-		setDirectionProps: assign((_, params: Direction['value']) => {
+		setDirectionProps: assign(({ context }, params: Direction['value']) => {
 			const direction = params;
 			const movingDirection: Direction['label'] =
 				direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
+
+			// When actually moving in a direction (left or right) set the lastMovingDirection
+			// to the same value as the movingDirection
+			// Otherwise, do not change the value so we can keep track of the last moving direction
+			const newLastMovingDirection =
+				movingDirection !== 'none'
+					? movingDirection
+					: context.lastMovingDirection;
 			return {
 				direction,
 				movingDirection,
+				lastMovingDirection: newLastMovingDirection,
 			};
 		}),
 		setIsCatchingEgg: assign({
@@ -137,6 +147,7 @@ export const chefMachine = setup({
 		speedLimit: input.speedLimit,
 		direction: 0,
 		movingDirection: 'none',
+		lastMovingDirection: 'none',
 		acceleration: input.acceleration,
 		deceleration: input.deceleration,
 		minXPos: input.minXPos,

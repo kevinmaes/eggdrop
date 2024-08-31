@@ -25,9 +25,17 @@ export function Chef({}: // dimensions,
 	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
 		typeof chefMachine
 	>;
-	const movingDirection = useSelector(
+	const { movingDirection, lastMovingDirection } = useSelector(
 		chefActorRef,
-		(state) => state.context.movingDirection
+		(state) => {
+			if (!state) {
+				return { movingDirection: 'none', lastMovingDirection: 'none' };
+			}
+			return {
+				movingDirection: state.context.movingDirection,
+				lastMovingDirection: state.context.lastMovingDirection,
+			};
+		}
 	);
 	const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
 		chefPotRimConfig: state.context.gameConfig.chef.potRim,
@@ -144,6 +152,10 @@ export function Chef({}: // dimensions,
 		return null;
 	}
 
+	// Calculate the chef's direction based on movingDirection and lastMovingDirection
+	const shouldFaceRight =
+		movingDirection === 'right' || lastMovingDirection === 'right';
+
 	return (
 		<>
 			<Image
@@ -154,7 +166,7 @@ export function Chef({}: // dimensions,
 				offsetX={chefConfig.width / 2}
 				width={chefConfig.width}
 				height={chefConfig.height}
-				scaleX={movingDirection === 'right' ? -1 : 1}
+				scaleX={shouldFaceRight ? -1 : 1}
 				crop={{
 					x: currentFrame.x,
 					y: currentFrame.y,
@@ -168,7 +180,7 @@ export function Chef({}: // dimensions,
 				x={position.x}
 				y={chefPotRimConfig.y}
 				offsetX={
-					movingDirection === 'right'
+					shouldFaceRight
 						? chefPotRimConfig.offsetX
 						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
 				}
