@@ -33,7 +33,14 @@ export const gameLevelMachine = setup({
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
-			levelScore: number;
+			scoreData: {
+				levelScore: number;
+				eggsCaught: {
+					white: number;
+					gold: number;
+					black: number;
+				};
+			};
 		};
 		events:
 			| { type: 'Pause game' }
@@ -192,7 +199,7 @@ export const gameLevelMachine = setup({
 			}
 		),
 		updateScoreForEggDone: assign({
-			levelScore: (
+			scoreData: (
 				{ context },
 				params: {
 					henId: string;
@@ -202,14 +209,23 @@ export const gameLevelMachine = setup({
 				}
 			) => {
 				if (params.resultStatus === 'Caught') {
+					const newScoreData = { ...context.scoreData };
+
+					// Increment the egg count for the color caught
+					newScoreData.eggsCaught[params.eggColor] += 1;
+
+					// Increment the level score based on the egg color
 					if (params.eggColor === 'black') {
-						return 0;
+						// Wipe out the level score if a black egg is caught
+						newScoreData.levelScore = 0;
+					} else {
+						newScoreData.levelScore +=
+							context.gameConfig.egg.points[params.eggColor];
 					}
-					return (
-						context.levelScore + context.gameConfig.egg.points[params.eggColor]
-					);
+
+					return newScoreData;
 				}
-				return context.levelScore;
+				return context.scoreData;
 			},
 		}),
 		updateHenStatsForEggDone: assign(
@@ -366,7 +382,14 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		population: input.population,
-		levelScore: 0,
+		scoreData: {
+			levelScore: 0,
+			eggsCaught: {
+				white: 0,
+				gold: 0,
+				black: 0,
+			},
+		},
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -543,7 +566,7 @@ export const gameLevelMachine = setup({
 							generationIndex: context.generationIndex,
 							levelStats: context.levelStats,
 							henStatsById: context.henStatsById,
-							score: context.levelScore,
+							scoreData: context.scoreData,
 						},
 					};
 				}),

@@ -46,7 +46,8 @@ const appMachine = setup({
 		gatherLastLevelResults: assign(
 			({ context }, params: { levelResults: LevelResults }) => {
 				return {
-					gameScore: context.gameScore + params.levelResults.score,
+					gameScore:
+						context.gameScore + params.levelResults.scoreData.levelScore,
 					levelResultsHistory: [
 						...context.levelResultsHistory,
 						params.levelResults,
