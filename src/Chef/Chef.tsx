@@ -10,7 +10,7 @@ import useImage from 'use-image';
 import { Image } from 'react-konva';
 import { SpriteData } from '../types/assets';
 
-type ChefFrameName = 'chef-catch.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
+type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 
 export function Chef({}: // dimensions,
@@ -25,6 +25,10 @@ export function Chef({}: // dimensions,
 	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
 		typeof chefMachine
 	>;
+	const movingDirection = useSelector(
+		chefActorRef,
+		(state) => state.context.movingDirection
+	);
 	const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
 		chefPotRimConfig: state.context.gameConfig.chef.potRim,
 	}));
@@ -132,8 +136,9 @@ export function Chef({}: // dimensions,
 	}, [chefActorRef]);
 
 	// Override frameIndex to 0 if isCatchingEgg is true
-	const finalFrameIndex = isCatchingEgg ? 0 : frameIndex;
-	const frameName = chefFrameNames[finalFrameIndex];
+	const frameName = isCatchingEgg
+		? 'chef-catching.png'
+		: chefFrameNames[frameIndex];
 	const currentFrame = chefFrames[frameName]?.frame;
 	if (!currentFrame) {
 		return null;
@@ -146,8 +151,10 @@ export function Chef({}: // dimensions,
 				image={image}
 				x={position.x}
 				y={position.y}
+				offsetX={chefConfig.width / 2}
 				width={chefConfig.width}
 				height={chefConfig.height}
+				scaleX={movingDirection === 'right' ? -1 : 1}
 				crop={{
 					x: currentFrame.x,
 					y: currentFrame.y,
@@ -158,8 +165,13 @@ export function Chef({}: // dimensions,
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={position.x + chefPotRimConfig.xOffset}
+				x={position.x}
 				y={chefPotRimConfig.y}
+				offsetX={
+					movingDirection === 'right'
+						? chefPotRimConfig.offsetX
+						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
+				}
 				width={chefPotRimConfig.width}
 				height={chefPotRimConfig.height}
 				fill="transparent"

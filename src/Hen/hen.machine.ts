@@ -1,9 +1,9 @@
 import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
-import { Position } from '../GameLevel/types';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
+import { Direction, Position } from '../types';
 
 export const henMachine = setup({
 	types: {} as {
@@ -37,8 +37,8 @@ export const henMachine = setup({
 			currentTweenSpeed: number;
 			currentTweenDurationMS: number;
 			currentTweenStartTime: number;
-			currentTweenDirection: -1 | 0 | 1;
-			movingDirection: 'left' | 'right' | 'none';
+			currentTweenDirection: Direction['value'];
+			movingDirection: Direction['label'];
 			baseTweenDurationSeconds: number;
 			minStopMS: number;
 			maxStopMS: number;

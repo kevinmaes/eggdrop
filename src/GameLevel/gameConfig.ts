@@ -9,7 +9,7 @@ export function getGameConfig() {
 	};
 
 	// The position and dimensions of the chef
-	const chefWidth = 254;
+	const chefWidth = 344;
 	const chefHeight = 344;
 	const chefYPosition =
 		stageDimensions.height - chefHeight - stageDimensions.margin;
@@ -25,7 +25,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: 10,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 15_000,
+		levelDurationMS: 45_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -37,7 +37,7 @@ export function getGameConfig() {
 			secondaryBlue: '#455579',
 		},
 		chef: {
-			x: stageDimensions.width / 2 - 0.5 * chefWidth,
+			x: stageDimensions.width / 2,
 			y: chefYPosition,
 			width: chefWidth,
 			height: chefHeight,
@@ -48,13 +48,14 @@ export function getGameConfig() {
 			// Keep the deceleration is higher than the acceleration so the character
 			// can "stop on a dime"
 			deceleration: 7,
-			minXPos: stageDimensions.margin,
+			minXPos: 0.5 * chefWidth,
 			// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
-			maxXPos: stageDimensions.width - chefWidth - 0.5 * stageDimensions.margin,
+			maxXPos: stageDimensions.width - 0.5 * chefWidth,
 			potRim: {
 				width: 150,
 				height: 30,
-				xOffset: 25,
+				// x distance from the chef's x position
+				offsetX: 30,
 				y: chefYPosition + 240,
 			},
 		},

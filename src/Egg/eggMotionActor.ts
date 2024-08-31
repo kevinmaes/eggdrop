@@ -1,6 +1,6 @@
 import { AnyActorRef, fromPromise } from 'xstate';
-import { Position } from '../GameLevel/types';
 import Konva from 'konva';
+import { Direction, Position } from '../types';
 
 export const eggMotionActor = fromPromise<
 	Position,
@@ -10,7 +10,7 @@ export const eggMotionActor = fromPromise<
 		xSpeed: number;
 		ySpeed: number;
 		testForDestination: (yPos: number) => boolean;
-		rotationDirection: -1 | 0 | 1;
+		rotationDirection: Direction['value'];
 		parentRef: AnyActorRef;
 	}
 >(({ input }) => {

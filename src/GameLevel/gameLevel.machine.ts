@@ -5,15 +5,11 @@ import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
-import {
-	GenerationStats,
-	IndividualHen,
-	LevelResults,
-	Position,
-} from './types';
+import { GenerationStats, IndividualHen, LevelResults } from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
+import { Direction, Position } from '../types';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -57,7 +53,7 @@ export const gameLevelMachine = setup({
 					henId: string;
 					henPosition: Position;
 					henCurentTweenSpeed: number;
-					henCurrentTweenDirection: -1 | 0 | 1;
+					henCurrentTweenDirection: Direction['value'];
 					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 			  }
@@ -135,7 +131,7 @@ export const gameLevelMachine = setup({
 					henCurentTweenSpeed: number;
 					henButtXOffset: number;
 					henButtYOffset: number;
-					henCurrentTweenDirection: -1 | 0 | 1;
+					henCurrentTweenDirection: Direction['value'];
 					eggColor: 'white' | 'gold' | 'black';
 					hatchRate: number;
 				}
@@ -159,10 +155,8 @@ export const gameLevelMachine = setup({
 							henId: params.henId,
 							henIsMoving: params.henCurentTweenSpeed > 0,
 							henCurentTweenSpeed: params.henCurentTweenSpeed,
-							rotationDirection: (-1 * params.henCurrentTweenDirection) as
-								| -1
-								| 0
-								| 1,
+							rotationDirection: (-1 *
+								params.henCurrentTweenDirection) as Direction['value'],
 							hatchRate: params.hatchRate,
 						},
 					}),
