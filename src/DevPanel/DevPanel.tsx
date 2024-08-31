@@ -42,9 +42,9 @@ export function DevPanel() {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			e.preventDefault();
 			// Identify if the command and 'd' keys are pressed
 			if (e.key === 'd' && e.metaKey) {
+				e.preventDefault();
 				setShowDevPanel((prev) => !prev);
 			}
 		};
