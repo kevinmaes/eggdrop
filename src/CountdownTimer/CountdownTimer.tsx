@@ -62,7 +62,7 @@ export function CountdownTimer({
 				width={width}
 				height={height}
 				fill="transparent"
-				stroke="white"
+				stroke={gameConfig.colors.primaryOrange}
 				strokeWidth={2}
 				cornerRadius={8}
 			/>
@@ -75,6 +75,7 @@ export function CountdownTimer({
 				width={0.9 * width}
 				align="right"
 				fill="white"
+				fontFamily="Arial"
 			/>
 			{/* Progress bar */}
 			<Rect
@@ -83,7 +84,7 @@ export function CountdownTimer({
 				width={totalBarWidth}
 				height={10}
 				opacity={0.5}
-				stroke="white"
+				stroke={gameConfig.colors.primaryOrange}
 				strokeWidth={1}
 				cornerRadius={[0, 0, 5, 5]}
 			/>
@@ -92,7 +93,7 @@ export function CountdownTimer({
 				y={35}
 				width={remainingTimeBarWidth}
 				height={10}
-				fill={gameConfig.colors.primaryOrange}
+				fill={gameConfig.colors.primaryBlue}
 				opacity={0.5}
 				stroke="white"
 				strokeWidth={1}

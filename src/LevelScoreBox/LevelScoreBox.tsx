@@ -65,7 +65,7 @@ export function LevelScoreBox({
 					fontFamily="Arco"
 					height={24}
 					verticalAlign="bottom"
-					fill={gameConfig.colors.primaryOrange}
+					fill={gameConfig.colors.secondaryOrange}
 				/>
 				<Text
 					x={95}
@@ -73,7 +73,7 @@ export function LevelScoreBox({
 					text={`${scoreData.levelScore.toLocaleString()}`}
 					fontSize={32}
 					fontFamily="Arco"
-					fill={gameConfig.colors.primaryOrange}
+					fill={gameConfig.colors.secondaryOrange}
 					align="right"
 					height={24}
 					verticalAlign="bottom"

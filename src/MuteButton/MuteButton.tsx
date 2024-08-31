@@ -21,7 +21,7 @@ export function MuteButton() {
 		<Group x={10} y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}>
 			{/* Border box */}
 			<Rect
-				stroke="white"
+				stroke={gameConfig.colors.primaryOrange}
 				x={0}
 				y={0}
 				width={50}

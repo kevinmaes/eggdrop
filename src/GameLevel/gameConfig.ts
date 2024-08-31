@@ -33,7 +33,8 @@ export function getGameConfig() {
 		},
 		colors: {
 			primaryYellow: '#fceb50',
-			primaryOrange: '#e6ae3b',
+			primaryOrange: '#e7af37',
+			secondaryOrange: '#c69334',
 			primaryBlue: '#a5c4fa',
 			secondaryBlue: '#455579',
 		},

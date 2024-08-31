@@ -71,8 +71,8 @@ export function GameLevel() {
 					text={`LEVEL ${generationIndex + 1}`}
 					fontSize={18}
 					fontStyle="bold"
-					fontFamily="Arial"
-					fill="white"
+					fontFamily="Arco"
+					fill={gameConfig.colors.primaryOrange}
 					opacity={0.75}
 				/>
 				<CountdownTimer
