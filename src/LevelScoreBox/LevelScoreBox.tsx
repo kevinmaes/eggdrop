@@ -66,31 +66,39 @@ export function LevelScoreBox({
 					fill="black"
 				/>
 				<Text
-					x={120}
+					x={95}
 					y={0}
-					text={`${scoreData.levelScore}`}
+					text={`${scoreData.levelScore.toLocaleString()}`}
 					fontSize={30}
 					fontFamily="Arial"
 					fill="black"
+					align="right"
+					width={80}
 				/>
 			</Group>
 			{/* Game Score */}
 			<Group x={10} y={50}>
 				<Text
 					x={0}
-					y={5}
+					y={0}
+					verticalAlign="bottom"
+					height={24}
 					text="Total Score:"
 					fontSize={20}
 					fontFamily="Arial"
 					fill="black"
 				/>
 				<Text
-					x={120}
+					x={95}
 					y={0}
-					text={`${anticipatedGameScore}`}
-					fontSize={30}
+					text={`${anticipatedGameScore.toLocaleString()}`}
+					fontSize={24}
 					fontFamily="Arial"
 					fill="black"
+					align="right"
+					height={24}
+					verticalAlign="bottom"
+					width={80}
 				/>
 			</Group>
 			{/* Egg Tally for white, gold, black eggs */}
