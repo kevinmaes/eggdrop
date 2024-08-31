@@ -1,12 +1,10 @@
 import { assign, fromPromise, raise, setup } from 'xstate';
-import { Position } from '../GameLevel/types';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
-
-type Direction = -1 | 0 | 1;
-type MovingDirection = 'left' | 'none' | 'right';
+import { MovingDirection, Position } from '../types';
+import { Direction } from 'readline';
 
 export const chefMachine = setup({
 	types: {} as {
