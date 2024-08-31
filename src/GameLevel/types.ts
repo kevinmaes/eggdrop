@@ -32,7 +32,14 @@ export interface GenerationStats {
 
 export interface LevelResults {
 	generationIndex: number;
-	score: number;
+	scoreData: {
+		levelScore: number;
+		eggsCaught: {
+			white: number;
+			gold: number;
+			black: number;
+		};
+	};
 	levelStats: GenerationStats;
 	henStatsById: Record<string, IndividualHen>;
 }

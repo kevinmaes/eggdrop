@@ -10,13 +10,15 @@ import { MuteButton } from './MuteButton/MuteButton';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 
 function App() {
-	const { isLoading, showError } = AppActorContext.useSelector((state) => ({
-		stateValue: state.value,
-		showError: state.matches('Show Error'),
-		isLoading: state.matches('Loading'),
-		showGameIntro: state.matches('Intro'),
-		showGamePlay: state.matches('Game Play'),
-	}));
+	const { isLoading, showError, showGamePlayLevel } =
+		AppActorContext.useSelector((state) => ({
+			stateValue: state.value,
+			showError: state.matches('Show Error'),
+			isLoading: state.matches('Loading'),
+			showGameIntro: state.matches('Intro'),
+			showGamePlay: state.matches('Game Play'),
+			showGamePlayLevel: state.hasTag('actively playing'),
+		}));
 
 	if (showError) {
 		return <div>Error loading the game...</div>;
@@ -29,7 +31,7 @@ function App() {
 	return (
 		<KonvaStageAndBackground>
 			<BetweenLevelsLayer />
-			<GameLevel />
+			{showGamePlayLevel && <GameLevel />}
 		</KonvaStageAndBackground>
 	);
 }

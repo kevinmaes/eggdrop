@@ -1,11 +1,16 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, sendParent, sendTo, setup } from 'xstate';
+import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { henMachine } from '../Hen/hen.machine';
 import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
-import { GenerationStats, IndividualHen, Position } from './types';
+import {
+	GenerationStats,
+	IndividualHen,
+	LevelResults,
+	Position,
+} from './types';
 import { sounds } from '../sounds';
 import { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
@@ -19,9 +24,7 @@ export const gameLevelMachine = setup({
 			levelDuration: number;
 			population: IndividualHen[];
 		};
-		output: {
-			levelScore: number;
-		};
+		output: LevelResults;
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
@@ -33,7 +36,14 @@ export const gameLevelMachine = setup({
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
-			levelScore: number;
+			scoreData: {
+				levelScore: number;
+				eggsCaught: {
+					white: number;
+					gold: number;
+					black: number;
+				};
+			};
 		};
 		events:
 			| { type: 'Pause game' }
@@ -192,7 +202,7 @@ export const gameLevelMachine = setup({
 			}
 		),
 		updateScoreForEggDone: assign({
-			levelScore: (
+			scoreData: (
 				{ context },
 				params: {
 					henId: string;
@@ -202,14 +212,23 @@ export const gameLevelMachine = setup({
 				}
 			) => {
 				if (params.resultStatus === 'Caught') {
+					const newScoreData = { ...context.scoreData };
+
+					// Increment the egg count for the color caught
+					newScoreData.eggsCaught[params.eggColor] += 1;
+
+					// Increment the level score based on the egg color
 					if (params.eggColor === 'black') {
-						return 0;
+						// Wipe out the level score if a black egg is caught
+						newScoreData.levelScore = 0;
+					} else {
+						newScoreData.levelScore +=
+							context.gameConfig.egg.points[params.eggColor];
 					}
-					return (
-						context.levelScore + context.gameConfig.egg.points[params.eggColor]
-					);
+
+					return newScoreData;
 				}
-				return context.levelScore;
+				return context.scoreData;
 			},
 		}),
 		updateHenStatsForEggDone: assign(
@@ -366,7 +385,14 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		population: input.population,
-		levelScore: 0,
+		scoreData: {
+			levelScore: 0,
+			eggsCaught: {
+				white: 0,
+				gold: 0,
+				black: 0,
+			},
+		},
 		levelStats: {
 			averageEggsBroken: 0,
 			averageEggsHatched: 0,
@@ -399,6 +425,12 @@ export const gameLevelMachine = setup({
 			}),
 			{}
 		),
+	}),
+	output: ({ context }) => ({
+		generationIndex: context.generationIndex,
+		levelStats: context.levelStats,
+		henStatsById: context.henStatsById,
+		scoreData: context.scoreData,
 	}),
 	initial: 'Playing',
 	on: {
@@ -531,22 +563,12 @@ export const gameLevelMachine = setup({
 			],
 		},
 		Done: {
+			type: 'final',
 			tags: 'summary',
 			entry: [
-				// log('Game Level summary state'),
+				log('Game Level summary state'),
 				'calculateLevelStatsAverages',
 				'cleanupLevelRefs',
-				sendParent(({ context }) => {
-					return {
-						type: 'Level complete',
-						levelResults: {
-							generationIndex: context.generationIndex,
-							levelStats: context.levelStats,
-							henStatsById: context.henStatsById,
-							score: context.levelScore,
-						},
-					};
-				}),
 			],
 		},
 	},

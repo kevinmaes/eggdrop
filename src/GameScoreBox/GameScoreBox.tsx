@@ -1,7 +1,7 @@
 import { Group, Rect, Text } from 'react-konva';
-import { EggTally } from '../LevelScoreBox/LevelScoreBox';
 import { Button } from '../Button/Button';
 import { AppActorContext } from '../app.machine';
+import { EggTally } from '../EggTally/EggTally';
 
 export function GameScoreBox({
 	x,
@@ -15,8 +15,11 @@ export function GameScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const gameConfig = AppActorContext.useSelector(
-		(state) => state.context.gameConfig
+	const { gameConfig, gameScoreData } = AppActorContext.useSelector(
+		(state) => ({
+			gameConfig: state.context.gameConfig,
+			gameScoreData: state.context.gameScoreData,
+		})
 	);
 
 	return (
@@ -39,7 +42,6 @@ export function GameScoreBox({
 				<Text
 					x={0}
 					y={15}
-					// width={width}
 					align="center"
 					text="Total Score"
 					fontSize={20}
@@ -49,18 +51,17 @@ export function GameScoreBox({
 				<Text
 					x={120}
 					y={5}
-					// width={width}
 					align="center"
-					text={`${1000}`}
+					text={`${gameScoreData.gameScore.toLocaleString()}`}
 					fontSize={40}
 					fontFamily="Arial"
 					fill="black"
 				/>
 			</Group>
-			<Group x={0.5 * width - 75} y={90} width={width}>
+			<Group x={20} y={90} width={width}>
 				<EggTally
 					eggColor="white"
-					count={10}
+					count={gameScoreData.eggsCaught.white}
 					x={0}
 					y={0}
 					width={100}
@@ -68,8 +69,16 @@ export function GameScoreBox({
 				/>
 				<EggTally
 					eggColor="gold"
-					count={5}
-					x={100}
+					count={gameScoreData.eggsCaught.gold}
+					x={85}
+					y={0}
+					width={100}
+					eggSize={40}
+				/>
+				<EggTally
+					eggColor="black"
+					count={gameScoreData.eggsCaught.black}
+					x={170}
 					y={0}
 					width={100}
 					eggSize={40}

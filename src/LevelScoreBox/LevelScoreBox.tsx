@@ -1,9 +1,9 @@
 import { useSelector } from '@xstate/react';
-import { Group, Rect, Text, Image } from 'react-konva';
-import useImage from 'use-image';
+import { Group, Rect, Text } from 'react-konva';
 import { AppActorContext } from '../app.machine';
 import { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+import { EggTally } from '../EggTally/EggTally';
 
 export function LevelScoreBox({
 	x,
@@ -17,20 +17,25 @@ export function LevelScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
+	const gameScoreData = AppActorContext.useSelector(
+		(state) => state.context.gameScoreData
+	);
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { gameConfig, levelScore } = useSelector(gameLevelActorRef, (state) => {
+	const { gameConfig, scoreData } = useSelector(gameLevelActorRef, (state) => {
 		if (!state) {
 			return {};
 		}
 		return {
 			gameConfig: state.context?.gameConfig,
-			eggFrames: state.context.gameAssets.egg.frames,
-			levelScore: state.context.levelScore,
+			scoreData: state.context.scoreData,
 		};
 	});
+
+	const anticipatedGameScore =
+		gameScoreData.gameScore + (scoreData?.levelScore ?? 0);
 
 	if (!gameConfig) {
 		return null;
@@ -51,7 +56,7 @@ export function LevelScoreBox({
 				cornerRadius={10}
 			/>
 			{/* Level Score */}
-			<Group x={20} y={10}>
+			<Group x={10} y={10}>
 				<Text
 					x={0}
 					y={5}
@@ -61,95 +66,62 @@ export function LevelScoreBox({
 					fill="black"
 				/>
 				<Text
-					x={120}
+					x={95}
 					y={0}
-					text={`${levelScore}`}
+					text={`${scoreData.levelScore.toLocaleString()}`}
 					fontSize={30}
 					fontFamily="Arial"
 					fill="black"
+					align="right"
+					width={80}
 				/>
 			</Group>
 			{/* Game Score */}
-			<Group x={20} y={50}>
+			<Group x={10} y={50}>
 				<Text
 					x={0}
-					y={5}
+					y={0}
+					verticalAlign="bottom"
+					height={24}
 					text="Total Score:"
 					fontSize={20}
 					fontFamily="Arial"
 					fill="black"
 				/>
 				<Text
-					x={120}
+					x={95}
 					y={0}
-					text={`${levelScore}`}
-					fontSize={30}
+					text={`${anticipatedGameScore.toLocaleString()}`}
+					fontSize={24}
 					fontFamily="Arial"
 					fill="black"
+					align="right"
+					height={24}
+					verticalAlign="bottom"
+					width={80}
 				/>
 			</Group>
-			{/* Egg Tally */}
-			<EggTally eggColor="white" count={10} x={30} y={90} />
-			<EggTally eggColor="gold" count={5} x={110} y={90} />
-		</Group>
-	);
-}
-
-export function EggTally({
-	eggColor,
-	eggSize = 30,
-	count,
-	x,
-	y,
-	width,
-	height,
-}: {
-	eggColor: 'white' | 'gold';
-	eggSize?: number;
-	count: number;
-	x: number;
-	y: number;
-	width?: number;
-	height?: number;
-}) {
-	const eggFrames = AppActorContext.useSelector((state) => {
-		return state?.context?.gameAssets?.egg?.frames ?? {};
-	});
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
-
-	if (!eggFrames) {
-		return null;
-	}
-
-	const eggFrame = eggFrames[`egg-${eggColor}.png`].frame;
-
-	return (
-		<Group x={x} y={y} width={width} height={height}>
-			<Image
-				image={eggImage}
-				width={eggSize}
-				height={eggSize}
-				border="5px solid red"
-				shadowColor="black"
-				shadowBlur={10}
-				shadowOffset={{ x: 3, y: 3 }}
-				shadowOpacity={0.5}
-				crop={{
-					x: eggFrame.x,
-					y: eggFrame.y,
-					width: eggFrame.w,
-					height: eggFrame.h,
-				}}
-			/>
-			<Text
-				x={50}
-				y={10}
-				text={count.toLocaleString()}
-				fontSize={20}
-				fontStyle="bold"
-				fontFamily="Arial"
-				fill="black"
-			/>
+			{/* Egg Tally for white, gold, black eggs */}
+			<Group x={10} y={95}>
+				<EggTally
+					eggColor="white"
+					count={scoreData.eggsCaught.white}
+					x={0}
+					y={0}
+				/>
+				<EggTally
+					eggColor="gold"
+					count={scoreData.eggsCaught.gold}
+					x={60}
+					y={0}
+				/>
+				<EggTally
+					eggColor="black"
+					count={scoreData.eggsCaught.black}
+					x={120}
+					y={0}
+				/>
+			</Group>
 		</Group>
 	);
 }

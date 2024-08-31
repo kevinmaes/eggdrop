@@ -19,14 +19,12 @@ export function GameLevel() {
 			generationIndex: state.context.generationIndex,
 		})
 	);
-	const isPlaying = AppActorContext.useSelector((state) =>
-		state.hasTag('actively playing')
-	);
+
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { remainingMS, henActorRefs, eggActorRefs } = useSelector(
+	const { henActorRefs, eggActorRefs } = useSelector(
 		gameLevelActorRef,
 		(state) => {
 			if (!state) {
@@ -46,10 +44,6 @@ export function GameLevel() {
 	);
 
 	const layerRef = useRef<Konva.Layer>(null);
-
-	if (!isPlaying) {
-		return null;
-	}
 
 	return (
 		<>
