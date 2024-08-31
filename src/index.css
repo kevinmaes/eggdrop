@@ -1,3 +1,8 @@
+@font-face {
+	font-family: 'Arco';
+	src: local('Arco-Regular'), url('./src/assets/fonts/ARCO.ttf');
+}
+
 body {
 	display: flex;
 	flex-direction: column;

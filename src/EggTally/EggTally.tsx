@@ -55,8 +55,8 @@ export function EggTally({
 				text={count.toLocaleString()}
 				fontSize={20}
 				fontStyle="bold"
-				fontFamily="Arial"
-				fill="black"
+				fontFamily="Arco"
+				fill="#666"
 			/>
 		</Group>
 	);

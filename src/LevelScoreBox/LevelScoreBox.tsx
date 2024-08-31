@@ -56,23 +56,27 @@ export function LevelScoreBox({
 				cornerRadius={10}
 			/>
 			{/* Level Score */}
-			<Group x={10} y={10}>
+			<Group x={10} y={15}>
 				<Text
 					x={0}
-					y={5}
-					text="Level Score:"
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
+					y={0}
+					text="Score:"
+					fontSize={24}
+					fontFamily="Arco"
+					height={24}
+					verticalAlign="bottom"
+					fill={gameConfig.colors.primaryOrange}
 				/>
 				<Text
 					x={95}
 					y={0}
 					text={`${scoreData.levelScore.toLocaleString()}`}
-					fontSize={30}
-					fontFamily="Arial"
-					fill="black"
+					fontSize={32}
+					fontFamily="Arco"
+					fill={gameConfig.colors.primaryOrange}
 					align="right"
+					height={24}
+					verticalAlign="bottom"
 					width={80}
 				/>
 			</Group>
@@ -84,17 +88,17 @@ export function LevelScoreBox({
 					verticalAlign="bottom"
 					height={24}
 					text="Total Score:"
-					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
+					fontSize={16}
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
 				/>
 				<Text
 					x={95}
 					y={0}
 					text={`${anticipatedGameScore.toLocaleString()}`}
-					fontSize={24}
-					fontFamily="Arial"
-					fill="black"
+					fontSize={16}
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
 					align="right"
 					height={24}
 					verticalAlign="bottom"

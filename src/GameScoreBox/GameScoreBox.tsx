@@ -38,24 +38,29 @@ export function GameScoreBox({
 				shadowBlur={5}
 			/>
 			{/* Game Score */}
-			<Group x={40} y={20} width={width}>
+			<Group x={10} y={20} width={width}>
 				<Text
 					x={0}
-					y={15}
+					y={0}
 					align="center"
 					text="Total Score"
 					fontSize={20}
-					fontFamily="Arial"
-					fill="black"
+					height={40}
+					verticalAlign="bottom"
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
 				/>
 				<Text
-					x={120}
-					y={5}
-					align="center"
-					text={`${gameScoreData.gameScore.toLocaleString()}`}
+					x={160}
+					y={0}
+					align="right"
+					// text={`${gameScoreData.gameScore.toLocaleString()}`}
+					text={`${Number(5874).toLocaleString()}`}
+					height={40}
+					verticalAlign="bottom"
 					fontSize={40}
-					fontFamily="Arial"
-					fill="black"
+					fontFamily="Arco"
+					fill={gameConfig.colors.secondaryBlue}
 				/>
 			</Group>
 			<Group x={20} y={90} width={width}>
