@@ -58,7 +58,7 @@ export function GameScoreBox({
 					fill="black"
 				/>
 			</Group>
-			<Group x={0.5 * width - 75} y={90} width={width}>
+			<Group x={20} y={90} width={width}>
 				<EggTally
 					eggColor="white"
 					count={gameScoreData.eggsCaught.white}
@@ -70,7 +70,15 @@ export function GameScoreBox({
 				<EggTally
 					eggColor="gold"
 					count={gameScoreData.eggsCaught.gold}
-					x={100}
+					x={85}
+					y={0}
+					width={100}
+					eggSize={40}
+				/>
+				<EggTally
+					eggColor="black"
+					count={gameScoreData.eggsCaught.black}
+					x={170}
 					y={0}
 					width={100}
 					eggSize={40}

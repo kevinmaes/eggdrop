@@ -50,8 +50,8 @@ export function EggTally({
 				}}
 			/>
 			<Text
-				x={40}
-				y={8}
+				x={eggSize + 8}
+				y={0.5 * eggSize - 10}
 				text={count.toLocaleString()}
 				fontSize={20}
 				fontStyle="bold"
