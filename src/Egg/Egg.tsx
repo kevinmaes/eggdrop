@@ -189,7 +189,7 @@ export function Egg({
 		);
 	}
 
-	const currentEggFrame = eggFrames[`egg-${color}.png`].frame;
+	const currentEggFrame = eggFrames[`egg-${color}-glow.png`].frame;
 	return (
 		<Image
 			ref={eggRef}
