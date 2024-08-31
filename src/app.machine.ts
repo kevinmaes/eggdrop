@@ -34,10 +34,6 @@ const appMachine = setup({
 			};
 		};
 		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
-		// | {
-		// 		type: 'Level complete';
-		// 		levelResults: LevelResults;
-		//   };
 	},
 	actions: {
 		toggleMute: assign({

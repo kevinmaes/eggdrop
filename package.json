@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@types/node": "^22.4.0",
 		"@xstate/react": "^4.1.1",
+		"fontfaceobserver": "^2.3.0",
 		"howler": "^2.2.4",
 		"konva": "^9.3.14",
 		"nanoid": "^5.0.7",
