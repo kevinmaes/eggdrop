@@ -9,6 +9,7 @@ import {
 import { IndividualHen, LevelResults } from './GameLevel/types';
 import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
 import { GameAssets } from './types/assets';
+import FontFaceObserver from 'fontfaceobserver';
 
 const appMachine = setup({
 	types: {} as {
@@ -34,10 +35,6 @@ const appMachine = setup({
 			};
 		};
 		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
-		// | {
-		// 		type: 'Level complete';
-		// 		levelResults: LevelResults;
-		//   };
 	},
 	actions: {
 		toggleMute: assign({
@@ -170,7 +167,7 @@ const appMachine = setup({
 		}),
 	},
 	actors: {
-		loadAssets: fromPromise<GameAssets>(async () => {
+		loadSprites: fromPromise<GameAssets>(async () => {
 			const henResult = await fetch('images/hen.sprite.json');
 			const henSpriteData = await henResult.json();
 			const eggResult = await fetch('images/egg.sprite.json');
@@ -190,9 +187,15 @@ const appMachine = setup({
 				chef: chefSpriteData,
 			};
 		}),
+		loadFonts: fromPromise(() => {
+			const arcoFont = new FontFaceObserver('Arco');
+			const jetBrainsMonoFont = new FontFaceObserver('JetBrains Mono');
+			return Promise.all([arcoFont.load(), jetBrainsMonoFont.load()]);
+		}),
 		gameLevelMachine,
 	},
 }).createMachine({
+	id: 'Egg Drop Game',
 	context: ({ input }) => ({
 		gameConfig: input.gameConfig,
 		generationIndex: 0,
@@ -231,7 +234,6 @@ const appMachine = setup({
 		},
 		isMuted: input.gameConfig.isMuted,
 	}),
-	id: 'Egg Drop Game',
 	on: {
 		'Toggle mute': {
 			actions: { type: 'toggleMute' },
@@ -240,19 +242,32 @@ const appMachine = setup({
 	initial: 'Loading',
 	states: {
 		Loading: {
-			invoke: {
-				input: {},
-				onDone: {
-					target: 'Intro',
-					actions: assign({
-						gameAssets: ({ event }) => event.output,
-					}),
+			initial: 'Loading Fonts',
+			states: {
+				'Loading Fonts': {
+					invoke: {
+						onDone: 'Loading Sprites',
+						onError: '#Egg Drop Game.Show Error',
+						src: 'loadFonts',
+					},
 				},
-				onError: {
-					target: 'Show Error',
+				'Loading Sprites': {
+					invoke: {
+						onDone: {
+							target: 'Done',
+							actions: assign({
+								gameAssets: ({ event }) => event.output,
+							}),
+						},
+						onError: '#Egg Drop Game.Show Error',
+						src: 'loadSprites',
+					},
 				},
-				src: 'loadAssets',
+				Done: {
+					type: 'final',
+				},
 			},
+			onDone: 'Intro',
 		},
 		Intro: {
 			on: {

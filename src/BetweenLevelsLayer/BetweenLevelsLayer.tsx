@@ -13,15 +13,19 @@ export function BetweenLevelsLayer() {
 	if (!isBetweenLevels) {
 		return null;
 	}
-
-	const groupWidth = 300;
-	const groupHeight = 320;
-	const xPos = gameConfig.stageDimensions.midX - 0.5 * groupWidth;
-	const yPos = gameConfig.stageDimensions.midY - 0.5 * groupHeight;
+	const gameScoreBoxWidth = 300;
+	const gameScoreBoxHeight = 380;
+	const xPos = gameConfig.stageDimensions.midX - 0.5 * gameScoreBoxWidth;
+	const yPos = gameConfig.stageDimensions.midY - 0.5 * gameScoreBoxHeight;
 
 	return (
 		<Layer>
-			<GameScoreBox x={xPos} y={yPos} width={groupWidth} height={groupHeight} />
+			<GameScoreBox
+				x={xPos}
+				y={yPos}
+				width={gameScoreBoxWidth}
+				height={gameScoreBoxHeight}
+			/>
 		</Layer>
 	);
 }
