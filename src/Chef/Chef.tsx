@@ -168,8 +168,8 @@ export function Chef({}: // dimensions,
 				y={chefPotRimConfig.y}
 				offsetX={
 					movingDirection === 'right'
-						? chefPotRimConfig.xOffset
-						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.xOffset
+						? chefPotRimConfig.offsetX
+						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
 				}
 				width={chefPotRimConfig.width}
 				height={chefPotRimConfig.height}

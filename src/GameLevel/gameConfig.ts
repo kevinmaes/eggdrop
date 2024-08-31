@@ -55,7 +55,7 @@ export function getGameConfig() {
 				width: 150,
 				height: 30,
 				// x distance from the chef's x position
-				xOffset: 30,
+				offsetX: 30,
 				y: chefYPosition + 240,
 			},
 		},
