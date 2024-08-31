@@ -10,7 +10,7 @@ import useImage from 'use-image';
 import { Image } from 'react-konva';
 import { SpriteData } from '../types/assets';
 
-type ChefFrameName = 'chef-catch.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
+type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 
 export function Chef({}: // dimensions,
@@ -136,8 +136,9 @@ export function Chef({}: // dimensions,
 	}, [chefActorRef]);
 
 	// Override frameIndex to 0 if isCatchingEgg is true
-	const finalFrameIndex = isCatchingEgg ? 0 : frameIndex;
-	const frameName = chefFrameNames[finalFrameIndex];
+	const frameName = isCatchingEgg
+		? 'chef-catching.png'
+		: chefFrameNames[frameIndex];
 	const currentFrame = chefFrames[frameName]?.frame;
 	if (!currentFrame) {
 		return null;
