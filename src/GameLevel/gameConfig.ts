@@ -4,7 +4,11 @@ export function getGameConfig() {
 	const stageDimensions = {
 		width: 1280,
 		height: 720,
+		// Generally respected margin for rendering content within the stage dimensions,
+		// similar to CSS padding.
 		margin: 10,
+		// Similar to the margin, above, but further limiting the movement of the hens
+		// and chef so that they don't overlap as much with UI close to the margin.
 		movementMargin: 25,
 	};
 
