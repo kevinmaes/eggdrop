@@ -155,7 +155,7 @@ export function Chef({}: // dimensions,
 	// Calculate the chef's direction based on movingDirection and lastMovingDirection
 	const shouldFaceRight =
 		movingDirection === 'right' || lastMovingDirection === 'right';
-	console.log('pos y', position.y);
+
 	return (
 		<Group x={position.x} y={position.y}>
 			<Image
