@@ -33,9 +33,7 @@ export function Egg({
 		isExiting,
 		isDone,
 		eggFrames,
-		// eggFrameNames,
 		chickFrames,
-		// chickFrameNames,
 		color,
 	} = useSelector(eggActorRef, (state) => {
 		const isExiting = state.matches('Exiting');
@@ -116,7 +114,6 @@ export function Egg({
 	}, [isHatching, isHatched, isExiting, exitingDirection]);
 
 	if (isDone) {
-		console.log('eggState.matches Done');
 		return null;
 	}
 
