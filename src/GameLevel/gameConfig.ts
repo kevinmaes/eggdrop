@@ -25,7 +25,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: 10,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 20_000,
+		levelDurationMS: 60_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -159,12 +159,12 @@ export function getInitialChromosomeValues() {
 		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped
-		// stationaryEggLayingRate: Math.random(),
-		stationaryEggLayingRate: 1,
+		stationaryEggLayingRate: Math.random(),
+		// stationaryEggLayingRate: 0,
 
 		// The rate at which the hen lays eggs while moving
-		// movingEggLayingRate: Math.random(),
-		movingEggLayingRate: 0,
+		movingEggLayingRate: Math.random(),
+		// movingEggLayingRate: 1,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
