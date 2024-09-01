@@ -18,7 +18,7 @@ const appMachine = setup({
 		};
 		context: {
 			isMuted: boolean;
-			generationIndex: number;
+			generationNumber: number;
 			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
 			gameConfig: ReturnType<typeof getGameConfig>;
@@ -198,7 +198,7 @@ const appMachine = setup({
 	id: 'Egg Drop Game',
 	context: ({ input }) => ({
 		gameConfig: input.gameConfig,
-		generationIndex: 0,
+		generationNumber: 1,
 		levelResultsHistory: [],
 		population: new Array(input.gameConfig.populationSize)
 			.fill(null)
@@ -302,7 +302,7 @@ const appMachine = setup({
 							return {
 								gameConfig: context.gameConfig,
 								gameAssets: context.gameAssets,
-								generationIndex: context.generationIndex,
+								generationNumber: context.generationNumber,
 								levelDuration: context.gameConfig.levelDurationMS,
 								population: context.population,
 							};
@@ -326,7 +326,7 @@ const appMachine = setup({
 					exit: [
 						'evaluateAndEvolveNextGeneration',
 						assign({
-							generationIndex: ({ context }) => context.generationIndex + 1,
+							generationNumber: ({ context }) => context.generationNumber + 1,
 						}),
 					],
 				},

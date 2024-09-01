@@ -15,13 +15,15 @@ export function GameScoreBox({
 	height: number;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, gameScoreData, lastLevelScoreData } =
+	const { gameConfig, gameScoreData, lastLevelResults } =
 		AppActorContext.useSelector((state) => ({
 			gameConfig: state.context.gameConfig,
 			gameScoreData: state.context.gameScoreData,
-			lastLevelScoreData:
-				state.context.levelResultsHistory.slice(-1)[0]?.scoreData,
+			lastLevelResults: state.context.levelResultsHistory.slice(-1)[0],
 		}));
+
+	const lastLevelNumber = lastLevelResults.generationNumber;
+	const lastLevelScore = lastLevelResults.scoreData.levelScore;
 
 	return (
 		<Group x={x} y={y}>
@@ -45,19 +47,19 @@ export function GameScoreBox({
 					y={0}
 					width={width - 20}
 					align="center"
-					text="Last Level"
+					text={`Finished level ${lastLevelNumber}!`}
 					fontSize={24}
 					fontFamily="Arco"
 					height={24}
 					verticalAlign="bottom"
-					fill={gameConfig.colors.secondaryOrange}
+					fill={gameConfig.colors.secondaryBlue}
 				/>
 				<Text
 					x={0}
 					y={40}
 					width={width - 20}
 					align="center"
-					text={`${lastLevelScoreData.levelScore.toLocaleString()} points`}
+					text={`+${lastLevelScore.toLocaleString()} points`}
 					fontSize={32}
 					fontFamily="Arco"
 					fill={gameConfig.colors.secondaryOrange}

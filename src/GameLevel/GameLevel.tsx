@@ -13,10 +13,10 @@ import { CountdownTimer } from '../CountdownTimer/CountdownTimer';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, generationIndex } = AppActorContext.useSelector(
+	const { gameConfig, generationNumber } = AppActorContext.useSelector(
 		(state) => ({
 			gameConfig: state.context.gameConfig,
-			generationIndex: state.context.generationIndex,
+			generationNumber: state.context.generationNumber,
 		})
 	);
 
@@ -68,7 +68,7 @@ export function GameLevel() {
 				<Text
 					x={gameConfig.stageDimensions.margin}
 					y={gameConfig.henBeam.y + 5}
-					text={`LEVEL ${generationIndex + 1}`}
+					text={`LEVEL ${generationNumber}`}
 					fontSize={18}
 					fontStyle="bold"
 					fontFamily="Arco"
