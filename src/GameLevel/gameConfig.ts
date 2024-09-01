@@ -56,10 +56,10 @@ export function getGameConfig() {
 			maxXPos: stageDimensions.width - 0.5 * chefWidth,
 			potRim: {
 				width: 150,
-				height: 30,
-				// x distance from the chef's x position
+				height: 25,
+				// x and y offset from the chef's position
 				offsetX: 30,
-				y: chefYPosition + 240,
+				offsetY: -245,
 			},
 		},
 		hen: {
