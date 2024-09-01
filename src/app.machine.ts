@@ -135,9 +135,14 @@ const appMachine = setup({
 						maxStopMS: (parent1.maxStopMS + parent2.maxStopMS) / 2,
 						fitness: 0,
 						eggsLaid: 0,
-						eggsCaught: 0,
+						eggsCaught: {
+							white: 0,
+							gold: 0,
+							black: 0,
+						},
 						eggsHatched: 0,
 						eggsBroken: 0,
+						eggStats: {},
 					};
 					nextGeneration.push(child);
 				}
@@ -215,9 +220,14 @@ const appMachine = setup({
 					// Results
 					fitness: 0,
 					eggsLaid: 0,
-					eggsCaught: 0,
+					eggsCaught: {
+						white: 0,
+						gold: 0,
+						black: 0,
+					},
 					eggsHatched: 0,
 					eggsBroken: 0,
+					eggStats: {},
 				};
 			}),
 		populationSize: input.gameConfig.populationSize,

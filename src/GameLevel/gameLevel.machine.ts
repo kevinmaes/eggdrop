@@ -249,7 +249,9 @@ export const gameLevelMachine = setup({
 
 				switch (params.resultStatus) {
 					case 'Caught':
-						updatedHenStats.eggsCaught += 1;
+						// Update eggs caught, tracked by color
+						updatedHenStats.eggsCaught[params.eggColor] += 1;
+
 						updatedLevelStats.totalEggsCaught += 1;
 						if (params.eggColor === 'black') {
 							updatedLevelStats.totalBlackEggsCaught += 1;

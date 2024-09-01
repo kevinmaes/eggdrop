@@ -12,8 +12,17 @@ export function calculateFitness(individual: IndividualHen) {
 	// Reward hens that lay more eggs
 	overallFitness += individual.eggsLaid / 10;
 
-	const caughtRate = individual.eggsCaught / individual.eggsLaid;
+	const eggsCaughtTotal =
+		individual.eggsCaught.white +
+		individual.eggsCaught.gold +
+		individual.eggsCaught.black;
+
+	const caughtRate = eggsCaughtTotal / individual.eggsLaid;
 	overallFitness += 1 - caughtRate;
+
+	// TODO: Add a reward if black eggs were caught.
+	const blackEggCaughtRate = individual.eggsCaught.black / individual.eggsLaid;
+	overallFitness += blackEggCaughtRate;
 
 	return overallFitness;
 }
