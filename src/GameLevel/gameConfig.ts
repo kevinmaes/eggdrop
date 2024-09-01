@@ -151,8 +151,8 @@ export function getInitialChromosomeValues() {
 		speed: Math.random(),
 
 		// baseTweenDurationSeconds is the base duration for the tween
-		// baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
-		baseTweenDurationSeconds: 1,
+		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
+		// baseTweenDurationSeconds: 1,
 
 		// maxEggs can range between -1 and 50, -1 means no limit
 		// maxEggs: Math.round(Math.random() * 51) - 1,

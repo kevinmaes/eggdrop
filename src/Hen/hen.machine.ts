@@ -64,14 +64,10 @@ export const henMachine = setup({
 	guards: {
 		'has more eggs': ({ context }) =>
 			context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
-		'is within stationary laying rate': ({ context }) => {
-			const withinEggLayingRate =
-				Math.random() < context.stationaryEggLayingRate;
-			return withinEggLayingRate;
-		},
-		'is within moving laying rate': ({ context }) => {
-			return Math.random() < context.movingEggLayingRate;
-		},
+		'is within stationary laying rate': ({ context }) =>
+			Math.random() < context.stationaryEggLayingRate,
+		'is within moving laying rate': ({ context }) =>
+			Math.random() < context.movingEggLayingRate,
 		'is not near animation end': ({ context }) => {
 			const currentTime = new Date().getTime();
 			const elapsedMS = currentTime - context.currentTweenStartTime;
