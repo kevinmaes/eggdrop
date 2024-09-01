@@ -183,7 +183,7 @@ export function Chef({}: // dimensions,
 				offsetY={chefPotRimConfig.offsetY}
 				width={chefPotRimConfig.width}
 				height={chefPotRimConfig.height}
-				fill="blue"
+				fill="transparent"
 			/>
 		</Group>
 	);

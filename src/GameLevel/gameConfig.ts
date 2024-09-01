@@ -59,7 +59,7 @@ export function getGameConfig() {
 				height: 25,
 				// x and y offset from the chef's position
 				offsetX: 30,
-				offsetY: -245,
+				offsetY: -250,
 			},
 		},
 		hen: {
