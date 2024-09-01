@@ -46,10 +46,10 @@ export function getGameConfig() {
 			height: chefHeight,
 			speedLimit: 15,
 			// Keep the acceleration low so that tapping the arrow keys doesn't
-			// make the chef move too quickly and a small movement is possible.
+			// make the chef move too quickly and a micro movements are possible.
 			acceleration: 1,
-			// Keep the deceleration is higher than the acceleration so the character
-			// can "stop on a dime"
+			// Deceleration should be higher than the acceleration so the character
+			// can pivot directions or stop quickly.
 			deceleration: 7,
 			minXPos: 0.5 * chefWidth,
 			// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
