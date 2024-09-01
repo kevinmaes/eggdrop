@@ -13,7 +13,7 @@ export interface GenerationStats {
 	averageMinStopMS: number;
 	averageMaxStopMS: number;
 	// Results
-	generationIndex: number;
+	generationNumber: number;
 	totalEggsBroken: number;
 	totalEggsCaught: number;
 	totalBlackEggsCaught: number;
@@ -28,7 +28,7 @@ export interface GenerationStats {
 }
 
 export interface LevelResults {
-	generationIndex: number;
+	generationNumber: number;
 	scoreData: {
 		levelScore: number;
 		eggsCaught: {

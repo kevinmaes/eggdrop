@@ -109,10 +109,10 @@ export function DevPanel() {
 				<div className="grid-item header generation-label">Generation</div>{' '}
 				{levelResultsHistory.map((levelResults) => (
 					<div
-						key={`header-${levelResults.generationIndex}`}
+						key={`header-${levelResults.generationNumber}`}
 						className="grid-item header"
 					>
-						{`${levelResults.generationIndex + 1}`}
+						{`${levelResults.generationNumber}`}
 					</div>
 				))}
 				{/* Hardcoded prop names in the first column */}

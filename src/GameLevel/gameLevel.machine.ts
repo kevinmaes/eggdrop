@@ -16,7 +16,7 @@ export const gameLevelMachine = setup({
 		input: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
-			generationIndex: number;
+			generationNumber: number;
 			levelDuration: number;
 			population: IndividualHen[];
 		};
@@ -25,7 +25,7 @@ export const gameLevelMachine = setup({
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
 			remainingMS: number;
-			generationIndex: number;
+			generationNumber: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
@@ -283,7 +283,7 @@ export const gameLevelMachine = setup({
 
 				return {
 					...context.levelStats,
-					generationIndex: context.generationIndex,
+					generationNumber: context.generationNumber,
 					averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
 					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
 					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
@@ -374,7 +374,7 @@ export const gameLevelMachine = setup({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
 		remainingMS: input.levelDuration,
-		generationIndex: input.generationIndex,
+		generationNumber: input.generationNumber,
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
@@ -398,7 +398,7 @@ export const gameLevelMachine = setup({
 			averageMaxX: 0,
 			averageMinStopMS: 0,
 			averageMaxStopMS: 0,
-			generationIndex: 0,
+			generationNumber: 1,
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,
 			totalBlackEggsCaught: 0,
@@ -421,7 +421,7 @@ export const gameLevelMachine = setup({
 		),
 	}),
 	output: ({ context }) => ({
-		generationIndex: context.generationIndex,
+		generationNumber: context.generationNumber,
 		levelStats: context.levelStats,
 		henStatsById: context.henStatsById,
 		scoreData: context.scoreData,

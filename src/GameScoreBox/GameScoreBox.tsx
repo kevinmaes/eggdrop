@@ -22,7 +22,7 @@ export function GameScoreBox({
 			lastLevelResults: state.context.levelResultsHistory.slice(-1)[0],
 		}));
 
-	const lastLevelNumber = lastLevelResults.generationIndex + 1;
+	const lastLevelNumber = lastLevelResults.generationNumber;
 	const lastLevelScore = lastLevelResults.scoreData.levelScore;
 
 	return (
