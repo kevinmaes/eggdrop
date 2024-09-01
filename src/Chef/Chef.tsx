@@ -161,8 +161,6 @@ export function Chef({}: // dimensions,
 			<Image
 				ref={chefRef}
 				image={image}
-				x={0}
-				y={0}
 				offsetX={chefConfig.width / 2}
 				width={chefConfig.width}
 				height={chefConfig.height}
@@ -177,9 +175,6 @@ export function Chef({}: // dimensions,
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={0}
-				// y={chefPotRimConfig.y}
-				y={0}
 				offsetX={
 					shouldFaceRight
 						? chefPotRimConfig.offsetX
