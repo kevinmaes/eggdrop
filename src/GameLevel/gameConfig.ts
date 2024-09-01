@@ -44,10 +44,10 @@ export function getGameConfig() {
 			y: chefYPosition,
 			width: chefWidth,
 			height: chefHeight,
-			speedLimit: 20,
+			speedLimit: 15,
 			// Keep the acceleration low so that tapping the arrow keys doesn't
 			// make the chef move too quickly and a small movement is possible.
-			acceleration: 2,
+			acceleration: 1,
 			// Keep the deceleration is higher than the acceleration so the character
 			// can "stop on a dime"
 			deceleration: 7,
