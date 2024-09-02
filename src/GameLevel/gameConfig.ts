@@ -23,9 +23,9 @@ export function getGameConfig() {
 	const gameConfig = {
 		isMuted: true,
 		// The number of hens in the game
-		populationSize: 10,
+		populationSize: 200,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 20_000,
+		levelDurationMS: 120_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -122,17 +122,18 @@ export function getGameConfig() {
 export function getInitialChromosomeValues() {
 	const gameConfig = getGameConfig();
 
-	const totalMovementRange =
-		gameConfig.stageDimensions.width -
-		2 * gameConfig.stageDimensions.movementMargin;
+	// const totalMovementRange =
+	// 	gameConfig.stageDimensions.width -
+	// 	2 * gameConfig.stageDimensions.movementMargin;
 
 	// The minimum xPos the hen can be at
-	let minX =
-		Math.round(Math.random() * 0.25 * totalMovementRange) +
-		gameConfig.stageDimensions.movementMargin;
+	let minX = -100;
+	// Math.round(Math.random() * 0.25 * totalMovementRange) +
+	// gameConfig.stageDimensions.movementMargin;
 
 	// The maximum xPos the hen can be at
-	let maxX = gameConfig.stageDimensions.width - minX - gameConfig.hen.width;
+	// let maxX = gameConfig.stageDimensions.width - minX - gameConfig.hen.width;
+	let maxX = gameConfig.stageDimensions.width + 100;
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
@@ -148,7 +149,9 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed is the x speed of the hen
-		speed: Math.random(),
+		// speed: Math.random(),
+		// speed: Math.random() * 1,
+		speed: 0.1,
 
 		// baseTweenDurationSeconds is the base duration for the tween
 		// baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
@@ -159,12 +162,12 @@ export function getInitialChromosomeValues() {
 		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped
-		// stationaryEggLayingRate: Math.random(),
-		stationaryEggLayingRate: 1,
+		stationaryEggLayingRate: Math.random(),
+		// stationaryEggLayingRate: 1,
 
 		// The rate at which the hen lays eggs while moving
-		// movingEggLayingRate: Math.random(),
-		movingEggLayingRate: 0,
+		movingEggLayingRate: Math.random(),
+		// movingEggLayingRate: 1,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,

@@ -1,4 +1,4 @@
-import { and, assign, sendParent, setup } from 'xstate';
+import { and, assign, log, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
@@ -10,6 +10,7 @@ export const henMachine = setup({
 		input: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
+			index: number;
 			henAssets: GameAssets['hen'];
 			position: Position;
 			maxEggs: number;
@@ -30,7 +31,9 @@ export const henMachine = setup({
 			gameConfig: ReturnType<typeof getGameConfig>;
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
+			index: number;
 			henAssets: GameAssets['hen'];
+			destination: 'offscreen-right' | 'offscreen-left';
 			position: Position;
 			targetPosition: Position;
 			speed: number;
@@ -87,15 +90,33 @@ export const henMachine = setup({
 			'is within moving laying rate',
 			'is not near animation end',
 		]),
+		'has reached offscreen position': ({ context }) => {
+			// console.log('guard', context.destination, context.position.x);
+			if (context.destination === 'offscreen-right') {
+				if (context.position.x >= context.gameConfig.stageDimensions.width) {
+					console.log('offscreen-right', context.position.x);
+					return true;
+				}
+			} else if (context.destination === 'offscreen-left') {
+				if (
+					context.position.x <=
+					-1 * context.gameConfig.stageDimensions.width
+				) {
+					console.log('offscreen-left', context.position.x);
+					return true;
+				}
+			}
+			console.log('still onscreen', context.destination, context.position.x);
+			return false;
+		},
 	},
 	actors: {
 		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
-		getRandomStartDelay: ({ context }) =>
-			// Need minimum delay to allow for tween to start
-			Math.ceil(Math.random() * context.gameConfig.hen.staggeredEntranceDelay) +
-			1000,
+		getRandomStartDelay: ({ context }) => {
+			return (context.index + 1) * 2000;
+		},
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
 			// If values mutate to cross over, return the min value.
@@ -123,9 +144,12 @@ export const henMachine = setup({
 		gameConfig: input.gameConfig,
 		henRef: { current: null },
 		id: input.id,
+		index: input.index,
 		henAssets: input.henAssets,
+		// destination: Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left',
+		destination: 'offscreen-right',
 		position: input.position,
-		targetPosition: { x: input.position.x, y: input.position.y },
+		targetPosition: input.position,
 		speed: input.speed,
 		currentTweenSpeed: 0,
 		currentTweenDurationMS: 0,
@@ -175,24 +199,22 @@ export const henMachine = setup({
 
 					// Pick a new x target position within the hen motion range
 					// and with a minimum distance from the current position
-					const minDistance = 200;
-					let newXPos: number;
-					do {
-						// Generate a random x position between minX and maxX
-						newXPos =
-							Math.round(Math.random() * (context.maxX - context.minX)) +
-							context.minX;
-					} while (Math.abs(newXPos - context.position.x) < minDistance);
-					targetPosition.x = newXPos;
+					// TODO a range could be a gene value.
+					const minDistance = 100;
+					const movementRange = context.gameConfig.stageDimensions.width;
+					targetPosition.x =
+						Math.round(Math.random() * movementRange) +
+						context.position.x +
+						minDistance;
 
 					// Check if the hen is in its original offstage position (first time animation)
-					if (context.position.x === context.gameConfig.hen.offstageLeftX) {
-						if (targetPosition.x >= context.gameConfig.stageDimensions.midX) {
-							// Swith the hen's offstage position to be on the right side
-							// closer to the target position (if also on the right side)
-							newPosition.x = context.gameConfig.hen.offstageRightX;
-						}
-					}
+					// if (context.position.x === context.gameConfig.hen.offstageLeftX) {
+					// 	if (targetPosition.x >= context.gameConfig.stageDimensions.midX) {
+					// 		// Swith the hen's offstage position to be on the right side
+					// 		// closer to the target position (if also on the right side)
+					// 		newPosition.x = context.gameConfig.hen.offstageRightX;
+					// 	}
+					// }
 
 					return {
 						position: newPosition,
@@ -254,15 +276,26 @@ export const henMachine = setup({
 					node: context.henRef.current,
 					tween: context.currentTween,
 				}),
-				onDone: {
-					target: 'Stopped',
-					actions: [
-						assign({
-							position: ({ event }) => event.output,
-							currentTweenSpeed: 0,
-						}),
-					],
-				},
+				onDone: [
+					{
+						guard: 'has reached offscreen position',
+						target: 'Reached Offscreen',
+						// actions: log('Reached Offscreen action'),
+					},
+					{
+						target: 'Stopped',
+						actions: [
+							// log('target Stopped'),
+							({ context }) => {
+								console.log('target Stopped', context.position.x);
+							},
+							assign({
+								position: ({ event }) => event.output,
+								currentTweenSpeed: 0,
+							}),
+						],
+					},
+				],
 				onError: { target: 'Stopped' },
 			},
 			initial: 'Not laying egg',
@@ -358,6 +391,16 @@ export const henMachine = setup({
 		},
 		'Rest After Laying Egg': {
 			after: { restAfterLayingAnEgg: 'Moving' },
+		},
+		'Reached Offscreen': {
+			type: 'final',
+			entry: [
+				log('Reached Offscreen'),
+				sendParent(({ context }) => ({
+					type: 'Hen done',
+					henId: context.id,
+				})),
+			],
 		},
 	},
 });

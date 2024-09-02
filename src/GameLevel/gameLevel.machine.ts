@@ -63,6 +63,10 @@ export const gameLevelMachine = setup({
 					position: Position;
 			  }
 			| {
+					type: 'Hen done';
+					henId: string;
+			  }
+			| {
 					type: 'Egg done';
 					henId: string;
 					eggId: string;
@@ -78,26 +82,30 @@ export const gameLevelMachine = setup({
 		spawnNewHens: assign({
 			henActorRefs: ({ context, spawn }) =>
 				context.population.map(
-					({
-						id: henId,
-						initialPosition,
-						speed,
-						baseTweenDurationSeconds,
-						maxEggs,
-						stationaryEggLayingRate,
-						movingEggLayingRate,
-						restAfterLayingEggMS,
-						blackEggRate,
-						goldEggRate,
-						hatchRate,
-						minX,
-						maxX,
-						minStopMS,
-						maxStopMS,
-					}) =>
+					(
+						{
+							id: henId,
+							initialPosition,
+							speed,
+							baseTweenDurationSeconds,
+							maxEggs,
+							stationaryEggLayingRate,
+							movingEggLayingRate,
+							restAfterLayingEggMS,
+							blackEggRate,
+							goldEggRate,
+							hatchRate,
+							minX,
+							maxX,
+							minStopMS,
+							maxStopMS,
+						},
+						i
+					) =>
 						spawn(henMachine, {
 							systemId: henId,
 							input: {
+								index: i,
 								gameConfig: context.gameConfig,
 								id: henId,
 								henAssets: context.gameAssets.hen,
@@ -501,6 +509,23 @@ export const gameLevelMachine = setup({
 								// but spawn has a type error.
 								eggActorRef.getSnapshot().context.id !== event.eggId
 						),
+				}),
+			],
+		},
+		'Hen done': {
+			actions: [
+				log('Hen done'),
+				assign({
+					henActorRefs: ({ context, event }) => {
+						const filteredHenActorRefs = context.henActorRefs.filter(
+							(henActorRef) =>
+								// TODO Should be able to assign the egg an id and compare that
+								// but spawn has a type error.
+								henActorRef.getSnapshot().context.id !== event.henId
+						);
+						console.log('filteredHenActorRefs', filteredHenActorRefs);
+						return filteredHenActorRefs;
+					},
 				}),
 			],
 		},
