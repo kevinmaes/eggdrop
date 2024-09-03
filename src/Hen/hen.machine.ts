@@ -147,7 +147,7 @@ export const henMachine = setup({
 	},
 	delays: {
 		getRandomStartDelay: ({ context }) => {
-			return (context.index + 1) * 500;
+			return (context.index + 1) * context.gameConfig.hen.entranceDelayMS;
 		},
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
