@@ -1,6 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 5;
+const POPULATION_SIZE = 50;
 
 export function getRandomNumber(
 	min: number,
@@ -128,6 +128,10 @@ export function getGameConfig() {
 			width: 100,
 			height: 50,
 		},
+		hensCountdown: {
+			width: 90,
+			height: 50,
+		},
 	};
 
 	// Set the audio mute according to the isMuted value
@@ -146,7 +150,6 @@ export function getInitialChromosomeValues() {
 
 	// The minimum xPos the hen can be at
 	const minXMovement = getRandomNumber(50, 200, true);
-	// const minXMovement = 490;
 
 	// The maximum xPos the hen can be at
 	const maxXMovement = getRandomNumber(
@@ -154,7 +157,6 @@ export function getInitialChromosomeValues() {
 		0.5 * gameConfig.stageDimensions.width,
 		true
 	);
-	// const maxXMovement = 500;
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
@@ -173,12 +175,10 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed is the x speed of the hen
-		// speed: Math.random(),
-		speed: 1,
+		speed: Math.random(),
 
 		// baseTweenDurationSeconds is the base duration for the tween
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
-		// baseTweenDurationSeconds: 1,
 
 		// maxEggs can range between -1 and 50, -1 means no limit
 		// maxEggs: Math.round(Math.random() * 51) - 1,

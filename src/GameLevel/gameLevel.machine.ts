@@ -30,6 +30,7 @@ export const gameLevelMachine = setup({
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			nextHenIndex: number;
+			hensLeft: number;
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
@@ -68,6 +69,9 @@ export const gameLevelMachine = setup({
 	actions: {
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
+		}),
+		decrementHensLeft: assign({
+			hensLeft: ({ context }) => context.hensLeft - 1,
 		}),
 		removeHenActorRef: assign({
 			henActorRefs: ({ context }) =>
@@ -343,22 +347,7 @@ export const gameLevelMachine = setup({
 		countdownTimer,
 	},
 	guards: {
-		areAllHensDone: (
-			{ context },
-			params: {
-				remainingTimeMS: number;
-				totalLevelMS: number;
-				henActorRefs: ActorRefFrom<typeof henMachine>[];
-			}
-		) => {
-			// This guard will be run when the game level starts.
-			// Ignore the first tick.
-			if (params.remainingTimeMS === context.gameConfig.levelDurationMS) {
-				return false;
-			}
-			return context.henActorRefs.length === 0;
-		},
-		// isCountdownDone: (_, params: { done: boolean }) => params.done,
+		areAllHensDone: ({ context }) => context.hensLeft === 0,
 		isAnEggActorDone: (_, params: { eggId: string }) => {
 			return !!params.eggId;
 		},
@@ -404,6 +393,7 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		nextHenIndex: 0,
+		hensLeft: input.population.length,
 		population: input.population,
 		scoreData: {
 			levelScore: 0,
@@ -506,22 +496,8 @@ export const gameLevelMachine = setup({
 			exit: 'stopBackgroundMusic',
 			on: {
 				Tick: [
-					// {
-					// 	guard: {
-					// 		type: 'isCountdownDone',
-					// 		params: ({ event }) => ({ done: event.done }),
-					// 	},
-					// 	target: 'Done',
-					// },
 					{
-						guard: {
-							type: 'areAllHensDone',
-							params: ({ context, event }) => ({
-								remainingTimeMS: event.remainingMS,
-								totalLevelMS: context.gameConfig.levelDurationMS,
-								henActorRefs: context.henActorRefs,
-							}),
-						},
+						guard: 'areAllHensDone',
 						target: 'Done',
 					},
 					{
@@ -573,7 +549,7 @@ export const gameLevelMachine = setup({
 								henId: event.output.henId,
 							}),
 						},
-						actions: 'removeHenActorRef',
+						actions: ['removeHenActorRef', 'decrementHensLeft'],
 					},
 				],
 			},
