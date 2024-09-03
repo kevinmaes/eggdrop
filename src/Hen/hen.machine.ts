@@ -113,7 +113,7 @@ export const henMachine = setup({
 			'is within moving laying rate',
 			'is not near animation end',
 		]),
-		'has reached offscreen position': ({ context }) => {
+		'has reached destination': ({ context }) => {
 			// console.log('guard', context.destination, context.position.x);
 			if (context.destination === 'offscreen-right') {
 				if (context.position.x >= context.gameConfig.stageDimensions.width) {
@@ -314,7 +314,7 @@ export const henMachine = setup({
 				}),
 				onDone: [
 					{
-						guard: 'has reached offscreen position',
+						guard: 'has reached destination',
 						target: 'Reached Offscreen',
 						// actions: log('Reached Offscreen action'),
 					},
