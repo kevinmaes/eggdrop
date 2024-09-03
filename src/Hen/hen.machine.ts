@@ -1,6 +1,6 @@
 import { and, assign, log, sendParent, setup } from 'xstate';
 import Konva from 'konva';
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { getGameConfig, getRandomNumber } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 import { Direction, Position } from '../types';
@@ -50,8 +50,8 @@ export const henMachine = setup({
 			hatchRate: number;
 			minStopMS: number;
 			maxStopMS: number;
-			minX: number;
-			maxX: number;
+			minXMovement: number;
+			maxXMovement: number;
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
@@ -81,8 +81,8 @@ export const henMachine = setup({
 			blackEggRate: number;
 			goldEggRate: number;
 			hatchRate: number;
-			minX: number;
-			maxX: number;
+			minXMovement: number;
+			maxXMovement: number;
 			currentTween: Konva.Tween | null;
 		};
 		events:
@@ -147,7 +147,7 @@ export const henMachine = setup({
 	},
 	delays: {
 		getRandomStartDelay: ({ context }) => {
-			return (context.index + 1) * 2000;
+			return (context.index + 1) * 500;
 		},
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
@@ -213,8 +213,8 @@ export const henMachine = setup({
 			blackEggRate: input.blackEggRate,
 			goldEggRate: input.goldEggRate,
 			hatchRate: input.hatchRate,
-			minX: input.minX,
-			maxX: input.maxX,
+			minXMovement: input.minXMovement,
+			maxXMovement: input.maxXMovement,
 			currentTween: null,
 		};
 	},
@@ -246,19 +246,24 @@ export const henMachine = setup({
 					// Pick a new x target position within the hen motion range
 					// and with a minimum distance from the current position
 					// TODO a range could be a gene value.
-					const minDistance = 100;
-					const movementRange = context.gameConfig.stageDimensions.width * 0.5;
+					const minDistance = context.minXMovement;
+					const movementRange = context.maxXMovement;
 
 					if (context.destination === 'offscreen-right') {
 						targetPosition.x =
-							Math.round(Math.random() * movementRange) +
-							context.position.x +
-							minDistance;
+							getRandomNumber(
+								context.minXMovement,
+								context.maxXMovement,
+								true
+							) + context.position.x;
 					} else if (context.destination === 'offscreen-left') {
 						targetPosition.x =
 							-Math.round(Math.random() * movementRange) +
 							context.position.x -
 							minDistance;
+						targetPosition.x =
+							context.position.x -
+							getRandomNumber(context.minXMovement, context.maxXMovement, true);
 					}
 
 					return {

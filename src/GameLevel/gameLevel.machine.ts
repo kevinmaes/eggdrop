@@ -95,8 +95,8 @@ export const gameLevelMachine = setup({
 							blackEggRate,
 							goldEggRate,
 							hatchRate,
-							minX,
-							maxX,
+							minXMovement,
+							maxXMovement,
 							minStopMS,
 							maxStopMS,
 						},
@@ -122,8 +122,8 @@ export const gameLevelMachine = setup({
 								blackEggRate,
 								goldEggRate,
 								hatchRate,
-								minX,
-								maxX,
+								minXMovement,
+								maxXMovement,
 								minStopMS,
 								maxStopMS,
 							},
@@ -309,11 +309,11 @@ export const gameLevelMachine = setup({
 					averageHatchRate:
 						context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
 						totalHens,
-					averageMinX:
-						context.population.reduce((acc, hen) => acc + hen.minX, 0) /
+					averageMinXMovement:
+						context.population.reduce((acc, hen) => acc + hen.minXMovement, 0) /
 						totalHens,
-					averageMaxX:
-						context.population.reduce((acc, hen) => acc + hen.maxX, 0) /
+					averageMaxXMovement:
+						context.population.reduce((acc, hen) => acc + hen.maxXMovement, 0) /
 						totalHens,
 					averageMinStopMS:
 						context.population.reduce((acc, hen) => acc + hen.minStopMS, 0) /
@@ -404,8 +404,8 @@ export const gameLevelMachine = setup({
 			averageStationaryEggLayingRate: 0,
 			averageHenSpeed: 0,
 			averageHatchRate: 0,
-			averageMinX: 0,
-			averageMaxX: 0,
+			averageMinXMovement: 0,
+			averageMaxXMovement: 0,
 			averageMinStopMS: 0,
 			averageMaxStopMS: 0,
 			generationNumber: 1,

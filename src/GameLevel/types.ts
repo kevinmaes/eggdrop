@@ -8,8 +8,8 @@ export interface GenerationStats {
 	averageHenSpeed: number;
 	averageStationaryEggLayingRate: number;
 	averageHatchRate: number;
-	averageMinX: number;
-	averageMaxX: number;
+	averageMinXMovement: number;
+	averageMaxXMovement: number;
 	averageMinStopMS: number;
 	averageMaxStopMS: number;
 	// Results
@@ -67,8 +67,8 @@ export interface IndividualHen {
 	blackEggRate: number;
 	goldEggRate: number;
 	hatchRate: number;
-	minX: number;
-	maxX: number;
+	minXMovement: number;
+	maxXMovement: number;
 	minStopMS: number;
 	maxStopMS: number;
 	// Results
@@ -89,7 +89,7 @@ export type IndividualHenChromosomeKey =
 	| 'stationaryEggLayingRate'
 	| 'movingEggLayingRate'
 	| 'hatchRate'
-	| 'minX'
-	| 'maxX'
+	| 'minXMovement'
+	| 'maxXMovement'
 	| 'minStopMS'
 	| 'maxStopMS';
