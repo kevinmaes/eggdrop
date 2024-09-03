@@ -29,6 +29,7 @@ export const gameLevelMachine = setup({
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
+			nextHenIndex: number;
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
@@ -79,56 +80,48 @@ export const gameLevelMachine = setup({
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
 		}),
-		spawnNewHens: assign({
-			henActorRefs: ({ context, spawn }) =>
-				context.population.map(
-					(
-						{
-							id: henId,
-							initialPosition,
-							speed,
-							baseTweenDurationSeconds,
-							maxEggs,
-							stationaryEggLayingRate,
-							movingEggLayingRate,
-							restAfterLayingEggMS,
-							blackEggRate,
-							goldEggRate,
-							hatchRate,
-							minXMovement,
-							maxXMovement,
-							minStopMS,
-							maxStopMS,
-						},
-						i
-					) =>
-						spawn(henMachine, {
-							systemId: henId,
-							input: {
-								index: i,
-								gameConfig: context.gameConfig,
-								id: henId,
-								henAssets: context.gameAssets.hen,
-								position: {
-									x: initialPosition.x,
-									y: initialPosition.y,
-								},
-								speed,
-								baseTweenDurationSeconds,
-								maxEggs,
-								stationaryEggLayingRate,
-								movingEggLayingRate,
-								restAfterLayingEggMS,
-								blackEggRate,
-								goldEggRate,
-								hatchRate,
-								minXMovement,
-								maxXMovement,
-								minStopMS,
-								maxStopMS,
-							},
-						})
-				),
+		spawnNewHen: assign(({ context, spawn }) => {
+			const index = context.nextHenIndex;
+			const henConfig = context.population[index];
+
+			if (index >= context.population.length) {
+				console.warn('No more hens to spawn');
+				return {};
+			}
+
+			const nextHen = spawn(henMachine, {
+				systemId: henConfig.id,
+				input: {
+					index: index,
+					gameConfig: context.gameConfig,
+					id: henConfig.id,
+					henAssets: context.gameAssets.hen,
+					position: {
+						x: henConfig.initialPosition.x,
+						y: henConfig.initialPosition.y,
+					},
+					speed: henConfig.speed,
+					baseTweenDurationSeconds: henConfig.baseTweenDurationSeconds,
+					maxEggs: henConfig.maxEggs,
+					stationaryEggLayingRate: henConfig.stationaryEggLayingRate,
+					movingEggLayingRate: henConfig.movingEggLayingRate,
+					restAfterLayingEggMS: henConfig.restAfterLayingEggMS,
+					blackEggRate: henConfig.blackEggRate,
+					goldEggRate: henConfig.goldEggRate,
+					hatchRate: henConfig.hatchRate,
+					minXMovement: henConfig.minXMovement,
+					maxXMovement: henConfig.maxXMovement,
+					minStopMS: henConfig.minStopMS,
+					maxStopMS: henConfig.maxStopMS,
+				},
+			});
+			const newHenActorRefs = [...context.henActorRefs, nextHen];
+
+			console.log('newHenActorRefs length', newHenActorRefs.length);
+			return {
+				henActorRefs: newHenActorRefs,
+				nextHenIndex: index + 1,
+			};
 		}),
 		spawnNewEggForHen: assign({
 			eggActorRefs: (
@@ -388,6 +381,7 @@ export const gameLevelMachine = setup({
 		henActorRefs: [],
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
+		nextHenIndex: 0,
 		population: input.population,
 		scoreData: {
 			levelScore: 0,
@@ -534,7 +528,10 @@ export const gameLevelMachine = setup({
 	},
 	states: {
 		Playing: {
-			entry: ['spawnNewHens', 'startBackgroundMusic'],
+			entry: [
+				// 'spawnNewHens',
+				'startBackgroundMusic',
+			],
 			exit: 'stopBackgroundMusic',
 			on: {
 				Tick: [
@@ -546,10 +543,13 @@ export const gameLevelMachine = setup({
 						target: 'Done',
 					},
 					{
-						actions: {
-							type: 'countdownTick',
-							params: ({ event }) => ({ remainingMS: event.remainingMS }),
-						},
+						actions: [
+							{
+								type: 'countdownTick',
+								params: ({ event }) => ({ remainingMS: event.remainingMS }),
+							},
+							'spawnNewHen',
+						],
 					},
 				],
 			},
