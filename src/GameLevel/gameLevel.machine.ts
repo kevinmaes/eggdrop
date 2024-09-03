@@ -363,6 +363,12 @@ export const gameLevelMachine = setup({
 	},
 	guards: {
 		isCountdownDone: (_, params: { done: boolean }) => params.done,
+		isAnEggActorDone: (_, params: { eggId: string }) => {
+			return !!params.eggId;
+		},
+		isAHenActorDone: (_, params: { henId: string }) => {
+			return !!params.henId;
+		},
 		testPotRimHit: ({ context }, params: Position) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
@@ -557,8 +563,9 @@ export const gameLevelMachine = setup({
 				],
 				'xstate.done.actor.*': [
 					{
-						guard: ({ event }) => {
-							return 'eggId' in event.output;
+						guard: {
+							type: 'isAnEggActorDone',
+							params: ({ event }) => ({ eggId: event.output.eggId }),
 						},
 						actions: [
 							log('Egg done'),
@@ -569,8 +576,9 @@ export const gameLevelMachine = setup({
 						],
 					},
 					{
-						guard: ({ event }) => {
-							return 'henId' in event.output;
+						guard: {
+							type: 'isAHenActorDone',
+							params: ({ event }) => ({ henId: event.output.henId }),
 						},
 						actions: [
 							log('Hen done'),
