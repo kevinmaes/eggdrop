@@ -330,15 +330,10 @@ export const henMachine = setup({
 					{
 						guard: 'has reached destination',
 						target: 'Reached Offscreen',
-						// actions: log('Reached Offscreen action'),
 					},
 					{
 						target: 'Stopped',
 						actions: [
-							// log('target Stopped'),
-							({ context }) => {
-								console.log('target Stopped', context.position.x);
-							},
 							assign({
 								position: ({ event }) => event.output,
 								currentTweenSpeed: 0,
