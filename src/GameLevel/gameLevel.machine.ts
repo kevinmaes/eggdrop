@@ -499,10 +499,7 @@ export const gameLevelMachine = setup({
 	},
 	states: {
 		Playing: {
-			entry: [
-				// 'spawnNewHens',
-				'startBackgroundMusic',
-			],
+			entry: 'startBackgroundMusic',
 			exit: 'stopBackgroundMusic',
 			on: {
 				Tick: [
@@ -524,6 +521,7 @@ export const gameLevelMachine = setup({
 					},
 				],
 				'xstate.done.actor.*': [
+					// Egg actor done
 					{
 						guard: {
 							type: 'isAnEggActorDone',
@@ -558,6 +556,7 @@ export const gameLevelMachine = setup({
 							},
 						],
 					},
+					// Hen actor done
 					{
 						guard: {
 							type: 'isAHenActorDone',
