@@ -154,7 +154,7 @@ export function getInitialChromosomeValues() {
 	// The maximum xPos the hen can be at
 	const maxXMovement = getRandomNumber(
 		250,
-		0.5 * gameConfig.stageDimensions.width,
+		1 * gameConfig.stageDimensions.width,
 		true
 	);
 
