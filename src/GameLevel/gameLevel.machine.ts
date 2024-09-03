@@ -535,13 +535,13 @@ export const gameLevelMachine = setup({
 			exit: 'stopBackgroundMusic',
 			on: {
 				Tick: [
-					{
-						guard: {
-							type: 'isCountdownDone',
-							params: ({ event }) => ({ done: event.done }),
-						},
-						target: 'Done',
-					},
+					// {
+					// 	guard: {
+					// 		type: 'isCountdownDone',
+					// 		params: ({ event }) => ({ done: event.done }),
+					// 	},
+					// 	target: 'Done',
+					// },
 					{
 						actions: [
 							{
