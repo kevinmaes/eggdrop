@@ -158,8 +158,6 @@ export function getInitialChromosomeValues() {
 
 	// Calculate the egg laying rates
 	const maxEggLayingRate = 0.5;
-	const randomMovingEggLayingRate = Math.random() * maxEggLayingRate;
-	const stationaryEggLayingRate = maxEggLayingRate - randomMovingEggLayingRate;
 
 	return {
 		// speed is the x speed of the hen
@@ -175,11 +173,10 @@ export function getInitialChromosomeValues() {
 		// maxEggs: Math.round(Math.random() * 51) - 1,
 		maxEggs: -1,
 
-		// The rate at which the hen lays eggs while moving
-		movingEggLayingRate: randomMovingEggLayingRate,
-
 		// The rate at which the hen lays eggs while stopped
-		stationaryEggLayingRate,
+		stationaryEggLayingRate: Math.random() * maxEggLayingRate,
+		// The rate at which the hen lays eggs while moving
+		movingEggLayingRate: Math.random() * maxEggLayingRate,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
