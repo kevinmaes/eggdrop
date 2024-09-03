@@ -161,9 +161,7 @@ export function getInitialChromosomeValues() {
 
 	return {
 		// speed is the x speed of the hen
-		// speed: Math.random(),
-		// speed: Math.random() * 1,
-		speed: 0.1,
+		speed: Math.random(),
 
 		// baseTweenDurationSeconds is the base duration for the tween
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
