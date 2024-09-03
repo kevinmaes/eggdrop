@@ -1,7 +1,7 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
 import { Ref, useEffect, useRef, useState } from 'react';
-import { Rect } from 'react-konva';
+import { Group, Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import { ActorRefFrom } from 'xstate';
 import { AppActorContext } from '../app.machine';
@@ -157,12 +157,10 @@ export function Chef({}: // dimensions,
 		movingDirection === 'right' || lastMovingDirection === 'right';
 
 	return (
-		<>
+		<Group x={position.x} y={position.y}>
 			<Image
 				ref={chefRef}
 				image={image}
-				x={position.x}
-				y={position.y}
 				offsetX={chefConfig.width / 2}
 				width={chefConfig.width}
 				height={chefConfig.height}
@@ -177,17 +175,16 @@ export function Chef({}: // dimensions,
 			{/* Chef pot rim hit box (for catching eggs) */}
 			<Rect
 				ref={chefPotRimHitRef}
-				x={position.x}
-				y={chefPotRimConfig.y}
 				offsetX={
 					shouldFaceRight
 						? chefPotRimConfig.offsetX
 						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
 				}
+				offsetY={chefPotRimConfig.offsetY}
 				width={chefPotRimConfig.width}
 				height={chefPotRimConfig.height}
 				fill="transparent"
 			/>
-		</>
+		</Group>
 	);
 }
