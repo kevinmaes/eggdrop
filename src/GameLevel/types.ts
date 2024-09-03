@@ -41,6 +41,19 @@ export interface LevelResults {
 	henStatsById: Record<string, IndividualHen>;
 }
 
+// TODO: Move to a dictionary for any egg stats related data collection.
+// All stats can be derived by filtering dictonary values.
+// type EggStatsDictionary = Record<
+// 	string,
+// 	{
+// 		generationIndex: number;
+// 		henId: string;
+// 		eggId: string;
+// 		eggColor: string;
+// 		eggEvent: 'laid' | 'caught' | 'hatched' | 'broken';
+// 	}
+// >;
+
 export interface IndividualHen {
 	id: string;
 	// Configuration
@@ -61,7 +74,11 @@ export interface IndividualHen {
 	// Results
 	fitness: number;
 	eggsLaid: number;
-	eggsCaught: number;
+	eggsCaught: {
+		white: number;
+		gold: number;
+		black: number;
+	};
 	eggsHatched: number;
 	eggsBroken: number;
 }

@@ -97,22 +97,12 @@ export const eggMachine = setup({
 		setPositionToAnimationEndPostiion: assign({
 			position: (_, params: Position) => params,
 		}),
-		// notifyParentOfPosition: sendParent(
-		// 	(_, params: { eggId: string; position: Position }) => ({
-		// 		type: 'Egg position updated',
-		// 		eggId: params.eggId,
-		// 		position: params.position,
-		// 	})
-		// ),
 		notifyParentOfPosition: sendParent(
-			(_, params: { eggId: string; position: Position }) => {
-				// console.log('notifyParentOfPosition', params);
-				return {
-					type: 'Egg position updated',
-					eggId: params.eggId,
-					position: params.position,
-				};
-			}
+			(_, params: { eggId: string; position: Position }) => ({
+				type: 'Egg position updated',
+				eggId: params.eggId,
+				position: params.position,
+			})
 		),
 		splatOnFloor: assign({
 			position: ({ context }) => ({

@@ -36,6 +36,7 @@ export const henMachine = setup({
 			destination: 'offscreen-right' | 'offscreen-left';
 			position: Position;
 			targetPosition: Position;
+			animationEasingEggLayingBufferMS: number;
 			speed: number;
 			currentTweenSpeed: number;
 			currentTweenDurationMS: number;
@@ -67,19 +68,15 @@ export const henMachine = setup({
 	guards: {
 		'has more eggs': ({ context }) =>
 			context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
-		'is within stationary laying rate': ({ context }) => {
-			const withinEggLayingRate =
-				Math.random() < context.stationaryEggLayingRate;
-			return withinEggLayingRate;
-		},
-		'is within moving laying rate': ({ context }) => {
-			return Math.random() < context.movingEggLayingRate;
-		},
+		'is within stationary laying rate': ({ context }) =>
+			Math.random() < context.stationaryEggLayingRate,
+		'is within moving laying rate': ({ context }) =>
+			Math.random() < context.movingEggLayingRate,
 		'is not near animation end': ({ context }) => {
 			const currentTime = new Date().getTime();
 			const elapsedMS = currentTime - context.currentTweenStartTime;
 			const remainingMS = context.currentTweenDurationMS - elapsedMS;
-			return remainingMS > 400;
+			return remainingMS > context.animationEasingEggLayingBufferMS;
 		},
 		'can lay while stationary': and([
 			'has more eggs',
@@ -126,14 +123,23 @@ export const henMachine = setup({
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
 		restAfterLayingAnEgg: ({ context }) => context.restAfterLayingEggMS,
+		animationEasingEggLayingBufferMS: ({ context }) =>
+			context.animationEasingEggLayingBufferMS,
 		getRandomMidTweenDelay: ({ context }) => {
 			if (!context.currentTween) {
 				throw new Error('No current tween');
 			}
 			const currentTime = new Date().getTime();
 			const elapsedTime = currentTime - context.currentTweenStartTime;
-			const remainingMS = context.currentTweenDurationMS - elapsedTime;
-			const delay = Math.max(Math.random() * remainingMS, 0);
+			const remainingMS = Math.round(
+				context.currentTweenDurationMS - elapsedTime
+			);
+			const remainingBufferedMS = Math.round(
+				remainingMS - 2 * context.animationEasingEggLayingBufferMS
+			);
+			const delay = Math.round(
+				Math.max(Math.random() * remainingBufferedMS, 0)
+			);
 			return delay;
 		},
 	},
@@ -151,6 +157,8 @@ export const henMachine = setup({
 		position: input.position,
 		targetPosition: input.position,
 		speed: input.speed,
+		animationEasingEggLayingBufferMS:
+			input.gameConfig.hen.animationEasingEggLayingBufferMS,
 		currentTweenSpeed: 0,
 		currentTweenDurationMS: 0,
 		currentTweenStartTime: 0,
@@ -302,8 +310,8 @@ export const henMachine = setup({
 			states: {
 				'Not laying egg': {
 					after: {
-						// Wait 400ms to delay laying an egg until after tween ease-in
-						400: 'Preparing to lay egg',
+						// Wait until after animation ease-in ramps up before laying an egg while moving.
+						animationEasingEggLayingBufferMS: 'Preparing to lay egg',
 					},
 				},
 				'Preparing to lay egg': {
@@ -340,7 +348,7 @@ export const henMachine = setup({
 						}),
 					],
 					after: {
-						250: 'Done laying egg',
+						200: 'Done laying egg',
 					},
 				},
 				'Done laying egg': {
