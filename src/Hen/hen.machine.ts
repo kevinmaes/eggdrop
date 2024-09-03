@@ -123,22 +123,13 @@ export const henMachine = setup({
 			'is not near animation end',
 		]),
 		'has reached destination': ({ context }) => {
-			// console.log('guard', context.destination, context.position.x);
 			if (context.destination === 'offscreen-right') {
-				if (context.position.x >= context.gameConfig.stageDimensions.width) {
-					console.log('offscreen-right', context.position.x);
-					return true;
-				}
+				return context.position.x >= context.gameConfig.stageDimensions.width;
 			} else if (context.destination === 'offscreen-left') {
-				if (
-					context.position.x <=
-					-1 * context.gameConfig.stageDimensions.width
-				) {
-					console.log('offscreen-left', context.position.x);
-					return true;
-				}
+				return (
+					context.position.x <= -1 * context.gameConfig.stageDimensions.width
+				);
 			}
-			console.log('still onscreen', context.destination, context.position.x);
 			return false;
 		},
 	},
