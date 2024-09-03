@@ -1,4 +1,4 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, OutputFrom } from 'xstate';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
@@ -8,6 +8,9 @@ import { GameAssets } from '../types/assets';
 import { Direction, Position } from '../types';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
+
+export type EggDoneEvent = { output: OutputFrom<typeof eggMachine> };
+
 export const eggMachine = setup({
 	types: {} as {
 		input: {

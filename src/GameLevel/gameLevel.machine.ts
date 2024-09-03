@@ -2,8 +2,8 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
 import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
-import { henMachine } from '../Hen/hen.machine';
-import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
+import { HenDoneEvent, henMachine } from '../Hen/hen.machine';
+import { EggDoneEvent, eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
 import { GenerationStats, IndividualHen, LevelResults } from './types';
 import { sounds } from '../sounds';
@@ -527,17 +527,20 @@ export const gameLevelMachine = setup({
 					{
 						guard: {
 							type: 'isAnEggActorDone',
-							params: ({ event }) => ({ eggId: event.output.eggId }),
+							params: ({ event }: { event: EggDoneEvent }) => ({
+								eggId: event.output.eggId,
+							}),
 						},
 						actions: [
-							log('Egg done'),
 							{
 								type: 'removeEggActorRef',
-								params: ({ event }) => ({ eggId: event.output.eggId }),
+								params: ({ event }: { event: EggDoneEvent }) => ({
+									eggId: event.output.eggId,
+								}),
 							},
 							{
 								type: 'updateScoreForEggDone',
-								params: ({ event }) => ({
+								params: ({ event }: { event: EggDoneEvent }) => ({
 									henId: event.output.henId,
 									eggId: event.output.eggId,
 									eggColor: event.output.eggColor,
@@ -546,7 +549,7 @@ export const gameLevelMachine = setup({
 							},
 							{
 								type: 'updateHenStatsForEggDone',
-								params: ({ event }) => ({
+								params: ({ event }: { event: EggDoneEvent }) => ({
 									henId: event.output.henId,
 									eggId: event.output.eggId,
 									eggColor: event.output.eggColor,
@@ -558,15 +561,16 @@ export const gameLevelMachine = setup({
 					{
 						guard: {
 							type: 'isAHenActorDone',
-							params: ({ event }) => ({ henId: event.output.henId }),
+							params: ({ event }: { event: HenDoneEvent }) => ({
+								henId: event.output.henId,
+							}),
 						},
-						actions: [
-							log('Hen done'),
-							{
-								type: 'removeHenActorRef',
-								params: ({ event }) => ({ henId: event.output.henId }),
-							},
-						],
+						actions: {
+							type: 'removeHenActorRef',
+							params: ({ event }: { event: HenDoneEvent }) => ({
+								henId: event.output.henId,
+							}),
+						},
 					},
 				],
 			},
