@@ -104,11 +104,20 @@ export const henMachine = setup({
 			const remainingMS = context.currentTweenDurationMS - elapsedMS;
 			return remainingMS > context.animationEasingEggLayingBufferMS;
 		},
+		'is within egg laying x bounds': ({ context }) => {
+			const { position } = context;
+			return (
+				position.x >= context.gameConfig.hen.eggLayingXMin &&
+				position.x <= context.gameConfig.hen.eggLayingXMax
+			);
+		},
 		'can lay while stationary': and([
+			'is within egg laying x bounds',
 			'has more eggs',
 			'is within stationary laying rate',
 		]),
 		'can lay while moving': and([
+			'is within egg laying x bounds',
 			'has more eggs',
 			'is within moving laying rate',
 			'is not near animation end',
