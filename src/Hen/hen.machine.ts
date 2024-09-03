@@ -5,6 +5,32 @@ import { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 import { Direction, Position } from '../types';
 
+type Destination = 'offscreen-right' | 'offscreen-left';
+function getDestinationAndPositions(
+	gameConfig: ReturnType<typeof getGameConfig>
+) {
+	const destination: Destination =
+		Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left';
+	const initialPosition =
+		destination === 'offscreen-right'
+			? {
+					x: -1 * gameConfig.hen.width - gameConfig.stageDimensions.margin,
+					y: gameConfig.hen.y,
+			  }
+			: {
+					x:
+						gameConfig.stageDimensions.width +
+						gameConfig.stageDimensions.margin,
+					y: gameConfig.hen.y,
+			  };
+
+	return {
+		destination,
+		position: initialPosition,
+		targetPosition: initialPosition,
+	};
+}
+
 export const henMachine = setup({
 	types: {} as {
 		input: {
@@ -146,40 +172,43 @@ export const henMachine = setup({
 }).createMachine({
 	id: 'hen',
 	initial: 'Offscreen',
-	context: ({ input }) => ({
-		gameConfig: input.gameConfig,
-		henRef: { current: null },
-		id: input.id,
-		index: input.index,
-		henAssets: input.henAssets,
-		// destination: Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left',
-		destination: 'offscreen-right',
-		position: input.position,
-		targetPosition: input.position,
-		speed: input.speed,
-		animationEasingEggLayingBufferMS:
-			input.gameConfig.hen.animationEasingEggLayingBufferMS,
-		currentTweenSpeed: 0,
-		currentTweenDurationMS: 0,
-		currentTweenStartTime: 0,
-		currentTweenDirection: 0,
-		movingDirection: 'none',
-		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
-		minStopMS: input.minStopMS,
-		maxStopMS: input.maxStopMS,
-		maxEggs: input.maxEggs,
-		eggsLaid: 0,
-		stationaryEggLayingRate: input.stationaryEggLayingRate,
-		movingEggLayingRate: input.movingEggLayingRate,
-		restAfterLayingEggMS: input.restAfterLayingEggMS,
-		gamePaused: false,
-		blackEggRate: input.blackEggRate,
-		goldEggRate: input.goldEggRate,
-		hatchRate: input.hatchRate,
-		minX: input.minX,
-		maxX: input.maxX,
-		currentTween: null,
-	}),
+	context: ({ input }) => {
+		const { destination, position, targetPosition } =
+			getDestinationAndPositions(input.gameConfig);
+		return {
+			gameConfig: input.gameConfig,
+			henRef: { current: null },
+			id: input.id,
+			index: input.index,
+			henAssets: input.henAssets,
+			destination,
+			position,
+			targetPosition,
+			speed: input.speed,
+			animationEasingEggLayingBufferMS:
+				input.gameConfig.hen.animationEasingEggLayingBufferMS,
+			currentTweenSpeed: 0,
+			currentTweenDurationMS: 0,
+			currentTweenStartTime: 0,
+			currentTweenDirection: 0,
+			movingDirection: 'none',
+			baseTweenDurationSeconds: input.baseTweenDurationSeconds,
+			minStopMS: input.minStopMS,
+			maxStopMS: input.maxStopMS,
+			maxEggs: input.maxEggs,
+			eggsLaid: 0,
+			stationaryEggLayingRate: input.stationaryEggLayingRate,
+			movingEggLayingRate: input.movingEggLayingRate,
+			restAfterLayingEggMS: input.restAfterLayingEggMS,
+			gamePaused: false,
+			blackEggRate: input.blackEggRate,
+			goldEggRate: input.goldEggRate,
+			hatchRate: input.hatchRate,
+			minX: input.minX,
+			maxX: input.maxX,
+			currentTween: null,
+		};
+	},
 	on: {
 		'Set henRef': {
 			actions: assign({
@@ -209,20 +238,19 @@ export const henMachine = setup({
 					// and with a minimum distance from the current position
 					// TODO a range could be a gene value.
 					const minDistance = 100;
-					const movementRange = context.gameConfig.stageDimensions.width;
-					targetPosition.x =
-						Math.round(Math.random() * movementRange) +
-						context.position.x +
-						minDistance;
+					const movementRange = context.gameConfig.stageDimensions.width * 0.5;
 
-					// Check if the hen is in its original offstage position (first time animation)
-					// if (context.position.x === context.gameConfig.hen.offstageLeftX) {
-					// 	if (targetPosition.x >= context.gameConfig.stageDimensions.midX) {
-					// 		// Swith the hen's offstage position to be on the right side
-					// 		// closer to the target position (if also on the right side)
-					// 		newPosition.x = context.gameConfig.hen.offstageRightX;
-					// 	}
-					// }
+					if (context.destination === 'offscreen-right') {
+						targetPosition.x =
+							Math.round(Math.random() * movementRange) +
+							context.position.x +
+							minDistance;
+					} else if (context.destination === 'offscreen-left') {
+						targetPosition.x =
+							-Math.round(Math.random() * movementRange) +
+							context.position.x -
+							minDistance;
+					}
 
 					return {
 						position: newPosition,
