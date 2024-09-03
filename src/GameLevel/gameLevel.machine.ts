@@ -571,7 +571,6 @@ export const gameLevelMachine = setup({
 					},
 					{
 						guard: ({ event }) => {
-							// is hen?
 							return 'henId' in event.output;
 						},
 						actions: [
