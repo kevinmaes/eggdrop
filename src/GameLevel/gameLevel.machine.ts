@@ -347,21 +347,7 @@ export const gameLevelMachine = setup({
 		countdownTimer,
 	},
 	guards: {
-		areAllHensDone: (
-			{ context },
-			params: {
-				remainingTimeMS: number;
-				totalLevelMS: number;
-				henActorRefs: ActorRefFrom<typeof henMachine>[];
-			}
-		) => {
-			// This guard will be run when the game level starts.
-			// Ignore the first tick.
-			if (params.remainingTimeMS === context.gameConfig.levelDurationMS) {
-				return false;
-			}
-			return context.henActorRefs.length === 0;
-		},
+		areAllHensDone: ({ context }) => context.hensLeft === 0,
 		// isCountdownDone: (_, params: { done: boolean }) => params.done,
 		isAnEggActorDone: (_, params: { eggId: string }) => {
 			return !!params.eggId;
@@ -509,36 +495,20 @@ export const gameLevelMachine = setup({
 		Playing: {
 			entry: 'startBackgroundMusic',
 			exit: 'stopBackgroundMusic',
-			on: {
-				Tick: [
-					// {
-					// 	guard: {
-					// 		type: 'isCountdownDone',
-					// 		params: ({ event }) => ({ done: event.done }),
-					// 	},
-					// 	target: 'Done',
-					// },
+			after: {
+				1000: [
 					{
-						guard: {
-							type: 'areAllHensDone',
-							params: ({ context, event }) => ({
-								remainingTimeMS: event.remainingMS,
-								totalLevelMS: context.gameConfig.levelDurationMS,
-								henActorRefs: context.henActorRefs,
-							}),
-						},
+						guard: 'areAllHensDone',
 						target: 'Done',
+						actions: log('tick. checking if all done'),
 					},
 					{
-						actions: [
-							{
-								type: 'countdownTick',
-								params: ({ event }) => ({ remainingMS: event.remainingMS }),
-							},
-							'spawnNewHen',
-						],
+						target: 'Playing',
+						actions: [log('should spawn hen'), 'spawnNewHen'],
 					},
 				],
+			},
+			on: {
 				'xstate.done.actor.*': [
 					// Egg actor done
 					{
@@ -583,14 +553,14 @@ export const gameLevelMachine = setup({
 				],
 			},
 			invoke: [
-				{
-					id: 'countdownTimer',
-					src: 'countdownTimer',
-					input: ({ context }) => ({
-						totalMS: context.remainingMS,
-						tickMS: 1000,
-					}),
-				},
+				// {
+				// 	id: 'countdownTimer',
+				// 	src: 'countdownTimer',
+				// 	input: ({ context }) => ({
+				// 		totalMS: context.remainingMS,
+				// 		tickMS: 1000,
+				// 	}),
+				// },
 				{
 					id: 'chefMachine',
 					src: 'chefMachine',

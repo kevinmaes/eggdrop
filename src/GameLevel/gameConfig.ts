@@ -1,6 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 50;
+const POPULATION_SIZE = 3;
 
 export function getRandomNumber(
 	min: number,
