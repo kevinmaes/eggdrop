@@ -70,30 +70,16 @@ export const gameLevelMachine = setup({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
 		}),
 		removeHenActorRef: assign({
-			henActorRefs: ({ context }, params: { henId: string }) => {
-				const filteredHenActorRefs = context.henActorRefs.filter(
-					(henActorRef) => {
-						console.log('henActorRef status', henActorRef.getSnapshot().status);
-						// TODO Should be able to assign the egg an id and compare that
-						// but spawn has a type error.
-						return henActorRef.getSnapshot().context.id !== params.henId;
-					}
-				);
-				console.log('filteredHenActorRefs', filteredHenActorRefs.length);
-				return filteredHenActorRefs;
-			},
+			henActorRefs: ({ context }) =>
+				context.henActorRefs.filter(
+					(henActorRef) => henActorRef.getSnapshot().status !== 'done'
+				),
 		}),
 		removeEggActorRef: assign({
-			eggActorRefs: ({ context }, params: { eggId: string }) => {
-				const filteredEggActorRefs = context.eggActorRefs.filter(
-					(eggActorRef) =>
-						// TODO Should be able to assign the egg an id and compare that
-						// but spawn has a type error.
-						eggActorRef.getSnapshot().context.id !== params.eggId
-				);
-				console.log('filteredEggActorRefs', filteredEggActorRefs);
-				return filteredEggActorRefs;
-			},
+			eggActorRefs: ({ context }) =>
+				context.eggActorRefs.filter(
+					(eggActorRef) => eggActorRef.getSnapshot().status !== 'done'
+				),
 		}),
 		spawnNewHen: assign(({ context, spawn }) => {
 			const index = context.nextHenIndex;
@@ -370,7 +356,6 @@ export const gameLevelMachine = setup({
 			if (params.remainingTimeMS === context.gameConfig.levelDurationMS) {
 				return false;
 			}
-			console.log('areAllHensDone guard', context.henActorRefs.length);
 			return context.henActorRefs.length === 0;
 		},
 		// isCountdownDone: (_, params: { done: boolean }) => params.done,
@@ -559,12 +544,7 @@ export const gameLevelMachine = setup({
 							}),
 						},
 						actions: [
-							{
-								type: 'removeEggActorRef',
-								params: ({ event }: { event: EggDoneEvent }) => ({
-									eggId: event.output.eggId,
-								}),
-							},
+							'removeEggActorRef',
 							{
 								type: 'updateScoreForEggDone',
 								params: ({ event }: { event: EggDoneEvent }) => ({
@@ -593,12 +573,7 @@ export const gameLevelMachine = setup({
 								henId: event.output.henId,
 							}),
 						},
-						actions: {
-							type: 'removeHenActorRef',
-							params: ({ event }: { event: HenDoneEvent }) => ({
-								henId: event.output.henId,
-							}),
-						},
+						actions: 'removeHenActorRef',
 					},
 				],
 			},

@@ -131,9 +131,7 @@ export const henMachine = setup({
 			if (context.destination === 'offscreen-right') {
 				return context.position.x >= context.gameConfig.stageDimensions.width;
 			} else if (context.destination === 'offscreen-left') {
-				return (
-					context.position.x <= -1 * context.gameConfig.stageDimensions.width
-				);
+				return context.position.x <= -1 * context.gameConfig.hen.width;
 			}
 			return false;
 		},
