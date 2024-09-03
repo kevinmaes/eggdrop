@@ -188,10 +188,10 @@ export function getInitialChromosomeValues() {
 		maxEggs: -1,
 
 		// The rate at which the hen lays eggs while stopped or while moving
-		// stationaryEggLayingRate: Math.random() * maxEggLayingRate,
-		stationaryEggLayingRate: 1,
-		// movingEggLayingRate: Math.random() * maxEggLayingRate,
-		movingEggLayingRate: 1,
+		stationaryEggLayingRate: Math.random() * maxEggLayingRate,
+		// stationaryEggLayingRate: 1,
+		movingEggLayingRate: Math.random() * maxEggLayingRate,
+		// movingEggLayingRate: 1,
 
 		// The time the hen will rest after laying an egg (while stationary)
 		restAfterLayingEggMS: Math.random() * 2000,
