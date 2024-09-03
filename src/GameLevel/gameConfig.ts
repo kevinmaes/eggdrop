@@ -83,8 +83,8 @@ export function getGameConfig() {
 			offstageLeftX: -henSize,
 			offstageRightX: stageDimensions.width + henSize,
 			y: -10,
-			// The delay between each hen entering the stage
-			entranceDelayMS: 2000,
+			// The delay before each hen enters the stage
+			entranceDelayMS: 500,
 			// Time in milliseconds away from the start and end of an animation
 			// so that the xSpeed of the falling egg can be calculated based
 			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
