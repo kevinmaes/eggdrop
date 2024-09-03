@@ -2,8 +2,8 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
 import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
-import { henMachine } from '../Hen/hen.machine';
-import { eggMachine, EggResultStatus } from '../Egg/egg.machine';
+import { HenDoneEvent, henMachine } from '../Hen/hen.machine';
+import { EggDoneEvent, eggMachine, EggResultStatus } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
 import { GenerationStats, IndividualHen, LevelResults } from './types';
 import { sounds } from '../sounds';
@@ -30,6 +30,7 @@ export const gameLevelMachine = setup({
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			nextHenIndex: number;
+			hensLeft: number;
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
@@ -63,22 +64,26 @@ export const gameLevelMachine = setup({
 					eggId: string;
 					position: Position;
 			  }
-			| {
-					type: 'Hen done';
-					henId: string;
-			  }
-			| {
-					type: 'Egg done';
-					henId: string;
-					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
-					resultStatus: EggResultStatus;
-			  }
 			| { type: 'Tick'; remainingMS: number; done: boolean };
 	},
 	actions: {
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
+		}),
+		decrementHensLeft: assign({
+			hensLeft: ({ context }) => context.hensLeft - 1,
+		}),
+		removeHenActorRef: assign({
+			henActorRefs: ({ context }) =>
+				context.henActorRefs.filter(
+					(henActorRef) => henActorRef.getSnapshot().status !== 'done'
+				),
+		}),
+		removeEggActorRef: assign({
+			eggActorRefs: ({ context }) =>
+				context.eggActorRefs.filter(
+					(eggActorRef) => eggActorRef.getSnapshot().status !== 'done'
+				),
 		}),
 		spawnNewHen: assign(({ context, spawn }) => {
 			const index = context.nextHenIndex;
@@ -342,7 +347,13 @@ export const gameLevelMachine = setup({
 		countdownTimer,
 	},
 	guards: {
-		isCountdownDone: (_, params: { done: boolean }) => params.done,
+		areAllHensDone: ({ context }) => context.hensLeft === 0,
+		isAnEggActorDone: (_, params: { eggId: string }) => {
+			return !!params.eggId;
+		},
+		isAHenActorDone: (_, params: { henId: string }) => {
+			return !!params.henId;
+		},
 		testPotRimHit: ({ context }, params: Position) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
@@ -382,6 +393,7 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		nextHenIndex: 0,
+		hensLeft: input.population.length,
 		population: input.population,
 		scoreData: {
 			levelScore: 0,
@@ -477,69 +489,15 @@ export const gameLevelMachine = setup({
 				}),
 			],
 		},
-		'Egg done': {
-			actions: [
-				{
-					type: 'updateScoreForEggDone',
-					params: ({ event }) => ({
-						henId: event.henId,
-						eggId: event.eggId,
-						eggColor: event.eggColor,
-						resultStatus: event.resultStatus,
-					}),
-				},
-				{
-					type: 'updateHenStatsForEggDone',
-					params: ({ event }) => ({
-						henId: event.henId,
-						eggId: event.eggId,
-						eggColor: event.eggColor,
-						resultStatus: event.resultStatus,
-					}),
-				},
-				assign({
-					eggActorRefs: ({ context, event }) =>
-						context.eggActorRefs.filter(
-							(eggActorRef) =>
-								// TODO Should be able to assign the egg an id and compare that
-								// but spawn has a type error.
-								eggActorRef.getSnapshot().context.id !== event.eggId
-						),
-				}),
-			],
-		},
-		'Hen done': {
-			actions: [
-				log('Hen done'),
-				assign({
-					henActorRefs: ({ context, event }) => {
-						const filteredHenActorRefs = context.henActorRefs.filter(
-							(henActorRef) =>
-								// TODO Should be able to assign the egg an id and compare that
-								// but spawn has a type error.
-								henActorRef.getSnapshot().context.id !== event.henId
-						);
-						console.log('filteredHenActorRefs', filteredHenActorRefs);
-						return filteredHenActorRefs;
-					},
-				}),
-			],
-		},
 	},
 	states: {
 		Playing: {
-			entry: [
-				// 'spawnNewHens',
-				'startBackgroundMusic',
-			],
+			entry: 'startBackgroundMusic',
 			exit: 'stopBackgroundMusic',
 			on: {
 				Tick: [
 					{
-						guard: {
-							type: 'isCountdownDone',
-							params: ({ event }) => ({ done: event.done }),
-						},
+						guard: 'areAllHensDone',
 						target: 'Done',
 					},
 					{
@@ -550,6 +508,48 @@ export const gameLevelMachine = setup({
 							},
 							'spawnNewHen',
 						],
+					},
+				],
+				'xstate.done.actor.*': [
+					// Egg actor done
+					{
+						guard: {
+							type: 'isAnEggActorDone',
+							params: ({ event }: { event: EggDoneEvent }) => ({
+								eggId: event.output.eggId,
+							}),
+						},
+						actions: [
+							'removeEggActorRef',
+							{
+								type: 'updateScoreForEggDone',
+								params: ({ event }: { event: EggDoneEvent }) => ({
+									henId: event.output.henId,
+									eggId: event.output.eggId,
+									eggColor: event.output.eggColor,
+									resultStatus: event.output.resultStatus,
+								}),
+							},
+							{
+								type: 'updateHenStatsForEggDone',
+								params: ({ event }: { event: EggDoneEvent }) => ({
+									henId: event.output.henId,
+									eggId: event.output.eggId,
+									eggColor: event.output.eggColor,
+									resultStatus: event.output.resultStatus,
+								}),
+							},
+						],
+					},
+					// Hen actor done
+					{
+						guard: {
+							type: 'isAHenActorDone',
+							params: ({ event }: { event: HenDoneEvent }) => ({
+								henId: event.output.henId,
+							}),
+						},
+						actions: ['removeHenActorRef', 'decrementHensLeft'],
 					},
 				],
 			},

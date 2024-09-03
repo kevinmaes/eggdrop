@@ -1,4 +1,4 @@
-import { and, assign, log, sendParent, setup } from 'xstate';
+import { and, assign, log, OutputFrom, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig, getRandomNumber } from '../GameLevel/gameConfig';
 import { GameAssets } from '../types/assets';
@@ -31,6 +31,8 @@ function getDestinationAndPositions(
 	};
 }
 
+export type HenDoneEvent = { output: OutputFrom<typeof henMachine> };
+
 export const henMachine = setup({
 	types: {} as {
 		input: {
@@ -52,6 +54,9 @@ export const henMachine = setup({
 			maxStopMS: number;
 			minXMovement: number;
 			maxXMovement: number;
+		};
+		output: {
+			henId: string;
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
@@ -126,9 +131,7 @@ export const henMachine = setup({
 			if (context.destination === 'offscreen-right') {
 				return context.position.x >= context.gameConfig.stageDimensions.width;
 			} else if (context.destination === 'offscreen-left') {
-				return (
-					context.position.x <= -1 * context.gameConfig.stageDimensions.width
-				);
+				return context.position.x <= -1 * context.gameConfig.hen.width;
 			}
 			return false;
 		},
@@ -211,7 +214,7 @@ export const henMachine = setup({
 	},
 	delays: {
 		getRandomStartDelay: ({ context }) => {
-			return (context.index + 1) * context.gameConfig.hen.entranceDelayMS;
+			return context.gameConfig.hen.entranceDelayMS;
 		},
 		getRandomStopDurationMS: ({ context }) => {
 			const { minStopMS, maxStopMS } = context;
@@ -282,6 +285,9 @@ export const henMachine = setup({
 			currentTween: null,
 		};
 	},
+	output: ({ context }) => ({
+		henId: context.id,
+	}),
 	on: {
 		'Set henRef': {
 			actions: assign({
@@ -317,21 +323,13 @@ export const henMachine = setup({
 					node: context.henRef.current,
 					tween: context.currentTween,
 				}),
-				onDone: [
-					{
-						guard: 'has reached destination',
-						target: 'Reached Offscreen',
-					},
-					{
-						target: 'Stopped',
-						actions: [
-							assign({
-								position: ({ event }) => event.output,
-								currentTweenSpeed: 0,
-							}),
-						],
-					},
-				],
+				onDone: {
+					target: 'Done Moving',
+					actions: assign({
+						position: ({ event }) => event.output,
+						currentTweenSpeed: 0,
+					}),
+				},
 				onError: { target: 'Stopped' },
 			},
 			initial: 'Not laying egg',
@@ -386,6 +384,15 @@ export const henMachine = setup({
 				},
 			},
 		},
+		'Done Moving': {
+			always: [
+				{
+					guard: 'has reached destination',
+					target: 'Reached Desination',
+				},
+				{ target: 'Stopped' },
+			],
+		},
 		Stopped: {
 			on: {
 				'Resume game': 'Moving',
@@ -428,15 +435,9 @@ export const henMachine = setup({
 		'Rest After Laying Egg': {
 			after: { restAfterLayingAnEgg: 'Moving' },
 		},
-		'Reached Offscreen': {
+		'Reached Desination': {
 			type: 'final',
-			entry: [
-				log('Reached Offscreen'),
-				sendParent(({ context }) => ({
-					type: 'Hen done',
-					henId: context.id,
-				})),
-			],
+			entry: [log('Reached Desination')],
 		},
 	},
 });

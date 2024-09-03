@@ -1,6 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 60;
+const POPULATION_SIZE = 50;
 
 export function getRandomNumber(
 	min: number,
@@ -40,7 +40,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: POPULATION_SIZE,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: POPULATION_SIZE * 1000,
+		levelDurationMS: POPULATION_SIZE * 1000 + 60_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -83,8 +83,8 @@ export function getGameConfig() {
 			offstageLeftX: -henSize,
 			offstageRightX: stageDimensions.width + henSize,
 			y: -10,
-			// The delay between each hen entering the stage
-			entranceDelayMS: 2000,
+			// The delay before each hen enters the stage
+			entranceDelayMS: 500,
 			// Time in milliseconds away from the start and end of an animation
 			// so that the xSpeed of the falling egg can be calculated based
 			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
@@ -128,6 +128,10 @@ export function getGameConfig() {
 			width: 100,
 			height: 50,
 		},
+		hensCountdown: {
+			width: 90,
+			height: 50,
+		},
 	};
 
 	// Set the audio mute according to the isMuted value
@@ -144,17 +148,11 @@ export function getGameConfig() {
 export function getInitialChromosomeValues() {
 	const gameConfig = getGameConfig();
 
-	// const totalMovementRange =
-	// 	gameConfig.stageDimensions.width -
-	// 	2 * gameConfig.stageDimensions.movementMargin;
-
 	// The minimum xPos the hen can be at
-	let minXMovement = getRandomNumber(50, 200, true);
-	// Math.round(Math.random() * 0.25 * totalMovementRange) +
-	// gameConfig.stageDimensions.movementMargin;
+	const minXMovement = getRandomNumber(50, 200, true);
 
 	// The maximum xPos the hen can be at
-	let maxXMovement = getRandomNumber(
+	const maxXMovement = getRandomNumber(
 		250,
 		0.5 * gameConfig.stageDimensions.width,
 		true
@@ -181,7 +179,6 @@ export function getInitialChromosomeValues() {
 
 		// baseTweenDurationSeconds is the base duration for the tween
 		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
-		// baseTweenDurationSeconds: 1,
 
 		// maxEggs can range between -1 and 50, -1 means no limit
 		// maxEggs: Math.round(Math.random() * 51) - 1,

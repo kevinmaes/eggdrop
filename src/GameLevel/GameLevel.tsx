@@ -9,7 +9,7 @@ import { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
-import { CountdownTimer } from '../CountdownTimer/CountdownTimer';
+import { HensCountdown } from '../HensCountdown/HensCountdown';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
@@ -75,11 +75,11 @@ export function GameLevel() {
 					fill={gameConfig.colors.primaryOrange}
 					opacity={0.75}
 				/>
-				<CountdownTimer
+				<HensCountdown
 					x={70}
 					y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
-					width={gameConfig.countdownTimer.width}
-					height={gameConfig.countdownTimer.height}
+					width={gameConfig.hensCountdown.width}
+					height={gameConfig.hensCountdown.height}
 				/>
 				<LevelScoreBox
 					x={
