@@ -1,6 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 10;
+const POPULATION_SIZE = 60;
 
 export function getRandomNumber(
 	min: number,
@@ -40,7 +40,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: POPULATION_SIZE,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 60_000,
+		levelDurationMS: POPULATION_SIZE * 1000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
