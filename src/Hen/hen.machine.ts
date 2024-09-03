@@ -320,7 +320,7 @@ export const henMachine = setup({
 				onDone: [
 					{
 						guard: 'has reached destination',
-						target: 'Reached Offscreen',
+						target: 'Reached Desination',
 					},
 					{
 						target: 'Stopped',
@@ -428,10 +428,10 @@ export const henMachine = setup({
 		'Rest After Laying Egg': {
 			after: { restAfterLayingAnEgg: 'Moving' },
 		},
-		'Reached Offscreen': {
+		'Reached Desination': {
 			type: 'final',
 			entry: [
-				log('Reached Offscreen'),
+				log('Reached Desination'),
 				sendParent(({ context }) => ({
 					type: 'Hen done',
 					henId: context.id,
