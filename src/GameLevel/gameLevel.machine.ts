@@ -72,12 +72,14 @@ export const gameLevelMachine = setup({
 		removeHenActorRef: assign({
 			henActorRefs: ({ context }, params: { henId: string }) => {
 				const filteredHenActorRefs = context.henActorRefs.filter(
-					(henActorRef) =>
+					(henActorRef) => {
+						console.log('henActorRef status', henActorRef.getSnapshot().status);
 						// TODO Should be able to assign the egg an id and compare that
 						// but spawn has a type error.
-						henActorRef.getSnapshot().context.id !== params.henId
+						return henActorRef.getSnapshot().context.id !== params.henId;
+					}
 				);
-				console.log('filteredHenActorRefs', filteredHenActorRefs);
+				console.log('filteredHenActorRefs', filteredHenActorRefs.length);
 				return filteredHenActorRefs;
 			},
 		}),
@@ -355,7 +357,23 @@ export const gameLevelMachine = setup({
 		countdownTimer,
 	},
 	guards: {
-		isCountdownDone: (_, params: { done: boolean }) => params.done,
+		areAllHensDone: (
+			{ context },
+			params: {
+				remainingTimeMS: number;
+				totalLevelMS: number;
+				henActorRefs: ActorRefFrom<typeof henMachine>[];
+			}
+		) => {
+			// This guard will be run when the game level starts.
+			// Ignore the first tick.
+			if (params.remainingTimeMS === context.gameConfig.levelDurationMS) {
+				return false;
+			}
+			console.log('areAllHensDone guard', context.henActorRefs.length);
+			return context.henActorRefs.length === 0;
+		},
+		// isCountdownDone: (_, params: { done: boolean }) => params.done,
 		isAnEggActorDone: (_, params: { eggId: string }) => {
 			return !!params.eggId;
 		},
@@ -510,6 +528,17 @@ export const gameLevelMachine = setup({
 					// 	},
 					// 	target: 'Done',
 					// },
+					{
+						guard: {
+							type: 'areAllHensDone',
+							params: ({ context, event }) => ({
+								remainingTimeMS: event.remainingMS,
+								totalLevelMS: context.gameConfig.levelDurationMS,
+								henActorRefs: context.henActorRefs,
+							}),
+						},
+						target: 'Done',
+					},
 					{
 						actions: [
 							{
