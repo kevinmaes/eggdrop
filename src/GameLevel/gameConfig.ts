@@ -4,7 +4,11 @@ export function getGameConfig() {
 	const stageDimensions = {
 		width: 1280,
 		height: 720,
+		// Generally respected margin for rendering content within the stage dimensions,
+		// similar to CSS padding.
 		margin: 10,
+		// Similar to the margin, above, but further limiting the movement of the hens
+		// and chef so that they don't overlap as much with UI close to the margin.
 		movementMargin: 25,
 	};
 
@@ -44,22 +48,22 @@ export function getGameConfig() {
 			y: chefYPosition,
 			width: chefWidth,
 			height: chefHeight,
-			speedLimit: 20,
+			speedLimit: 15,
 			// Keep the acceleration low so that tapping the arrow keys doesn't
-			// make the chef move too quickly and a small movement is possible.
-			acceleration: 2,
-			// Keep the deceleration is higher than the acceleration so the character
-			// can "stop on a dime"
+			// make the chef move too quickly and a micro movements are possible.
+			acceleration: 1,
+			// Deceleration should be higher than the acceleration so the character
+			// can pivot directions or stop quickly.
 			deceleration: 7,
 			minXPos: 0.5 * chefWidth,
 			// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
 			maxXPos: stageDimensions.width - 0.5 * chefWidth,
 			potRim: {
 				width: 150,
-				height: 30,
-				// x distance from the chef's x position
+				height: 25,
+				// x and y offset from the chef's position
 				offsetX: 30,
-				y: chefYPosition + 240,
+				offsetY: -250,
 			},
 		},
 		hen: {
