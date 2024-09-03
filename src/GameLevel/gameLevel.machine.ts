@@ -30,6 +30,7 @@ export const gameLevelMachine = setup({
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			nextHenIndex: number;
+			hensLeft: number;
 			levelStats: GenerationStats;
 			henStatsById: Record<string, IndividualHen>;
 			population: IndividualHen[];
@@ -68,6 +69,9 @@ export const gameLevelMachine = setup({
 	actions: {
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
+		}),
+		decrementHensLeft: assign({
+			hensLeft: ({ context }) => context.hensLeft - 1,
 		}),
 		removeHenActorRef: assign({
 			henActorRefs: ({ context }) =>
@@ -404,6 +408,7 @@ export const gameLevelMachine = setup({
 		eggActorRefs: [],
 		chefPotRimHitRef: null,
 		nextHenIndex: 0,
+		hensLeft: input.population.length,
 		population: input.population,
 		scoreData: {
 			levelScore: 0,
@@ -573,7 +578,7 @@ export const gameLevelMachine = setup({
 								henId: event.output.henId,
 							}),
 						},
-						actions: 'removeHenActorRef',
+						actions: ['removeHenActorRef', 'decrementHensLeft'],
 					},
 				],
 			},
