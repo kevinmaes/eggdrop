@@ -63,13 +63,6 @@ export const gameLevelMachine = setup({
 					eggId: string;
 					position: Position;
 			  }
-			| {
-					type: 'Egg done';
-					henId: string;
-					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
-					resultStatus: EggResultStatus;
-			  }
 			| { type: 'Tick'; remainingMS: number; done: boolean };
 	},
 	actions: {
@@ -503,37 +496,6 @@ export const gameLevelMachine = setup({
 				}),
 			],
 		},
-		'Egg done': {
-			actions: [
-				{
-					type: 'updateScoreForEggDone',
-					params: ({ event }) => ({
-						henId: event.henId,
-						eggId: event.eggId,
-						eggColor: event.eggColor,
-						resultStatus: event.resultStatus,
-					}),
-				},
-				{
-					type: 'updateHenStatsForEggDone',
-					params: ({ event }) => ({
-						henId: event.henId,
-						eggId: event.eggId,
-						eggColor: event.eggColor,
-						resultStatus: event.resultStatus,
-					}),
-				},
-				assign({
-					eggActorRefs: ({ context, event }) =>
-						context.eggActorRefs.filter(
-							(eggActorRef) =>
-								// TODO Should be able to assign the egg an id and compare that
-								// but spawn has a type error.
-								eggActorRef.getSnapshot().context.id !== event.eggId
-						),
-				}),
-			],
-		},
 	},
 	states: {
 		Playing: {
@@ -572,6 +534,24 @@ export const gameLevelMachine = setup({
 							{
 								type: 'removeEggActorRef',
 								params: ({ event }) => ({ eggId: event.output.eggId }),
+							},
+							{
+								type: 'updateScoreForEggDone',
+								params: ({ event }) => ({
+									henId: event.output.henId,
+									eggId: event.output.eggId,
+									eggColor: event.output.eggColor,
+									resultStatus: event.output.resultStatus,
+								}),
+							},
+							{
+								type: 'updateHenStatsForEggDone',
+								params: ({ event }) => ({
+									henId: event.output.henId,
+									eggId: event.output.eggId,
+									eggColor: event.output.eggColor,
+									resultStatus: event.output.resultStatus,
+								}),
 							},
 						],
 					},
