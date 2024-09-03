@@ -563,9 +563,6 @@ export const gameLevelMachine = setup({
 						},
 						actions: [
 							log('Egg done'),
-							({ event }) => {
-								console.log('egg done event', event);
-							},
 							{
 								type: 'removeEggActorRef',
 								params: ({ event }) => ({ eggId: event.output.eggId }),
@@ -579,9 +576,6 @@ export const gameLevelMachine = setup({
 						},
 						actions: [
 							log('Hen done'),
-							({ event }) => {
-								console.log('hen done event', event);
-							},
 							{
 								type: 'removeHenActorRef',
 								params: ({ event }) => ({ henId: event.output.henId }),
