@@ -142,6 +142,35 @@ export const henMachine = setup({
 			return false;
 		},
 	},
+	actions: {
+		pickNewTargetPosition: assign(({ context }) => {
+			const targetPosition = { ...context.position };
+			const newPosition = { ...context.position };
+
+			// Pick a new x target position within the hen motion range
+			// and with a minimum distance from the current position
+			// TODO a range could be a gene value.
+			const minDistance = 100;
+			const movementRange = context.gameConfig.stageDimensions.width * 0.5;
+
+			if (context.destination === 'offscreen-right') {
+				targetPosition.x =
+					Math.round(Math.random() * movementRange) +
+					context.position.x +
+					minDistance;
+			} else if (context.destination === 'offscreen-left') {
+				targetPosition.x =
+					-Math.round(Math.random() * movementRange) +
+					context.position.x -
+					minDistance;
+			}
+
+			return {
+				position: newPosition,
+				targetPosition,
+			};
+		}),
+	},
 	actors: {
 		henMovingBackAndForthActor: tweenActor,
 	},
@@ -239,33 +268,7 @@ export const henMachine = setup({
 		},
 		Moving: {
 			entry: [
-				assign(({ context }) => {
-					const targetPosition = { ...context.position };
-					const newPosition = { ...context.position };
-
-					// Pick a new x target position within the hen motion range
-					// and with a minimum distance from the current position
-					// TODO a range could be a gene value.
-					const minDistance = 100;
-					const movementRange = context.gameConfig.stageDimensions.width * 0.5;
-
-					if (context.destination === 'offscreen-right') {
-						targetPosition.x =
-							Math.round(Math.random() * movementRange) +
-							context.position.x +
-							minDistance;
-					} else if (context.destination === 'offscreen-left') {
-						targetPosition.x =
-							-Math.round(Math.random() * movementRange) +
-							context.position.x -
-							minDistance;
-					}
-
-					return {
-						position: newPosition,
-						targetPosition,
-					};
-				}),
+				'pickNewTargetPosition',
 				assign(({ context }) => {
 					const { targetPosition } = context;
 					const totalDistance = context.gameConfig.stageDimensions.width;
