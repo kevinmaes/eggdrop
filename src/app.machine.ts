@@ -97,15 +97,6 @@ const appMachine = setup({
 					const parent2 =
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
 
-					// Crossover the parents' min and max X positions
-					// but ensure that minX is less than maxX
-					let minX = Math.round((parent1.minX + parent2.minX) / 2);
-					let maxX = Math.round((parent1.maxX + parent2.maxX) / 2);
-
-					if (minX > maxX) {
-						[minX, maxX] = [maxX, minX];
-					}
-
 					const child = {
 						id: nanoid(),
 						initialPosition: {
@@ -129,8 +120,12 @@ const appMachine = setup({
 						blackEggRate: (parent1.blackEggRate + parent2.blackEggRate) / 2,
 						goldEggRate: (parent1.goldEggRate + parent2.goldEggRate) / 2,
 						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
-						minX,
-						maxX,
+						minXMovement: Math.round(
+							(parent1.minXMovement + parent2.minXMovement) / 2
+						),
+						maxXMovement: Math.round(
+							(parent1.maxXMovement + parent2.maxXMovement) / 2
+						),
 						minStopMS: (parent1.minStopMS + parent2.minStopMS) / 2,
 						maxStopMS: (parent1.maxStopMS + parent2.maxStopMS) / 2,
 						fitness: 0,
@@ -157,8 +152,8 @@ const appMachine = setup({
 							'stationaryEggLayingRate',
 							'movingEggLayingRate',
 							'hatchRate',
-							'minX',
-							'maxX',
+							'minXMovement',
+							'maxXMovement',
 							'minStopMS',
 							'maxStopMS',
 						],

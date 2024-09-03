@@ -78,8 +78,8 @@ export function DevPanel() {
 		'averageHenSpeed',
 		'averageStationaryEggLayingRate',
 		'averageHatchRate',
-		'averageMinX',
-		'averageMaxX',
+		'averageMinXMovement',
+		'averageMaxXMovement',
 		'averageMinStopMS',
 		'averageMaxStopMS',
 	];

@@ -2,6 +2,15 @@
 
 const POPULATION_SIZE = 1;
 
+export function getRandomNumber(
+	min: number,
+	max: number,
+	round: boolean = false
+) {
+	const randomValue = Math.random() * (max - min) + min;
+	return round ? Math.round(randomValue) : randomValue;
+}
+
 export function getGameConfig() {
 	const stageDimensions = {
 		width: 1280,
@@ -75,7 +84,7 @@ export function getGameConfig() {
 			offstageRightX: stageDimensions.width + henSize,
 			y: -10,
 			// The delay between each hen entering the stage
-			staggeredEntranceDelay: 2000,
+			entranceDelayMS: 2000,
 			// Time in milliseconds away from the start and end of an animation
 			// so that the xSpeed of the falling egg can be calculated based
 			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
@@ -140,13 +149,16 @@ export function getInitialChromosomeValues() {
 	// 	2 * gameConfig.stageDimensions.movementMargin;
 
 	// The minimum xPos the hen can be at
-	let minX = -100;
+	let minXMovement = getRandomNumber(50, 200, true);
 	// Math.round(Math.random() * 0.25 * totalMovementRange) +
 	// gameConfig.stageDimensions.movementMargin;
 
 	// The maximum xPos the hen can be at
-	// let maxX = gameConfig.stageDimensions.width - minX - gameConfig.hen.width;
-	let maxX = gameConfig.stageDimensions.width + 100;
+	let maxXMovement = getRandomNumber(
+		250,
+		0.5 * gameConfig.stageDimensions.width,
+		true
+	);
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
@@ -175,15 +187,22 @@ export function getInitialChromosomeValues() {
 		// maxEggs: Math.round(Math.random() * 51) - 1,
 		maxEggs: -1,
 
-		// The rate at which the hen lays eggs while stopped
+		// The rate at which the hen lays eggs while stopped or while moving
 		// stationaryEggLayingRate: Math.random() * maxEggLayingRate,
 		stationaryEggLayingRate: 1,
-		// The rate at which the hen lays eggs while moving
 		// movingEggLayingRate: Math.random() * maxEggLayingRate,
 		movingEggLayingRate: 1,
 
-		// The time the hen will rest after laying an egg
+		// The time the hen will rest after laying an egg (while stationary)
 		restAfterLayingEggMS: Math.random() * 2000,
+
+		// The min and max x amount a hen can move during its animation
+		minXMovement,
+		maxXMovement,
+
+		// The min and max time the hen will stop at a location
+		minStopMS,
+		maxStopMS,
 
 		// Egg color rates
 		blackEggRate,
@@ -192,17 +211,5 @@ export function getInitialChromosomeValues() {
 		// The rate at which the eggs will hatch when they land on the ground
 		// hatchRate: Math.random(),
 		hatchRate: 1,
-
-		// The minimum xPos the hen can be at
-		minX,
-
-		// The maximum xPos the hen can be at
-		maxX,
-
-		// The minimum time the hen will stop at a location
-		minStopMS,
-
-		// The maximum time the hen will stop at a location
-		maxStopMS,
 	};
 }
