@@ -64,10 +64,6 @@ export const gameLevelMachine = setup({
 					position: Position;
 			  }
 			| {
-					type: 'Hen done';
-					henId: string;
-			  }
-			| {
 					type: 'Egg done';
 					henId: string;
 					eggId: string;
@@ -79,6 +75,30 @@ export const gameLevelMachine = setup({
 	actions: {
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
+		}),
+		removeHenActorRef: assign({
+			henActorRefs: ({ context }, params: { henId: string }) => {
+				const filteredHenActorRefs = context.henActorRefs.filter(
+					(henActorRef) =>
+						// TODO Should be able to assign the egg an id and compare that
+						// but spawn has a type error.
+						henActorRef.getSnapshot().context.id !== params.henId
+				);
+				console.log('filteredHenActorRefs', filteredHenActorRefs);
+				return filteredHenActorRefs;
+			},
+		}),
+		removeEggActorRef: assign({
+			eggActorRefs: ({ context }, params: { eggId: string }) => {
+				const filteredEggActorRefs = context.eggActorRefs.filter(
+					(eggActorRef) =>
+						// TODO Should be able to assign the egg an id and compare that
+						// but spawn has a type error.
+						eggActorRef.getSnapshot().context.id !== params.eggId
+				);
+				console.log('filteredEggActorRefs', filteredEggActorRefs);
+				return filteredEggActorRefs;
+			},
 		}),
 		spawnNewHen: assign(({ context, spawn }) => {
 			const index = context.nextHenIndex;
@@ -508,23 +528,6 @@ export const gameLevelMachine = setup({
 				}),
 			],
 		},
-		'Hen done': {
-			actions: [
-				log('Hen done'),
-				assign({
-					henActorRefs: ({ context, event }) => {
-						const filteredHenActorRefs = context.henActorRefs.filter(
-							(henActorRef) =>
-								// TODO Should be able to assign the egg an id and compare that
-								// but spawn has a type error.
-								henActorRef.getSnapshot().context.id !== event.henId
-						);
-						console.log('filteredHenActorRefs', filteredHenActorRefs);
-						return filteredHenActorRefs;
-					},
-				}),
-			],
-		},
 	},
 	states: {
 		Playing: {
@@ -549,6 +552,40 @@ export const gameLevelMachine = setup({
 								params: ({ event }) => ({ remainingMS: event.remainingMS }),
 							},
 							'spawnNewHen',
+						],
+					},
+				],
+				'xstate.done.actor.*': [
+					{
+						guard: ({ event }) => {
+							// is egg?
+							return 'eggId' in event.output;
+						},
+						actions: [
+							log('Egg done'),
+							({ event }) => {
+								console.log('egg done event', event);
+							},
+							{
+								type: 'removeEggActorRef',
+								params: ({ event }) => ({ eggId: event.output.eggId }),
+							},
+						],
+					},
+					{
+						guard: ({ event }) => {
+							// is hen?
+							return 'henId' in event.output;
+						},
+						actions: [
+							log('Hen done'),
+							({ event }) => {
+								console.log('hen done event', event);
+							},
+							{
+								type: 'removeHenActorRef',
+								params: ({ event }) => ({ henId: event.output.henId }),
+							},
 						],
 					},
 				],

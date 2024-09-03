@@ -53,6 +53,9 @@ export const henMachine = setup({
 			minXMovement: number;
 			maxXMovement: number;
 		};
+		output: {
+			henId: string;
+		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			henRef: React.RefObject<Konva.Image>;
@@ -282,6 +285,9 @@ export const henMachine = setup({
 			currentTween: null,
 		};
 	},
+	output: ({ context }) => ({
+		henId: context.id,
+	}),
 	on: {
 		'Set henRef': {
 			actions: assign({
@@ -317,21 +323,13 @@ export const henMachine = setup({
 					node: context.henRef.current,
 					tween: context.currentTween,
 				}),
-				onDone: [
-					{
-						guard: 'has reached destination',
-						target: 'Reached Desination',
-					},
-					{
-						target: 'Stopped',
-						actions: [
-							assign({
-								position: ({ event }) => event.output,
-								currentTweenSpeed: 0,
-							}),
-						],
-					},
-				],
+				onDone: {
+					target: 'Done Moving',
+					actions: assign({
+						position: ({ event }) => event.output,
+						currentTweenSpeed: 0,
+					}),
+				},
 				onError: { target: 'Stopped' },
 			},
 			initial: 'Not laying egg',
@@ -386,6 +384,15 @@ export const henMachine = setup({
 				},
 			},
 		},
+		'Done Moving': {
+			always: [
+				{
+					guard: 'has reached destination',
+					target: 'Reached Desination',
+				},
+				{ target: 'Stopped' },
+			],
+		},
 		Stopped: {
 			on: {
 				'Resume game': 'Moving',
@@ -430,13 +437,7 @@ export const henMachine = setup({
 		},
 		'Reached Desination': {
 			type: 'final',
-			entry: [
-				log('Reached Desination'),
-				sendParent(({ context }) => ({
-					type: 'Hen done',
-					henId: context.id,
-				})),
-			],
+			entry: [log('Reached Desination')],
 		},
 	},
 });

@@ -23,6 +23,12 @@ export const eggMachine = setup({
 			rotationDirection: Direction['value'];
 			hatchRate: number;
 		};
+		output: {
+			henId: string;
+			eggId: string;
+			eggColor: 'white' | 'gold' | 'black';
+			resultStatus: EggResultStatus;
+		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			eggRef: React.RefObject<Konva.Image>;
@@ -155,6 +161,14 @@ export const eggMachine = setup({
 			hatchRate: input.hatchRate,
 			currentTween: null,
 			currentAnimation: null,
+		};
+	},
+	output: ({ context }) => {
+		return {
+			henId: context.henId,
+			eggId: context.id,
+			eggColor: context.color,
+			resultStatus: context.resultStatus,
 		};
 	},
 	on: {
@@ -372,15 +386,6 @@ export const eggMachine = setup({
 		},
 		Done: {
 			type: 'final',
-			entry: [
-				sendParent(({ context }) => ({
-					type: 'Egg done',
-					henId: context.henId,
-					eggId: context.id,
-					eggColor: context.color,
-					resultStatus: context.resultStatus,
-				})),
-			],
 		},
 	},
 });
