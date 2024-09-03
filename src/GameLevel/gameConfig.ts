@@ -83,8 +83,8 @@ export function getGameConfig() {
 			offstageLeftX: -henSize,
 			offstageRightX: stageDimensions.width + henSize,
 			y: -10,
-			// The delay between each hen entering the stage
-			entranceDelayMS: 2000,
+			// The delay before each hen enters the stage
+			entranceDelayMS: 500,
 			// Time in milliseconds away from the start and end of an animation
 			// so that the xSpeed of the falling egg can be calculated based
 			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
@@ -145,16 +145,16 @@ export function getInitialChromosomeValues() {
 	const gameConfig = getGameConfig();
 
 	// The minimum xPos the hen can be at
-	// const minXMovement = getRandomNumber(50, 200, true);
-	const minXMovement = 490;
+	const minXMovement = getRandomNumber(50, 200, true);
+	// const minXMovement = 490;
 
 	// The maximum xPos the hen can be at
-	// const maxXMovement = getRandomNumber(
-	// 	250,
-	// 	0.5 * gameConfig.stageDimensions.width,
-	// 	true
-	// );
-	const maxXMovement = 500;
+	const maxXMovement = getRandomNumber(
+		250,
+		0.5 * gameConfig.stageDimensions.width,
+		true
+	);
+	// const maxXMovement = 500;
 
 	// The minimum time the hen will stop at a location
 	const minStopMS = Math.ceil(Math.random() * 1000);
