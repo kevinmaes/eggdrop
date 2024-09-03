@@ -4,7 +4,11 @@ export function getGameConfig() {
 	const stageDimensions = {
 		width: 1280,
 		height: 720,
+		// Generally respected margin for rendering content within the stage dimensions,
+		// similar to CSS padding.
 		margin: 10,
+		// Similar to the margin, above, but further limiting the movement of the hens
+		// and chef so that they don't overlap as much with UI close to the margin.
 		movementMargin: 25,
 	};
 
@@ -44,22 +48,22 @@ export function getGameConfig() {
 			y: chefYPosition,
 			width: chefWidth,
 			height: chefHeight,
-			speedLimit: 20,
+			speedLimit: 15,
 			// Keep the acceleration low so that tapping the arrow keys doesn't
-			// make the chef move too quickly and a small movement is possible.
-			acceleration: 2,
-			// Keep the deceleration is higher than the acceleration so the character
-			// can "stop on a dime"
+			// make the chef move too quickly and a micro movements are possible.
+			acceleration: 1,
+			// Deceleration should be higher than the acceleration so the character
+			// can pivot directions or stop quickly.
 			deceleration: 7,
 			minXPos: 0.5 * chefWidth,
 			// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
 			maxXPos: stageDimensions.width - 0.5 * chefWidth,
 			potRim: {
 				width: 150,
-				height: 30,
-				// x distance from the chef's x position
+				height: 25,
+				// x and y offset from the chef's position
 				offsetX: 30,
-				y: chefYPosition + 240,
+				offsetY: -250,
 			},
 		},
 		hen: {
@@ -70,6 +74,11 @@ export function getGameConfig() {
 			y: -10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
+			// Time in milliseconds away from the start and end of an animation
+			// so that the xSpeed of the falling egg can be calculated based
+			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
+			animationEasingEggLayingBufferMS: 250,
+			// X and Y offset for the butt of the hen where the egg should come out.
 			buttXOffset: 0.5 * henSize,
 			buttYOffset: 85,
 		},
@@ -146,6 +155,11 @@ export function getInitialChromosomeValues() {
 	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
 	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
 
+	// Calculate the egg laying rates
+	const maxEggLayingRate = 0.5;
+	const randomMovingEggLayingRate = Math.random() * maxEggLayingRate;
+	const stationaryEggLayingRate = maxEggLayingRate - randomMovingEggLayingRate;
+
 	return {
 		// speed is the x speed of the hen
 		speed: Math.random(),
@@ -158,13 +172,11 @@ export function getInitialChromosomeValues() {
 		// maxEggs: Math.round(Math.random() * 51) - 1,
 		maxEggs: -1,
 
-		// The rate at which the hen lays eggs while stopped
-		stationaryEggLayingRate: Math.random(),
-		// stationaryEggLayingRate: 0,
-
 		// The rate at which the hen lays eggs while moving
-		movingEggLayingRate: Math.random(),
-		// movingEggLayingRate: 1,
+		movingEggLayingRate: randomMovingEggLayingRate,
+
+		// The rate at which the hen lays eggs while stopped
+		stationaryEggLayingRate,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,

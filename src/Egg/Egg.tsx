@@ -7,8 +7,6 @@ import { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
 
-// type EggFrameName = 'egg-white.png' | 'egg-gold.png' | 'egg-black.png';
-
 type ChickFrameName =
 	| 'egg-broken-white.png'
 	| 'egg-broken-black.png'
@@ -18,8 +16,6 @@ type ChickFrameName =
 	| 'chick-run-left-2.png'
 	| 'chick-run-right-1.png'
 	| 'chick-run-right-2.png';
-
-// type EggOrChickFrameName = EggFrameName | ChickFrameName;
 
 export function Egg({
 	eggActorRef,
@@ -37,9 +33,7 @@ export function Egg({
 		isExiting,
 		isDone,
 		eggFrames,
-		// eggFrameNames,
 		chickFrames,
-		// chickFrameNames,
 		color,
 	} = useSelector(eggActorRef, (state) => {
 		const isExiting = state.matches('Exiting');
@@ -120,7 +114,6 @@ export function Egg({
 	}, [isHatching, isHatched, isExiting, exitingDirection]);
 
 	if (isDone) {
-		console.log('eggState.matches Done');
 		return null;
 	}
 
