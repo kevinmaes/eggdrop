@@ -29,7 +29,7 @@ export function getGameConfig() {
 		// The number of hens in the game
 		populationSize: 10,
 		// The duration each level lasts in milliseconds
-		levelDurationMS: 20_000,
+		levelDurationMS: 60_000,
 		stageDimensions: {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
@@ -74,6 +74,11 @@ export function getGameConfig() {
 			y: -10,
 			// The delay between each hen entering the stage
 			staggeredEntranceDelay: 2000,
+			// Time in milliseconds away from the start and end of an animation
+			// so that the xSpeed of the falling egg can be calculated based
+			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
+			animationEasingEggLayingBufferMS: 250,
+			// X and Y offset for the butt of the hen where the egg should come out.
 			buttXOffset: 0.5 * henSize,
 			buttYOffset: 85,
 		},
@@ -150,6 +155,10 @@ export function getInitialChromosomeValues() {
 	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
 	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
 
+	const maxEggLayingRate = 0.5;
+	const randomMovingEggLayingRate = Math.random() * maxEggLayingRate;
+	const stationaryEggLayingRate = maxEggLayingRate - randomMovingEggLayingRate;
+
 	return {
 		// speed is the x speed of the hen
 		speed: Math.random(),
@@ -162,13 +171,11 @@ export function getInitialChromosomeValues() {
 		// maxEggs: Math.round(Math.random() * 51) - 1,
 		maxEggs: -1,
 
-		// The rate at which the hen lays eggs while stopped
-		// stationaryEggLayingRate: Math.random(),
-		stationaryEggLayingRate: 1,
-
 		// The rate at which the hen lays eggs while moving
-		// movingEggLayingRate: Math.random(),
-		movingEggLayingRate: 0,
+		movingEggLayingRate: randomMovingEggLayingRate,
+
+		// The rate at which the hen lays eggs while stopped
+		stationaryEggLayingRate,
 
 		// The time the hen will rest after laying an egg
 		restAfterLayingEggMS: Math.random() * 2000,
