@@ -558,7 +558,6 @@ export const gameLevelMachine = setup({
 				'xstate.done.actor.*': [
 					{
 						guard: ({ event }) => {
-							// is egg?
 							return 'eggId' in event.output;
 						},
 						actions: [
