@@ -170,6 +170,48 @@ export const henMachine = setup({
 				targetPosition,
 			};
 		}),
+		createTweenToTargetPosition: assign(({ context }) => {
+			const { targetPosition } = context;
+			const totalDistance = context.gameConfig.stageDimensions.width;
+			const xDistance = targetPosition.x - context.position.x;
+			const direction: Direction['value'] = xDistance > 0 ? 1 : -1;
+			const movingDirection: Direction['label'] =
+				direction === 1 ? 'right' : 'left';
+
+			// Calculate absolute distances for tween duration
+			const absoluteXDistance = Math.abs(xDistance);
+			const absoluteRelativeDistance = absoluteXDistance / totalDistance;
+
+			const duration =
+				context.baseTweenDurationSeconds *
+				(1 - absoluteRelativeDistance * context.speed);
+
+			// New calculation here...
+			const totalSpeed = xDistance / duration;
+			// TODO: Don't love this magic number 240
+			const speedPerFrame = totalSpeed / 240;
+
+			// Important! Make sure the hen node is positioned at the current context.position
+			// before starting the tween
+			context.henRef.current!.setPosition(context.position);
+
+			const tween = new Konva.Tween({
+				node: context.henRef.current!,
+				duration,
+				x: targetPosition.x,
+				y: targetPosition.y,
+				easing: Konva.Easings.EaseInOut,
+			});
+
+			return {
+				currentTweenSpeed: speedPerFrame,
+				currentTweenDurationMS: duration * 1000,
+				currentTweenStartTime: new Date().getTime(),
+				currentTweenDirection: direction,
+				currentTween: tween,
+				movingDirection: movingDirection,
+			};
+		}),
 	},
 	actors: {
 		henMovingBackAndForthActor: tweenActor,
@@ -267,49 +309,7 @@ export const henMachine = setup({
 			},
 		},
 		Moving: {
-			entry: [
-				'pickNewTargetPosition',
-				assign(({ context }) => {
-					const { targetPosition } = context;
-					const totalDistance = context.gameConfig.stageDimensions.width;
-					const xDistance = targetPosition.x - context.position.x;
-					const direction = xDistance > 0 ? 1 : -1;
-
-					// Calculate absolute distances for tween duration
-					const absoluteXDistance = Math.abs(xDistance);
-					const absoluteRelativeDistance = absoluteXDistance / totalDistance;
-
-					const duration =
-						context.baseTweenDurationSeconds *
-						(1 - absoluteRelativeDistance * context.speed);
-
-					// New calculation here...
-					const totalSpeed = xDistance / duration;
-					// TODO: Don't love this magic number 240
-					const speedPerFrame = totalSpeed / 240;
-
-					// Important! Make sure the hen node is positioned at the current context.position
-					// before starting the tween
-					context.henRef.current!.setPosition(context.position);
-
-					const tween = new Konva.Tween({
-						node: context.henRef.current!,
-						duration,
-						x: targetPosition.x,
-						y: targetPosition.y,
-						easing: Konva.Easings.EaseInOut,
-					});
-
-					return {
-						currentTweenSpeed: speedPerFrame,
-						currentTweenDurationMS: duration * 1000,
-						currentTweenStartTime: new Date().getTime(),
-						currentTweenDirection: direction,
-						currentTween: tween,
-						movingDirection: direction === 1 ? 'right' : 'left',
-					};
-				}),
-			],
+			entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
 			exit: assign({
 				currentTweenSpeed: 0,
 				currentTweenDirection: 0,
