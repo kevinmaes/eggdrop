@@ -66,9 +66,9 @@ export function getGameConfig() {
 			// Deceleration should be higher than the acceleration so the character
 			// can pivot directions or stop quickly.
 			deceleration: 7,
-			minXPos: 0.5 * chefWidth,
+			minXPos: 0.4 * chefWidth,
 			// Right margin is reduced so that the pot can still catch eggs at the edge of the screen
-			maxXPos: stageDimensions.width - 0.5 * chefWidth,
+			maxXPos: stageDimensions.width - 0.4 * chefWidth,
 			potRim: {
 				width: 150,
 				height: 25,
@@ -84,7 +84,7 @@ export function getGameConfig() {
 			offstageRightX: stageDimensions.width + henSize,
 			y: -10,
 			// The delay before each hen enters the stage
-			entranceDelayMS: 500,
+			entranceDelayMS: 1000,
 			// Time in milliseconds away from the start and end of an animation
 			// so that the xSpeed of the falling egg can be calculated based
 			// on the constant hen animation speed w/o accounting for the easing speeds on both ends.
