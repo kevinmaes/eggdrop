@@ -155,6 +155,7 @@ export function getInitialChromosomeValues() {
 	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
 	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
 
+	// Calculate the egg laying rates
 	const maxEggLayingRate = 0.5;
 	const randomMovingEggLayingRate = Math.random() * maxEggLayingRate;
 	const stationaryEggLayingRate = maxEggLayingRate - randomMovingEggLayingRate;
@@ -164,8 +165,8 @@ export function getInitialChromosomeValues() {
 		speed: Math.random(),
 
 		// baseTweenDurationSeconds is the base duration for the tween
-		// baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
-		baseTweenDurationSeconds: 1,
+		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
+		// baseTweenDurationSeconds: 1,
 
 		// maxEggs can range between -1 and 50, -1 means no limit
 		// maxEggs: Math.round(Math.random() * 51) - 1,
