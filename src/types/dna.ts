@@ -97,7 +97,7 @@ export class DNA {
 	}
 
 	getGene(index: number) {
-		return this.genes[index];
+		return this.genes[index] ?? 0;
 	}
 
 	replaceGenes(genes: number[]) {

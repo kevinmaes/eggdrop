@@ -1,5 +1,5 @@
-import { Position } from '../types';
-import { DNA, PhenotypeKey } from '../types/dna';
+import type { Position } from '../types';
+import { DNA, type PhenotypeKey } from '../types/dna';
 
 export interface GenerationStats {
 	// Averages
@@ -65,12 +65,14 @@ export interface IndividualHen {
 	initialPosition: Position;
 
 	// Results
-	eggsLaid: number;
-	eggsCaught: {
-		white: number;
-		gold: number;
-		black: number;
+	stats: {
+		eggsLaid: number;
+		eggsCaught: {
+			white: number;
+			gold: number;
+			black: number;
+		};
+		eggsHatched: number;
+		eggsBroken: number;
 	};
-	eggsHatched: number;
-	eggsBroken: number;
 }
