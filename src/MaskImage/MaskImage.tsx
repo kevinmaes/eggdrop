@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 import { Image, Group, Rect } from 'react-konva';
 import useImage from 'use-image';
 import Konva from 'konva';
-import { SpriteData } from '../types/assets';
+import type { SpriteData } from '../types/assets';
 
 export function MaskImage({
 	maskImageFrame,

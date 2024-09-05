@@ -1,13 +1,16 @@
-import { setup, assign, sendParent } from 'xstate';
+import { setup, assign, sendParent, type OutputFrom } from 'xstate';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { tweenActor } from '../motionActors';
 import { eggMotionActor } from './eggMotionActor';
-import { GameAssets } from '../types/assets';
-import { Direction, Position } from '../types';
+import type { GameAssets } from '../types/assets';
+import type { Direction, Position } from '../types';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
+
+export type EggDoneEvent = { output: OutputFrom<typeof eggMachine> };
+
 export const eggMachine = setup({
 	types: {} as {
 		input: {
@@ -22,6 +25,12 @@ export const eggMachine = setup({
 			color: 'white' | 'gold' | 'black';
 			rotationDirection: Direction['value'];
 			hatchRate: number;
+		};
+		output: {
+			henId: string;
+			eggId: string;
+			eggColor: 'white' | 'gold' | 'black';
+			resultStatus: EggResultStatus;
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
@@ -155,6 +164,14 @@ export const eggMachine = setup({
 			hatchRate: input.hatchRate,
 			currentTween: null,
 			currentAnimation: null,
+		};
+	},
+	output: ({ context }) => {
+		return {
+			henId: context.henId,
+			eggId: context.id,
+			eggColor: context.color,
+			resultStatus: context.resultStatus,
 		};
 	},
 	on: {
@@ -372,15 +389,6 @@ export const eggMachine = setup({
 		},
 		Done: {
 			type: 'final',
-			entry: [
-				sendParent(({ context }) => ({
-					type: 'Egg done',
-					henId: context.henId,
-					eggId: context.id,
-					eggColor: context.color,
-					resultStatus: context.resultStatus,
-				})),
-			],
 		},
 	},
 });

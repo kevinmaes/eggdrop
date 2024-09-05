@@ -1,15 +1,23 @@
 import { createActorContext } from '@xstate/react';
-import { assign, fromPromise, log, setup } from 'xstate';
+import { assign, fromPromise, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
+import { getGameConfig } from './GameLevel/gameConfig';
+import type { IndividualHen, LevelResults } from './GameLevel/types';
 import {
-	getGameConfig,
-	getInitialChromosomeValues,
-} from './GameLevel/gameConfig';
-import { IndividualHen, LevelResults } from './GameLevel/types';
-import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
-import { GameAssets } from './types/assets';
+	calculateFitness,
+	crossover,
+	mutateIndividual,
+	rouletteWheelSelection,
+} from './ga';
+import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
+import {
+	DNA,
+	getInitialPhenotype,
+	phenotypeConfig,
+	type PhenotypeValuesForIndividual,
+} from './types/dna';
 
 const appMachine = setup({
 	types: {} as {
@@ -22,8 +30,6 @@ const appMachine = setup({
 			levelResultsHistory: LevelResults[];
 			population: IndividualHen[];
 			gameConfig: ReturnType<typeof getGameConfig>;
-			mutationRate: number;
-			mutationVariancePercentage: number;
 			gameAssets: GameAssets | null;
 			gameScoreData: {
 				gameScore: number;
@@ -68,7 +74,9 @@ const appMachine = setup({
 		evaluateAndEvolveNextGeneration: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
-				const lastLevelResults = context.levelResultsHistory.slice(-1)[0];
+				const lastLevelResults = context.levelResultsHistory.slice(
+					-1
+				)[0] as LevelResults;
 				const evaluatedPopulation = context.population.map((individual) => {
 					const individualResult = lastLevelResults.henStatsById[individual.id];
 					if (!individualResult) {
@@ -92,80 +100,55 @@ const appMachine = setup({
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.gameConfig.populationSize; i++) {
 					// Randomly select two parents from the selected parents
-					const parent1 =
-						selectedParents[Math.floor(Math.random() * selectedParents.length)];
-					const parent2 =
-						selectedParents[Math.floor(Math.random() * selectedParents.length)];
+					const parent1 = selectedParents[
+						Math.floor(Math.random() * selectedParents.length)
+					] as IndividualHen;
+					const parent2 = selectedParents[
+						Math.floor(Math.random() * selectedParents.length)
+					] as IndividualHen;
 
-					// Crossover the parents' min and max X positions
-					// but ensure that minX is less than maxX
-					let minX = Math.round((parent1.minX + parent2.minX) / 2);
-					let maxX = Math.round((parent1.maxX + parent2.maxX) / 2);
-
-					if (minX > maxX) {
-						[minX, maxX] = [maxX, minX];
-					}
+					const childDNA = crossover(parent1.dna, parent2.dna);
+					const childPhenotype: PhenotypeValuesForIndividual =
+						getInitialPhenotype(childDNA);
 
 					const child = {
 						id: nanoid(),
+						// GA
+						dna: childDNA,
+						phenotype: childPhenotype,
+						fitness: 0,
+						// Configuration
 						initialPosition: {
 							x: context.gameConfig.hen.offstageLeftX,
 							y: context.gameConfig.hen.y,
 						},
-						speed: (parent1.speed + parent2.speed) / 2,
-						baseTweenDurationSeconds:
-							(parent1.baseTweenDurationSeconds +
-								parent2.baseTweenDurationSeconds) /
-							2,
-						maxEggs: -1,
-						stationaryEggLayingRate:
-							(parent1.stationaryEggLayingRate +
-								parent2.stationaryEggLayingRate) /
-							2,
-						movingEggLayingRate:
-							(parent1.movingEggLayingRate + parent2.movingEggLayingRate) / 2,
-						restAfterLayingEggMS:
-							(parent1.restAfterLayingEggMS + parent2.restAfterLayingEggMS) / 2,
-						blackEggRate: (parent1.blackEggRate + parent2.blackEggRate) / 2,
-						goldEggRate: (parent1.goldEggRate + parent2.goldEggRate) / 2,
-						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
-						minX,
-						maxX,
-						minStopMS: (parent1.minStopMS + parent2.minStopMS) / 2,
-						maxStopMS: (parent1.maxStopMS + parent2.maxStopMS) / 2,
-						fitness: 0,
-						eggsLaid: 0,
-						eggsCaught: {
-							white: 0,
-							gold: 0,
-							black: 0,
+						// Results
+						stats: {
+							eggsLaid: 0,
+							eggsCaught: {
+								white: 0,
+								gold: 0,
+								black: 0,
+							},
+							eggsHatched: 0,
+							eggsBroken: 0,
+							eggStats: {},
 						},
-						eggsHatched: 0,
-						eggsBroken: 0,
-						eggStats: {},
 					};
 					nextGeneration.push(child);
 				}
 
 				// Mutate
-				const mutatedNextGenerationPopulation = nextGeneration.map((member) => {
-					return mutate(
-						member,
-						[
-							'speed',
-							'baseTweenDurationSeconds',
-							'stationaryEggLayingRate',
-							'movingEggLayingRate',
-							'hatchRate',
-							'minX',
-							'maxX',
-							'minStopMS',
-							'maxStopMS',
-						],
-						context.mutationRate,
-						context.mutationVariancePercentage
-					);
-				});
+				const mutatedNextGenerationPopulation = nextGeneration.map(
+					(individual) => {
+						return mutateIndividual(
+							individual,
+							phenotypeConfig,
+							context.gameConfig.ga.mutationRate,
+							context.gameConfig.ga.mutationVariancePercentageRate
+						);
+					}
+				);
 
 				return mutatedNextGenerationPopulation;
 			},
@@ -201,49 +184,57 @@ const appMachine = setup({
 	},
 }).createMachine({
 	id: 'Egg Drop Game',
-	context: ({ input }) => ({
-		gameConfig: input.gameConfig,
-		generationNumber: 1,
-		levelResultsHistory: [],
-		population: new Array(input.gameConfig.populationSize)
+	context: ({ input }) => {
+		const initialPopulation = new Array(input.gameConfig.populationSize)
 			.fill(null)
 			.map(() => {
-				// Pick minimum and maximum X positions for the hen.
+				const dnaLength = Object.keys(phenotypeConfig).length;
+				const initialDNA = new DNA(dnaLength);
+				const phenotype = getInitialPhenotype(initialDNA);
+
 				return {
 					id: nanoid(),
+					// GA
+					dna: initialDNA,
+					phenotype,
+					fitness: 0,
 					// Configuration
 					initialPosition: {
 						x: input.gameConfig.hen.offstageLeftX,
 						y: input.gameConfig.hen.y,
 					},
-					...getInitialChromosomeValues(),
 					// Results
-					fitness: 0,
-					eggsLaid: 0,
-					eggsCaught: {
-						white: 0,
-						gold: 0,
-						black: 0,
+					stats: {
+						eggsLaid: 0,
+						eggsCaught: {
+							white: 0,
+							gold: 0,
+							black: 0,
+						},
+						eggsHatched: 0,
+						eggsBroken: 0,
+						eggStats: {},
 					},
-					eggsHatched: 0,
-					eggsBroken: 0,
-					eggStats: {},
 				};
-			}),
-		populationSize: input.gameConfig.populationSize,
-		gameAssets: null,
-		mutationRate: 0.1,
-		mutationVariancePercentage: 8,
-		gameScoreData: {
-			gameScore: 0,
-			eggsCaught: {
-				white: 0,
-				gold: 0,
-				black: 0,
+			});
+
+		return {
+			gameConfig: input.gameConfig,
+			generationNumber: 1,
+			levelResultsHistory: [],
+			population: initialPopulation,
+			gameAssets: null,
+			gameScoreData: {
+				gameScore: 0,
+				eggsCaught: {
+					white: 0,
+					gold: 0,
+					black: 0,
+				},
 			},
-		},
-		isMuted: input.gameConfig.isMuted,
-	}),
+			isMuted: input.gameConfig.isMuted,
+		};
+	},
 	on: {
 		'Toggle mute': {
 			actions: { type: 'toggleMute' },
@@ -332,7 +323,6 @@ const appMachine = setup({
 					on: {
 						Play: 'Playing',
 					},
-					entry: [log('Show summary')],
 					exit: [
 						'evaluateAndEvolveNextGeneration',
 						assign({

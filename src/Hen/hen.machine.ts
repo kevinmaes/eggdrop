@@ -1,60 +1,73 @@
+import type { OutputFrom } from 'xstate';
 import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
-import { GameAssets } from '../types/assets';
+import type { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
-import { Direction, Position } from '../types';
+import type { Direction, Position } from '../types';
+import type { PhenotypeValuesForIndividual } from '../types/dna';
+import { getRandomNumber } from '../utils';
+
+type Destination = 'offscreen-right' | 'offscreen-left';
+function getDestinationAndPositions(
+	gameConfig: ReturnType<typeof getGameConfig>
+) {
+	const destination: Destination =
+		Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left';
+	const initialPosition =
+		destination === 'offscreen-right'
+			? {
+					x: -1 * gameConfig.hen.width - gameConfig.stageDimensions.margin,
+					y: gameConfig.hen.y,
+			  }
+			: {
+					x:
+						gameConfig.stageDimensions.width +
+						gameConfig.stageDimensions.margin,
+					y: gameConfig.hen.y,
+			  };
+
+	return {
+		destination,
+		position: initialPosition,
+		targetPosition: initialPosition,
+	};
+}
+
+export type HenDoneEvent = { output: OutputFrom<typeof henMachine> };
 
 export const henMachine = setup({
 	types: {} as {
 		input: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			id: string;
+			index: number;
 			henAssets: GameAssets['hen'];
 			position: Position;
-			maxEggs: number;
-			stationaryEggLayingRate: number;
-			movingEggLayingRate: number;
-			restAfterLayingEggMS: number;
-			speed: number;
-			baseTweenDurationSeconds: number;
-			blackEggRate: number;
-			goldEggRate: number;
-			hatchRate: number;
-			minStopMS: number;
-			maxStopMS: number;
-			minX: number;
-			maxX: number;
+			phenotype: PhenotypeValuesForIndividual;
+		};
+		output: {
+			henId: string;
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			henRef: React.RefObject<Konva.Image>;
 			id: string;
+			index: number;
 			henAssets: GameAssets['hen'];
+			destination: 'offscreen-right' | 'offscreen-left';
 			position: Position;
 			targetPosition: Position;
+			phenotype: PhenotypeValuesForIndividual;
 			animationEasingEggLayingBufferMS: number;
-			speed: number;
 			currentTweenSpeed: number;
 			currentTweenDurationMS: number;
 			currentTweenStartTime: number;
 			currentTweenDirection: Direction['value'];
 			movingDirection: Direction['label'];
-			baseTweenDurationSeconds: number;
-			minStopMS: number;
-			maxStopMS: number;
-			maxEggs: number;
 			eggsLaid: number;
-			stationaryEggLayingRate: number;
-			movingEggLayingRate: number;
-			restAfterLayingEggMS: number;
-			gamePaused: boolean;
-			blackEggRate: number;
-			goldEggRate: number;
-			hatchRate: number;
-			minX: number;
-			maxX: number;
 			currentTween: Konva.Tween | null;
+			gamePaused: boolean;
 		};
 		events:
 			| { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
@@ -64,44 +77,143 @@ export const henMachine = setup({
 	},
 	guards: {
 		'has more eggs': ({ context }) =>
-			context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
+			context.phenotype.maxEggs < 0
+				? true
+				: context.eggsLaid < context.phenotype.maxEggs,
 		'is within stationary laying rate': ({ context }) =>
-			Math.random() < context.stationaryEggLayingRate,
+			Math.random() < context.phenotype.stationaryEggLayingRate,
 		'is within moving laying rate': ({ context }) =>
-			Math.random() < context.movingEggLayingRate,
+			Math.random() < context.phenotype.movingEggLayingRate,
 		'is not near animation end': ({ context }) => {
 			const currentTime = new Date().getTime();
 			const elapsedMS = currentTime - context.currentTweenStartTime;
 			const remainingMS = context.currentTweenDurationMS - elapsedMS;
 			return remainingMS > context.animationEasingEggLayingBufferMS;
 		},
+		'is within egg laying x bounds': ({ context }) => {
+			const { position } = context;
+			return (
+				position.x >= context.gameConfig.hen.eggLayingXMin &&
+				position.x <= context.gameConfig.hen.eggLayingXMax
+			);
+		},
 		'can lay while stationary': and([
+			'is within egg laying x bounds',
 			'has more eggs',
 			'is within stationary laying rate',
 		]),
 		'can lay while moving': and([
+			'is within egg laying x bounds',
 			'has more eggs',
 			'is within moving laying rate',
 			'is not near animation end',
 		]),
+		'has reached destination': ({ context }) => {
+			if (context.destination === 'offscreen-right') {
+				return context.position.x >= context.gameConfig.stageDimensions.width;
+			} else if (context.destination === 'offscreen-left') {
+				return context.position.x <= -1 * context.gameConfig.hen.width;
+			}
+			return false;
+		},
+	},
+	actions: {
+		pickNewTargetPosition: assign(({ context }) => {
+			const targetPosition = { ...context.position };
+			const newPosition = { ...context.position };
+
+			// Pick a new x target position within the hen motion range
+			// and with a minimum distance from the current position
+			// TODO a range could be a gene value.
+			const minDistance = context.phenotype.minXMovement;
+			const movementRange = context.phenotype.maxXMovement;
+
+			if (context.destination === 'offscreen-right') {
+				targetPosition.x =
+					getRandomNumber(
+						context.phenotype.minXMovement,
+						context.phenotype.maxXMovement,
+						true
+					) + context.position.x;
+			} else if (context.destination === 'offscreen-left') {
+				targetPosition.x =
+					-Math.round(Math.random() * movementRange) +
+					context.position.x -
+					minDistance;
+				targetPosition.x =
+					context.position.x -
+					getRandomNumber(
+						context.phenotype.minXMovement,
+						context.phenotype.maxXMovement,
+						true
+					);
+			}
+
+			return {
+				position: newPosition,
+				targetPosition,
+			};
+		}),
+		createTweenToTargetPosition: assign(({ context }) => {
+			const { targetPosition } = context;
+			const totalDistance = context.gameConfig.stageDimensions.width;
+			const xDistance = targetPosition.x - context.position.x;
+			const direction: Direction['value'] = xDistance > 0 ? 1 : -1;
+			const movingDirection: Direction['label'] =
+				direction === 1 ? 'right' : 'left';
+
+			// Calculate absolute distances for tween duration
+			const absoluteXDistance = Math.abs(xDistance);
+			const absoluteRelativeDistance = absoluteXDistance / totalDistance;
+
+			const duration =
+				context.phenotype.baseTweenDurationSeconds *
+				(1 - absoluteRelativeDistance * context.phenotype.speed);
+
+			// New calculation here...
+			const totalSpeed = xDistance / duration;
+			// TODO: Don't love this magic number 240
+			const speedPerFrame = totalSpeed / 240;
+
+			// Important! Make sure the hen node is positioned at the current context.position
+			// before starting the tween
+			context.henRef.current!.setPosition(context.position);
+
+			const tween = new Konva.Tween({
+				node: context.henRef.current!,
+				duration,
+				x: targetPosition.x,
+				y: targetPosition.y,
+				easing: Konva.Easings.EaseInOut,
+			});
+
+			return {
+				currentTweenSpeed: speedPerFrame,
+				currentTweenDurationMS: duration * 1000,
+				currentTweenStartTime: new Date().getTime(),
+				currentTweenDirection: direction,
+				currentTween: tween,
+				movingDirection: movingDirection,
+			};
+		}),
 	},
 	actors: {
 		henMovingBackAndForthActor: tweenActor,
 	},
 	delays: {
-		getRandomStartDelay: ({ context }) =>
-			// Need minimum delay to allow for tween to start
-			Math.ceil(Math.random() * context.gameConfig.hen.staggeredEntranceDelay) +
-			1000,
+		getRandomStartDelay: ({ context }) => {
+			return context.gameConfig.hen.entranceDelayMS;
+		},
 		getRandomStopDurationMS: ({ context }) => {
-			const { minStopMS, maxStopMS } = context;
+			const { minStopMS, maxStopMS } = context.phenotype;
 			// If values mutate to cross over, return the min value.
 			if (minStopMS >= maxStopMS) return minStopMS;
 
 			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
-		restAfterLayingAnEgg: ({ context }) => context.restAfterLayingEggMS,
+		restAfterLayingAnEgg: ({ context }) =>
+			context.phenotype.restAfterLayingEggMS,
 		animationEasingEggLayingBufferMS: ({ context }) =>
 			context.animationEasingEggLayingBufferMS,
 		getRandomMidTweenDelay: ({ context }) => {
@@ -125,36 +237,33 @@ export const henMachine = setup({
 }).createMachine({
 	id: 'hen',
 	initial: 'Offscreen',
-	context: ({ input }) => ({
-		gameConfig: input.gameConfig,
-		henRef: { current: null },
-		id: input.id,
-		henAssets: input.henAssets,
-		position: input.position,
-		targetPosition: { x: input.position.x, y: input.position.y },
-		speed: input.speed,
-		animationEasingEggLayingBufferMS:
-			input.gameConfig.hen.animationEasingEggLayingBufferMS,
-		currentTweenSpeed: 0,
-		currentTweenDurationMS: 0,
-		currentTweenStartTime: 0,
-		currentTweenDirection: 0,
-		movingDirection: 'none',
-		baseTweenDurationSeconds: input.baseTweenDurationSeconds,
-		minStopMS: input.minStopMS,
-		maxStopMS: input.maxStopMS,
-		maxEggs: input.maxEggs,
-		eggsLaid: 0,
-		stationaryEggLayingRate: input.stationaryEggLayingRate,
-		movingEggLayingRate: input.movingEggLayingRate,
-		restAfterLayingEggMS: input.restAfterLayingEggMS,
-		gamePaused: false,
-		blackEggRate: input.blackEggRate,
-		goldEggRate: input.goldEggRate,
-		hatchRate: input.hatchRate,
-		minX: input.minX,
-		maxX: input.maxX,
-		currentTween: null,
+	context: ({ input }) => {
+		const { destination, position, targetPosition } =
+			getDestinationAndPositions(input.gameConfig);
+		return {
+			gameConfig: input.gameConfig,
+			henRef: { current: null },
+			id: input.id,
+			index: input.index,
+			henAssets: input.henAssets,
+			phenotype: input.phenotype,
+			destination,
+			position,
+			targetPosition,
+			animationEasingEggLayingBufferMS:
+				input.gameConfig.hen.animationEasingEggLayingBufferMS,
+			currentTweenSpeed: 0,
+			currentTweenDurationMS: 0,
+			currentTweenStartTime: 0,
+			currentTweenDirection: 0,
+			movingDirection: 'none',
+			eggsLaid: 0,
+			gamePaused: false,
+			currentTween: null,
+		};
+	},
+	output: ({ context }) => ({
+		henId: context.id,
 	}),
 	on: {
 		'Set henRef': {
@@ -176,78 +285,7 @@ export const henMachine = setup({
 			},
 		},
 		Moving: {
-			entry: [
-				assign(({ context }) => {
-					const targetPosition = { ...context.position };
-					const newPosition = { ...context.position };
-
-					// Pick a new x target position within the hen motion range
-					// and with a minimum distance from the current position
-					const minDistance = 200;
-					let newXPos: number;
-					do {
-						// Generate a random x position between minX and maxX
-						newXPos =
-							Math.round(Math.random() * (context.maxX - context.minX)) +
-							context.minX;
-					} while (Math.abs(newXPos - context.position.x) < minDistance);
-					targetPosition.x = newXPos;
-
-					// Check if the hen is in its original offstage position (first time animation)
-					if (context.position.x === context.gameConfig.hen.offstageLeftX) {
-						if (targetPosition.x >= context.gameConfig.stageDimensions.midX) {
-							// Swith the hen's offstage position to be on the right side
-							// closer to the target position (if also on the right side)
-							newPosition.x = context.gameConfig.hen.offstageRightX;
-						}
-					}
-
-					return {
-						position: newPosition,
-						targetPosition,
-					};
-				}),
-				assign(({ context }) => {
-					const { targetPosition } = context;
-					const totalDistance = context.gameConfig.stageDimensions.width;
-					const xDistance = targetPosition.x - context.position.x;
-					const direction = xDistance > 0 ? 1 : -1;
-
-					// Calculate absolute distances for tween duration
-					const absoluteXDistance = Math.abs(xDistance);
-					const absoluteRelativeDistance = absoluteXDistance / totalDistance;
-
-					const duration =
-						context.baseTweenDurationSeconds *
-						(1 - absoluteRelativeDistance * context.speed);
-
-					// New calculation here...
-					const totalSpeed = xDistance / duration;
-					// TODO: Don't love this magic number 240
-					const speedPerFrame = totalSpeed / 240;
-
-					// Important! Make sure the hen node is positioned at the current context.position
-					// before starting the tween
-					context.henRef.current!.setPosition(context.position);
-
-					const tween = new Konva.Tween({
-						node: context.henRef.current!,
-						duration,
-						x: targetPosition.x,
-						y: targetPosition.y,
-						easing: Konva.Easings.EaseInOut,
-					});
-
-					return {
-						currentTweenSpeed: speedPerFrame,
-						currentTweenDurationMS: duration * 1000,
-						currentTweenStartTime: new Date().getTime(),
-						currentTweenDirection: direction,
-						currentTween: tween,
-						movingDirection: direction === 1 ? 'right' : 'left',
-					};
-				}),
-			],
+			entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
 			exit: assign({
 				currentTweenSpeed: 0,
 				currentTweenDirection: 0,
@@ -263,13 +301,11 @@ export const henMachine = setup({
 					tween: context.currentTween,
 				}),
 				onDone: {
-					target: 'Stopped',
-					actions: [
-						assign({
-							position: ({ event }) => event.output,
-							currentTweenSpeed: 0,
-						}),
-					],
+					target: 'Done Moving',
+					actions: assign({
+						position: ({ event }) => event.output,
+						currentTweenSpeed: 0,
+					}),
 				},
 				onError: { target: 'Stopped' },
 			},
@@ -294,9 +330,9 @@ export const henMachine = setup({
 						sendParent(({ context }) => {
 							const randomEggColorNumber = Math.random();
 							const eggColor =
-								randomEggColorNumber < context.blackEggRate
+								randomEggColorNumber < context.phenotype.blackEggRate
 									? 'black'
-									: randomEggColorNumber < context.goldEggRate
+									: randomEggColorNumber < context.phenotype.goldEggRate
 									? 'gold'
 									: 'white';
 
@@ -307,7 +343,7 @@ export const henMachine = setup({
 								henCurrentTweenDirection: context.currentTweenDirection,
 								henPosition: context.henRef.current!.getPosition(),
 								eggColor,
-								hatchRate: context.hatchRate,
+								hatchRate: context.phenotype.hatchRate,
 							};
 						}),
 						assign({
@@ -324,6 +360,15 @@ export const henMachine = setup({
 					},
 				},
 			},
+		},
+		'Done Moving': {
+			always: [
+				{
+					guard: 'has reached destination',
+					target: 'Reached Desination',
+				},
+				{ target: 'Stopped' },
+			],
 		},
 		Stopped: {
 			on: {
@@ -342,9 +387,9 @@ export const henMachine = setup({
 				sendParent(({ context }) => {
 					const randomEggColorNumber = Math.random();
 					const eggColor =
-						randomEggColorNumber < context.blackEggRate
+						randomEggColorNumber < context.phenotype.blackEggRate
 							? 'black'
-							: randomEggColorNumber < context.goldEggRate
+							: randomEggColorNumber < context.phenotype.goldEggRate
 							? 'gold'
 							: 'white';
 
@@ -355,7 +400,7 @@ export const henMachine = setup({
 						henCurrentTweenDirection: context.currentTweenDirection,
 						henPosition: context.henRef.current!.getPosition(),
 						eggColor,
-						hatchRate: context.hatchRate,
+						hatchRate: context.phenotype.hatchRate,
 					};
 				}),
 				assign({
@@ -366,6 +411,9 @@ export const henMachine = setup({
 		},
 		'Rest After Laying Egg': {
 			after: { restAfterLayingAnEgg: 'Moving' },
+		},
+		'Reached Desination': {
+			type: 'final',
 		},
 	},
 });

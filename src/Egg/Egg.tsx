@@ -3,7 +3,7 @@ import { Image } from 'react-konva';
 
 import useImage from 'use-image';
 import { eggMachine } from './egg.machine';
-import { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
 
@@ -90,14 +90,14 @@ export function Egg({
 					`chick-run-${exitingDirection}-1.png`,
 					`chick-run-${exitingDirection}-2.png`,
 				];
-				setCurrentChickFrameName(chikRunFrame[0]);
+				setCurrentChickFrameName(chikRunFrame[0] as ChickFrameName);
 				interval = setInterval(() => {
 					setCurrentChickFrameName((prevFrameName) => {
 						const index = chikRunFrame.indexOf(prevFrameName);
 						if (index === -1 || index === chikRunFrame.length - 1) {
-							return chikRunFrame[0];
+							return chikRunFrame[0] as ChickFrameName;
 						}
-						return chikRunFrame[index + 1];
+						return chikRunFrame[index + 1] as ChickFrameName;
 					});
 				}, 100);
 				break;
@@ -118,7 +118,12 @@ export function Egg({
 	}
 
 	if (isHatching || isHatched) {
-		const currentChickFrame = chickFrames[currentChickFrameName].frame;
+		const currentChickFrame = chickFrames[currentChickFrameName]?.frame;
+
+		if (!currentChickFrame) {
+			return null;
+		}
+
 		return (
 			<Image
 				ref={eggRef}
@@ -140,7 +145,12 @@ export function Egg({
 	}
 
 	if (isExiting) {
-		const chickFrame = chickFrames[currentChickFrameName].frame;
+		const chickFrame = chickFrames[currentChickFrameName]?.frame;
+
+		if (!chickFrame) {
+			return null;
+		}
+
 		return (
 			<Image
 				ref={eggRef}
@@ -161,7 +171,11 @@ export function Egg({
 	}
 
 	if (isBroken) {
-		const brokenEggFrame = chickFrames[`egg-broken-${color}.png`].frame;
+		const brokenEggFrame = chickFrames[`egg-broken-${color}.png`]?.frame;
+
+		if (!brokenEggFrame) {
+			return null;
+		}
 		return (
 			<Image
 				image={chickImage}
@@ -182,7 +196,12 @@ export function Egg({
 		);
 	}
 
-	const currentEggFrame = eggFrames[`egg-${color}-glow.png`].frame;
+	const currentEggFrame = eggFrames[`egg-${color}-glow.png`]?.frame;
+
+	if (!currentEggFrame) {
+		return null;
+	}
+
 	return (
 		<Image
 			ref={eggRef}

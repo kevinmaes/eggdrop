@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import { fromPromise } from 'xstate';
-import { Position } from './GameLevel/types';
+import type { Position } from './types';
 
 /**
  * Takes any node and its pre-existing tween and plays the tween

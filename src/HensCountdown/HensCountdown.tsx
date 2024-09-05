@@ -1,10 +1,11 @@
 import { useSelector } from '@xstate/react';
-import { Group, Rect, Text } from 'react-konva';
+import { Group, Image, Rect, Text } from 'react-konva';
 import type { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { AppActorContext } from '../app.machine';
+import useImage from 'use-image';
 
-export function CountdownTimer({
+export function HensCountdown({
 	x,
 	y,
 	width,
@@ -19,40 +20,39 @@ export function CountdownTimer({
 	const gameLevelActorRef = appActorRef.system.get(
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
-	const { totalLevelMS, remainingMS, gameConfig } = useSelector(
+	const { henFrames, gameConfig, totalHens, hensLeft } = useSelector(
 		gameLevelActorRef,
 		(state) => {
 			if (!state) {
-				return {
-					gameConfig: null,
-					totalLevelMS: 0,
-					remainingMS: 0,
-				};
+				return {};
 			}
 			return {
 				gameConfig: state.context.gameConfig,
+				henFrames: state.context.gameAssets.hen.frames,
 				totalLevelMS: state.context.gameConfig.levelDurationMS,
 				remainingMS: state.context.remainingMS,
+				totalHens: state.context.gameConfig.populationSize,
+				hensLeft: state.context.hensLeft,
 			};
 		}
 	);
+	const [image] = useImage('images/hen.sprite.png');
 
 	if (!gameConfig) {
 		return null;
 	}
 
-	const minutes = Math.floor(remainingMS / 60000);
-	const seconds = Math.floor((remainingMS % 60000) / 1000);
-
 	const barInsetWidth = 5;
-	const remainingPercentage = remainingMS / totalLevelMS;
+	const remainingPercentage = hensLeft / totalHens;
 	const totalBarWidth = width - 2 * barInsetWidth;
 	const remainingTimeBarWidth = totalBarWidth * remainingPercentage;
+	const hensLeftString = `${hensLeft}`;
+	const henSize = 50;
+	const henFrame = henFrames['angle-right.png']?.frame;
 
-	const remainingTimeString =
-		minutes > 0
-			? `${minutes}m ${seconds.toString().padStart(2, '0')}s`
-			: `${seconds.toString().padStart(2, '0')}s`;
+	if (!henFrame) {
+		return null;
+	}
 
 	return (
 		<Group x={x} y={y}>
@@ -66,15 +66,28 @@ export function CountdownTimer({
 				strokeWidth={2}
 				cornerRadius={8}
 			/>
+			{/* Hen image */}
+			<Image
+				image={image}
+				x={2}
+				y={-11}
+				width={henSize}
+				height={henSize}
+				crop={{
+					x: henFrame.x,
+					y: henFrame.y,
+					width: henFrame.w,
+					height: henFrame.h,
+				}}
+			/>
 			{/* Timer text */}
 			<Text
 				y={10}
-				text={remainingTimeString}
+				text={hensLeftString}
 				fontSize={20}
 				fontStyle="bold"
 				width={0.9 * width}
 				align="right"
-				// fill="white"
 				fill={gameConfig.colors.primaryBlue}
 				fontFamily="JetBrains Mono"
 			/>

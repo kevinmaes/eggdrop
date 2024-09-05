@@ -1,19 +1,32 @@
-import { Position } from '../types';
+import type { Position } from '../types';
+import { DNA, type PhenotypeKey } from '../types/dna';
 
 export interface GenerationStats {
-	// Averages
+	// Overall info
+	generationNumber: number;
+	catchRate: number;
+
+	// Average phenotype values
+	averageHenSpeed: number;
+	averageBaseTweenDurationSeconds: number;
+	averageStationaryEggLayingRate: number;
+	averageMovingEggLayingRate: number;
+	averageHatchRate: number;
+	averageMinXMovement: number;
+	averageMaxXMovement: number;
+	averageMinStopMS: number;
+	averageMaxStopMS: number;
+	averageMaxEggs: number;
+	averageBlackEggRate: number;
+	averageGoldEggRate: number;
+	averageRestAfterLayingEggMS: number;
+
+	// Average stats
 	averageEggsBroken: number;
 	averageEggsHatched: number;
 	averageEggsLaid: number;
-	averageHenSpeed: number;
-	averageStationaryEggLayingRate: number;
-	averageHatchRate: number;
-	averageMinX: number;
-	averageMaxX: number;
-	averageMinStopMS: number;
-	averageMaxStopMS: number;
-	// Results
-	generationNumber: number;
+
+	// Result totals
 	totalEggsBroken: number;
 	totalEggsCaught: number;
 	totalBlackEggsCaught: number;
@@ -24,7 +37,6 @@ export interface GenerationStats {
 	totalBlackEggsLaid: number;
 	totalGoldEggsLaid: number;
 	totalWhiteEggsLaid: number;
-	catchRate: number;
 }
 
 export interface LevelResults {
@@ -56,40 +68,22 @@ export interface LevelResults {
 
 export interface IndividualHen {
 	id: string;
+	// GA
+	dna: DNA;
+	phenotype: Record<PhenotypeKey, number>;
+	fitness: number;
 	// Configuration
 	initialPosition: Position;
-	speed: number;
-	baseTweenDurationSeconds: number;
-	maxEggs: number;
-	stationaryEggLayingRate: number;
-	movingEggLayingRate: number;
-	restAfterLayingEggMS: number;
-	blackEggRate: number;
-	goldEggRate: number;
-	hatchRate: number;
-	minX: number;
-	maxX: number;
-	minStopMS: number;
-	maxStopMS: number;
-	// Results
-	fitness: number;
-	eggsLaid: number;
-	eggsCaught: {
-		white: number;
-		gold: number;
-		black: number;
-	};
-	eggsHatched: number;
-	eggsBroken: number;
-}
 
-export type IndividualHenChromosomeKey =
-	| 'speed'
-	| 'baseTweenDurationSeconds'
-	| 'stationaryEggLayingRate'
-	| 'movingEggLayingRate'
-	| 'hatchRate'
-	| 'minX'
-	| 'maxX'
-	| 'minStopMS'
-	| 'maxStopMS';
+	// Results
+	stats: {
+		eggsLaid: number;
+		eggsCaught: {
+			white: number;
+			gold: number;
+			black: number;
+		};
+		eggsHatched: number;
+		eggsBroken: number;
+	};
+}

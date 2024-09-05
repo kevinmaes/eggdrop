@@ -29,7 +29,11 @@ export function EggTally({
 		return null;
 	}
 
-	const eggFrame = eggFrames[`egg-${eggColor}.png`].frame;
+	const eggFrame = eggFrames[`egg-${eggColor}.png`]?.frame;
+
+	if (!eggFrame) {
+		return null;
+	}
 
 	return (
 		<Group x={x} y={y} width={width} height={height}>

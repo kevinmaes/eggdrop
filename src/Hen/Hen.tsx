@@ -1,7 +1,7 @@
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 import { useSelector } from '@xstate/react';
-import { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 import { henMachine } from './hen.machine';
 import { useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
@@ -64,7 +64,7 @@ export function Hen({
 	const [frameName, setFrameName] = useState<HenFrameName>('forward.png');
 	useEffect(() => {
 		let interval: ReturnType<typeof setInterval> | null = null;
-		const animationIntervalMSRange = [50, 750];
+		const [animationIntervalMinMS, animationIntervalMaxMS] = [50, 750];
 
 		switch (true) {
 			case isLaying: {
@@ -75,8 +75,9 @@ export function Hen({
 					'jump-1.png',
 					'jump-2.png',
 				];
-				const frameName =
-					layingFrameNames[Math.floor(Math.random() * layingFrameNames.length)];
+				const frameName = layingFrameNames[
+					Math.floor(Math.random() * layingFrameNames.length)
+				] as HenFrameName;
 				setFrameName(frameName);
 				break;
 			}
@@ -91,20 +92,22 @@ export function Hen({
 					`walk-${movingDirection}-4.png`,
 				];
 				// First change frameName immediately as soon as the hen starts moving
-				setFrameName(walkFrameNames[0]);
+				if (walkFrameNames[0]) {
+					setFrameName(walkFrameNames[0]);
+				}
 				// Calculate intervalMS based on tweenSpeed where higher tweenSpeed results
 				// in a lower intervalMS within the animationIntervalMSRange
 				const intervalMS = Math.max(
-					animationIntervalMSRange[0],
-					animationIntervalMSRange[1] - absoluteTweenSpeed * 100
+					animationIntervalMinMS,
+					animationIntervalMaxMS - absoluteTweenSpeed * 100
 				);
 				interval = setInterval(() => {
 					setFrameName((prevFrameName) => {
 						const index = walkFrameNames.indexOf(prevFrameName);
 						if (index === -1 || index === walkFrameNames.length - 1) {
-							return walkFrameNames[0];
+							return walkFrameNames[0] as HenFrameName;
 						}
-						return walkFrameNames[index + 1];
+						return walkFrameNames[index + 1] as HenFrameName;
 					});
 				}, intervalMS);
 				break;
@@ -121,7 +124,10 @@ export function Hen({
 		};
 	}, [isLaying, isMoving, movingDirection, absoluteTweenSpeed]);
 
-	let currentFrame = henFrames[frameName].frame;
+	let currentFrame = henFrames[frameName]?.frame;
+	if (!currentFrame) {
+		return null;
+	}
 
 	return (
 		<Image
