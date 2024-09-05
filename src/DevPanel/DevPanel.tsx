@@ -77,11 +77,11 @@ export function DevPanel() {
 	const statNames = [
 		'',
 		'totalEggsLaid',
-		'catchRate',
 		'averageEggsLaid',
-		'averageFitness',
+		'catchRate',
 		'',
-		// Average phenotype values
+		// GA values including phenotype values
+		'averageFitness',
 		'averageHenSpeed',
 		'averageBaseTweenDurationSeconds',
 		'averageStationaryEggLayingRate',
