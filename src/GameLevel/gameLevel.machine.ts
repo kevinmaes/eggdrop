@@ -1,6 +1,6 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { type ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { type ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
