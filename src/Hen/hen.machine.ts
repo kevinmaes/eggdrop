@@ -414,7 +414,6 @@ export const henMachine = setup({
 		},
 		'Reached Desination': {
 			type: 'final',
-			entry: [log('Reached Desination')],
 		},
 	},
 });

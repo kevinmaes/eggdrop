@@ -28,7 +28,6 @@ export function GameLevel() {
 		gameLevelActorRef,
 		(state) => {
 			if (!state) {
-				console.log('GameLevel: state is null');
 				return {
 					remainingMS: 0,
 					henActorRefs: [],

@@ -111,8 +111,6 @@ const appMachine = setup({
 					const childPhenotype: PhenotypeValuesForIndividual =
 						getInitialPhenotype(childDNA);
 
-					console.log('child', childDNA, childPhenotype);
-
 					const child = {
 						id: nanoid(),
 						// GA
@@ -193,7 +191,6 @@ const appMachine = setup({
 				const dnaLength = Object.keys(phenotypeConfig).length;
 				const initialDNA = new DNA(dnaLength);
 				const phenotype = getInitialPhenotype(initialDNA);
-				console.log(initialDNA, phenotype);
 
 				return {
 					id: nanoid(),
@@ -326,7 +323,6 @@ const appMachine = setup({
 					on: {
 						Play: 'Playing',
 					},
-					entry: [log('Show summary')],
 					exit: [
 						'evaluateAndEvolveNextGeneration',
 						assign({

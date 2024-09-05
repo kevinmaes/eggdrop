@@ -94,7 +94,6 @@ export const gameLevelMachine = setup({
 			const henConfig = context.population[index] as IndividualHen;
 
 			if (index >= context.population.length) {
-				console.warn('No more hens to spawn');
 				return {};
 			}
 
@@ -117,7 +116,6 @@ export const gameLevelMachine = setup({
 			});
 			const newHenActorRefs = [...context.henActorRefs, nextHen];
 
-			console.log('newHenActorRefs length', newHenActorRefs.length);
 			return {
 				henActorRefs: newHenActorRefs,
 				nextHenIndex: index + 1,
@@ -649,11 +647,7 @@ export const gameLevelMachine = setup({
 		Done: {
 			type: 'final',
 			tags: 'summary',
-			entry: [
-				log('Game Level summary state'),
-				'calculateLevelStatsAverages',
-				'cleanupLevelRefs',
-			],
+			entry: ['calculateLevelStatsAverages', 'cleanupLevelRefs'],
 		},
 	},
 });
