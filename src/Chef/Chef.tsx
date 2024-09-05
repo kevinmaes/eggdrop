@@ -1,14 +1,14 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { Ref, useEffect, useRef, useState } from 'react';
+import { type Ref, useEffect, useRef, useState } from 'react';
 import { Group, Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
-import { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import useImage from 'use-image';
 import { Image } from 'react-konva';
-import { SpriteData } from '../types/assets';
+import type { SpriteData } from '../types/assets';
 
 type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
@@ -146,7 +146,7 @@ export function Chef({}: // dimensions,
 	// Override frameIndex to 0 if isCatchingEgg is true
 	const frameName = isCatchingEgg
 		? 'chef-catching.png'
-		: chefFrameNames[frameIndex];
+		: (chefFrameNames[frameIndex] as ChefFrameName);
 	const currentFrame = chefFrames[frameName]?.frame;
 	if (!currentFrame) {
 		return null;

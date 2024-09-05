@@ -15,7 +15,11 @@ export function MuteButton() {
 	const [controlsImage] = useImage('images/controls.sprite.png');
 	const controlsFrame = isMuted
 		? controlsFrames['sound-off.png']?.frame
-		: controlsFrames['sound-on.png'].frame;
+		: controlsFrames['sound-on.png']?.frame;
+
+	if (!controlsFrame || !gameConfig) {
+		return null;
+	}
 
 	return (
 		<Group x={10} y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}>

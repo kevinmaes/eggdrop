@@ -1,11 +1,11 @@
-import { setup, assign, sendParent, OutputFrom } from 'xstate';
+import { setup, assign, sendParent, type OutputFrom } from 'xstate';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { tweenActor } from '../motionActors';
 import { eggMotionActor } from './eggMotionActor';
-import { GameAssets } from '../types/assets';
-import { Direction, Position } from '../types';
+import type { GameAssets } from '../types/assets';
+import type { Direction, Position } from '../types';
 
 export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
 
