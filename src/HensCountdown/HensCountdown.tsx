@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import { Group, Image, Rect, Text } from 'react-konva';
-import { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { AppActorContext } from '../app.machine';
 import useImage from 'use-image';
@@ -48,7 +48,11 @@ export function HensCountdown({
 	const remainingTimeBarWidth = totalBarWidth * remainingPercentage;
 	const hensLeftString = `${hensLeft}`;
 	const henSize = 50;
-	const henFrame = henFrames['angle-right.png'].frame;
+	const henFrame = henFrames['angle-right.png']?.frame;
+
+	if (!henFrame) {
+		return null;
+	}
 
 	return (
 		<Group x={x} y={y}>

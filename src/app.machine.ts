@@ -1,5 +1,5 @@
 import { createActorContext } from '@xstate/react';
-import { assign, fromPromise, log, setup } from 'xstate';
+import { assign, fromPromise, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
@@ -323,7 +323,6 @@ const appMachine = setup({
 					on: {
 						Play: 'Playing',
 					},
-					entry: [log('Show summary')],
 					exit: [
 						'evaluateAndEvolveNextGeneration',
 						assign({

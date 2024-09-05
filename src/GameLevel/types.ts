@@ -2,19 +2,31 @@ import type { Position } from '../types';
 import { DNA, type PhenotypeKey } from '../types/dna';
 
 export interface GenerationStats {
-	// Averages
-	averageEggsBroken: number;
-	averageEggsHatched: number;
-	averageEggsLaid: number;
+	// Overall info
+	generationNumber: number;
+	catchRate: number;
+
+	// Average phenotype values
 	averageHenSpeed: number;
+	averageBaseTweenDurationSeconds: number;
 	averageStationaryEggLayingRate: number;
+	averageMovingEggLayingRate: number;
 	averageHatchRate: number;
 	averageMinXMovement: number;
 	averageMaxXMovement: number;
 	averageMinStopMS: number;
 	averageMaxStopMS: number;
-	// Results
-	generationNumber: number;
+	averageMaxEggs: number;
+	averageBlackEggRate: number;
+	averageGoldEggRate: number;
+	averageRestAfterLayingEggMS: number;
+
+	// Average stats
+	averageEggsBroken: number;
+	averageEggsHatched: number;
+	averageEggsLaid: number;
+
+	// Result totals
 	totalEggsBroken: number;
 	totalEggsCaught: number;
 	totalBlackEggsCaught: number;
@@ -25,7 +37,6 @@ export interface GenerationStats {
 	totalBlackEggsLaid: number;
 	totalGoldEggsLaid: number;
 	totalWhiteEggsLaid: number;
-	catchRate: number;
 }
 
 export interface LevelResults {

@@ -2,6 +2,7 @@ import { Group, Rect, Text } from 'react-konva';
 import { Button } from '../Button/Button';
 import { AppActorContext } from '../app.machine';
 import { EggTally } from '../EggTally/EggTally';
+import type { LevelResults } from '../GameLevel/types';
 
 export function GameScoreBox({
 	x,
@@ -19,7 +20,9 @@ export function GameScoreBox({
 		AppActorContext.useSelector((state) => ({
 			gameConfig: state.context.gameConfig,
 			gameScoreData: state.context.gameScoreData,
-			lastLevelResults: state.context.levelResultsHistory.slice(-1)[0],
+			lastLevelResults: state.context.levelResultsHistory.slice(
+				-1
+			)[0] as LevelResults,
 		}));
 
 	const lastLevelNumber = lastLevelResults.generationNumber;

@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import { Group, Rect, Text } from 'react-konva';
-import { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { AppActorContext } from '../app.machine';
 
