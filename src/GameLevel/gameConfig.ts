@@ -2,15 +2,6 @@
 
 const POPULATION_SIZE = 2;
 
-export function getRandomNumber(
-	min: number,
-	max: number,
-	round: boolean = false
-) {
-	const randomValue = Math.random() * (max - min) + min;
-	return round ? Math.round(randomValue) : randomValue;
-}
-
 export function getGameConfig() {
 	const stageDimensions = {
 		width: 1280,
