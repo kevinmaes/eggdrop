@@ -1,6 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 2;
+const POPULATION_SIZE = 50;
 
 export function getGameConfig() {
 	const stageDimensions = {
@@ -27,7 +27,7 @@ export function getGameConfig() {
 	const henSize = 120;
 
 	const gameConfig = {
-		isMuted: true,
+		isMuted: false,
 		// The number of hens in the game
 		populationSize: POPULATION_SIZE,
 		// The duration each level lasts in milliseconds
