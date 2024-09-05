@@ -88,7 +88,7 @@ export const phenotypeConfig: PhenotypeConfig = {
 	// Rate in which the hen will lay black eggs
 	blackEggRate: {
 		min: 0,
-		max: 0.5,
+		max: 0.3,
 	},
 	// Rate in which the hen will lay gold eggs if not already laying black eggs
 	goldEggRate: {
