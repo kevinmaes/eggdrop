@@ -72,11 +72,11 @@ export function mutateIndividual(
 	individual: IndividualHen,
 	phenotypeConfig: PhenotypeConfig,
 	mutationRate: number,
-	variancePercentageRate: number
+	mutationVariancePercentageRate: number
 ): IndividualHen {
 	function mutateValue(key: PhenotypeKey, value: number): number {
 		if (Math.random() < mutationRate) {
-			const variance = variancePercentageRate * value;
+			const variance = mutationVariancePercentageRate * value;
 			let mutatedValue = value + Math.random() * 2 * variance - variance;
 			if ('round' in phenotypeConfig[key] && phenotypeConfig[key].round) {
 				mutatedValue = Math.round(
