@@ -10,21 +10,39 @@ function formatGenerationStats(generationStats: GenerationStats) {
 	// Return a clone of generationStats with so that each value is formatted to 2 decimal places.
 	return Object.entries(generationStats).reduce((acc, [key, value]) => {
 		switch (key) {
+			// 2 decimal places
+			case 'averageHenSpeed':
+			case 'averageStationaryEggLayingRate':
+			case 'averageMovingEggLayingRate':
+			case 'averageHatchRate':
+			case 'averageBlackEggRate':
+			case 'averageGoldEggRate':
+				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2,
+				});
+				break;
+
+			// 1 decimal place
+			// Average phenotype values
+			case 'averageMaxEggs':
+			// Average stats
 			case 'averageEggsBroken':
 			case 'averageEggsHatched':
 			case 'averageEggsLaid':
-			case 'averageHenSpeed':
-			case 'averageStationaryEggLayingRate':
 			case 'averageHatchRate':
 				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
 					minimumFractionDigits: 1,
 					maximumFractionDigits: 1,
 				});
 				break;
+
 			case 'catchRate':
 				acc[key as keyof GenerationStats] = `${(value * 100).toFixed(0)}%`;
 				break;
+
 			default:
+				// Rounded values
 				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
 					maximumFractionDigits: 0,
 				});
