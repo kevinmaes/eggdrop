@@ -93,7 +93,6 @@ export function Hen({
 				];
 				// First change frameName immediately as soon as the hen starts moving
 				if (walkFrameNames[0]) {
-					// setFrameName(walkFrameNames[0] as HenFrameName);
 					setFrameName(walkFrameNames[0]);
 				}
 				// Calculate intervalMS based on tweenSpeed where higher tweenSpeed results
