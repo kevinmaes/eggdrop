@@ -181,10 +181,6 @@ export const gameLevelMachine = setup({
 					thisIndividualHen.stats.eggsLaid += 1;
 				}
 
-				// if (updatedHenStatsById[params.henId] !== undefined) {
-				// 	updatedHenStatsById[params.henId].stats.eggsLaid += 1;
-				// }
-
 				const updatedLevelStats = {
 					...context.levelStats,
 					totalEggsLaid: context.levelStats.totalEggsLaid + 1,
