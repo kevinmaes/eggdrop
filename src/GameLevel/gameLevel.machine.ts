@@ -1,15 +1,19 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { type ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
-import { HenDoneEvent, henMachine } from '../Hen/hen.machine';
-import { EggDoneEvent, eggMachine, EggResultStatus } from '../Egg/egg.machine';
+import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
+import {
+	type EggDoneEvent,
+	type EggResultStatus,
+	eggMachine,
+} from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
-import { GenerationStats, IndividualHen, LevelResults } from './types';
+import type { GenerationStats, IndividualHen, LevelResults } from './types';
 import { sounds } from '../sounds';
-import { GameAssets } from '../types/assets';
+import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
-import { Direction, Position } from '../types';
+import type { Direction, Position } from '../types';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -87,7 +91,7 @@ export const gameLevelMachine = setup({
 		}),
 		spawnNewHen: assign(({ context, spawn }) => {
 			const index = context.nextHenIndex;
-			const henConfig = context.population[index];
+			const henConfig = context.population[index] as IndividualHen;
 
 			if (index >= context.population.length) {
 				console.warn('No more hens to spawn');
@@ -171,7 +175,15 @@ export const gameLevelMachine = setup({
 				const updatedHenStatsById = {
 					...context.henStatsById,
 				};
-				updatedHenStatsById[params.henId].eggsLaid += 1;
+
+				const thisIndividualHen = updatedHenStatsById[params.henId];
+				if (thisIndividualHen) {
+					thisIndividualHen.stats.eggsLaid += 1;
+				}
+
+				// if (updatedHenStatsById[params.henId] !== undefined) {
+				// 	updatedHenStatsById[params.henId].stats.eggsLaid += 1;
+				// }
 
 				const updatedLevelStats = {
 					...context.levelStats,
@@ -237,8 +249,8 @@ export const gameLevelMachine = setup({
 				};
 
 				const updatedHenStats = {
-					...context.henStatsById[params.henId],
-				};
+					...context.henStatsById[params.henId]?.stats,
+				} as IndividualHen['stats'];
 
 				const updatedLevelStats = {
 					...context.levelStats,
@@ -268,7 +280,10 @@ export const gameLevelMachine = setup({
 						break;
 				}
 
-				updatedHenStatsById[params.henId] = updatedHenStats;
+				const thisIndividualHen = updatedHenStatsById[params.henId];
+				if (thisIndividualHen) {
+					thisIndividualHen.stats = updatedHenStats;
+				}
 
 				return {
 					henStatsById: updatedHenStatsById,
@@ -436,7 +451,7 @@ export const gameLevelMachine = setup({
 				...acc,
 				[individualHenConfig.id]: individualHenConfig,
 			}),
-			{}
+			{} as Record<string, IndividualHen>
 		),
 	}),
 	output: ({ context }) => ({

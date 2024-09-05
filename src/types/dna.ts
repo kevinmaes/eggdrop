@@ -84,12 +84,21 @@ export type PhenotypeKey = keyof typeof phenotypeConfig;
 export type PhenotypeValuesForIndividual = Record<PhenotypeKey, number>;
 
 export class DNA {
+	private id: string = '';
 	private genes: number[];
 	constructor(length: number) {
 		this.genes = [];
 		for (let i = 0; i < length; i++) {
 			this.genes.push(Math.random());
 		}
+	}
+
+	getId() {
+		return this.id;
+	}
+
+	setId(id: string) {
+		this.id = id;
 	}
 
 	getLength() {
