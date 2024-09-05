@@ -1,10 +1,12 @@
-import { and, assign, log, OutputFrom, sendParent, setup } from 'xstate';
+import type { OutputFrom } from 'xstate';
+import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
-import { getGameConfig, getRandomNumber } from '../GameLevel/gameConfig';
-import { GameAssets } from '../types/assets';
+import { getGameConfig } from '../GameLevel/gameConfig';
+import type { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
-import { Direction, Position } from '../types';
-import { PhenotypeValuesForIndividual } from '../types/dna';
+import type { Direction, Position } from '../types';
+import type { PhenotypeValuesForIndividual } from '../types/dna';
+import { getRandomNumber } from '../utils';
 
 type Destination = 'offscreen-right' | 'offscreen-left';
 function getDestinationAndPositions(
@@ -412,7 +414,6 @@ export const henMachine = setup({
 		},
 		'Reached Desination': {
 			type: 'final',
-			entry: [log('Reached Desination')],
 		},
 	},
 });

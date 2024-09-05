@@ -5,7 +5,7 @@ import { Chef } from '../Chef/Chef';
 import Konva from 'konva';
 import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
-import { ActorRefFrom } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
@@ -28,7 +28,6 @@ export function GameLevel() {
 		gameLevelActorRef,
 		(state) => {
 			if (!state) {
-				console.log('GameLevel: state is null');
 				return {
 					remainingMS: 0,
 					henActorRefs: [],

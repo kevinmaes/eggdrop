@@ -1,15 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 2;
-
-export function getRandomNumber(
-	min: number,
-	max: number,
-	round: boolean = false
-) {
-	const randomValue = Math.random() * (max - min) + min;
-	return round ? Math.round(randomValue) : randomValue;
-}
+const POPULATION_SIZE = 20;
 
 export function getGameConfig() {
 	const stageDimensions = {
@@ -36,7 +27,7 @@ export function getGameConfig() {
 	const henSize = 120;
 
 	const gameConfig = {
-		isMuted: true,
+		isMuted: false,
 		// The number of hens in the game
 		populationSize: POPULATION_SIZE,
 		// The duration each level lasts in milliseconds

@@ -1,22 +1,22 @@
 import { createActorContext } from '@xstate/react';
-import { assign, fromPromise, log, setup } from 'xstate';
+import { assign, fromPromise, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
-import { IndividualHen, LevelResults } from './GameLevel/types';
+import type { IndividualHen, LevelResults } from './GameLevel/types';
 import {
 	calculateFitness,
 	crossover,
 	mutateIndividual,
 	rouletteWheelSelection,
 } from './ga';
-import { GameAssets } from './types/assets';
+import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
 import {
 	DNA,
 	getInitialPhenotype,
 	phenotypeConfig,
-	PhenotypeValuesForIndividual,
+	type PhenotypeValuesForIndividual,
 } from './types/dna';
 
 const appMachine = setup({
@@ -74,7 +74,9 @@ const appMachine = setup({
 		evaluateAndEvolveNextGeneration: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
-				const lastLevelResults = context.levelResultsHistory.slice(-1)[0];
+				const lastLevelResults = context.levelResultsHistory.slice(
+					-1
+				)[0] as LevelResults;
 				const evaluatedPopulation = context.population.map((individual) => {
 					const individualResult = lastLevelResults.henStatsById[individual.id];
 					if (!individualResult) {
@@ -98,10 +100,12 @@ const appMachine = setup({
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.gameConfig.populationSize; i++) {
 					// Randomly select two parents from the selected parents
-					const parent1 =
-						selectedParents[Math.floor(Math.random() * selectedParents.length)];
-					const parent2 =
-						selectedParents[Math.floor(Math.random() * selectedParents.length)];
+					const parent1 = selectedParents[
+						Math.floor(Math.random() * selectedParents.length)
+					] as IndividualHen;
+					const parent2 = selectedParents[
+						Math.floor(Math.random() * selectedParents.length)
+					] as IndividualHen;
 
 					const childDNA = crossover(parent1.dna, parent2.dna);
 					const childPhenotype: PhenotypeValuesForIndividual =
@@ -119,15 +123,17 @@ const appMachine = setup({
 							y: context.gameConfig.hen.y,
 						},
 						// Results
-						eggsLaid: 0,
-						eggsCaught: {
-							white: 0,
-							gold: 0,
-							black: 0,
+						stats: {
+							eggsLaid: 0,
+							eggsCaught: {
+								white: 0,
+								gold: 0,
+								black: 0,
+							},
+							eggsHatched: 0,
+							eggsBroken: 0,
+							eggStats: {},
 						},
-						eggsHatched: 0,
-						eggsBroken: 0,
-						eggStats: {},
 					};
 					nextGeneration.push(child);
 				}
@@ -178,11 +184,8 @@ const appMachine = setup({
 	},
 }).createMachine({
 	id: 'Egg Drop Game',
-	context: ({ input }) => ({
-		gameConfig: input.gameConfig,
-		generationNumber: 1,
-		levelResultsHistory: [],
-		population: new Array(input.gameConfig.populationSize)
+	context: ({ input }) => {
+		const initialPopulation = new Array(input.gameConfig.populationSize)
 			.fill(null)
 			.map(() => {
 				const dnaLength = Object.keys(phenotypeConfig).length;
@@ -201,28 +204,37 @@ const appMachine = setup({
 						y: input.gameConfig.hen.y,
 					},
 					// Results
-					eggsLaid: 0,
-					eggsCaught: {
-						white: 0,
-						gold: 0,
-						black: 0,
+					stats: {
+						eggsLaid: 0,
+						eggsCaught: {
+							white: 0,
+							gold: 0,
+							black: 0,
+						},
+						eggsHatched: 0,
+						eggsBroken: 0,
+						eggStats: {},
 					},
-					eggsHatched: 0,
-					eggsBroken: 0,
-					eggStats: {},
 				};
-			}),
-		gameAssets: null,
-		gameScoreData: {
-			gameScore: 0,
-			eggsCaught: {
-				white: 0,
-				gold: 0,
-				black: 0,
+			});
+
+		return {
+			gameConfig: input.gameConfig,
+			generationNumber: 1,
+			levelResultsHistory: [],
+			population: initialPopulation,
+			gameAssets: null,
+			gameScoreData: {
+				gameScore: 0,
+				eggsCaught: {
+					white: 0,
+					gold: 0,
+					black: 0,
+				},
 			},
-		},
-		isMuted: input.gameConfig.isMuted,
-	}),
+			isMuted: input.gameConfig.isMuted,
+		};
+	},
 	on: {
 		'Toggle mute': {
 			actions: { type: 'toggleMute' },
@@ -311,7 +323,6 @@ const appMachine = setup({
 					on: {
 						Play: 'Playing',
 					},
-					entry: [log('Show summary')],
 					exit: [
 						'evaluateAndEvolveNextGeneration',
 						assign({

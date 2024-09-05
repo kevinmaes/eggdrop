@@ -1,28 +1,30 @@
-import { IndividualHen } from './GameLevel/types';
-import { DNA, PhenotypeConfig, PhenotypeKey } from './types/dna';
+import type { IndividualHen } from './GameLevel/types';
+import type { PhenotypeConfig, PhenotypeKey } from './types/dna';
+import { DNA } from './types/dna';
 
 export function calculateFitness(individual: IndividualHen) {
 	// Default overall fitness can not be 0
 	let overallFitness = 0.1;
 
 	// Punish hens that lay no eggs
-	if (individual.eggsLaid === 0) {
+	if (individual.stats.eggsLaid === 0) {
 		return overallFitness;
 	}
 
 	// Reward hens that lay more eggs
-	overallFitness += individual.eggsLaid / 10;
+	overallFitness += individual.stats.eggsLaid / 10;
 
 	const eggsCaughtTotal =
-		individual.eggsCaught.white +
-		individual.eggsCaught.gold +
-		individual.eggsCaught.black;
+		individual.stats.eggsCaught.white +
+		individual.stats.eggsCaught.gold +
+		individual.stats.eggsCaught.black;
 
-	const caughtRate = eggsCaughtTotal / individual.eggsLaid;
+	const caughtRate = eggsCaughtTotal / individual.stats.eggsLaid;
 	overallFitness += 1 - caughtRate;
 
 	// TODO: Add a reward if black eggs were caught.
-	const blackEggCaughtRate = individual.eggsCaught.black / individual.eggsLaid;
+	const blackEggCaughtRate =
+		individual.stats.eggsCaught.black / individual.stats.eggsLaid;
 	overallFitness += blackEggCaughtRate;
 
 	return overallFitness;
@@ -112,7 +114,7 @@ export function mutateIndividual(
  * @returns
  */
 export function crossover(parentDNA1: DNA, parentDNA2: DNA) {
-	const crossedOverGenes = [];
+	const crossedOverGenes: DNA['genes'] = [];
 
 	// Loop over each gene in the DNA and randomly select a parent
 	// to get the gene from.

@@ -1,3 +1,12 @@
+export function getRandomNumber(
+	min: number,
+	max: number,
+	round: boolean = false
+) {
+	const randomValue = Math.random() * (max - min) + min;
+	return round ? Math.round(randomValue) : randomValue;
+}
+
 /**
  * Transforms a value from one range to another.
  * @param n

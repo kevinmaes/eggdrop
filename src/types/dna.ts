@@ -1,7 +1,32 @@
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { mapValue } from '../utils';
 
-export const phenotypeConfig = {
+export type PhenotypeKey =
+	| 'speed'
+	| 'baseTweenDurationSeconds'
+	| 'stationaryEggLayingRate'
+	| 'movingEggLayingRate'
+	| 'hatchRate'
+	| 'minXMovement'
+	| 'maxXMovement'
+	| 'minStopMS'
+	| 'maxStopMS'
+	| 'maxEggs'
+	| 'blackEggRate'
+	| 'goldEggRate'
+	| 'restAfterLayingEggMS';
+
+export type PhenotypeConfig = Record<
+	PhenotypeKey,
+	{
+		min: number;
+		max: number;
+		round?: boolean;
+	}
+>;
+export type PhenotypeValuesForIndividual = Record<PhenotypeKey, number>;
+
+export const phenotypeConfig: PhenotypeConfig = {
 	// The x speed of the hen
 	speed: {
 		min: 0,
@@ -63,7 +88,7 @@ export const phenotypeConfig = {
 	// Rate in which the hen will lay black eggs
 	blackEggRate: {
 		min: 0,
-		max: 0.5,
+		max: 0.3,
 	},
 	// Rate in which the hen will lay gold eggs if not already laying black eggs
 	goldEggRate: {
@@ -79,11 +104,8 @@ export const phenotypeConfig = {
 	},
 };
 
-export type PhenotypeConfig = typeof phenotypeConfig;
-export type PhenotypeKey = keyof typeof phenotypeConfig;
-export type PhenotypeValuesForIndividual = Record<PhenotypeKey, number>;
-
 export class DNA {
+	private id: string = '';
 	private genes: number[];
 	constructor(length: number) {
 		this.genes = [];
@@ -92,12 +114,20 @@ export class DNA {
 		}
 	}
 
+	getId() {
+		return this.id;
+	}
+
+	setId(id: string) {
+		this.id = id;
+	}
+
 	getLength() {
 		return this.genes.length;
 	}
 
 	getGene(index: number) {
-		return this.genes[index];
+		return this.genes[index] ?? 0;
 	}
 
 	replaceGenes(genes: number[]) {
