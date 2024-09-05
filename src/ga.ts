@@ -72,11 +72,11 @@ export function mutateIndividual(
 	individual: IndividualHen,
 	phenotypeConfig: PhenotypeConfig,
 	mutationRate: number,
-	variancePercentage: number
+	variancePercentageRate: number
 ): IndividualHen {
 	function mutateValue(key: PhenotypeKey, value: number): number {
 		if (Math.random() < mutationRate) {
-			const variance = (variancePercentage / 100) * value;
+			const variance = variancePercentageRate * value;
 			let mutatedValue = value + Math.random() * 2 * variance - variance;
 			if ('round' in phenotypeConfig[key] && phenotypeConfig[key].round) {
 				mutatedValue = Math.round(
@@ -103,12 +103,24 @@ export function mutateIndividual(
 	return individual;
 }
 
+/**
+ * Combines DNA from two parents to create a child DNA.
+ * This DNA represents the genotype of the child and is
+ * agnostic to the phenotype i.e. how it will be expressed by the Individual.
+ * @param parentDNA1
+ * @param parentDNA2
+ * @returns
+ */
 export function crossover(parentDNA1: DNA, parentDNA2: DNA) {
 	const crossedOverGenes = [];
+
+	// Loop over each gene in the DNA and randomly select a parent
+	// to get the gene from.
 	for (let i = 0; i < parentDNA1.getLength(); i++) {
 		const selectedParent = Math.random() > 0.5 ? parentDNA1 : parentDNA2;
 		crossedOverGenes.push(selectedParent.getGene(i));
 	}
+
 	const childDNA = new DNA(crossedOverGenes.length);
 	childDNA.replaceGenes(crossedOverGenes);
 	return childDNA;

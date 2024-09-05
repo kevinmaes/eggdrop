@@ -31,7 +31,7 @@ const appMachine = setup({
 			population: IndividualHen[];
 			gameConfig: ReturnType<typeof getGameConfig>;
 			mutationRate: number;
-			mutationVariancePercentage: number;
+			mutationVariancePercentageRate: number;
 			gameAssets: GameAssets | null;
 			gameScoreData: {
 				gameScore: number;
@@ -141,7 +141,7 @@ const appMachine = setup({
 							individual,
 							phenotypeConfig,
 							context.mutationRate,
-							context.mutationVariancePercentage
+							context.mutationVariancePercentageRate
 						);
 					}
 				);
@@ -216,8 +216,9 @@ const appMachine = setup({
 			}),
 		populationSize: input.gameConfig.populationSize,
 		gameAssets: null,
-		mutationRate: 0.1,
-		mutationVariancePercentage: 8,
+		mutationRate: input.gameConfig.ga.mutationRate,
+		mutationVariancePercentageRate:
+			input.gameConfig.ga.mutationVariancePercentageRate,
 		gameScoreData: {
 			gameScore: 0,
 			eggsCaught: {
