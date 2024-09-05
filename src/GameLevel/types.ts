@@ -1,4 +1,5 @@
 import { Position } from '../types';
+import { DNA, PhenotypeKey } from '../types/dna';
 
 export interface GenerationStats {
 	// Averages
@@ -56,23 +57,14 @@ export interface LevelResults {
 
 export interface IndividualHen {
 	id: string;
+	// GA
+	dna: DNA;
+	phenotype: Record<PhenotypeKey, number>;
+	fitness: number;
 	// Configuration
 	initialPosition: Position;
-	speed: number;
-	baseTweenDurationSeconds: number;
-	maxEggs: number;
-	stationaryEggLayingRate: number;
-	movingEggLayingRate: number;
-	restAfterLayingEggMS: number;
-	blackEggRate: number;
-	goldEggRate: number;
-	hatchRate: number;
-	minXMovement: number;
-	maxXMovement: number;
-	minStopMS: number;
-	maxStopMS: number;
+
 	// Results
-	fitness: number;
 	eggsLaid: number;
 	eggsCaught: {
 		white: number;
@@ -82,14 +74,3 @@ export interface IndividualHen {
 	eggsHatched: number;
 	eggsBroken: number;
 }
-
-export type IndividualHenChromosomeKey =
-	| 'speed'
-	| 'baseTweenDurationSeconds'
-	| 'stationaryEggLayingRate'
-	| 'movingEggLayingRate'
-	| 'hatchRate'
-	| 'minXMovement'
-	| 'maxXMovement'
-	| 'minStopMS'
-	| 'maxStopMS';

@@ -2,14 +2,23 @@ import { createActorContext } from '@xstate/react';
 import { assign, fromPromise, log, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
-import {
-	getGameConfig,
-	getInitialChromosomeValues,
-} from './GameLevel/gameConfig';
+import { getGameConfig } from './GameLevel/gameConfig';
 import { IndividualHen, LevelResults } from './GameLevel/types';
-import { calculateFitness, mutate, rouletteWheelSelection } from './ga';
+import {
+	calculateFitness,
+	crossover,
+	mutate,
+	mutateIndividual,
+	rouletteWheelSelection,
+} from './ga';
 import { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
+import {
+	DNA,
+	getInitialPhenotype,
+	phenotypeConfig,
+	PhenotypeValuesForIndividual,
+} from './types/dna';
 
 const appMachine = setup({
 	types: {} as {
@@ -97,38 +106,65 @@ const appMachine = setup({
 					const parent2 =
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
 
+					const childDNA = crossover(parent1.dna, parent2.dna);
+					const phenotype: PhenotypeValuesForIndividual =
+						getInitialPhenotype(childDNA);
+
 					const child = {
 						id: nanoid(),
+						// GA
+						dna: childDNA,
+						phenotype,
+						fitness: 0,
+						// Configuration
 						initialPosition: {
 							x: context.gameConfig.hen.offstageLeftX,
 							y: context.gameConfig.hen.y,
 						},
-						speed: (parent1.speed + parent2.speed) / 2,
+
+						//
+						speed: (parent1.phenotype.speed + parent2.phenotype.speed) / 2,
 						baseTweenDurationSeconds:
-							(parent1.baseTweenDurationSeconds +
-								parent2.baseTweenDurationSeconds) /
+							(parent1.phenotype.baseTweenDurationSeconds +
+								parent2.phenotype.baseTweenDurationSeconds) /
 							2,
 						maxEggs: -1,
 						stationaryEggLayingRate:
-							(parent1.stationaryEggLayingRate +
-								parent2.stationaryEggLayingRate) /
+							(parent1.phenotype.stationaryEggLayingRate +
+								parent2.phenotype.stationaryEggLayingRate) /
 							2,
 						movingEggLayingRate:
-							(parent1.movingEggLayingRate + parent2.movingEggLayingRate) / 2,
+							(parent1.phenotype.movingEggLayingRate +
+								parent2.phenotype.movingEggLayingRate) /
+							2,
 						restAfterLayingEggMS:
-							(parent1.restAfterLayingEggMS + parent2.restAfterLayingEggMS) / 2,
-						blackEggRate: (parent1.blackEggRate + parent2.blackEggRate) / 2,
-						goldEggRate: (parent1.goldEggRate + parent2.goldEggRate) / 2,
-						hatchRate: (parent1.hatchRate + parent2.hatchRate) / 2,
+							(parent1.phenotype.restAfterLayingEggMS +
+								parent2.phenotype.restAfterLayingEggMS) /
+							2,
+						blackEggRate:
+							(parent1.phenotype.blackEggRate +
+								parent2.phenotype.blackEggRate) /
+							2,
+						goldEggRate:
+							(parent1.phenotype.goldEggRate + parent2.phenotype.goldEggRate) /
+							2,
+						hatchRate:
+							(parent1.phenotype.hatchRate + parent2.phenotype.hatchRate) / 2,
 						minXMovement: Math.round(
-							(parent1.minXMovement + parent2.minXMovement) / 2
+							(parent1.phenotype.minXMovement +
+								parent2.phenotype.minXMovement) /
+								2
 						),
 						maxXMovement: Math.round(
-							(parent1.maxXMovement + parent2.maxXMovement) / 2
+							(parent1.phenotype.maxXMovement +
+								parent2.phenotype.maxXMovement) /
+								2
 						),
-						minStopMS: (parent1.minStopMS + parent2.minStopMS) / 2,
-						maxStopMS: (parent1.maxStopMS + parent2.maxStopMS) / 2,
-						fitness: 0,
+						minStopMS:
+							(parent1.phenotype.minStopMS + parent2.phenotype.minStopMS) / 2,
+						maxStopMS:
+							(parent1.phenotype.maxStopMS + parent2.phenotype.maxStopMS) / 2,
+
 						eggsLaid: 0,
 						eggsCaught: {
 							white: 0,
@@ -143,24 +179,16 @@ const appMachine = setup({
 				}
 
 				// Mutate
-				const mutatedNextGenerationPopulation = nextGeneration.map((member) => {
-					return mutate(
-						member,
-						[
-							'speed',
-							'baseTweenDurationSeconds',
-							'stationaryEggLayingRate',
-							'movingEggLayingRate',
-							'hatchRate',
-							'minXMovement',
-							'maxXMovement',
-							'minStopMS',
-							'maxStopMS',
-						],
-						context.mutationRate,
-						context.mutationVariancePercentage
-					);
-				});
+				const mutatedNextGenerationPopulation = nextGeneration.map(
+					(individual) => {
+						return mutateIndividual(
+							individual,
+							phenotypeConfig,
+							context.mutationRate,
+							context.mutationVariancePercentage
+						);
+					}
+				);
 
 				return mutatedNextGenerationPopulation;
 			},
@@ -203,17 +231,23 @@ const appMachine = setup({
 		population: new Array(input.gameConfig.populationSize)
 			.fill(null)
 			.map(() => {
+				const dnaLength = Object.keys(phenotypeConfig).length;
+				const initialDNA = new DNA(dnaLength);
+
+				const phenotype = getInitialPhenotype(initialDNA);
 				// Pick minimum and maximum X positions for the hen.
 				return {
 					id: nanoid(),
+					// GA
+					dna: initialDNA,
+					phenotype,
+					fitness: 0,
 					// Configuration
 					initialPosition: {
 						x: input.gameConfig.hen.offstageLeftX,
 						y: input.gameConfig.hen.y,
 					},
-					...getInitialChromosomeValues(),
 					// Results
-					fitness: 0,
 					eggsLaid: 0,
 					eggsCaught: {
 						white: 0,

@@ -1,4 +1,5 @@
-import { IndividualHen, IndividualHenChromosomeKey } from './GameLevel/types';
+import { IndividualHen } from './GameLevel/types';
+import { DNA, PhenotypeConfig, PhenotypeKey } from './types/dna';
 
 export function calculateFitness(individual: IndividualHen) {
 	// Default overall fitness can not be 0
@@ -55,6 +56,10 @@ export function rouletteWheelSelection(population: IndividualHen[]) {
 	return population[population.length - 1];
 }
 
+function clamp(value: number, min: number, max: number) {
+	return Math.max(min, Math.min(value, max));
+}
+
 /**
  * Mutates an individual based on a mutation rate and variance percentage
  * @param individual
@@ -63,24 +68,48 @@ export function rouletteWheelSelection(population: IndividualHen[]) {
  * @param variancePercentage
  * @returns mutated individual
  */
-export function mutate(
+export function mutateIndividual(
 	individual: IndividualHen,
-	properties: IndividualHenChromosomeKey[],
+	phenotypeConfig: PhenotypeConfig,
 	mutationRate: number,
 	variancePercentage: number
 ): IndividualHen {
-	function mutateValue(value: number): number {
+	function mutateValue(key: PhenotypeKey, value: number): number {
 		if (Math.random() < mutationRate) {
 			const variance = (variancePercentage / 100) * value;
-			return value + Math.random() * 2 * variance - variance;
+			let mutatedValue = value + Math.random() * 2 * variance - variance;
+			if ('round' in phenotypeConfig[key] && phenotypeConfig[key].round) {
+				mutatedValue = Math.round(
+					clamp(
+						mutatedValue,
+						phenotypeConfig[key].min,
+						phenotypeConfig[key].max
+					)
+				);
+			}
 		}
+		// Un-mutated value
 		return value;
 	}
 
+	const phenotypeKeys = Object.keys(phenotypeConfig) as PhenotypeKey[];
+
+	const possiblyMutatedPhenotype = { ...individual.phenotype };
 	// Loop over properties and mutate those values
-	properties.forEach((property) => {
-		individual[property] = mutateValue(individual[property]);
+	phenotypeKeys.forEach((key) => {
+		possiblyMutatedPhenotype[key] = mutateValue(key, individual.phenotype[key]);
 	});
 
 	return individual;
+}
+
+export function crossover(parentDNA1: DNA, parentDNA2: DNA) {
+	const crossedOverGenes = [];
+	for (let i = 0; i < parentDNA1.getLength(); i++) {
+		const selectedParent = Math.random() > 0.5 ? parentDNA1 : parentDNA2;
+		crossedOverGenes.push(selectedParent.getGene(i));
+	}
+	const childDNA = new DNA(crossedOverGenes.length);
+	childDNA.replaceGenes(crossedOverGenes);
+	return childDNA;
 }
