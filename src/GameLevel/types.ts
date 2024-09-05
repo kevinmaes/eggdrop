@@ -50,7 +50,7 @@ export interface LevelResults {
 		};
 	};
 	levelStats: GenerationStats;
-	henStatsById: Record<string, IndividualHen>;
+	henStatsById: Record<string, Hendividual>;
 }
 
 // TODO: Move to a dictionary for any egg stats related data collection.
@@ -66,7 +66,7 @@ export interface LevelResults {
 // 	}
 // >;
 
-export interface IndividualHen {
+export interface Hendividual {
 	id: string;
 	// GA
 	dna: DNA;

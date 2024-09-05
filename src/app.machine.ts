@@ -3,7 +3,7 @@ import { assign, fromPromise, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
-import type { IndividualHen, LevelResults } from './GameLevel/types';
+import type { Hendividual, LevelResults } from './GameLevel/types';
 import {
 	calculateFitness,
 	crossover,
@@ -28,7 +28,7 @@ const appMachine = setup({
 			isMuted: boolean;
 			generationNumber: number;
 			levelResultsHistory: LevelResults[];
-			population: IndividualHen[];
+			population: Hendividual[];
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets | null;
 			gameScoreData: {
@@ -95,17 +95,17 @@ const appMachine = setup({
 				}
 
 				// Crossover
-				const nextGeneration: IndividualHen[] = [];
+				const nextGeneration: Hendividual[] = [];
 
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.gameConfig.populationSize; i++) {
 					// Randomly select two parents from the selected parents
 					const parent1 = selectedParents[
 						Math.floor(Math.random() * selectedParents.length)
-					] as IndividualHen;
+					] as Hendividual;
 					const parent2 = selectedParents[
 						Math.floor(Math.random() * selectedParents.length)
-					] as IndividualHen;
+					] as Hendividual;
 
 					const childDNA = crossover(parent1.dna, parent2.dna);
 					const childPhenotype: PhenotypeValuesForIndividual =

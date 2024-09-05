@@ -1,9 +1,9 @@
-import type { IndividualHen } from './GameLevel/types';
+import type { Hendividual } from './GameLevel/types';
 import type { PhenotypeConfig, PhenotypeKey } from './types/dna';
 import { DNA } from './types/dna';
 import { clamp } from './utils';
 
-export function calculateFitness(individual: IndividualHen) {
+export function calculateFitness(individual: Hendividual) {
 	// Default overall fitness can not be 0
 	let overallFitness = 0.1;
 
@@ -37,7 +37,7 @@ export function calculateFitness(individual: IndividualHen) {
  * @param population
  * @returns
  */
-export function rouletteWheelSelection(population: IndividualHen[]) {
+export function rouletteWheelSelection(population: Hendividual[]) {
 	// Calculate the total fitness of the population
 	const totalFitness = population.reduce(
 		(acc, individual) => acc + individual.fitness,
@@ -91,11 +91,11 @@ export function crossover(parentDNA1: DNA, parentDNA2: DNA) {
  * @returns mutated individual
  */
 export function mutateIndividual(
-	individual: IndividualHen,
+	individual: Hendividual,
 	phenotypeConfig: PhenotypeConfig,
 	mutationRate: number,
 	mutationVariancePercentageRate: number
-): IndividualHen {
+): Hendividual {
 	function mutateValue(key: PhenotypeKey, value: number): number {
 		if (Math.random() < mutationRate) {
 			const variance = mutationVariancePercentageRate * value;
