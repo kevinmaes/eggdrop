@@ -456,6 +456,9 @@ export const gameLevelMachine = setup({
 			// Overall info
 			generationNumber: 1,
 			catchRate: 0,
+
+			// GA values
+			averageFitness: 0,
 			// Average phenotype values
 			averageHenSpeed: 0,
 			averageBaseTweenDurationSeconds: 0,

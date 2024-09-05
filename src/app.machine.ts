@@ -71,27 +71,39 @@ const appMachine = setup({
 				levelResultsHistory: [...context.levelResultsHistory, params],
 			};
 		}),
-		evaluateAndEvolveNextGeneration: assign({
+		evaluatePopulationFitness: assign({
 			population: ({ context }) => {
 				// Evaluate fitness
 				const lastLevelResults = context.levelResultsHistory.slice(
 					-1
 				)[0] as LevelResults;
+
+				// Calculate the fitness of each individual in the population
+				// while also calculating the average fitness of the population.
+				let aggregateFitness = 0;
 				const evaluatedPopulation = context.population.map((individual) => {
 					const individualResult = lastLevelResults.henStatsById[individual.id];
 					if (!individualResult) {
 						return individual;
 					}
 					individual.fitness = calculateFitness(individualResult);
+					aggregateFitness += individual.fitness;
 					return individual;
 				});
+				const averageFitness = aggregateFitness / evaluatedPopulation.length;
+				lastLevelResults.levelStats.averageFitness = averageFitness;
 
+				return evaluatedPopulation;
+			},
+		}),
+		selectCrossoverAndMutatePopulation: assign({
+			population: ({ context }) => {
 				// Select by fitness (roulette wheel selection)
 				const selectedParents = [];
 				// Only select a total of 33% of the population to be parents
 				// based on roulette wheel selection.
-				for (let i = 0; i < evaluatedPopulation.length / 3; i++) {
-					selectedParents.push(rouletteWheelSelection(evaluatedPopulation));
+				for (let i = 0; i < context.population.length / 3; i++) {
+					selectedParents.push(rouletteWheelSelection(context.population));
 				}
 
 				// Crossover
@@ -320,11 +332,20 @@ const appMachine = setup({
 				},
 				'Next Generation Evolution': {
 					tags: ['between levels'],
+					entry: [
+						'evaluatePopulationFitness',
+						({ context }) => {
+							console.log(
+								'context',
+								context.population.map((individual) => individual.fitness)
+							);
+						},
+					],
 					on: {
 						Play: 'Playing',
 					},
 					exit: [
-						'evaluateAndEvolveNextGeneration',
+						'selectCrossoverAndMutatePopulation',
 						assign({
 							generationNumber: ({ context }) => context.generationNumber + 1,
 						}),

@@ -11,6 +11,7 @@ function formatGenerationStats(generationStats: GenerationStats) {
 	return Object.entries(generationStats).reduce((acc, [key, value]) => {
 		switch (key) {
 			// 2 decimal places
+			case 'averageFitness':
 			case 'averageHenSpeed':
 			case 'averageStationaryEggLayingRate':
 			case 'averageMovingEggLayingRate':
@@ -78,6 +79,7 @@ export function DevPanel() {
 		'totalEggsLaid',
 		'catchRate',
 		'averageEggsLaid',
+		'averageFitness',
 		'',
 		// Average phenotype values
 		'averageHenSpeed',

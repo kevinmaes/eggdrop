@@ -5,6 +5,7 @@ export interface GenerationStats {
 	// Overall info
 	generationNumber: number;
 	catchRate: number;
+	averageFitness: number;
 
 	// Average phenotype values
 	averageHenSpeed: number;
