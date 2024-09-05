@@ -178,11 +178,8 @@ const appMachine = setup({
 	},
 }).createMachine({
 	id: 'Egg Drop Game',
-	context: ({ input }) => ({
-		gameConfig: input.gameConfig,
-		generationNumber: 1,
-		levelResultsHistory: [],
-		population: new Array(input.gameConfig.populationSize)
+	context: ({ input }) => {
+		const initialPopulation = new Array(input.gameConfig.populationSize)
 			.fill(null)
 			.map(() => {
 				const dnaLength = Object.keys(phenotypeConfig).length;
@@ -211,18 +208,25 @@ const appMachine = setup({
 					eggsBroken: 0,
 					eggStats: {},
 				};
-			}),
-		gameAssets: null,
-		gameScoreData: {
-			gameScore: 0,
-			eggsCaught: {
-				white: 0,
-				gold: 0,
-				black: 0,
+			});
+
+		return {
+			gameConfig: input.gameConfig,
+			generationNumber: 1,
+			levelResultsHistory: [],
+			population: initialPopulation,
+			gameAssets: null,
+			gameScoreData: {
+				gameScore: 0,
+				eggsCaught: {
+					white: 0,
+					gold: 0,
+					black: 0,
+				},
 			},
-		},
-		isMuted: input.gameConfig.isMuted,
-	}),
+			isMuted: input.gameConfig.isMuted,
+		};
+	},
 	on: {
 		'Toggle mute': {
 			actions: { type: 'toggleMute' },
