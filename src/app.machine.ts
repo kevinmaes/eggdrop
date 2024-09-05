@@ -7,7 +7,6 @@ import { IndividualHen, LevelResults } from './GameLevel/types';
 import {
 	calculateFitness,
 	crossover,
-	mutate,
 	mutateIndividual,
 	rouletteWheelSelection,
 } from './ga';
