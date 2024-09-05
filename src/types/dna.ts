@@ -1,4 +1,5 @@
 import { getGameConfig } from '../GameLevel/gameConfig';
+import { mapValue } from '../utils';
 
 export const phenotypeConfig = {
 	// The x speed of the hen
@@ -120,9 +121,14 @@ export function getPhenotypeValue(
 	gene: number,
 	phenotypeConfigValue: (typeof phenotypeConfig)[keyof typeof phenotypeConfig]
 ) {
-	const value =
-		gene * (phenotypeConfigValue.max - phenotypeConfigValue.min) +
-		phenotypeConfigValue.min;
+	const value = mapValue(
+		gene,
+		0,
+		1,
+		phenotypeConfigValue.min,
+		phenotypeConfigValue.max
+	);
+
 	if ('round' in phenotypeConfigValue && phenotypeConfigValue.round) {
 		return Math.round(value);
 	}
@@ -137,5 +143,5 @@ export function getInitialPhenotype(dna: DNA) {
 		const gene = dna.getGene(i);
 		phenotypeValues[key] = getPhenotypeValue(gene, value);
 	}
-	return phenotypeValues;
+	return phenotypeValues as PhenotypeValuesForIndividual;
 }

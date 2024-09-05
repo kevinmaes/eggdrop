@@ -101,23 +101,14 @@ export const gameLevelMachine = setup({
 					gameConfig: context.gameConfig,
 					id: henConfig.id,
 					henAssets: context.gameAssets.hen,
+					// GA
+					phenotype: henConfig.phenotype,
+					// Config
+
 					position: {
 						x: henConfig.initialPosition.x,
 						y: henConfig.initialPosition.y,
 					},
-					speed: henConfig.speed,
-					baseTweenDurationSeconds: henConfig.baseTweenDurationSeconds,
-					maxEggs: henConfig.maxEggs,
-					stationaryEggLayingRate: henConfig.stationaryEggLayingRate,
-					movingEggLayingRate: henConfig.movingEggLayingRate,
-					restAfterLayingEggMS: henConfig.restAfterLayingEggMS,
-					blackEggRate: henConfig.blackEggRate,
-					goldEggRate: henConfig.goldEggRate,
-					hatchRate: henConfig.hatchRate,
-					minXMovement: henConfig.minXMovement,
-					maxXMovement: henConfig.maxXMovement,
-					minStopMS: henConfig.minStopMS,
-					maxStopMS: henConfig.maxStopMS,
 				},
 			});
 			const newHenActorRefs = [...context.henActorRefs, nextHen];
@@ -298,27 +289,39 @@ export const gameLevelMachine = setup({
 					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
 					averageStationaryEggLayingRate:
 						context.population.reduce(
-							(acc, hen) => acc + hen.stationaryEggLayingRate,
+							(acc, hen) => acc + hen.phenotype.stationaryEggLayingRate,
 							0
 						) / totalHens,
 					averageHenSpeed:
-						context.population.reduce((acc, hen) => acc + hen.speed, 0) /
-						totalHens,
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.speed,
+							0
+						) / totalHens,
 					averageHatchRate:
-						context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
-						totalHens,
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.hatchRate,
+							0
+						) / totalHens,
 					averageMinXMovement:
-						context.population.reduce((acc, hen) => acc + hen.minXMovement, 0) /
-						totalHens,
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.minXMovement,
+							0
+						) / totalHens,
 					averageMaxXMovement:
-						context.population.reduce((acc, hen) => acc + hen.maxXMovement, 0) /
-						totalHens,
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.maxXMovement,
+							0
+						) / totalHens,
 					averageMinStopMS:
-						context.population.reduce((acc, hen) => acc + hen.minStopMS, 0) /
-						totalHens,
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.minStopMS,
+							0
+						) / totalHens,
 					averageMaxStopMS:
-						context.population.reduce((acc, hen) => acc + hen.maxStopMS, 0) /
-						totalHens,
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.maxStopMS,
+							0
+						) / totalHens,
 					catchRate:
 						context.levelStats.totalEggsCaught /
 						context.levelStats.totalEggsLaid,

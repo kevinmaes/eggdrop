@@ -106,64 +106,21 @@ const appMachine = setup({
 						selectedParents[Math.floor(Math.random() * selectedParents.length)];
 
 					const childDNA = crossover(parent1.dna, parent2.dna);
-					const phenotype: PhenotypeValuesForIndividual =
+					const childPhenotype: PhenotypeValuesForIndividual =
 						getInitialPhenotype(childDNA);
 
 					const child = {
 						id: nanoid(),
 						// GA
 						dna: childDNA,
-						phenotype,
+						phenotype: childPhenotype,
 						fitness: 0,
 						// Configuration
 						initialPosition: {
 							x: context.gameConfig.hen.offstageLeftX,
 							y: context.gameConfig.hen.y,
 						},
-
-						//
-						speed: (parent1.phenotype.speed + parent2.phenotype.speed) / 2,
-						baseTweenDurationSeconds:
-							(parent1.phenotype.baseTweenDurationSeconds +
-								parent2.phenotype.baseTweenDurationSeconds) /
-							2,
-						maxEggs: -1,
-						stationaryEggLayingRate:
-							(parent1.phenotype.stationaryEggLayingRate +
-								parent2.phenotype.stationaryEggLayingRate) /
-							2,
-						movingEggLayingRate:
-							(parent1.phenotype.movingEggLayingRate +
-								parent2.phenotype.movingEggLayingRate) /
-							2,
-						restAfterLayingEggMS:
-							(parent1.phenotype.restAfterLayingEggMS +
-								parent2.phenotype.restAfterLayingEggMS) /
-							2,
-						blackEggRate:
-							(parent1.phenotype.blackEggRate +
-								parent2.phenotype.blackEggRate) /
-							2,
-						goldEggRate:
-							(parent1.phenotype.goldEggRate + parent2.phenotype.goldEggRate) /
-							2,
-						hatchRate:
-							(parent1.phenotype.hatchRate + parent2.phenotype.hatchRate) / 2,
-						minXMovement: Math.round(
-							(parent1.phenotype.minXMovement +
-								parent2.phenotype.minXMovement) /
-								2
-						),
-						maxXMovement: Math.round(
-							(parent1.phenotype.maxXMovement +
-								parent2.phenotype.maxXMovement) /
-								2
-						),
-						minStopMS:
-							(parent1.phenotype.minStopMS + parent2.phenotype.minStopMS) / 2,
-						maxStopMS:
-							(parent1.phenotype.maxStopMS + parent2.phenotype.maxStopMS) / 2,
-
+						// Results
 						eggsLaid: 0,
 						eggsCaught: {
 							white: 0,
@@ -232,9 +189,8 @@ const appMachine = setup({
 			.map(() => {
 				const dnaLength = Object.keys(phenotypeConfig).length;
 				const initialDNA = new DNA(dnaLength);
-
 				const phenotype = getInitialPhenotype(initialDNA);
-				// Pick minimum and maximum X positions for the hen.
+
 				return {
 					id: nanoid(),
 					// GA
