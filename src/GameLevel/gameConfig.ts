@@ -87,8 +87,8 @@ export function getGameConfig() {
 			// X and Y offset for the butt of the hen where the egg should come out.
 			buttXOffset: 0.5 * henSize,
 			buttYOffset: 85,
-			eggLayingXMin: stageDimensions.movementMargin,
-			eggLayingXMax: stageDimensions.width - stageDimensions.movementMargin,
+			eggLayingXMin: 40,
+			eggLayingXMax: stageDimensions.width - 40,
 		},
 		henBeam: {
 			width: stageDimensions.width,
