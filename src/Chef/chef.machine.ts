@@ -1,9 +1,9 @@
 import { assign, fromPromise, raise, setup } from 'xstate';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
-import { GameAssets } from '../types/assets';
+import type { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
-import { Position, Direction } from '../types';
+import type { Position, Direction } from '../types';
 
 export const chefMachine = setup({
 	types: {} as {

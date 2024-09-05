@@ -1,15 +1,19 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { ActorRefFrom, assign, log, sendTo, setup } from 'xstate';
+import { type ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
-import { HenDoneEvent, henMachine } from '../Hen/hen.machine';
-import { EggDoneEvent, eggMachine, EggResultStatus } from '../Egg/egg.machine';
+import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
+import {
+	type EggDoneEvent,
+	type EggResultStatus,
+	eggMachine,
+} from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
-import { GenerationStats, IndividualHen, LevelResults } from './types';
+import type { GenerationStats, IndividualHen, LevelResults } from './types';
 import { sounds } from '../sounds';
-import { GameAssets } from '../types/assets';
+import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
-import { Direction, Position } from '../types';
+import type { Direction, Position } from '../types';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -87,10 +91,9 @@ export const gameLevelMachine = setup({
 		}),
 		spawnNewHen: assign(({ context, spawn }) => {
 			const index = context.nextHenIndex;
-			const henConfig = context.population[index];
+			const henConfig = context.population[index] as IndividualHen;
 
 			if (index >= context.population.length) {
-				console.warn('No more hens to spawn');
 				return {};
 			}
 
@@ -101,28 +104,18 @@ export const gameLevelMachine = setup({
 					gameConfig: context.gameConfig,
 					id: henConfig.id,
 					henAssets: context.gameAssets.hen,
+					// GA
+					phenotype: henConfig.phenotype,
+					// Config
+
 					position: {
 						x: henConfig.initialPosition.x,
 						y: henConfig.initialPosition.y,
 					},
-					speed: henConfig.speed,
-					baseTweenDurationSeconds: henConfig.baseTweenDurationSeconds,
-					maxEggs: henConfig.maxEggs,
-					stationaryEggLayingRate: henConfig.stationaryEggLayingRate,
-					movingEggLayingRate: henConfig.movingEggLayingRate,
-					restAfterLayingEggMS: henConfig.restAfterLayingEggMS,
-					blackEggRate: henConfig.blackEggRate,
-					goldEggRate: henConfig.goldEggRate,
-					hatchRate: henConfig.hatchRate,
-					minXMovement: henConfig.minXMovement,
-					maxXMovement: henConfig.maxXMovement,
-					minStopMS: henConfig.minStopMS,
-					maxStopMS: henConfig.maxStopMS,
 				},
 			});
 			const newHenActorRefs = [...context.henActorRefs, nextHen];
 
-			console.log('newHenActorRefs length', newHenActorRefs.length);
 			return {
 				henActorRefs: newHenActorRefs,
 				nextHenIndex: index + 1,
@@ -180,7 +173,11 @@ export const gameLevelMachine = setup({
 				const updatedHenStatsById = {
 					...context.henStatsById,
 				};
-				updatedHenStatsById[params.henId].eggsLaid += 1;
+
+				const thisIndividualHen = updatedHenStatsById[params.henId];
+				if (thisIndividualHen) {
+					thisIndividualHen.stats.eggsLaid += 1;
+				}
 
 				const updatedLevelStats = {
 					...context.levelStats,
@@ -246,8 +243,8 @@ export const gameLevelMachine = setup({
 				};
 
 				const updatedHenStats = {
-					...context.henStatsById[params.henId],
-				};
+					...context.henStatsById[params.henId]?.stats,
+				} as IndividualHen['stats'];
 
 				const updatedLevelStats = {
 					...context.levelStats,
@@ -277,7 +274,10 @@ export const gameLevelMachine = setup({
 						break;
 				}
 
-				updatedHenStatsById[params.henId] = updatedHenStats;
+				const thisIndividualHen = updatedHenStatsById[params.henId];
+				if (thisIndividualHen) {
+					thisIndividualHen.stats = updatedHenStats;
+				}
 
 				return {
 					henStatsById: updatedHenStatsById,
@@ -291,37 +291,86 @@ export const gameLevelMachine = setup({
 
 				return {
 					...context.levelStats,
+
+					// Generation Stats
+					// Overall info
 					generationNumber: context.generationNumber,
+					catchRate:
+						context.levelStats.totalEggsCaught /
+						context.levelStats.totalEggsLaid,
+
+					// Average phenotype values
+					averageHenSpeed:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.speed,
+							0
+						) / totalHens,
+					averageBaseTweenDurationSeconds:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.baseTweenDurationSeconds,
+							0
+						) / totalHens,
+					averageStationaryEggLayingRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.stationaryEggLayingRate,
+							0
+						) / totalHens,
+					averageMovingEggLayingRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.movingEggLayingRate,
+							0
+						) / totalHens,
+					averageHatchRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.hatchRate,
+							0
+						) / totalHens,
+					averageMinXMovement:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.minXMovement,
+							0
+						) / totalHens,
+					averageMaxXMovement:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.maxXMovement,
+							0
+						) / totalHens,
+					averageMinStopMS:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.minStopMS,
+							0
+						) / totalHens,
+					averageMaxStopMS:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.maxStopMS,
+							0
+						) / totalHens,
+					averageMaxEggs:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.maxEggs,
+							0
+						) / totalHens,
+					averageBlackEggRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.blackEggRate,
+							0
+						) / totalHens,
+					averageGoldEggRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.goldEggRate,
+							0
+						) / totalHens,
+					averageRestAfterLayingEggMS:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.restAfterLayingEggMS,
+							0
+						) / totalHens,
+
+					// Average stats
 					averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
 					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
 					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
 					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
-					averageStationaryEggLayingRate:
-						context.population.reduce(
-							(acc, hen) => acc + hen.stationaryEggLayingRate,
-							0
-						) / totalHens,
-					averageHenSpeed:
-						context.population.reduce((acc, hen) => acc + hen.speed, 0) /
-						totalHens,
-					averageHatchRate:
-						context.population.reduce((acc, hen) => acc + hen.hatchRate, 0) /
-						totalHens,
-					averageMinXMovement:
-						context.population.reduce((acc, hen) => acc + hen.minXMovement, 0) /
-						totalHens,
-					averageMaxXMovement:
-						context.population.reduce((acc, hen) => acc + hen.maxXMovement, 0) /
-						totalHens,
-					averageMinStopMS:
-						context.population.reduce((acc, hen) => acc + hen.minStopMS, 0) /
-						totalHens,
-					averageMaxStopMS:
-						context.population.reduce((acc, hen) => acc + hen.maxStopMS, 0) /
-						totalHens,
-					catchRate:
-						context.levelStats.totalEggsCaught /
-						context.levelStats.totalEggsLaid,
 				};
 			},
 		}),
@@ -404,17 +453,30 @@ export const gameLevelMachine = setup({
 			},
 		},
 		levelStats: {
-			averageEggsBroken: 0,
-			averageEggsHatched: 0,
-			averageEggsLaid: 0,
-			averageStationaryEggLayingRate: 0,
+			// Overall info
+			generationNumber: 1,
+			catchRate: 0,
+			// Average phenotype values
 			averageHenSpeed: 0,
+			averageBaseTweenDurationSeconds: 0,
+			averageStationaryEggLayingRate: 0,
+			averageMovingEggLayingRate: 0,
 			averageHatchRate: 0,
 			averageMinXMovement: 0,
 			averageMaxXMovement: 0,
 			averageMinStopMS: 0,
 			averageMaxStopMS: 0,
-			generationNumber: 1,
+			averageMaxEggs: 0,
+			averageBlackEggRate: 0,
+			averageGoldEggRate: 0,
+			averageRestAfterLayingEggMS: 0,
+
+			// Average stats
+			averageEggsBroken: 0,
+			averageEggsHatched: 0,
+			averageEggsLaid: 0,
+
+			// Result totals
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,
 			totalBlackEggsCaught: 0,
@@ -426,14 +488,13 @@ export const gameLevelMachine = setup({
 			totalGoldEggsLaid: 0,
 			totalWhiteEggsLaid: 0,
 			totalEggsSplat: 0,
-			catchRate: 0,
 		},
 		henStatsById: input.population.reduce(
 			(acc, individualHenConfig) => ({
 				...acc,
 				[individualHenConfig.id]: individualHenConfig,
 			}),
-			{}
+			{} as Record<string, IndividualHen>
 		),
 	}),
 	output: ({ context }) => ({
@@ -586,11 +647,7 @@ export const gameLevelMachine = setup({
 		Done: {
 			type: 'final',
 			tags: 'summary',
-			entry: [
-				log('Game Level summary state'),
-				'calculateLevelStatsAverages',
-				'cleanupLevelRefs',
-			],
+			entry: ['calculateLevelStatsAverages', 'cleanupLevelRefs'],
 		},
 	},
 });

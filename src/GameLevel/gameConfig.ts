@@ -1,15 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 50;
-
-export function getRandomNumber(
-	min: number,
-	max: number,
-	round: boolean = false
-) {
-	const randomValue = Math.random() * (max - min) + min;
-	return round ? Math.round(randomValue) : randomValue;
-}
+const POPULATION_SIZE = 20;
 
 export function getGameConfig() {
 	const stageDimensions = {
@@ -36,7 +27,7 @@ export function getGameConfig() {
 	const henSize = 120;
 
 	const gameConfig = {
-		isMuted: true,
+		isMuted: false,
 		// The number of hens in the game
 		populationSize: POPULATION_SIZE,
 		// The duration each level lasts in milliseconds
@@ -45,6 +36,10 @@ export function getGameConfig() {
 			...stageDimensions,
 			midX: stageDimensions.width / 2,
 			midY: stageDimensions.height / 2,
+		},
+		ga: {
+			mutationRate: 0.05,
+			mutationVariancePercentageRate: 0.08,
 		},
 		colors: {
 			white: '#ffffff',
@@ -138,75 +133,4 @@ export function getGameConfig() {
 	Howler.mute(gameConfig.isMuted);
 
 	return gameConfig;
-}
-
-/**
- * Sets up initial chromosome values for the hens.
- * Establishes the initial variation for the hen population.
- * @returns
- */
-export function getInitialChromosomeValues() {
-	const gameConfig = getGameConfig();
-
-	// The minimum xPos the hen can be at
-	const minXMovement = getRandomNumber(50, 200, true);
-
-	// The maximum xPos the hen can be at
-	const maxXMovement = getRandomNumber(
-		250,
-		0.5 * gameConfig.stageDimensions.width,
-		true
-	);
-
-	// The minimum time the hen will stop at a location
-	const minStopMS = Math.ceil(Math.random() * 1000);
-
-	// The maximum time the hen will stop at a location
-	const maxStopMS = minStopMS + Math.random() * 5000;
-
-	// Egg color
-	const maxBlackEggRate = 0.5;
-	const blackEggRate = Math.floor(Math.random() * maxBlackEggRate * 100) / 100;
-	const goldEggRateRandom = 1 - Math.random() * (1 - blackEggRate);
-	const goldEggRate = Math.floor(goldEggRateRandom * 100) / 100;
-
-	// Calculate the egg laying rates
-	const maxEggLayingRate = 0.5;
-
-	return {
-		// speed is the x speed of the hen
-		speed: Math.random(),
-
-		// baseTweenDurationSeconds is the base duration for the tween
-		baseTweenDurationSeconds: Math.ceil(Math.random() * 5),
-
-		// maxEggs can range between -1 and 50, -1 means no limit
-		// maxEggs: Math.round(Math.random() * 51) - 1,
-		maxEggs: -1,
-
-		// The rate at which the hen lays eggs while stopped or while moving
-		stationaryEggLayingRate: Math.random() * maxEggLayingRate,
-		// stationaryEggLayingRate: 1,
-		movingEggLayingRate: Math.random() * maxEggLayingRate,
-		// movingEggLayingRate: 1,
-
-		// The time the hen will rest after laying an egg (while stationary)
-		restAfterLayingEggMS: Math.random() * 2000,
-
-		// The min and max x amount a hen can move during its animation
-		minXMovement,
-		maxXMovement,
-
-		// The min and max time the hen will stop at a location
-		minStopMS,
-		maxStopMS,
-
-		// Egg color rates
-		blackEggRate,
-		goldEggRate,
-
-		// The rate at which the eggs will hatch when they land on the ground
-		// hatchRate: Math.random(),
-		hatchRate: 1,
-	};
 }

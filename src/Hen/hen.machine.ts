@@ -1,9 +1,12 @@
-import { and, assign, log, OutputFrom, sendParent, setup } from 'xstate';
+import type { OutputFrom } from 'xstate';
+import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
-import { getGameConfig, getRandomNumber } from '../GameLevel/gameConfig';
-import { GameAssets } from '../types/assets';
+import { getGameConfig } from '../GameLevel/gameConfig';
+import type { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
-import { Direction, Position } from '../types';
+import type { Direction, Position } from '../types';
+import type { PhenotypeValuesForIndividual } from '../types/dna';
+import { getRandomNumber } from '../utils';
 
 type Destination = 'offscreen-right' | 'offscreen-left';
 function getDestinationAndPositions(
@@ -41,19 +44,7 @@ export const henMachine = setup({
 			index: number;
 			henAssets: GameAssets['hen'];
 			position: Position;
-			maxEggs: number;
-			stationaryEggLayingRate: number;
-			movingEggLayingRate: number;
-			restAfterLayingEggMS: number;
-			speed: number;
-			baseTweenDurationSeconds: number;
-			blackEggRate: number;
-			goldEggRate: number;
-			hatchRate: number;
-			minStopMS: number;
-			maxStopMS: number;
-			minXMovement: number;
-			maxXMovement: number;
+			phenotype: PhenotypeValuesForIndividual;
 		};
 		output: {
 			henId: string;
@@ -67,28 +58,16 @@ export const henMachine = setup({
 			destination: 'offscreen-right' | 'offscreen-left';
 			position: Position;
 			targetPosition: Position;
+			phenotype: PhenotypeValuesForIndividual;
 			animationEasingEggLayingBufferMS: number;
-			speed: number;
 			currentTweenSpeed: number;
 			currentTweenDurationMS: number;
 			currentTweenStartTime: number;
 			currentTweenDirection: Direction['value'];
 			movingDirection: Direction['label'];
-			baseTweenDurationSeconds: number;
-			minStopMS: number;
-			maxStopMS: number;
-			maxEggs: number;
 			eggsLaid: number;
-			stationaryEggLayingRate: number;
-			movingEggLayingRate: number;
-			restAfterLayingEggMS: number;
-			gamePaused: boolean;
-			blackEggRate: number;
-			goldEggRate: number;
-			hatchRate: number;
-			minXMovement: number;
-			maxXMovement: number;
 			currentTween: Konva.Tween | null;
+			gamePaused: boolean;
 		};
 		events:
 			| { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
@@ -98,11 +77,13 @@ export const henMachine = setup({
 	},
 	guards: {
 		'has more eggs': ({ context }) =>
-			context.maxEggs < 0 ? true : context.eggsLaid < context.maxEggs,
+			context.phenotype.maxEggs < 0
+				? true
+				: context.eggsLaid < context.phenotype.maxEggs,
 		'is within stationary laying rate': ({ context }) =>
-			Math.random() < context.stationaryEggLayingRate,
+			Math.random() < context.phenotype.stationaryEggLayingRate,
 		'is within moving laying rate': ({ context }) =>
-			Math.random() < context.movingEggLayingRate,
+			Math.random() < context.phenotype.movingEggLayingRate,
 		'is not near animation end': ({ context }) => {
 			const currentTime = new Date().getTime();
 			const elapsedMS = currentTime - context.currentTweenStartTime;
@@ -144,13 +125,16 @@ export const henMachine = setup({
 			// Pick a new x target position within the hen motion range
 			// and with a minimum distance from the current position
 			// TODO a range could be a gene value.
-			const minDistance = context.minXMovement;
-			const movementRange = context.maxXMovement;
+			const minDistance = context.phenotype.minXMovement;
+			const movementRange = context.phenotype.maxXMovement;
 
 			if (context.destination === 'offscreen-right') {
 				targetPosition.x =
-					getRandomNumber(context.minXMovement, context.maxXMovement, true) +
-					context.position.x;
+					getRandomNumber(
+						context.phenotype.minXMovement,
+						context.phenotype.maxXMovement,
+						true
+					) + context.position.x;
 			} else if (context.destination === 'offscreen-left') {
 				targetPosition.x =
 					-Math.round(Math.random() * movementRange) +
@@ -158,7 +142,11 @@ export const henMachine = setup({
 					minDistance;
 				targetPosition.x =
 					context.position.x -
-					getRandomNumber(context.minXMovement, context.maxXMovement, true);
+					getRandomNumber(
+						context.phenotype.minXMovement,
+						context.phenotype.maxXMovement,
+						true
+					);
 			}
 
 			return {
@@ -179,8 +167,8 @@ export const henMachine = setup({
 			const absoluteRelativeDistance = absoluteXDistance / totalDistance;
 
 			const duration =
-				context.baseTweenDurationSeconds *
-				(1 - absoluteRelativeDistance * context.speed);
+				context.phenotype.baseTweenDurationSeconds *
+				(1 - absoluteRelativeDistance * context.phenotype.speed);
 
 			// New calculation here...
 			const totalSpeed = xDistance / duration;
@@ -217,14 +205,15 @@ export const henMachine = setup({
 			return context.gameConfig.hen.entranceDelayMS;
 		},
 		getRandomStopDurationMS: ({ context }) => {
-			const { minStopMS, maxStopMS } = context;
+			const { minStopMS, maxStopMS } = context.phenotype;
 			// If values mutate to cross over, return the min value.
 			if (minStopMS >= maxStopMS) return minStopMS;
 
 			// Pick a value somewhere between the min and max stop duration.
 			return Math.random() * (maxStopMS - minStopMS) + minStopMS;
 		},
-		restAfterLayingAnEgg: ({ context }) => context.restAfterLayingEggMS,
+		restAfterLayingAnEgg: ({ context }) =>
+			context.phenotype.restAfterLayingEggMS,
 		animationEasingEggLayingBufferMS: ({ context }) =>
 			context.animationEasingEggLayingBufferMS,
 		getRandomMidTweenDelay: ({ context }) => {
@@ -257,10 +246,10 @@ export const henMachine = setup({
 			id: input.id,
 			index: input.index,
 			henAssets: input.henAssets,
+			phenotype: input.phenotype,
 			destination,
 			position,
 			targetPosition,
-			speed: input.speed,
 			animationEasingEggLayingBufferMS:
 				input.gameConfig.hen.animationEasingEggLayingBufferMS,
 			currentTweenSpeed: 0,
@@ -268,20 +257,8 @@ export const henMachine = setup({
 			currentTweenStartTime: 0,
 			currentTweenDirection: 0,
 			movingDirection: 'none',
-			baseTweenDurationSeconds: input.baseTweenDurationSeconds,
-			minStopMS: input.minStopMS,
-			maxStopMS: input.maxStopMS,
-			maxEggs: input.maxEggs,
 			eggsLaid: 0,
-			stationaryEggLayingRate: input.stationaryEggLayingRate,
-			movingEggLayingRate: input.movingEggLayingRate,
-			restAfterLayingEggMS: input.restAfterLayingEggMS,
 			gamePaused: false,
-			blackEggRate: input.blackEggRate,
-			goldEggRate: input.goldEggRate,
-			hatchRate: input.hatchRate,
-			minXMovement: input.minXMovement,
-			maxXMovement: input.maxXMovement,
 			currentTween: null,
 		};
 	},
@@ -353,9 +330,9 @@ export const henMachine = setup({
 						sendParent(({ context }) => {
 							const randomEggColorNumber = Math.random();
 							const eggColor =
-								randomEggColorNumber < context.blackEggRate
+								randomEggColorNumber < context.phenotype.blackEggRate
 									? 'black'
-									: randomEggColorNumber < context.goldEggRate
+									: randomEggColorNumber < context.phenotype.goldEggRate
 									? 'gold'
 									: 'white';
 
@@ -366,7 +343,7 @@ export const henMachine = setup({
 								henCurrentTweenDirection: context.currentTweenDirection,
 								henPosition: context.henRef.current!.getPosition(),
 								eggColor,
-								hatchRate: context.hatchRate,
+								hatchRate: context.phenotype.hatchRate,
 							};
 						}),
 						assign({
@@ -410,9 +387,9 @@ export const henMachine = setup({
 				sendParent(({ context }) => {
 					const randomEggColorNumber = Math.random();
 					const eggColor =
-						randomEggColorNumber < context.blackEggRate
+						randomEggColorNumber < context.phenotype.blackEggRate
 							? 'black'
-							: randomEggColorNumber < context.goldEggRate
+							: randomEggColorNumber < context.phenotype.goldEggRate
 							? 'gold'
 							: 'white';
 
@@ -423,7 +400,7 @@ export const henMachine = setup({
 						henCurrentTweenDirection: context.currentTweenDirection,
 						henPosition: context.henRef.current!.getPosition(),
 						eggColor,
-						hatchRate: context.hatchRate,
+						hatchRate: context.phenotype.hatchRate,
 					};
 				}),
 				assign({
@@ -437,7 +414,6 @@ export const henMachine = setup({
 		},
 		'Reached Desination': {
 			type: 'final',
-			entry: [log('Reached Desination')],
 		},
 	},
 });
