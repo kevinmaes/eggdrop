@@ -1,7 +1,32 @@
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { mapValue } from '../utils';
 
-export const phenotypeConfig = {
+export type PhenotypeKey =
+	| 'speed'
+	| 'baseTweenDurationSeconds'
+	| 'stationaryEggLayingRate'
+	| 'movingEggLayingRate'
+	| 'hatchRate'
+	| 'minXMovement'
+	| 'maxXMovement'
+	| 'minStopMS'
+	| 'maxStopMS'
+	| 'maxEggs'
+	| 'blackEggRate'
+	| 'goldEggRate'
+	| 'restAfterLayingEggMS';
+
+export type PhenotypeConfig = Record<
+	PhenotypeKey,
+	{
+		min: number;
+		max: number;
+		round?: boolean;
+	}
+>;
+export type PhenotypeValuesForIndividual = Record<PhenotypeKey, number>;
+
+export const phenotypeConfig: PhenotypeConfig = {
 	// The x speed of the hen
 	speed: {
 		min: 0,
@@ -78,10 +103,6 @@ export const phenotypeConfig = {
 		round: true,
 	},
 };
-
-export type PhenotypeConfig = typeof phenotypeConfig;
-export type PhenotypeKey = keyof typeof phenotypeConfig;
-export type PhenotypeValuesForIndividual = Record<PhenotypeKey, number>;
 
 export class DNA {
 	private id: string = '';

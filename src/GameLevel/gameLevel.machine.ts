@@ -293,19 +293,33 @@ export const gameLevelMachine = setup({
 
 				return {
 					...context.levelStats,
+
+					// Generation Stats
+					// Overall info
 					generationNumber: context.generationNumber,
-					averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
-					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
-					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
-					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
+					catchRate:
+						context.levelStats.totalEggsCaught /
+						context.levelStats.totalEggsLaid,
+
+					// Average phenotype values
+					averageHenSpeed:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.speed,
+							0
+						) / totalHens,
+					averageBaseTweenDurationSeconds:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.baseTweenDurationSeconds,
+							0
+						) / totalHens,
 					averageStationaryEggLayingRate:
 						context.population.reduce(
 							(acc, hen) => acc + hen.phenotype.stationaryEggLayingRate,
 							0
 						) / totalHens,
-					averageHenSpeed:
+					averageMovingEggLayingRate:
 						context.population.reduce(
-							(acc, hen) => acc + hen.phenotype.speed,
+							(acc, hen) => acc + hen.phenotype.movingEggLayingRate,
 							0
 						) / totalHens,
 					averageHatchRate:
@@ -333,9 +347,32 @@ export const gameLevelMachine = setup({
 							(acc, hen) => acc + hen.phenotype.maxStopMS,
 							0
 						) / totalHens,
-					catchRate:
-						context.levelStats.totalEggsCaught /
-						context.levelStats.totalEggsLaid,
+					averageMaxEggs:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.maxEggs,
+							0
+						) / totalHens,
+					averageBlackEggRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.blackEggRate,
+							0
+						) / totalHens,
+					averageGoldEggRate:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.goldEggRate,
+							0
+						) / totalHens,
+					averageRestAfterLayingEggMS:
+						context.population.reduce(
+							(acc, hen) => acc + hen.phenotype.restAfterLayingEggMS,
+							0
+						) / totalHens,
+
+					// Average stats
+					averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
+					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
+					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
+					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
 				};
 			},
 		}),
@@ -418,17 +455,30 @@ export const gameLevelMachine = setup({
 			},
 		},
 		levelStats: {
-			averageEggsBroken: 0,
-			averageEggsHatched: 0,
-			averageEggsLaid: 0,
-			averageStationaryEggLayingRate: 0,
+			// Overall info
+			generationNumber: 1,
+			catchRate: 0,
+			// Average phenotype values
 			averageHenSpeed: 0,
+			averageBaseTweenDurationSeconds: 0,
+			averageStationaryEggLayingRate: 0,
+			averageMovingEggLayingRate: 0,
 			averageHatchRate: 0,
 			averageMinXMovement: 0,
 			averageMaxXMovement: 0,
 			averageMinStopMS: 0,
 			averageMaxStopMS: 0,
-			generationNumber: 1,
+			averageMaxEggs: 0,
+			averageBlackEggRate: 0,
+			averageGoldEggRate: 0,
+			averageRestAfterLayingEggMS: 0,
+
+			// Average stats
+			averageEggsBroken: 0,
+			averageEggsHatched: 0,
+			averageEggsLaid: 0,
+
+			// Result totals
 			totalEggsBroken: 0,
 			totalEggsCaught: 0,
 			totalBlackEggsCaught: 0,
@@ -440,7 +490,6 @@ export const gameLevelMachine = setup({
 			totalGoldEggsLaid: 0,
 			totalWhiteEggsLaid: 0,
 			totalEggsSplat: 0,
-			catchRate: 0,
 		},
 		henStatsById: input.population.reduce(
 			(acc, individualHenConfig) => ({
