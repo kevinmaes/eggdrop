@@ -57,31 +57,40 @@ export function DevPanel() {
 
 	const statNames = [
 		'',
-		'catchRate',
-		'',
-		// Totals
 		'totalEggsLaid',
-		'totalBlackEggsLaid',
-		'totalGoldEggsLaid',
-		'totalWhiteEggsLaid',
-		'totalEggsBroken',
-		'totalEggsCaught',
-		'totalBlackEggsCaught',
-		'totalGoldEggsCaught',
-		'totalWhiteEggsCaught',
-		'totalEggsHatched',
-		'',
-		// Averages
-		'averageEggsBroken',
-		'averageEggsHatched',
+		'catchRate',
 		'averageEggsLaid',
+		'',
+		// Average phenotype values
 		'averageHenSpeed',
+		'averageBaseTweenDurationSeconds',
 		'averageStationaryEggLayingRate',
+		'averageMovingEggLayingRate',
 		'averageHatchRate',
 		'averageMinXMovement',
 		'averageMaxXMovement',
 		'averageMinStopMS',
 		'averageMaxStopMS',
+		'averageMaxEggs',
+		'averageBlackEggRate',
+		'averageGoldEggRate',
+		'averageRestAfterLayingEggMS',
+		'',
+		// Averages
+		// 'averageEggsLaid',
+		// 'averageEggsBroken',
+		// 'averageEggsHatched',
+		// '',
+		// Result totals
+		// 'totalBlackEggsLaid',
+		// 'totalGoldEggsLaid',
+		// 'totalWhiteEggsLaid',
+		// 'totalEggsBroken',
+		// 'totalEggsCaught',
+		// 'totalBlackEggsCaught',
+		// 'totalGoldEggsCaught',
+		// 'totalWhiteEggsCaught',
+		// 'totalEggsHatched',
 	];
 
 	if (!showDevPanel) {
@@ -102,7 +111,7 @@ export function DevPanel() {
 			<div
 				className="grid-container"
 				style={{
-					gridTemplateColumns: `240px repeat(${levelResultsHistory.length}, 1fr)`,
+					gridTemplateColumns: `300px repeat(${levelResultsHistory.length}, 1fr)`,
 				}}
 			>
 				{/* Insert the first row for headers */}
