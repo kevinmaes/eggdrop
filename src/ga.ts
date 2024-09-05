@@ -1,6 +1,7 @@
 import type { IndividualHen } from './GameLevel/types';
 import type { PhenotypeConfig, PhenotypeKey } from './types/dna';
 import { DNA } from './types/dna';
+import { clamp } from './utils';
 
 export function calculateFitness(individual: IndividualHen) {
 	// Default overall fitness can not be 0
@@ -79,10 +80,6 @@ export function crossover(parentDNA1: DNA, parentDNA2: DNA) {
 	const childDNA = new DNA(crossedOverGenes.length);
 	childDNA.replaceGenes(crossedOverGenes);
 	return childDNA;
-}
-
-function clamp(value: number, min: number, max: number) {
-	return Math.max(min, Math.min(value, max));
 }
 
 /**
