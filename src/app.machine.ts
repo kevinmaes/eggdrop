@@ -102,6 +102,7 @@ const appMachine = setup({
 		}),
 		selectCrossoverAndMutatePopulation: assign({
 			population: ({ context }) => {
+				// GA Selection
 				// Select by fitness (roulette wheel selection)
 				const selectedParents = [];
 				// Only select a total of 33% of the population to be parents
@@ -110,7 +111,7 @@ const appMachine = setup({
 					selectedParents.push(rouletteWheelSelection(context.population));
 				}
 
-				// Crossover
+				// GA Crossover
 				const nextGeneration: Hendividual[] = [];
 
 				// Iterate through the entire population to create the next generation
@@ -154,7 +155,7 @@ const appMachine = setup({
 					nextGeneration.push(child);
 				}
 
-				// Mutate
+				// GA Mutation
 				const mutatedNextGenerationPopulation = nextGeneration.map(
 					(individual) => {
 						return mutateIndividual(
