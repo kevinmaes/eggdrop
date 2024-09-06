@@ -332,19 +332,14 @@ const appMachine = setup({
 				},
 				'Next Generation Evolution': {
 					tags: ['between levels'],
-					entry: [
-						'evaluatePopulationFitness',
-						({ context }) => {
-							console.log(
-								'context',
-								context.population.map((individual) => individual.fitness)
-							);
-						},
-					],
+					// Be sure to eagerly evaluate the fitness of the population
+					// so that stats are available between levels.
+					entry: 'evaluatePopulationFitness',
 					on: {
 						Play: 'Playing',
 					},
 					exit: [
+						// Continue with the rest of the GA steps before starting the next level.
 						'selectCrossoverAndMutatePopulation',
 						assign({
 							generationNumber: ({ context }) => context.generationNumber + 1,
