@@ -1,6 +1,6 @@
 // This file contains the configuration for the game
 
-const POPULATION_SIZE = 4;
+const POPULATION_SIZE = 40;
 
 export function getGameConfig() {
 	const stageDimensions = {
