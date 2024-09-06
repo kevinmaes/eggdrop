@@ -8,7 +8,7 @@ import {
 	calculateFitness,
 	mutateIndividual,
 	rouletteWheelSelection,
-} from './ga';
+} from './geneticAlgorithm/ga';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
 import {
@@ -16,7 +16,7 @@ import {
 	getInitialPhenotype,
 	phenotypeConfig,
 	type PhenotypeValuesForIndividual,
-} from './types/dna';
+} from './geneticAlgorithm/dna';
 
 const appMachine = setup({
 	types: {} as {

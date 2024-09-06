@@ -1,6 +1,6 @@
-import type { Hendividual } from './GameLevel/types';
-import type { PhenotypeConfig, PhenotypeKey } from './types/dna';
-import { clamp } from './utils';
+import type { Hendividual } from '../GameLevel/types';
+import type { PhenotypeConfig, PhenotypeKey } from './dna';
+import { clamp } from '../utils';
 
 export function calculateFitness(individual: Hendividual) {
 	// Default overall fitness can not be 0
