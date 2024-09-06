@@ -58,29 +58,6 @@ export function rouletteWheelSelection(population: Hendividual[]) {
 	return population[population.length - 1];
 }
 
-// /**
-//  * Combines DNA from two parents to create a child DNA.
-//  * This DNA represents the genotype of the child and is
-//  * agnostic to the phenotype i.e. how it will be expressed by the Hendividual.
-//  * @param parentDNA1
-//  * @param parentDNA2
-//  * @returns
-//  */
-// export function crossover(parentDNA1: DNA, parentDNA2: DNA) {
-// 	const crossedOverGenes: DNA['genes'] = [];
-
-// 	// Loop over each gene in the DNA and randomly select a parent
-// 	// to get the gene from.
-// 	for (let i = 0; i < parentDNA1.getLength(); i++) {
-// 		const selectedParent = Math.random() > 0.5 ? parentDNA1 : parentDNA2;
-// 		crossedOverGenes.push(selectedParent.getGene(i));
-// 	}
-
-// 	const childDNA = new DNA(crossedOverGenes.length);
-// 	childDNA.replaceGenes(crossedOverGenes);
-// 	return childDNA;
-// }
-
 /**
  * Mutates an individual based on a mutation rate and variance percentage
  * @param individual
