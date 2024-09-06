@@ -6,7 +6,6 @@ import { getGameConfig } from './GameLevel/gameConfig';
 import type { Hendividual, LevelResults } from './GameLevel/types';
 import {
 	calculateFitness,
-	crossover,
 	mutateIndividual,
 	rouletteWheelSelection,
 } from './ga';
@@ -124,7 +123,7 @@ const appMachine = setup({
 						Math.floor(Math.random() * selectedParents.length)
 					] as Hendividual;
 
-					const childDNA = crossover(parent1.dna, parent2.dna);
+					const childDNA = DNA.crossover(parent1.dna, parent2.dna);
 					const childPhenotype: PhenotypeValuesForIndividual =
 						getInitialPhenotype(childDNA);
 
