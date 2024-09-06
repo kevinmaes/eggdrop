@@ -71,30 +71,34 @@ const appMachine = setup({
 				levelResultsHistory: [...context.levelResultsHistory, params],
 			};
 		}),
-		evaluatePopulationFitness: assign({
-			population: ({ context }) => {
-				// Evaluate fitness
-				const lastLevelResults = context.levelResultsHistory.slice(
-					-1
-				)[0] as LevelResults;
+		evaluatePopulationFitness: assign(({ context }) => {
+			const newLevelResultsHistory = context.levelResultsHistory.slice();
 
-				// Calculate the fitness of each individual in the population
-				// while also calculating the average fitness of the population.
-				let aggregateFitness = 0;
-				const evaluatedPopulation = context.population.map((individual) => {
-					const individualResult = lastLevelResults.henStatsById[individual.id];
-					if (!individualResult) {
-						return individual;
-					}
-					individual.fitness = calculateFitness(individualResult);
-					aggregateFitness += individual.fitness;
+			// Evaluate fitness
+			const newLastLevelResults = newLevelResultsHistory.slice(
+				-1
+			)[0] as LevelResults;
+
+			// Calculate the fitness of each individual in the population
+			// while also calculating the average fitness of the population.
+			let aggregateFitness = 0;
+			const evaluatedPopulation = context.population.map((individual) => {
+				const individualResult =
+					newLastLevelResults.henStatsById[individual.id];
+				if (!individualResult) {
 					return individual;
-				});
-				const averageFitness = aggregateFitness / evaluatedPopulation.length;
-				lastLevelResults.levelStats.averageFitness = averageFitness;
+				}
+				individual.fitness = calculateFitness(individualResult);
+				aggregateFitness += individual.fitness;
+				return individual;
+			});
+			const averageFitness = aggregateFitness / evaluatedPopulation.length;
+			newLastLevelResults.levelStats.averageFitness = averageFitness;
 
-				return evaluatedPopulation;
-			},
+			return {
+				population: evaluatedPopulation,
+				levelResultsHistory: newLevelResultsHistory,
+			};
 		}),
 		selectCrossoverAndMutatePopulation: assign({
 			population: ({ context }) => {
@@ -164,6 +168,9 @@ const appMachine = setup({
 
 				return mutatedNextGenerationPopulation;
 			},
+		}),
+		incrementGenerationNumber: assign({
+			generationNumber: ({ context }) => context.generationNumber + 1,
 		}),
 	},
 	actors: {
@@ -341,9 +348,7 @@ const appMachine = setup({
 					exit: [
 						// Continue with the rest of the GA steps before starting the next level.
 						'selectCrossoverAndMutatePopulation',
-						assign({
-							generationNumber: ({ context }) => context.generationNumber + 1,
-						}),
+						'incrementGenerationNumber',
 					],
 				},
 			},
