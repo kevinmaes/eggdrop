@@ -1,5 +1,6 @@
 import type { Position } from '../types';
-import { DNA, type PhenotypeKey } from '../geneticAlgorithm/dna';
+import { DNA } from '../geneticAlgorithm/dna';
+import type { PhenotypeKey } from '../geneticAlgorithm/phenotype';
 
 export interface GenerationStats {
 	// Overall info

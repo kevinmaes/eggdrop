@@ -11,12 +11,12 @@ import {
 } from './geneticAlgorithm/ga';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
+import { DNA } from './geneticAlgorithm/dna';
 import {
-	DNA,
 	getInitialPhenotype,
 	phenotypeConfig,
 	type PhenotypeValuesForIndividual,
-} from './geneticAlgorithm/dna';
+} from './geneticAlgorithm/phenotype';
 
 const appMachine = setup({
 	types: {} as {
