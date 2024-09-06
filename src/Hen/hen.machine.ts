@@ -5,7 +5,7 @@ import { getGameConfig } from '../GameLevel/gameConfig';
 import type { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
 import type { Direction, Position } from '../types';
-import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/dna';
+import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/dna2';
 import { getRandomNumber } from '../utils';
 
 type Destination = 'offscreen-right' | 'offscreen-left';

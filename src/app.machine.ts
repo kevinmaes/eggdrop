@@ -11,7 +11,7 @@ import {
 } from './geneticAlgorithm/ga';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
-import { DNA } from './geneticAlgorithm/dna';
+import { DNA } from './geneticAlgorithm/dna2';
 import {
 	getInitialPhenotype,
 	phenotypeConfig,
