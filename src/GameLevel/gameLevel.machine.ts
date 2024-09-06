@@ -9,7 +9,7 @@ import {
 	eggMachine,
 } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
-import type { GenerationStats, IndividualHen, LevelResults } from './types';
+import type { GenerationStats, Hendividual, LevelResults } from './types';
 import { sounds } from '../sounds';
 import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
@@ -22,7 +22,7 @@ export const gameLevelMachine = setup({
 			gameAssets: GameAssets;
 			generationNumber: number;
 			levelDuration: number;
-			population: IndividualHen[];
+			population: Hendividual[];
 		};
 		output: LevelResults;
 		context: {
@@ -36,8 +36,8 @@ export const gameLevelMachine = setup({
 			nextHenIndex: number;
 			hensLeft: number;
 			levelStats: GenerationStats;
-			henStatsById: Record<string, IndividualHen>;
-			population: IndividualHen[];
+			henStatsById: Record<string, Hendividual>;
+			population: Hendividual[];
 			scoreData: {
 				levelScore: number;
 				eggsCaught: {
@@ -91,7 +91,7 @@ export const gameLevelMachine = setup({
 		}),
 		spawnNewHen: assign(({ context, spawn }) => {
 			const index = context.nextHenIndex;
-			const henConfig = context.population[index] as IndividualHen;
+			const henConfig = context.population[index] as Hendividual;
 
 			if (index >= context.population.length) {
 				return {};
@@ -244,7 +244,7 @@ export const gameLevelMachine = setup({
 
 				const updatedHenStats = {
 					...context.henStatsById[params.henId]?.stats,
-				} as IndividualHen['stats'];
+				} as Hendividual['stats'];
 
 				const updatedLevelStats = {
 					...context.levelStats,
@@ -456,6 +456,9 @@ export const gameLevelMachine = setup({
 			// Overall info
 			generationNumber: 1,
 			catchRate: 0,
+
+			// GA values
+			averageFitness: 0,
 			// Average phenotype values
 			averageHenSpeed: 0,
 			averageBaseTweenDurationSeconds: 0,
@@ -494,7 +497,7 @@ export const gameLevelMachine = setup({
 				...acc,
 				[individualHenConfig.id]: individualHenConfig,
 			}),
-			{} as Record<string, IndividualHen>
+			{} as Record<string, Hendividual>
 		),
 	}),
 	output: ({ context }) => ({

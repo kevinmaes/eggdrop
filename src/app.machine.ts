@@ -3,21 +3,20 @@ import { assign, fromPromise, setup } from 'xstate';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
-import type { IndividualHen, LevelResults } from './GameLevel/types';
+import type { Hendividual, LevelResults } from './GameLevel/types';
 import {
-	calculateFitness,
-	crossover,
 	mutateIndividual,
 	rouletteWheelSelection,
-} from './ga';
+} from './geneticAlgorithm/ga';
+import { calculateFitness } from './geneticAlgorithm/eggdropGA';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
+import { DNA } from './geneticAlgorithm/DNA';
 import {
-	DNA,
 	getInitialPhenotype,
 	phenotypeConfig,
 	type PhenotypeValuesForIndividual,
-} from './types/dna';
+} from './geneticAlgorithm/phenotype';
 
 const appMachine = setup({
 	types: {} as {
@@ -28,7 +27,7 @@ const appMachine = setup({
 			isMuted: boolean;
 			generationNumber: number;
 			levelResultsHistory: LevelResults[];
-			population: IndividualHen[];
+			population: Hendividual[];
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets | null;
 			gameScoreData: {
@@ -71,43 +70,60 @@ const appMachine = setup({
 				levelResultsHistory: [...context.levelResultsHistory, params],
 			};
 		}),
-		evaluateAndEvolveNextGeneration: assign({
-			population: ({ context }) => {
-				// Evaluate fitness
-				const lastLevelResults = context.levelResultsHistory.slice(
-					-1
-				)[0] as LevelResults;
-				const evaluatedPopulation = context.population.map((individual) => {
-					const individualResult = lastLevelResults.henStatsById[individual.id];
-					if (!individualResult) {
-						return individual;
-					}
-					individual.fitness = calculateFitness(individualResult);
-					return individual;
-				});
+		evaluatePopulationFitness: assign(({ context }) => {
+			const newLevelResultsHistory = context.levelResultsHistory.slice();
 
+			// Evaluate fitness
+			const newLastLevelResults = newLevelResultsHistory.slice(
+				-1
+			)[0] as LevelResults;
+
+			// Calculate the fitness of each individual in the population
+			// while also calculating the average fitness of the population.
+			let aggregateFitness = 0;
+			const evaluatedPopulation = context.population.map((individual) => {
+				const individualResult =
+					newLastLevelResults.henStatsById[individual.id];
+				if (!individualResult) {
+					return individual;
+				}
+				individual.fitness = calculateFitness(individualResult);
+				aggregateFitness += individual.fitness;
+				return individual;
+			});
+			const averageFitness = aggregateFitness / evaluatedPopulation.length;
+			newLastLevelResults.levelStats.averageFitness = averageFitness;
+
+			return {
+				population: evaluatedPopulation,
+				levelResultsHistory: newLevelResultsHistory,
+			};
+		}),
+		selectCrossoverAndMutatePopulation: assign({
+			population: ({ context }) => {
+				// GA Selection
 				// Select by fitness (roulette wheel selection)
 				const selectedParents = [];
 				// Only select a total of 33% of the population to be parents
 				// based on roulette wheel selection.
-				for (let i = 0; i < evaluatedPopulation.length / 3; i++) {
-					selectedParents.push(rouletteWheelSelection(evaluatedPopulation));
+				for (let i = 0; i < context.population.length / 3; i++) {
+					selectedParents.push(rouletteWheelSelection(context.population));
 				}
 
-				// Crossover
-				const nextGeneration: IndividualHen[] = [];
+				// GA Crossover
+				const nextGeneration: Hendividual[] = [];
 
 				// Iterate through the entire population to create the next generation
 				for (let i = 0; i < context.gameConfig.populationSize; i++) {
 					// Randomly select two parents from the selected parents
 					const parent1 = selectedParents[
 						Math.floor(Math.random() * selectedParents.length)
-					] as IndividualHen;
+					] as Hendividual;
 					const parent2 = selectedParents[
 						Math.floor(Math.random() * selectedParents.length)
-					] as IndividualHen;
+					] as Hendividual;
 
-					const childDNA = crossover(parent1.dna, parent2.dna);
+					const childDNA = DNA.crossover(parent1.dna, parent2.dna);
 					const childPhenotype: PhenotypeValuesForIndividual =
 						getInitialPhenotype(childDNA);
 
@@ -138,7 +154,7 @@ const appMachine = setup({
 					nextGeneration.push(child);
 				}
 
-				// Mutate
+				// GA Mutation
 				const mutatedNextGenerationPopulation = nextGeneration.map(
 					(individual) => {
 						return mutateIndividual(
@@ -152,6 +168,9 @@ const appMachine = setup({
 
 				return mutatedNextGenerationPopulation;
 			},
+		}),
+		incrementGenerationNumber: assign({
+			generationNumber: ({ context }) => context.generationNumber + 1,
 		}),
 	},
 	actors: {
@@ -320,14 +339,16 @@ const appMachine = setup({
 				},
 				'Next Generation Evolution': {
 					tags: ['between levels'],
+					// Be sure to eagerly evaluate the fitness of the population
+					// so that stats are available between levels.
+					entry: 'evaluatePopulationFitness',
 					on: {
 						Play: 'Playing',
 					},
 					exit: [
-						'evaluateAndEvolveNextGeneration',
-						assign({
-							generationNumber: ({ context }) => context.generationNumber + 1,
-						}),
+						// Continue with the rest of the GA steps before starting the next level.
+						'selectCrossoverAndMutatePopulation',
+						'incrementGenerationNumber',
 					],
 				},
 			},

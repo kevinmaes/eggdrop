@@ -1,10 +1,12 @@
 import type { Position } from '../types';
-import { DNA, type PhenotypeKey } from '../types/dna';
+import { DNA } from '../geneticAlgorithm/DNA';
+import type { PhenotypeKey } from '../geneticAlgorithm/phenotype';
 
 export interface GenerationStats {
 	// Overall info
 	generationNumber: number;
 	catchRate: number;
+	averageFitness: number;
 
 	// Average phenotype values
 	averageHenSpeed: number;
@@ -50,7 +52,7 @@ export interface LevelResults {
 		};
 	};
 	levelStats: GenerationStats;
-	henStatsById: Record<string, IndividualHen>;
+	henStatsById: Record<string, Hendividual>;
 }
 
 // TODO: Move to a dictionary for any egg stats related data collection.
@@ -66,7 +68,7 @@ export interface LevelResults {
 // 	}
 // >;
 
-export interface IndividualHen {
+export interface Hendividual {
 	id: string;
 	// GA
 	dna: DNA;

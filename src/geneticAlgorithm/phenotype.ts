@@ -1,6 +1,9 @@
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { mapValue } from '../utils';
+import type { DNA } from './DNA';
 
+// This is the definitive list of all the possible phenotypes
+// that can be used to configure the Hendividuals.
 export type PhenotypeKey =
 	| 'speed'
 	| 'baseTweenDurationSeconds'
@@ -103,37 +106,6 @@ export const phenotypeConfig: PhenotypeConfig = {
 		round: true,
 	},
 };
-
-export class DNA {
-	private id: string = '';
-	private genes: number[];
-	constructor(length: number) {
-		this.genes = [];
-		for (let i = 0; i < length; i++) {
-			this.genes.push(Math.random());
-		}
-	}
-
-	getId() {
-		return this.id;
-	}
-
-	setId(id: string) {
-		this.id = id;
-	}
-
-	getLength() {
-		return this.genes.length;
-	}
-
-	getGene(index: number) {
-		return this.genes[index] ?? 0;
-	}
-
-	replaceGenes(genes: number[]) {
-		this.genes = genes;
-	}
-}
 
 type Entries<T> = {
 	[K in keyof T]: [K, T[K]];

@@ -11,10 +11,10 @@ function formatGenerationStats(generationStats: GenerationStats) {
 	return Object.entries(generationStats).reduce((acc, [key, value]) => {
 		switch (key) {
 			// 2 decimal places
+			case 'averageFitness':
 			case 'averageHenSpeed':
 			case 'averageStationaryEggLayingRate':
 			case 'averageMovingEggLayingRate':
-			case 'averageHatchRate':
 			case 'averageBlackEggRate':
 			case 'averageGoldEggRate':
 				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
@@ -76,10 +76,11 @@ export function DevPanel() {
 	const statNames = [
 		'',
 		'totalEggsLaid',
-		'catchRate',
 		'averageEggsLaid',
+		'catchRate',
 		'',
-		// Average phenotype values
+		// GA values including phenotype values
+		'averageFitness',
 		'averageHenSpeed',
 		'averageBaseTweenDurationSeconds',
 		'averageStationaryEggLayingRate',

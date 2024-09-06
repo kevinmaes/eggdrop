@@ -22,7 +22,7 @@
 	/* Automatically adjust row heights */
 	grid-template-rows: auto;
 	gap: 0.2rem;
-	font-size: 1rem;
+	font-size: 0.9rem;
 	width: fit-content;
 }
 
