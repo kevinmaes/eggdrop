@@ -5,10 +5,10 @@ import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
 import type { Hendividual, LevelResults } from './GameLevel/types';
 import {
-	calculateFitness,
 	mutateIndividual,
 	rouletteWheelSelection,
 } from './geneticAlgorithm/ga';
+import { calculateFitness } from './geneticAlgorithm/eggdropGA';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
 import { DNA } from './geneticAlgorithm/DNA';
