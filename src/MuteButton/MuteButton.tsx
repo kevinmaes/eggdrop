@@ -55,8 +55,8 @@ export function MuteButton() {
 				onClick={() => {
 					appActorRef.send({ type: 'Toggle mute' });
 				}}
-				fill="white"
-				opacity={isMuted ? 0.3 : 0.7}
+				fill="black"
+				opacity={0.3}
 			/>
 			<Image
 				listening={false}
@@ -65,6 +65,7 @@ export function MuteButton() {
 				image={controlsImage}
 				width={40}
 				height={40}
+				opacity={isMuted ? 0.7 : 1}
 				crop={{
 					x: controlsFrame.x,
 					y: controlsFrame.y,
