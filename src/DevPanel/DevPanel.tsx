@@ -15,7 +15,6 @@ function formatGenerationStats(generationStats: GenerationStats) {
 			case 'averageHenSpeed':
 			case 'averageStationaryEggLayingRate':
 			case 'averageMovingEggLayingRate':
-			case 'averageHatchRate':
 			case 'averageBlackEggRate':
 			case 'averageGoldEggRate':
 				acc[key as keyof GenerationStats] = value.toLocaleString(undefined, {
