@@ -1,6 +1,6 @@
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { mapValue } from '../utils';
-import type { DNA } from './dna2';
+import type { DNA } from './DNA';
 
 // This is the definitive list of all the possible phenotypes
 // that can be used to configure the Hendividuals.
