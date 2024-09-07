@@ -24,13 +24,15 @@ export interface GenerationStats {
 	averageRestAfterLayingEggMS: number;
 
 	// Average stats
-	averageEggsBroken: number;
-	averageEggsHatched: number;
 	averageEggsLaid: number;
+	averageEggsHatched: number;
+	averageEggsBroken: number;
+	averageEggsOffscreen: number;
 
 	// Result totals
 	totalEggsBroken: number;
 	totalEggsCaught: number;
+	totalEggsOffscreen: number;
 	totalBlackEggsCaught: number;
 	totalGoldEggsCaught: number;
 	totalWhiteEggsCaught: number;
@@ -87,5 +89,6 @@ export interface Hendividual {
 		};
 		eggsHatched: number;
 		eggsBroken: number;
+		eggsOffscreen: number;
 	};
 }

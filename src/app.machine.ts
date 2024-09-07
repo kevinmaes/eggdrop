@@ -148,6 +148,7 @@ const appMachine = setup({
 							},
 							eggsHatched: 0,
 							eggsBroken: 0,
+							eggsOffscreen: 0,
 							eggStats: {},
 						},
 					};
@@ -232,6 +233,7 @@ const appMachine = setup({
 						},
 						eggsHatched: 0,
 						eggsBroken: 0,
+						eggsOffscreen: 0,
 						eggStats: {},
 					},
 				};

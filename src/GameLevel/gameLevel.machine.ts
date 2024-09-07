@@ -280,6 +280,9 @@ export const gameLevelMachine = setup({
 						updatedHenStats.eggsBroken += 1;
 						updatedLevelStats.totalEggsBroken += 1;
 						break;
+					case 'Offscreen':
+						updatedHenStats.eggsOffscreen += 1;
+						updatedLevelStats.totalEggsOffscreen += 1;
 				}
 
 				const thisIndividualHen = updatedHenStatsById[params.henId];
@@ -379,6 +382,8 @@ export const gameLevelMachine = setup({
 					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
 					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
 					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
+					averageEggsOffscreen:
+						context.levelStats.totalEggsOffscreen / totalHens,
 				};
 			},
 		}),
@@ -484,9 +489,10 @@ export const gameLevelMachine = setup({
 			averageRestAfterLayingEggMS: 0,
 
 			// Average stats
-			averageEggsBroken: 0,
-			averageEggsHatched: 0,
 			averageEggsLaid: 0,
+			averageEggsHatched: 0,
+			averageEggsBroken: 0,
+			averageEggsOffscreen: 0,
 
 			// Result totals
 			totalEggsBroken: 0,
@@ -495,6 +501,7 @@ export const gameLevelMachine = setup({
 			totalGoldEggsCaught: 0,
 			totalWhiteEggsCaught: 0,
 			totalEggsHatched: 0,
+			totalEggsOffscreen: 0,
 			totalEggsLaid: 0,
 			totalBlackEggsLaid: 0,
 			totalGoldEggsLaid: 0,
