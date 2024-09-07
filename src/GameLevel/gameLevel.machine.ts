@@ -162,6 +162,11 @@ export const gameLevelMachine = setup({
 				];
 			},
 		}),
+		tellChefHeCaughtAnEgg: sendTo('chefMachine', { type: 'Catch' }),
+		tellEggItWasCaught: sendTo(
+			({ system }, params: { eggId: string }) => system.get(params.eggId),
+			{ type: 'Catch' }
+		),
 		updateHenStatsForEggLaid: assign(
 			(
 				{ context },
@@ -544,13 +549,16 @@ export const gameLevelMachine = setup({
 				params: ({ event }) => event.position,
 			},
 			actions: [
-				sendTo('chefMachine', { type: 'Catch' }),
+				'tellChefHeCaughtAnEgg',
 				'playCatchEggSound',
-				// Sending Catch to the eggActor will lead to final state
-				// and automatic removal by this parent machine.
-				sendTo(({ system, event }) => system.get(event.eggId), {
-					type: 'Catch',
-				}),
+				// Notifying the eggActor that the egg was caught leads to
+				// the egg's final state and automatic removal
+				{
+					type: 'tellEggItWasCaught',
+					params: ({ event }) => ({
+						eggId: event.eggId,
+					}),
+				},
 			],
 		},
 	},
