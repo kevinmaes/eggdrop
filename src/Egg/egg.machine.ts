@@ -146,9 +146,6 @@ export const eggMachine = setup({
 		playHatchingChickSound: ({ context }) => {
 			if (context.color === 'gold') {
 				sounds.yipee.play();
-			} else {
-				// TODO: Replace with a lighter sound for white eggs
-				// sounds.yipee.play();
 			}
 		},
 	},
