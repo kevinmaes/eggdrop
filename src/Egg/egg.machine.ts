@@ -149,7 +149,8 @@ export const eggMachine = setup({
 			}),
 		}),
 		setResultStatus: assign({
-			resultStatus: (_, params: EggResultStatus) => params,
+			resultStatus: (_, params: { resultStatus: EggResultStatus }) =>
+				params.resultStatus,
 		}),
 		// Sounds
 		playSplatSound: () => {
@@ -222,7 +223,10 @@ export const eggMachine = setup({
 					{
 						guard: 'isEggOffScreen',
 						target: 'Done',
-						actions: { type: 'setResultStatus', params: 'Offscreen' },
+						actions: {
+							type: 'setResultStatus',
+							params: { resultStatus: 'Offscreen' },
+						},
 					},
 					{
 						guard: 'isEggNearChefPot',
@@ -237,7 +241,10 @@ export const eggMachine = setup({
 				],
 				Catch: {
 					target: 'Done',
-					actions: { type: 'setResultStatus', params: 'Caught' },
+					actions: {
+						type: 'setResultStatus',
+						params: { resultStatus: 'Caught' },
+					},
 				},
 			},
 			initial: 'Init Falling',
@@ -381,13 +388,13 @@ export const eggMachine = setup({
 			onDone: 'Hatched',
 		},
 		Hatched: {
-			entry: { type: 'setResultStatus', params: 'Hatched' },
+			entry: { type: 'setResultStatus', params: { resultStatus: 'Hatched' } },
 			after: {
 				500: 'Exiting',
 			},
 		},
 		Splatting: {
-			entry: { type: 'setResultStatus', params: 'Broken' },
+			entry: { type: 'setResultStatus', params: { resultStatus: 'Broken' } },
 			after: {
 				1000: 'Done',
 			},
