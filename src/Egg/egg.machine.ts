@@ -137,6 +137,14 @@ export const eggMachine = setup({
 			sounds.hatch.play();
 		},
 		playHatchingChickSound: ({ context }) => {
+			// Do not play a sound if the chick is hatching offscreen
+			if (
+				context.position.x < 0 ||
+				context.position.x > context.gameConfig.stageDimensions.width
+			) {
+				return;
+			}
+
 			if (context.color === 'gold') {
 				sounds.yipee.play();
 			} else {
