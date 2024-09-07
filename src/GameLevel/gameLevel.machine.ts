@@ -441,6 +441,7 @@ export const gameLevelMachine = setup({
 		},
 	},
 }).createMachine({
+	id: 'gameLevel',
 	context: ({ input }) => ({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
