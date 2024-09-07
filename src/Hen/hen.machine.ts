@@ -118,6 +118,12 @@ export const henMachine = setup({
 		},
 	},
 	actions: {
+		setHenRef: assign({
+			henRef: (_, params: React.RefObject<Konva.Image>) => params,
+		}),
+		pause: assign({
+			gamePaused: true,
+		}),
 		pickNewTargetPosition: assign(({ context }) => {
 			const targetPosition = { ...context.position };
 			const newPosition = { ...context.position };
@@ -196,9 +202,17 @@ export const henMachine = setup({
 				movingDirection: movingDirection,
 			};
 		}),
+		cleanupTween: assign({
+			currentTweenSpeed: 0,
+			currentTweenDirection: 0,
+			currentTweenDurationMS: 0,
+			currentTweenStartTime: 0,
+			currentTween: null,
+			movingDirection: 'none',
+		}),
 	},
 	actors: {
-		henMovingBackAndForthActor: tweenActor,
+		henMovingActor: tweenActor,
 	},
 	delays: {
 		getRandomStartDelay: ({ context }) => {
@@ -267,15 +281,11 @@ export const henMachine = setup({
 	}),
 	on: {
 		'Set henRef': {
-			actions: assign({
-				henRef: ({ event }) => event.henRef,
-			}),
+			actions: { type: 'setHenRef', params: ({ event }) => event.henRef },
 		},
 		'Pause game': {
 			target: '.Stopped',
-			actions: assign({
-				gamePaused: true,
-			}),
+			actions: 'pause',
 		},
 	},
 	states: {
@@ -286,16 +296,9 @@ export const henMachine = setup({
 		},
 		Moving: {
 			entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
-			exit: assign({
-				currentTweenSpeed: 0,
-				currentTweenDirection: 0,
-				currentTweenDurationMS: 0,
-				currentTweenStartTime: 0,
-				currentTween: null,
-				movingDirection: 'none',
-			}),
+			exit: 'cleanupTween',
 			invoke: {
-				src: 'henMovingBackAndForthActor',
+				src: 'henMovingActor',
 				input: ({ context }) => ({
 					node: context.henRef.current,
 					tween: context.currentTween,
