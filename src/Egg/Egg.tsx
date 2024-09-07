@@ -6,6 +6,8 @@ import { eggMachine } from './egg.machine';
 import type { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
+import { AppActorContext } from '../app.machine';
+import type { chefMachine } from '../Chef/chef.machine';
 
 type ChickFrameName =
 	| 'egg-broken-white.png'
@@ -22,11 +24,24 @@ export function Egg({
 }: {
 	eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
+	const appActorRef = AppActorContext.useActorRef();
+	const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
+		typeof chefMachine
+	>;
+	const { chefPosition } = useSelector(chefActorRef, (state) => {
+		if (!state) {
+			return { movingDirection: 'none', lastMovingDirection: 'none' };
+		}
+		return {
+			chefPosition: state.context.position,
+		};
+	});
 	const eggState = useSelector(eggActorRef, (state) => state);
 
 	const {
 		gameConfig,
 		exitingDirection,
+		showGoldPoints,
 		isHatching,
 		isHatched,
 		isBroken,
@@ -34,6 +49,7 @@ export function Egg({
 		isDone,
 		eggFrames,
 		chickFrames,
+		uiFrames,
 		color,
 	} = useSelector(eggActorRef, (state) => {
 		const isExiting = state.matches('Exiting');
@@ -49,12 +65,14 @@ export function Egg({
 			gameConfig: state.context.gameConfig,
 			isExiting,
 			exitingDirection,
+			showGoldPoints: state.hasTag('gold points'),
 			isHatching: state.matches('Hatching'),
 			isHatched: state.matches('Hatched'),
 			isBroken: state.matches('Splatting'),
 			isDone: state.matches('Done'),
 			eggFrames: state.context.eggAssets.frames,
 			eggFrameNames: Object.keys(state.context.eggAssets.frames),
+			uiFrames: state.context.uiAssets.frames,
 			chickFrames: state.context.chickAssets.frames,
 			chickFrameNames: Object.keys(state.context.chickAssets.frames),
 			color: state.context.color,
@@ -63,6 +81,7 @@ export function Egg({
 	const eggRef = useRef<Konva.Image>(null);
 	const [eggImage] = useImage(`../images/egg.sprite.png`);
 	const [chickImage] = useImage(`../images/chick.sprite.png`);
+	const [uiImage] = useImage(`../images/ui.sprite.png`);
 
 	const [currentChickFrameName, setCurrentChickFrameName] =
 		useState<ChickFrameName>('chick-forward-1.png');
@@ -115,6 +134,38 @@ export function Egg({
 
 	if (isDone) {
 		return null;
+	}
+
+	if (showGoldPoints) {
+		const tenPointsFrame = uiFrames['10-points.png']?.frame;
+
+		if (!tenPointsFrame || !chefPosition) {
+			return null;
+		}
+
+		return (
+			<Image
+				ref={eggRef}
+				image={uiImage}
+				width={60}
+				height={60}
+				rotation={0}
+				x={chefPosition.x}
+				y={chefPosition.y - 200}
+				// offsetX={0.5 * gameConfig.egg.chick.width}
+				offsetX={
+					shouldFaceRight
+						? chefPotRimConfig.offsetX
+						: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
+				}
+				crop={{
+					x: tenPointsFrame.x,
+					y: tenPointsFrame.y,
+					width: tenPointsFrame.w,
+					height: tenPointsFrame.h,
+				}}
+			/>
+		);
 	}
 
 	if (isHatching || isHatched) {

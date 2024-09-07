@@ -18,6 +18,7 @@ export const eggMachine = setup({
 			id: string;
 			eggAssets: GameAssets['egg'];
 			chickAssets: GameAssets['chick'];
+			uiAssets: GameAssets['ui'];
 			henId: string;
 			henIsMoving: boolean;
 			position: Position;
@@ -39,6 +40,7 @@ export const eggMachine = setup({
 			henId: string;
 			eggAssets: GameAssets['egg'];
 			chickAssets: GameAssets['chick'];
+			uiAssets: GameAssets['ui'];
 			henIsMoving: boolean;
 			initialPosition: Position;
 			position: Position;
@@ -54,7 +56,10 @@ export const eggMachine = setup({
 			currentAnimation: Konva.Animation | null;
 		};
 		events:
-			| { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
+			| {
+					type: 'Set eggRef';
+					eggRef: React.RefObject<Konva.Image>;
+			  }
 			| { type: 'Land on floor' }
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
@@ -151,6 +156,7 @@ export const eggMachine = setup({
 			henId: input.henId,
 			eggAssets: input.eggAssets,
 			chickAssets: input.chickAssets,
+			uiAssets: input.uiAssets,
 			henIsMoving: input.henIsMoving,
 			initialPosition: input.position,
 			position: input.position,
@@ -197,20 +203,31 @@ export const eggMachine = setup({
 			on: {
 				'Notify of animation position': {
 					guard: 'isEggNearChefPot',
-					actions: {
-						type: 'notifyParentOfPosition',
-						params: ({ context, event }) => ({
-							eggId: context.id,
-							position: event.position,
+					actions: [
+						assign({
+							position: ({ event }) => event.position,
+						}),
+						{
+							type: 'notifyParentOfPosition',
+							params: ({ context, event }) => ({
+								eggId: context.id,
+								position: event.position,
+							}),
+						},
+					],
+				},
+				Catch: [
+					{
+						guard: ({ context }) => context.color === 'gold',
+						target: 'Gold Points',
+					},
+					{
+						target: 'Done',
+						actions: assign({
+							resultStatus: 'Caught',
 						}),
 					},
-				},
-				Catch: {
-					target: 'Done',
-					actions: assign({
-						resultStatus: 'Caught',
-					}),
-				},
+				],
 			},
 			initial: 'Init Falling',
 			states: {
@@ -297,6 +314,12 @@ export const eggMachine = setup({
 				},
 			},
 			onDone: 'Landed',
+		},
+		'Gold Points': {
+			tags: ['gold points'],
+			after: {
+				1000: 'Done',
+			},
 		},
 		Landed: {
 			always: [
