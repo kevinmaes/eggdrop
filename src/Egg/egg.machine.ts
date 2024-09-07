@@ -7,7 +7,12 @@ import { eggMotionActor } from './eggMotionActor';
 import type { GameAssets } from '../types/assets';
 import type { Direction, Position } from '../types';
 
-export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
+export type EggResultStatus =
+	| null
+	| 'Hatched'
+	| 'Broken'
+	| 'Caught'
+	| 'Offscreen';
 
 export type EggDoneEvent = { output: OutputFrom<typeof eggMachine> };
 
@@ -214,7 +219,11 @@ export const eggMachine = setup({
 			tags: 'falling',
 			on: {
 				'Notify of animation position': [
-					{ guard: 'isEggOffScreen', target: 'Done' },
+					{
+						guard: 'isEggOffScreen',
+						target: 'Done',
+						actions: { type: 'setResultStatus', params: 'Offscreen' },
+					},
 					{
 						guard: 'isEggNearChefPot',
 						actions: {
