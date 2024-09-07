@@ -160,7 +160,7 @@ export const eggMachine = setup({
 		},
 	},
 }).createMachine({
-	id: 'egg',
+	id: 'Egg',
 	initial: 'Idle',
 	context: ({ input }) => {
 		return {

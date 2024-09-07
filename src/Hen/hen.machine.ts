@@ -253,7 +253,7 @@ export const henMachine = setup({
 		},
 	},
 }).createMachine({
-	id: 'hen',
+	id: 'Hen',
 	initial: 'Offscreen',
 	context: ({ input }) => {
 		const { destination, position, targetPosition } =

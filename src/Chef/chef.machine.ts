@@ -145,7 +145,7 @@ export const chefMachine = setup({
 		}),
 	},
 }).createMachine({
-	id: 'chef',
+	id: 'Chef',
 	initial: 'Moving',
 	context: ({ input }) => ({
 		chefConfig: input.chefConfig,
