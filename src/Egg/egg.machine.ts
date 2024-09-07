@@ -92,6 +92,12 @@ export const eggMachine = setup({
 		},
 	},
 	actions: {
+		setEggRef: assign({
+			eggRef: (_, params: React.RefObject<Konva.Image>) => params,
+		}),
+		pause: assign({
+			gamePaused: true,
+		}),
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
@@ -128,9 +134,6 @@ export const eggMachine = setup({
 					context.gameConfig.egg.brokenEgg.height,
 			}),
 		}),
-		playSplatSound: () => {
-			sounds.splat.play();
-		},
 		hatchOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x,
@@ -140,6 +143,13 @@ export const eggMachine = setup({
 					context.gameConfig.stageDimensions.margin,
 			}),
 		}),
+		setResultStatus: assign({
+			resultStatus: (_, params: EggResultStatus) => params,
+		}),
+		// Sounds
+		playSplatSound: () => {
+			sounds.splat.play();
+		},
 		playHatchSound: () => {
 			sounds.hatch.play();
 		},
@@ -185,9 +195,7 @@ export const eggMachine = setup({
 	},
 	on: {
 		'Pause game': {
-			actions: assign({
-				gamePaused: true,
-			}),
+			actions: 'pause',
 		},
 	},
 	states: {
@@ -195,9 +203,10 @@ export const eggMachine = setup({
 			on: {
 				'Set eggRef': {
 					target: 'Falling',
-					actions: assign({
-						eggRef: ({ event }) => event.eggRef,
-					}),
+					actions: {
+						type: 'setEggRef',
+						params: ({ event }) => event.eggRef,
+					},
 				},
 			},
 		},
@@ -219,9 +228,7 @@ export const eggMachine = setup({
 				],
 				Catch: {
 					target: 'Done',
-					actions: assign({
-						resultStatus: 'Caught',
-					}),
+					actions: { type: 'setResultStatus', params: 'Caught' },
 				},
 			},
 			initial: 'Init Falling',
@@ -365,19 +372,13 @@ export const eggMachine = setup({
 			onDone: 'Hatched',
 		},
 		Hatched: {
-			entry: [
-				assign({
-					resultStatus: 'Hatched',
-				}),
-			],
+			entry: { type: 'setResultStatus', params: 'Hatched' },
 			after: {
 				500: 'Exiting',
 			},
 		},
 		Splatting: {
-			entry: assign({
-				resultStatus: 'Broken',
-			}),
+			entry: { type: 'setResultStatus', params: 'Broken' },
 			after: {
 				1000: 'Done',
 			},

@@ -41,6 +41,9 @@ export const chefMachine = setup({
 			| { type: 'Reset isCatchingEgg' };
 	},
 	actions: {
+		setChefRef: assign({
+			chefRef: (_, params: React.RefObject<Konva.Image>) => params,
+		}),
 		updateChefPosition: assign(({ context }) => {
 			const {
 				speed,
@@ -119,6 +122,12 @@ export const chefMachine = setup({
 		resetIsCatchingEgg: assign({
 			isCatchingEgg: false,
 		}),
+		scheduleResetIsCatchingEgg: raise(
+			{ type: 'Reset isCatchingEgg' },
+			{
+				delay: 300,
+			}
+		),
 	},
 	actors: {
 		movingChefBackAndForthActor: fromPromise<{ timeDiff: number }>(() => {
@@ -156,9 +165,7 @@ export const chefMachine = setup({
 	}),
 	on: {
 		'Set chefRef': {
-			actions: assign({
-				chefRef: ({ event }) => event.chefRef,
-			}),
+			actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
 		},
 		'Set direction': {
 			actions: {
@@ -179,15 +186,7 @@ export const chefMachine = setup({
 			},
 			on: {
 				Catch: {
-					actions: [
-						'setIsCatchingEgg',
-						raise(
-							{ type: 'Reset isCatchingEgg' },
-							{
-								delay: 300,
-							}
-						),
-					],
+					actions: ['setIsCatchingEgg', 'scheduleResetIsCatchingEgg'],
 				},
 				'Reset isCatchingEgg': {
 					actions: 'resetIsCatchingEgg',
