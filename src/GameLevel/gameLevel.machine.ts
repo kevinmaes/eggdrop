@@ -71,6 +71,9 @@ export const gameLevelMachine = setup({
 			| { type: 'Tick'; remainingMS: number; done: boolean };
 	},
 	actions: {
+		setChefPotRimHitRef: assign({
+			chefPotRimHitRef: (_, params: React.RefObject<Rect>) => params,
+		}),
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
 		}),
@@ -514,9 +517,10 @@ export const gameLevelMachine = setup({
 	initial: 'Playing',
 	on: {
 		'Set chefPotRimHitRef': {
-			actions: assign({
-				chefPotRimHitRef: ({ event }) => event.chefPotRimHitRef,
-			}),
+			actions: {
+				type: 'setChefPotRimHitRef',
+				params: ({ event }) => event.chefPotRimHitRef,
+			},
 		},
 		'Lay an egg': {
 			actions: [
