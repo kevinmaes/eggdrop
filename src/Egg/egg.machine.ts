@@ -136,8 +136,13 @@ export const eggMachine = setup({
 		playHatchSound: () => {
 			sounds.hatch.play();
 		},
-		playHatchYipeeSound: () => {
-			sounds.yipee.play();
+		playHatchingChickSound: ({ context }) => {
+			if (context.color === 'gold') {
+				sounds.yipee.play();
+			} else {
+				// TODO: Replace with a lighter sound for white eggs
+				// sounds.yipee.play();
+			}
 		},
 	},
 }).createMachine({
@@ -312,7 +317,7 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
-			entry: 'playHatchYipeeSound',
+			entry: 'playHatchingChickSound',
 			initial: 'Jumping Up',
 			states: {
 				'Jumping Up': {
