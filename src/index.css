@@ -1,12 +1,12 @@
 @font-face {
 	font-family: 'Arco';
-	src: local('Arco-Regular'), url('./src/assets/fonts/ARCO.ttf');
+	src: local('Arco-Regular'), url('/fonts/ARCO.ttf') format('truetype');
 }
 
 @font-face {
 	font-family: 'JetBrains Mono';
 	src: local('JetBrains-Mono-Regular'),
-		url('./src/assets/fonts/JetBrainsMonoNL-Regular.ttf');
+		url('/fonts/JetBrainsMonoNL-Regular.ttf') format('truetype');
 }
 
 body {
