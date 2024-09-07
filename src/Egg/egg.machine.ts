@@ -83,6 +83,13 @@ export const eggMachine = setup({
 			if (!context.eggRef.current) return false;
 			return context.eggRef.current.y() >= context.gameConfig.chef.y;
 		},
+		isEggOffScreen: ({ context }) => {
+			if (!context.eggRef.current) return false;
+			return (
+				context.eggRef.current.x() < 0 ||
+				context.eggRef.current.x() > context.gameConfig.stageDimensions.width
+			);
+		},
 	},
 	actions: {
 		setNewTargetPosition: assign({
@@ -136,8 +143,10 @@ export const eggMachine = setup({
 		playHatchSound: () => {
 			sounds.hatch.play();
 		},
-		playHatchYipeeSound: () => {
-			sounds.yipee.play();
+		playHatchingChickSound: ({ context }) => {
+			if (context.color === 'gold') {
+				sounds.yipee.play();
+			}
 		},
 	},
 }).createMachine({
@@ -195,16 +204,19 @@ export const eggMachine = setup({
 		Falling: {
 			tags: 'falling',
 			on: {
-				'Notify of animation position': {
-					guard: 'isEggNearChefPot',
-					actions: {
-						type: 'notifyParentOfPosition',
-						params: ({ context, event }) => ({
-							eggId: context.id,
-							position: event.position,
-						}),
+				'Notify of animation position': [
+					{ guard: 'isEggOffScreen', target: 'Done' },
+					{
+						guard: 'isEggNearChefPot',
+						actions: {
+							type: 'notifyParentOfPosition',
+							params: ({ context, event }) => ({
+								eggId: context.id,
+								position: event.position,
+							}),
+						},
 					},
-				},
+				],
 				Catch: {
 					target: 'Done',
 					actions: assign({
@@ -312,7 +324,7 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
-			entry: 'playHatchYipeeSound',
+			entry: 'playHatchingChickSound',
 			initial: 'Jumping Up',
 			states: {
 				'Jumping Up': {
