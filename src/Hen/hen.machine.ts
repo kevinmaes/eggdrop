@@ -202,6 +202,10 @@ export const henMachine = setup({
 				movingDirection: movingDirection,
 			};
 		}),
+		updateToLastTweenPosition: assign({
+			position: (_, params: Position) => params,
+			currentTweenSpeed: 0,
+		}),
 		cleanupTween: assign({
 			currentTweenSpeed: 0,
 			currentTweenDirection: 0,
@@ -305,10 +309,10 @@ export const henMachine = setup({
 				}),
 				onDone: {
 					target: 'Done Moving',
-					actions: assign({
-						position: ({ event }) => event.output,
-						currentTweenSpeed: 0,
-					}),
+					actions: {
+						type: 'updateToLastTweenPosition',
+						params: ({ event }) => event.output,
+					},
 				},
 				onError: { target: 'Stopped' },
 			},
