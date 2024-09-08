@@ -2,7 +2,7 @@ export class DNA {
 	/**
 	 * Combines DNA from two parents to create a child DNA.
 	 * This DNA represents the genotype of the child and is
-	 * agnostic to the phenotype i.e. how it will be expressed by the Hendividual.
+	 * agnostic to the phenotype i.e. how it will be expressed by the Individual.
 	 * @param parentDNA1
 	 * @param parentDNA2
 	 * @returns
