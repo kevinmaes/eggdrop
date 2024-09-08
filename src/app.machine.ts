@@ -13,7 +13,7 @@ import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
 import { DNA } from './geneticAlgorithm/DNA';
 import {
-	getInitialPhenotype,
+	createPhenotypeFromDNA,
 	phenotypeConfig,
 	type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
@@ -125,7 +125,7 @@ const appMachine = setup({
 
 					const childDNA = DNA.crossover(parent1.dna, parent2.dna);
 					const childPhenotype: PhenotypeValuesForIndividual =
-						getInitialPhenotype(childDNA);
+						createPhenotypeFromDNA(childDNA);
 
 					const child = {
 						id: nanoid(),
@@ -211,7 +211,7 @@ const appMachine = setup({
 			.map(() => {
 				const dnaLength = Object.keys(phenotypeConfig).length;
 				const initialDNA = new DNA(dnaLength);
-				const phenotype = getInitialPhenotype(initialDNA);
+				const phenotype = createPhenotypeFromDNA(initialDNA);
 
 				return {
 					id: nanoid(),

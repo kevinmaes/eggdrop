@@ -137,7 +137,12 @@ export function getPhenotypeValue(
 	return value;
 }
 
-export function getInitialPhenotype(dna: DNA) {
+/**
+ * Translate the DNA and its genes into a phenotype for an Individual.
+ * @param dna
+ * @returns
+ */
+export function createPhenotypeFromDNA(dna: DNA) {
 	const config = getPhenotypeConfig();
 	let phenotypeValues: Partial<PhenotypeValuesForIndividual> = {};
 	let i = 0;
