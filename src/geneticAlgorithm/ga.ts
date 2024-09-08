@@ -1,4 +1,3 @@
-import type { Hendividual } from '../GameLevel/types';
 import { clamp } from '../utils';
 import type { DNA } from './DNA';
 import type { PhenotypeConfig, PhenotypeKey } from './phenotype';
@@ -16,7 +15,7 @@ export interface Individual {
  * @param population
  * @returns
  */
-export function rouletteWheelSelection(population: Hendividual[]) {
+export function rouletteWheelSelection(population: Individual[]) {
 	// Calculate the total fitness of the population
 	const totalFitness = population.reduce(
 		(acc, individual) => acc + individual.fitness,
