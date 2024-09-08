@@ -133,9 +133,11 @@ export function getPhenotypeValue(
 }
 
 /**
- * Translate the DNA and its genes into a phenotype for an Individual.
- * @param dna
- * @returns
+ * Create an actual phenotype for an individual based on its genes
+ * and the phenotype config.
+ * @param dna The DNA of the individual which has a genes array
+ * @param phenotypeConfig The configuration for the phenotype
+ * @returns An object with phenotype values for the individual
  */
 export function createPhenotypeForIndividual(
 	genes: number[],
