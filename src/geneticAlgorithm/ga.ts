@@ -1,6 +1,14 @@
 import type { Hendividual } from '../GameLevel/types';
 import { clamp } from '../utils';
+import type { DNA } from './DNA';
 import type { PhenotypeConfig, PhenotypeKey } from './phenotype';
+
+/** Genetic Algorithm individual of the population */
+export interface Individual {
+	dna: DNA;
+	phenotype: Record<PhenotypeKey, number>;
+	fitness: number;
+}
 
 /**
  * Selects an individual based on their relative fitness
@@ -38,12 +46,12 @@ export function rouletteWheelSelection(population: Hendividual[]) {
  * @param variancePercentage
  * @returns mutated individual
  */
-export function mutateIndividual(
-	individual: Hendividual,
+export function mutateIndividual<T extends Individual>(
+	individual: T,
 	phenotypeConfig: PhenotypeConfig,
 	mutationRate: number,
 	mutationVariancePercentageRate: number
-): Hendividual {
+): T {
 	function mutateValue(key: PhenotypeKey, value: number): number {
 		if (Math.random() < mutationRate) {
 			const variance = mutationVariancePercentageRate * value;
