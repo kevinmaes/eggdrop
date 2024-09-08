@@ -43,6 +43,10 @@ export class DNA {
 		return this.genes.length;
 	}
 
+	getGenes() {
+		return this.genes;
+	}
+
 	getGene(index: number) {
 		return this.genes[index] ?? 0;
 	}
