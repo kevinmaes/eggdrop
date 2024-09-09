@@ -162,8 +162,14 @@ export const eggMachine = setup({
 			sounds.hatch.play();
 		},
 		playHatchingChickSound: ({ context }) => {
-			if (context.color === 'gold') {
-				sounds.yipee.play();
+			switch (context.color) {
+				case 'gold':
+					sounds.yipee.play();
+					break;
+				case 'white':
+					sounds.haha.play();
+					break;
+				default:
 			}
 		},
 	},

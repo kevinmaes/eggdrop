@@ -17,6 +17,10 @@ export const sounds = {
 		src: ['sounds/splat.wav'],
 		volume: 0.02,
 	}),
+	haha: new Howl({
+		src: ['sounds/haha.wav'],
+		volume: 0.5,
+	}),
 	yipee: new Howl({
 		src: ['sounds/yipee.wav'],
 		volume: 0.2,
@@ -27,6 +31,10 @@ export const sounds = {
 	}),
 	ohNo: new Howl({
 		src: ['sounds/oh-no.wav'],
+		volume: 0.5,
+	}),
+	wsup: new Howl({
+		src: ['sounds/wsup.wav'],
 		volume: 0.5,
 	}),
 	backgroundLoop: new Howl({
