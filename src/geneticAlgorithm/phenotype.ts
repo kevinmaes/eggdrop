@@ -1,6 +1,5 @@
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { mapValue } from '../utils';
-import type { DNA } from './DNA';
 
 // This is the definitive list of all the possible phenotypes
 // that can be used to configure the Hendividuals.
@@ -115,10 +114,6 @@ function typedEntries<T extends Record<string, any>>(obj: T): Entries<T>[] {
 	return Object.entries(obj) as Entries<T>[];
 }
 
-export function getPhenotypeConfig() {
-	return typedEntries(phenotypeConfig);
-}
-
 export function getPhenotypeValue(
 	gene: number,
 	phenotypeConfigValue: (typeof phenotypeConfig)[keyof typeof phenotypeConfig]
@@ -137,12 +132,25 @@ export function getPhenotypeValue(
 	return value;
 }
 
-export function getInitialPhenotype(dna: DNA) {
-	const config = getPhenotypeConfig();
+/**
+ * Create an actual phenotype for an individual based on its genes
+ * and the phenotype config.
+ * @param dna The DNA of the individual which has a genes array
+ * @param phenotypeConfig The configuration for the phenotype
+ * @returns An object with phenotype values for the individual
+ */
+export function createPhenotypeForIndividual(
+	genes: number[],
+	phenotypeConfig: PhenotypeConfig
+) {
+	const configEntries = typedEntries(phenotypeConfig);
 	let phenotypeValues: Partial<PhenotypeValuesForIndividual> = {};
 	let i = 0;
-	for (const [key, value] of config) {
-		const gene = dna.getGene(i);
+	for (const [key, value] of configEntries) {
+		const gene = genes[i];
+		if (gene === undefined) {
+			throw new Error(`Gene ${i} is undefined`);
+		}
 		phenotypeValues[key] = getPhenotypeValue(gene, value);
 	}
 	return phenotypeValues as PhenotypeValuesForIndividual;
