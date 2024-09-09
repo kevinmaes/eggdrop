@@ -19,7 +19,11 @@ export const sounds = {
 	}),
 	yipee: new Howl({
 		src: ['sounds/yipee.wav'],
-		volume: 0.1,
+		volume: 0.2,
+	}),
+	yes: new Howl({
+		src: ['sounds/yes.wav'],
+		volume: 0.5,
 	}),
 	ohNo: new Howl({
 		src: ['sounds/oh-no.wav'],

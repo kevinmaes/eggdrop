@@ -52,8 +52,14 @@ export const chefMachine = setup({
 			}
 		) => {
 			console.log('playCatchReaction', params.eggColor);
-			if (params.eggColor === 'black') {
-				sounds.ohNo.play();
+			switch (params.eggColor) {
+				case 'black':
+					sounds.catch.play();
+					break;
+				case 'gold':
+					sounds.yes.play();
+					break;
+				default:
 			}
 		},
 		updateChefPosition: assign(({ context }) => {
