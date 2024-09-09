@@ -4,6 +4,7 @@ import { Animation } from 'konva/lib/Animation';
 import type { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position, Direction } from '../types';
+import { sounds } from '../sounds';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -36,7 +37,7 @@ export const chefMachine = setup({
 		};
 		events:
 			| { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
-			| { type: 'Catch' }
+			| { type: 'Catch'; eggColor: 'black' | 'white' | 'gold' }
 			| { type: 'Set direction'; direction: Direction['value'] }
 			| { type: 'Reset isCatchingEgg' };
 	},
@@ -44,6 +45,17 @@ export const chefMachine = setup({
 		setChefRef: assign({
 			chefRef: (_, params: React.RefObject<Konva.Image>) => params,
 		}),
+		playCatchReaction: (
+			_,
+			params: {
+				eggColor: 'black' | 'white' | 'gold';
+			}
+		) => {
+			console.log('playCatchReaction', params.eggColor);
+			if (params.eggColor === 'black') {
+				sounds.ohNo.play();
+			}
+		},
 		updateChefPosition: assign(({ context }) => {
 			const {
 				speed,
@@ -186,7 +198,14 @@ export const chefMachine = setup({
 			},
 			on: {
 				Catch: {
-					actions: ['setIsCatchingEgg', 'scheduleResetIsCatchingEgg'],
+					actions: [
+						'setIsCatchingEgg',
+						{
+							type: 'playCatchReaction',
+							params: ({ event }) => ({ eggColor: event.eggColor }),
+						},
+						'scheduleResetIsCatchingEgg',
+					],
 				},
 				'Reset isCatchingEgg': {
 					actions: 'resetIsCatchingEgg',

@@ -21,6 +21,10 @@ export const sounds = {
 		src: ['sounds/yipee.wav'],
 		volume: 0.1,
 	}),
+	ohNo: new Howl({
+		src: ['sounds/oh-no.wav'],
+		volume: 0.5,
+	}),
 	backgroundLoop: new Howl({
 		src: ['sounds/i-am-dreaming-or-final-fantasy-menu-kinda-thing-29173.mp3'],
 		volume: 0.5,
