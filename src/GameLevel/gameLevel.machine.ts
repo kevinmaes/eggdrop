@@ -4,6 +4,7 @@ import { type ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
+	type EggColor,
 	type EggDoneEvent,
 	type EggResultStatus,
 	eggMachine,
@@ -60,13 +61,13 @@ export const gameLevelMachine = setup({
 					henPosition: Position;
 					henCurentTweenSpeed: number;
 					henCurrentTweenDirection: Direction['value'];
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					hatchRate: number;
 			  }
 			| {
 					type: 'Egg position updated';
 					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					position: Position;
 			  }
 			| { type: 'Tick'; remainingMS: number; done: boolean };
@@ -135,7 +136,7 @@ export const gameLevelMachine = setup({
 					henButtXOffset: number;
 					henButtYOffset: number;
 					henCurrentTweenDirection: Direction['value'];
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					hatchRate: number;
 				}
 			) => {
@@ -168,7 +169,7 @@ export const gameLevelMachine = setup({
 		}),
 		tellChefHeCaughtAnEgg: sendTo(
 			'chefMachine',
-			(_, params: { eggColor: 'white' | 'gold' | 'black' }) => ({
+			(_, params: { eggColor: EggColor }) => ({
 				type: 'Catch',
 				eggColor: params.eggColor,
 			})
@@ -182,7 +183,7 @@ export const gameLevelMachine = setup({
 				{ context },
 				params: {
 					henId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 				}
 			) => {
 				const updatedHenStatsById = {
@@ -219,7 +220,7 @@ export const gameLevelMachine = setup({
 				params: {
 					henId: string;
 					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					resultStatus: EggResultStatus;
 				}
 			) => {
@@ -249,7 +250,7 @@ export const gameLevelMachine = setup({
 				params: {
 					henId: string;
 					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					resultStatus: EggResultStatus;
 				}
 			) => {
