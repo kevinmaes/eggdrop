@@ -5,6 +5,7 @@ import type { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position, Direction } from '../types';
 import { sounds } from '../sounds';
+import type { EggColor } from '../Egg/egg.machine';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -37,7 +38,7 @@ export const chefMachine = setup({
 		};
 		events:
 			| { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
-			| { type: 'Catch'; eggColor: 'black' | 'white' | 'gold' }
+			| { type: 'Catch'; eggColor: EggColor }
 			| { type: 'Set direction'; direction: Direction['value'] }
 			| { type: 'Reset isCatchingEgg' };
 	},
@@ -48,7 +49,7 @@ export const chefMachine = setup({
 		playCatchReaction: (
 			_,
 			params: {
-				eggColor: 'black' | 'white' | 'gold';
+				eggColor: EggColor;
 			}
 		) => {
 			console.log('playCatchReaction', params.eggColor);

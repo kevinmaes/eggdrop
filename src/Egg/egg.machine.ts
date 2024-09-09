@@ -28,14 +28,14 @@ export const eggMachine = setup({
 			henIsMoving: boolean;
 			position: Position;
 			henCurentTweenSpeed: number;
-			color: 'white' | 'gold' | 'black';
+			color: EggColor;
 			rotationDirection: Direction['value'];
 			hatchRate: number;
 		};
 		output: {
 			henId: string;
 			eggId: string;
-			eggColor: 'white' | 'gold' | 'black';
+			eggColor: EggColor;
 			resultStatus: EggResultStatus;
 		};
 		context: {
@@ -49,7 +49,7 @@ export const eggMachine = setup({
 			initialPosition: Position;
 			position: Position;
 			targetPosition: Position;
-			color: 'white' | 'gold' | 'black';
+			color: EggColor;
 			henCurentTweenSpeed: number;
 			rotationDirection: Direction['value'];
 			exitingSpeed: number;
