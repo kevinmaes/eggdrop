@@ -50,3 +50,35 @@ export function mapValue(
 export function clamp(value: number, min: number, max: number) {
 	return Math.max(min, Math.min(value, max));
 }
+
+/**
+ * A function that debounces a function call.
+ * @param func
+ * @param wait
+ * @param immediate
+ * @returns
+ */
+export function debounce(
+	func: Function,
+	wait: number,
+	immediate: boolean = false
+) {
+	let timeout: NodeJS.Timeout | null;
+	return function (this: any, ...args: any[]) {
+		const context = this;
+		const later = function () {
+			timeout = null;
+			if (!immediate) {
+				func.apply(context, args);
+			}
+		};
+		const callNow = immediate && !timeout;
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(later, wait);
+		if (callNow) {
+			func.apply(context, args);
+		}
+	};
+}
