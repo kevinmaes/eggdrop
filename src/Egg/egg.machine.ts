@@ -7,6 +7,7 @@ import { eggMotionActor } from './eggMotionActor';
 import type { GameAssets } from '../types/assets';
 import type { Direction, Position } from '../types';
 
+export type EggColor = 'white' | 'gold' | 'black';
 export type EggResultStatus =
 	| null
 	| 'Hatched'
@@ -125,9 +126,10 @@ export const eggMachine = setup({
 			position: (_, params: Position) => params,
 		}),
 		notifyParentOfPosition: sendParent(
-			(_, params: { eggId: string; position: Position }) => ({
+			({ context }, params: { position: Position }) => ({
 				type: 'Egg position updated',
-				eggId: params.eggId,
+				eggId: context.id,
+				eggColor: context.color,
 				position: params.position,
 			})
 		),
@@ -160,8 +162,14 @@ export const eggMachine = setup({
 			sounds.hatch.play();
 		},
 		playHatchingChickSound: ({ context }) => {
-			if (context.color === 'gold') {
-				sounds.yipee.play();
+			switch (context.color) {
+				case 'gold':
+					sounds.yipee.play();
+					break;
+				case 'white':
+					sounds.haha.play();
+					break;
+				default:
 			}
 		},
 	},
@@ -232,8 +240,7 @@ export const eggMachine = setup({
 						guard: 'isEggNearChefPot',
 						actions: {
 							type: 'notifyParentOfPosition',
-							params: ({ context, event }) => ({
-								eggId: context.id,
+							params: ({ event }) => ({
 								position: event.position,
 							}),
 						},

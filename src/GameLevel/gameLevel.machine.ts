@@ -66,6 +66,7 @@ export const gameLevelMachine = setup({
 			| {
 					type: 'Egg position updated';
 					eggId: string;
+					eggColor: 'white' | 'gold' | 'black';
 					position: Position;
 			  }
 			| { type: 'Tick'; remainingMS: number; done: boolean };
@@ -165,7 +166,13 @@ export const gameLevelMachine = setup({
 				];
 			},
 		}),
-		tellChefHeCaughtAnEgg: sendTo('chefMachine', { type: 'Catch' }),
+		tellChefHeCaughtAnEgg: sendTo(
+			'chefMachine',
+			(_, params: { eggColor: 'white' | 'gold' | 'black' }) => ({
+				type: 'Catch',
+				eggColor: params.eggColor,
+			})
+		),
 		tellEggItWasCaught: sendTo(
 			({ system }, params: { eggId: string }) => system.get(params.eggId),
 			{ type: 'Catch' }
@@ -561,7 +568,12 @@ export const gameLevelMachine = setup({
 				params: ({ event }) => event.position,
 			},
 			actions: [
-				'tellChefHeCaughtAnEgg',
+				{
+					type: 'tellChefHeCaughtAnEgg',
+					params: ({ event }) => ({
+						eggColor: event.eggColor,
+					}),
+				},
 				'playCatchEggSound',
 				// Notifying the eggActor that the egg was caught leads to
 				// the egg's final state and automatic removal
