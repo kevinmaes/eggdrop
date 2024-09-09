@@ -54,7 +54,11 @@ export const chefMachine = setup({
 			console.log('playCatchReaction', params.eggColor);
 			switch (params.eggColor) {
 				case 'black':
-					sounds.catch.play();
+					if (Math.random() > 0.5) {
+						sounds.ohNo.play();
+					} else {
+						sounds.wsup.play();
+					}
 					break;
 				case 'gold':
 					sounds.yes.play();
