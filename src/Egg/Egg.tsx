@@ -61,8 +61,9 @@ export function Egg({
 		};
 	});
 	const eggRef = useRef<Konva.Image>(null);
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
-	const [chickImage] = useImage(`../images/chick.sprite.png`);
+
+	const [eggImage] = useImage('images/egg.sprite.png');
+	const [chickImage] = useImage('images/chick.sprite.png');
 
 	const [currentChickFrameName, setCurrentChickFrameName] =
 		useState<ChickFrameName>('chick-forward-1.png');
