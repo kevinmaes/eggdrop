@@ -4,10 +4,7 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
 import type { Hendividual, LevelResults } from './GameLevel/types';
-import {
-	mutateIndividual,
-	rouletteWheelSelection,
-} from './geneticAlgorithm/ga';
+import { eliteSelection, mutateIndividual } from './geneticAlgorithm/ga';
 import { calculateFitness } from './geneticAlgorithm/eggdropGA';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
@@ -102,13 +99,13 @@ const appMachine = setup({
 		selectCrossoverAndMutatePopulation: assign({
 			population: ({ context }) => {
 				// GA Selection
-				// Select by fitness (roulette wheel selection)
-				const selectedParents = [];
-				// Only select a total of 33% of the population to be parents
-				// based on roulette wheel selection.
-				for (let i = 0; i < context.population.length / 3; i++) {
-					selectedParents.push(rouletteWheelSelection(context.population));
-				}
+				// Select one third of the population to be parents for the next generation
+				// with a combination of 5% elitism and roulette wheel selection
+				const selectedParents = eliteSelection(
+					context.population,
+					Math.round(context.population.length / 3),
+					Math.floor(context.population.length * 0.05)
+				);
 
 				// GA Crossover
 				const nextGeneration: Hendividual[] = [];
