@@ -11,11 +11,15 @@ export const sounds = {
 	}),
 	hatch: new Howl({
 		src: ['sounds/egg-crack.mp3'],
-		volume: 0.5,
+		volume: 0.4,
 	}),
 	splat: new Howl({
 		src: ['sounds/splat.wav'],
-		volume: 0.02,
+		volume: 0.01,
+	}),
+	haha: new Howl({
+		src: ['sounds/haha.wav'],
+		volume: 0.3,
 	}),
 	haha: new Howl({
 		src: ['sounds/haha.wav'],
@@ -27,11 +31,11 @@ export const sounds = {
 	}),
 	yes: new Howl({
 		src: ['sounds/yes.wav'],
-		volume: 0.5,
+		volume: 0.3,
 	}),
 	ohNo: new Howl({
 		src: ['sounds/oh-no.wav'],
-		volume: 0.5,
+		volume: 0.6,
 	}),
 	wsup: new Howl({
 		src: ['sounds/wsup.wav'],

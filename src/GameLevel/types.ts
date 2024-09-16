@@ -1,6 +1,5 @@
 import type { Position } from '../types';
-import { DNA } from '../geneticAlgorithm/DNA';
-import type { PhenotypeKey } from '../geneticAlgorithm/phenotype';
+import type { Individual } from '../geneticAlgorithm/ga';
 
 export interface GenerationStats {
 	// Overall info
@@ -70,12 +69,10 @@ export interface LevelResults {
 // 	}
 // >;
 
-export interface Hendividual {
+/** Hendividual = Hen + Individual for Egg Drop */
+export interface Hendividual extends Individual {
 	id: string;
-	// GA
-	dna: DNA;
-	phenotype: Record<PhenotypeKey, number>;
-	fitness: number;
+
 	// Configuration
 	initialPosition: Position;
 
