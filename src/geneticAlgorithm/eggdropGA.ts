@@ -1,29 +1,47 @@
-import type { Hendividual } from '../GameLevel/types';
+import type { LevelResults } from '../GameLevel/types';
 
-export function calculateFitness(individual: Hendividual) {
-	// Default overall fitness can not be 0
-	let overallFitness = 0.1;
+export function calculateFitness(
+	latestLevelResults: LevelResults,
+	henId: string
+) {
+	const hendividual = latestLevelResults.henStatsById[henId];
+	if (!hendividual) {
+		throw new Error('Hen results are missing!');
+	}
+	const henStats = hendividual.stats;
+
+	let overallFitness = 0;
+	const fitnessWeights = {
+		eggsLaid: 0.4,
+		eggsUncaught: 0.5,
+		blackEggsCaught: 0.1,
+	};
 
 	// Punish hens that lay no eggs
-	if (individual.stats.eggsLaid === 0) {
+	if (henStats.eggsLaid === 0) {
 		return overallFitness;
 	}
 
 	// Reward hens that lay more eggs
-	overallFitness += individual.stats.eggsLaid / 10;
+	const eggsLaidRate =
+		henStats.eggsLaid / latestLevelResults.levelStats.totalEggsLaid;
+	const eggsLaidFitness =
+		1 - eggsLaidRate * eggsLaidRate * fitnessWeights.eggsLaid;
 
 	const eggsCaughtTotal =
-		individual.stats.eggsCaught.white +
-		individual.stats.eggsCaught.gold +
-		individual.stats.eggsCaught.black;
+		henStats.eggsCaught.white +
+		henStats.eggsCaught.gold +
+		henStats.eggsCaught.black;
 
-	const caughtRate = eggsCaughtTotal / individual.stats.eggsLaid;
-	overallFitness += 1 - caughtRate;
+	const eggsUncaughtRate = eggsCaughtTotal / henStats.eggsLaid;
+	const eggsUncaughtFitness =
+		1 - eggsUncaughtRate * eggsUncaughtRate * fitnessWeights.eggsUncaught;
 
-	// TODO: Add a reward if black eggs were caught.
-	const blackEggCaughtRate =
-		individual.stats.eggsCaught.black / individual.stats.eggsLaid;
-	overallFitness += blackEggCaughtRate;
+	const blackEggsCaughtRate = henStats.eggsCaught.black / henStats.eggsLaid;
+	const blackEggsCaughtFitness =
+		blackEggsCaughtRate * blackEggsCaughtRate * fitnessWeights.blackEggsCaught;
 
+	overallFitness =
+		eggsLaidFitness + eggsUncaughtFitness + blackEggsCaughtFitness;
 	return overallFitness;
 }
