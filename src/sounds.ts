@@ -21,10 +21,6 @@ export const sounds = {
 		src: ['sounds/haha.wav'],
 		volume: 0.3,
 	}),
-	haha: new Howl({
-		src: ['sounds/haha.wav'],
-		volume: 0.5,
-	}),
 	yipee: new Howl({
 		src: ['sounds/yipee.wav'],
 		volume: 0.2,
