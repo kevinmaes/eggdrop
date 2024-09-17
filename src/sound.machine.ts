@@ -1,32 +1,33 @@
 import { setup } from 'xstate';
 
-export const debouncingMachine = setup({
-	types: {
-		events: {} as { type: 'go' },
-		context: {} as {},
+export const soundMachine = setup({
+	types: {} as {
+		events: { type: 'play' };
+		context: {
+			debouncedSounds: Set<string>;
+		};
 	},
 	actions: {},
 }).createMachine({
-	id: 'Debouncing',
-	context: {},
+	id: 'Sound',
+	context: {
+		debouncedSounds: new Set<string>(),
+	},
 	initial: 'Idle',
 	states: {
 		Idle: {
 			on: {
-				go: {
-					target: 'Debouncing',
-				},
+				play: [{ guard: () => true }, {}],
 			},
 		},
 		Debouncing: {
 			after: {
 				'1000': {
 					target: 'Idle',
-					// actions: 'Increment counter',
 				},
 			},
 			on: {
-				go: {
+				play: {
 					target: 'Debouncing',
 					description:
 						'Re-enter `Debouncing` state and reinitialize the delayed transition.',
