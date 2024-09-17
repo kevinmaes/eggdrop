@@ -33,8 +33,30 @@ export function rouletteWheelSelection(population: Individual[]) {
 		}
 	}
 
+	const lastIndividual = population[population.length - 1];
+	if (lastIndividual === undefined) {
+		throw new Error('Individual is undefined');
+	}
+
 	// In case of rounding errors, return the last individual
-	return population[population.length - 1];
+	return lastIndividual;
+}
+
+export function eliteSelection(
+	population: Individual[],
+	totalCount: number,
+	eliteCount: number
+) {
+	const sortedPopulation = population.sort((a: Individual, b: Individual) => {
+		return b.fitness - a.fitness;
+	});
+	const selectedParents = sortedPopulation.slice(0, eliteCount);
+	const restPopulation = sortedPopulation.slice(eliteCount);
+	for (let i = 0; i < totalCount - eliteCount; i++) {
+		selectedParents.push(rouletteWheelSelection(restPopulation));
+	}
+
+	return selectedParents;
 }
 
 /**
