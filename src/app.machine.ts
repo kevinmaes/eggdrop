@@ -71,7 +71,7 @@ const appMachine = setup({
 			const newLevelResultsHistory = context.levelResultsHistory.slice();
 
 			// Evaluate fitness
-			const newLastLevelResults = newLevelResultsHistory.slice(
+			const latestLevelResults = newLevelResultsHistory.slice(
 				-1
 			)[0] as LevelResults;
 
@@ -79,17 +79,16 @@ const appMachine = setup({
 			// while also calculating the average fitness of the population.
 			let aggregateFitness = 0;
 			const evaluatedPopulation = context.population.map((individual) => {
-				const individualResult =
-					newLastLevelResults.henStatsById[individual.id];
-				if (!individualResult) {
-					return individual;
-				}
-				individual.fitness = calculateFitness(individualResult);
+				individual.fitness = calculateFitness(
+					latestLevelResults,
+					individual.id
+				);
+				console.log('hendividualFitness', individual.fitness);
 				aggregateFitness += individual.fitness;
 				return individual;
 			});
 			const averageFitness = aggregateFitness / evaluatedPopulation.length;
-			newLastLevelResults.levelStats.averageFitness = averageFitness;
+			latestLevelResults.levelStats.averageFitness = averageFitness;
 
 			return {
 				population: evaluatedPopulation,
