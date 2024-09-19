@@ -1,38 +1,100 @@
-import { setup } from 'xstate';
+import { assign, setup, type ActorRefFrom } from 'xstate';
+import { sounds, type SoundName } from './sounds';
+import { timer } from './GameLevel/timer.actor';
 
 export const soundMachine = setup({
 	types: {} as {
-		events: { type: 'play' };
+		events:
+			| { type: 'Play sound'; name: SoundName; volume: number }
+			| { type: 'Timer done'; name: SoundName };
 		context: {
-			debouncedSounds: Set<string>;
+			soundTimers: Map<string, ActorRefFrom<typeof timer>>;
 		};
 	},
-	actions: {},
+	guards: {
+		hasSoundTimer: ({ context }, params: { name: SoundName }) =>
+			context.soundTimers.has(params.name),
+	},
+	actions: {
+		spawnSoundTimer: assign({
+			soundTimers: ({ context, spawn }, params: { name: SoundName }) => {
+				const timerActorRef = spawn(timer, {
+					input: {
+						name: params.name,
+						durationMS: 1000,
+					},
+				});
+				context.soundTimers.set(params.name, timerActorRef);
+				return new Map(context.soundTimers);
+			},
+		}),
+		deleteSoundTimer: assign({
+			soundTimers: ({ context }, params: { name: SoundName }) => {
+				context.soundTimers.delete(params.name);
+				return new Map(context.soundTimers);
+			},
+		}),
+		playSound: (
+			_,
+			params: {
+				name: SoundName;
+				volume: number;
+			}
+		) => {
+			sounds[params.name].play();
+		},
+	},
 }).createMachine({
 	id: 'Sound',
 	context: {
-		debouncedSounds: new Set<string>(),
+		soundTimers: new Map(),
 	},
 	initial: 'Idle',
 	states: {
 		Idle: {
 			on: {
-				play: [{ guard: () => true }, {}],
-			},
-		},
-		Debouncing: {
-			after: {
-				'1000': {
-					target: 'Idle',
-				},
-			},
-			on: {
-				play: {
-					target: 'Debouncing',
-					description:
-						'Re-enter `Debouncing` state and reinitialize the delayed transition.',
-					reenter: true,
-				},
+				'Play sound': [
+					{
+						guard: {
+							type: 'hasSoundTimer',
+							params: ({ event }) => ({ name: event.name }),
+						},
+						actions: {
+							type: 'spawnSoundTimer',
+							params: ({ event }) => ({
+								name: event.name,
+							}),
+						},
+					},
+					{
+						actions: {
+							type: 'playSound',
+							params: ({ event }) => ({
+								name: event.name,
+								volume: event.volume,
+							}),
+						},
+					},
+				],
+				'Timer done': [
+					{
+						actions: {
+							type: 'deleteSoundTimer',
+							params: ({ event }) => ({
+								name: event.name,
+							}),
+						},
+					},
+					{
+						actions: [
+							// {
+							// 	type: 'timer',
+							// 	params: ({ event }) => ({ remainingMS: event.remainingMS }),
+							// },
+							// 'spawnNewHen',
+						],
+					},
+				],
 			},
 		},
 	},

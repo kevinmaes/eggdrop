@@ -1,5 +1,7 @@
 import { Howl } from 'howler';
 
+export type SoundName = keyof typeof sounds;
+
 export const sounds = {
 	layEgg: new Howl({
 		src: ['sounds/laid.wav'],
