@@ -1,15 +1,30 @@
-import { assign, fromPromise, raise, setup } from 'xstate';
+import {
+	assign,
+	fromPromise,
+	raise,
+	sendTo,
+	setup,
+	type ActorRef,
+	type ActorRefFrom,
+	type Snapshot,
+} from 'xstate';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import type { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position, Direction } from '../types';
-import { sounds } from '../sounds';
+import { type SoundName, sounds } from '../sounds';
 import type { EggColor } from '../Egg/egg.machine';
+
+type SoundRequestEvent = { type: 'Play sound'; soundName: SoundName };
+
+type MyParent = ActorRef<Snapshot<unknown>, SoundRequestEvent>;
+// export type RegistrationActorRef = ActorRefFrom<typeof chefMachine>;
 
 export const chefMachine = setup({
 	types: {} as {
 		input: {
+			par;
 			chefConfig: ReturnType<typeof getGameConfig>['chef'];
 			chefAssets: GameAssets['chef'];
 			position: Position;
@@ -46,6 +61,35 @@ export const chefMachine = setup({
 		setChefRef: assign({
 			chefRef: (_, params: React.RefObject<Konva.Image>) => params,
 		}),
+		playCatchReaction2: sendTo(
+			'gameLevelMachine',
+			(
+				_,
+				params: {
+					eggColor: EggColor;
+				}
+			) => {
+				console.log('playCatchReaction', params.eggColor);
+				const event = { type: 'Play sound' };
+				switch (params.eggColor) {
+					case 'black':
+						if (Math.random() > 0.5) {
+							// return { soundName: 'ohNo' };
+							event.soundName = 'ohNo';
+						} else {
+							// sounds.wsup.play();
+							event.soundName = 'wsup';
+						}
+						break;
+					case 'gold':
+						// sounds.yes.play();
+						event.soundName = 'yes';
+						break;
+					default:
+				}
+				return event;
+			}
+		),
 		playCatchReaction: (
 			_,
 			params: {

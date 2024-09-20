@@ -2,6 +2,36 @@ import { assign, setup, type ActorRefFrom } from 'xstate';
 import { sounds, type SoundName } from './sounds';
 import { timer } from './GameLevel/timer.actor';
 
+export const playSound = setup({
+	types: {} as {
+		input: {
+			soundName: SoundName;
+		};
+		events: { type: 'Play' };
+	},
+}).createMachine({
+	id: 'PlaySound',
+	initial: 'Playing',
+	states: {
+		Idle: {
+			on: {
+				Play: {
+					target: 'Playing',
+					// actions: (_, { name, volume }) => {
+					// 	sounds[name].play();
+					// },
+				},
+			},
+		},
+		Playing: {
+			after: {
+				1000: {
+					target: 'Idle',
+				},
+			},
+		},
+	},
+});
 export const soundMachine = setup({
 	types: {} as {
 		events:

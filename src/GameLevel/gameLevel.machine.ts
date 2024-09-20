@@ -11,10 +11,11 @@ import {
 } from '../Egg/egg.machine';
 import { getGameConfig } from './gameConfig';
 import type { GenerationStats, Hendividual, LevelResults } from './types';
-import { sounds } from '../sounds';
+import { sounds, type SoundName } from '../sounds';
 import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
 import type { Direction, Position } from '../types';
+import { playSound } from '../sound.machine';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -29,6 +30,7 @@ export const gameLevelMachine = setup({
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
+			soundActorRefMap: Map<string, ActorRefFrom<typeof playSound>>;
 			remainingMS: number;
 			generationNumber: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
@@ -73,6 +75,22 @@ export const gameLevelMachine = setup({
 			| { type: 'Tick'; remainingMS: number; done: boolean };
 	},
 	actions: {
+		spawnSounds: assign({
+			soundActorRefMap: ({ spawn }) => {
+				const soundActorRefMap = new Map();
+				const soundNames = Object.keys(sounds) as SoundName[];
+				for (const soundName of soundNames) {
+					soundActorRefMap.set(
+						soundName,
+						spawn(playSound, { input: { soundName: 'catch' } })
+					);
+				}
+				return soundActorRefMap;
+			},
+		}),
+		deleteSounds: assign({
+			soundActorRefMap: new Map(),
+		}),
 		setChefPotRimHitRef: assign({
 			chefPotRimHitRef: (_, params: React.RefObject<Rect>) => params,
 		}),
@@ -458,6 +476,7 @@ export const gameLevelMachine = setup({
 	context: ({ input }) => ({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
+		soundActorRefMap: new Map(),
 		remainingMS: input.levelDuration,
 		generationNumber: input.generationNumber,
 		henActorRefs: [],
@@ -531,6 +550,8 @@ export const gameLevelMachine = setup({
 		scoreData: context.scoreData,
 	}),
 	initial: 'Playing',
+	entry: 'spawnSounds',
+	exit: 'deleteSounds',
 	on: {
 		'Set chefPotRimHitRef': {
 			actions: {
