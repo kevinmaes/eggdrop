@@ -24,7 +24,7 @@ export function EggTally({
 		(state) => state?.context?.gameAssets?.egg?.frames ?? null
 	);
 
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
+	const [eggImage] = useImage('images/egg.sprite.png');
 
 	if (!eggFrames) {
 		return null;
