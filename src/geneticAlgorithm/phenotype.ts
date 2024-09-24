@@ -37,18 +37,18 @@ export const phenotypeConfig: PhenotypeConfig = {
 	// The base duration for the hen's tween
 	baseTweenDurationSeconds: {
 		min: 0,
-		max: 5,
+		max: 7,
 		round: true,
 	},
 	// The maximum number of eggs the hen can lay while stopped
 	stationaryEggLayingRate: {
 		min: 0,
-		max: 0.5,
+		max: 0.7,
 	},
 	// The maximum number of eggs the hen can lay while moving
 	movingEggLayingRate: {
 		min: 0,
-		max: 0.5,
+		max: 0.7,
 	},
 	// The rate at which the eggs will hatch when they land on the ground
 	// TODO: Not sure this is needed here.
@@ -65,7 +65,7 @@ export const phenotypeConfig: PhenotypeConfig = {
 	// The max x amount a hen can move during its animation
 	maxXMovement: {
 		min: 250,
-		max: getGameConfig().stageDimensions.width,
+		max: 0.5 * getGameConfig().stageDimensions.width,
 		round: true,
 	},
 	// The min time the hen will stop at a location
