@@ -26,7 +26,7 @@ export function calculateFitness(
 	const eggsLaidRate =
 		henStats.eggsLaid / latestLevelResults.levelStats.totalEggsLaid;
 	const eggsLaidFitness =
-		1 - eggsLaidRate * eggsLaidRate * fitnessWeights.eggsLaid;
+		(1 - eggsLaidRate * eggsLaidRate) * fitnessWeights.eggsLaid;
 
 	const eggsCaughtTotal =
 		henStats.eggsCaught.white +
@@ -35,11 +35,12 @@ export function calculateFitness(
 
 	const eggsUncaughtRate = eggsCaughtTotal / henStats.eggsLaid;
 	const eggsUncaughtFitness =
-		1 - eggsUncaughtRate * eggsUncaughtRate * fitnessWeights.eggsUncaught;
+		(1 - eggsUncaughtRate * eggsUncaughtRate) * fitnessWeights.eggsUncaught;
 
 	const blackEggsCaughtRate = henStats.eggsCaught.black / henStats.eggsLaid;
 	const blackEggsCaughtFitness =
-		blackEggsCaughtRate * blackEggsCaughtRate * fitnessWeights.blackEggsCaught;
+		(1 - blackEggsCaughtRate * blackEggsCaughtRate) *
+		fitnessWeights.blackEggsCaught;
 
 	overallFitness =
 		eggsLaidFitness + eggsUncaughtFitness + blackEggsCaughtFitness;
