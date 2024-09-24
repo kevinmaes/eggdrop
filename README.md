@@ -8,9 +8,10 @@ This game is a fun side project of building a game for web. It was created using
 
 It uses the following:
 
-- [React](https://react.dev)
-- [Konva](https://konvajs.org)
-- [XState](https://xstate.js.org) and [Stately.ai](https://stately.ai)
+- [React](https://react.dev) with [TypeScript](https://www.typescriptlang.org)
+- [Konva](https://konvajs.org) for React and HTML5 Canvas components
+- [XState](https://xstate.js.org) and [Stately.ai](https://stately.ai) for state machines
+- [Howler](https://howlerjs.com) for sounds
 
 The game also includes a genetic algorithm to evolve the characteristics of the hens who drop eggs.
 
