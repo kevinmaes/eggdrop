@@ -354,6 +354,11 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
+			after: {
+				300: 'Hatching Jump',
+			},
+		},
+		'Hatching Jump': {
 			entry: 'playHatchingChickSound',
 			initial: 'Jumping Up',
 			states: {
