@@ -2,6 +2,8 @@
 
 ![Egg Drop Title](public/images/egg-drop-title.png)
 
+Try the [Egg Drop game](http://eggdrop.kevinmaes.com)
+
 ## About the Game
 
 This game is a fun side project of building a game for web. It was created using a standard Vite React project.
