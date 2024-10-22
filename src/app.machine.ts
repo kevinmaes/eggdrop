@@ -39,6 +39,9 @@ const appMachine = setup({
 		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
 	},
 	actions: {
+		setLoadedGameAssets: assign({
+			gameAssets: (_, params: GameAssets) => params,
+		}),
 		toggleMute: assign({
 			isMuted: ({ context }) => {
 				const isNowMuted = !context.isMuted;
@@ -277,9 +280,10 @@ const appMachine = setup({
 					invoke: {
 						onDone: {
 							target: 'Done',
-							actions: assign({
-								gameAssets: ({ event }) => event.output,
-							}),
+							actions: {
+								type: 'setLoadedGameAssets',
+								params: ({ event }) => event.output,
+							},
 						},
 						onError: '#Egg Drop Game.Show Error',
 						src: 'loadSprites',
