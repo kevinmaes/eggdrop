@@ -36,7 +36,7 @@ Type `cmd-d` on the keyboard to toggle the visibility of the Dev Panel.
 
 ## Game Development
 
-THIS GAME IS STILL IN ACTIVEL DEVELOPMENT
+THIS GAME IS STILL IN ACTIVE DEVELOPMENT
 
 See the [Issues](https://github.com/kevinmaes/eggdrop/issues) for a list of possible upcoming features, fixes, and enhancements
 
