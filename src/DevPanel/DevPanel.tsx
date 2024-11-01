@@ -28,6 +28,7 @@ function formatGenerationStats(generationStats: GenerationStats) {
 			case 'averageMaxEggs':
 			// Average stats
 			case 'averageEggsBroken':
+			case 'averageEggsOffscreen':
 			case 'averageEggsHatched':
 			case 'averageEggsLaid':
 			case 'averageHatchRate':

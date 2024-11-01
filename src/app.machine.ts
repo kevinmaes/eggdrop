@@ -4,16 +4,13 @@ import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { nanoid } from 'nanoid';
 import { getGameConfig } from './GameLevel/gameConfig';
 import type { Hendividual, LevelResults } from './GameLevel/types';
-import {
-	mutateIndividual,
-	rouletteWheelSelection,
-} from './geneticAlgorithm/ga';
+import { eliteSelection, mutateIndividual } from './geneticAlgorithm/ga';
 import { calculateFitness } from './geneticAlgorithm/eggdropGA';
 import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
 import { DNA } from './geneticAlgorithm/DNA';
 import {
-	getInitialPhenotype,
+	createPhenotypeForIndividual,
 	phenotypeConfig,
 	type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
@@ -42,6 +39,9 @@ const appMachine = setup({
 		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
 	},
 	actions: {
+		setLoadedGameAssets: assign({
+			gameAssets: (_, params: GameAssets) => params,
+		}),
 		toggleMute: assign({
 			isMuted: ({ context }) => {
 				const isNowMuted = !context.isMuted;
@@ -74,7 +74,7 @@ const appMachine = setup({
 			const newLevelResultsHistory = context.levelResultsHistory.slice();
 
 			// Evaluate fitness
-			const newLastLevelResults = newLevelResultsHistory.slice(
+			const latestLevelResults = newLevelResultsHistory.slice(
 				-1
 			)[0] as LevelResults;
 
@@ -82,17 +82,16 @@ const appMachine = setup({
 			// while also calculating the average fitness of the population.
 			let aggregateFitness = 0;
 			const evaluatedPopulation = context.population.map((individual) => {
-				const individualResult =
-					newLastLevelResults.henStatsById[individual.id];
-				if (!individualResult) {
-					return individual;
-				}
-				individual.fitness = calculateFitness(individualResult);
+				individual.fitness = calculateFitness(
+					latestLevelResults,
+					individual.id
+				);
+				console.log('hendividualFitness', individual.fitness);
 				aggregateFitness += individual.fitness;
 				return individual;
 			});
 			const averageFitness = aggregateFitness / evaluatedPopulation.length;
-			newLastLevelResults.levelStats.averageFitness = averageFitness;
+			latestLevelResults.levelStats.averageFitness = averageFitness;
 
 			return {
 				population: evaluatedPopulation,
@@ -102,13 +101,13 @@ const appMachine = setup({
 		selectCrossoverAndMutatePopulation: assign({
 			population: ({ context }) => {
 				// GA Selection
-				// Select by fitness (roulette wheel selection)
-				const selectedParents = [];
-				// Only select a total of 33% of the population to be parents
-				// based on roulette wheel selection.
-				for (let i = 0; i < context.population.length / 3; i++) {
-					selectedParents.push(rouletteWheelSelection(context.population));
-				}
+				// Select one third of the population to be parents for the next generation
+				// with a combination of 5% elitism and roulette wheel selection
+				const selectedParents = eliteSelection(
+					context.population,
+					Math.round(context.population.length / 3),
+					Math.floor(context.population.length * 0.05)
+				);
 
 				// GA Crossover
 				const nextGeneration: Hendividual[] = [];
@@ -125,7 +124,7 @@ const appMachine = setup({
 
 					const childDNA = DNA.crossover(parent1.dna, parent2.dna);
 					const childPhenotype: PhenotypeValuesForIndividual =
-						getInitialPhenotype(childDNA);
+						createPhenotypeForIndividual(childDNA.getGenes(), phenotypeConfig);
 
 					const child = {
 						id: nanoid(),
@@ -148,6 +147,7 @@ const appMachine = setup({
 							},
 							eggsHatched: 0,
 							eggsBroken: 0,
+							eggsOffscreen: 0,
 							eggStats: {},
 						},
 					};
@@ -202,6 +202,7 @@ const appMachine = setup({
 		gameLevelMachine,
 	},
 }).createMachine({
+	/** @xstate-layout N4IgpgJg5mDOIC5QFEpQAQBEBOB7ADugOICGAtmAHQAyuJEAlgHZQ12MvoBiuTALrADEEXlWYA3XAGsqqDDgLFyVWvWatVHDD36wEE3AGMSfBrwDaABgC6V64lD5csBqd4OQAD0QA2AMw+lADsABwAnH5BYQBMYUFBPpYArAA0IACeiLFJlNEALEF5lmEhlpZRAIx5AL7VaXJYeISkFGxqLG1a3LwCgmDYeNiU+AA2JgBmuNhklA0Kzcqd6kucOgL6TJLGbkx2dh5OLjse3gh5SZaUFUkXPkklFdEVCWmZCEnRgRVheRV+SY9on48iEfLV6mhGooWip2MtNOp0ABlfDYVxwYSiSgGGSzSHzJStBEdYkYFFovhwDZbExmXY2fZIECHVx0k6ICrPQI+cKfaKFe6c1IZLJJILBApFEplSo1OogOZNQmw9oaOGccnooT9QbDMZ8SbTPHyJUwlZq1XI1Fa6lGWkWBk2A7OVnuJmnMKWCqUe7RUqWAr+T0+V6IEHepI+O5FCplX5+MLghX402LUmYphUWB8EyyFPQtPqqCMxwu47uxB+PwhSh+P15EF5avha6h96fK4-P4A6JAkFg+WKgutACS-DwggACmN0iXmWW2RWzoVgj8QkFvuvzlG21E-JQQhVSjz-kK-UmhwtWjD0NOSOlKGPXOhqGBxGARoISCMAO732Bziy5agKcITnMEPJetWfiWD4sRBG2ITAlcISRj48T3Am-gXvmV5UDed4PoR6gZmImzSHmJrDvhyi3jOlDESwtrbHSexOkyQGLiBHJlDkZQBD4ESWAmVZ5G2sblFc3bbjBfJyhCVF4ZQBH0QAcmAnh8MQYCZtg9pMOgyCSCMACuOxTjOgELm63EIKhOTxL83x1vyh4hiKCCxrElA+NJkayXBfg4YpyrKbRhGCAAiiZrhWUcXFeGGwnBH8sENl6nwVOJGXBCE0SWKh-w-MkA4KVCeGCAAKrgaAjGA6BkGZYBxa6TDsp50Rth8tTykwuAQHAHiXsqzrxTZiUIH6lzCm8kYSoUxT+pUATBeVoWkqNrXtXWNYzRyeSBIUC3SuUYR-KVyYhWapLmt0uibcBE2RIEe2TQE81SktZ0rYOuHrUWt2apS8AcdZbVLsGPoxP6gYJskbZAodkqLTKZ3yZda3XQDmCiA9CWnFUIIHvyQKhDcSSoQjZ25MjJ2yqtBJmmOfB4Hj42nMCOR5WBjbNmdr1RNEB5HrBSEAtc56-VdixIgAFrgP6GQMUxs+DtlhAClDFFNAYJHDYkeZGQvCcGaOcn4FQM6m17hTOqvtb5XxRskITrlUjyvT4RNHmhGERGE2FS5jiwqfej5MM+r7viM9tLlGeRXM7FNu780SvaUQs8r7QSYQHQVB4zIe22HjFQLH6vhFrwlRkJInAru1YodnueB2Vhc2xQdFh+pmnabp+mGcZZkJZx7OIKECewRuiTxuhfriVUYS1mTljZF2B09dUQA */
 	id: 'Egg Drop Game',
 	context: ({ input }) => {
 		const initialPopulation = new Array(input.gameConfig.populationSize)
@@ -209,7 +210,10 @@ const appMachine = setup({
 			.map(() => {
 				const dnaLength = Object.keys(phenotypeConfig).length;
 				const initialDNA = new DNA(dnaLength);
-				const phenotype = getInitialPhenotype(initialDNA);
+				const phenotype = createPhenotypeForIndividual(
+					initialDNA.getGenes(),
+					phenotypeConfig
+				);
 
 				return {
 					id: nanoid(),
@@ -232,6 +236,7 @@ const appMachine = setup({
 						},
 						eggsHatched: 0,
 						eggsBroken: 0,
+						eggsOffscreen: 0,
 						eggStats: {},
 					},
 				};
@@ -275,9 +280,10 @@ const appMachine = setup({
 					invoke: {
 						onDone: {
 							target: 'Done',
-							actions: assign({
-								gameAssets: ({ event }) => event.output,
-							}),
+							actions: {
+								type: 'setLoadedGameAssets',
+								params: ({ event }) => event.output,
+							},
 						},
 						onError: '#Egg Drop Game.Show Error',
 						src: 'loadSprites',

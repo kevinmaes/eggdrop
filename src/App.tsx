@@ -50,7 +50,10 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
 			<Stage
 				width={gameConfig.stageDimensions.width}
 				height={gameConfig.stageDimensions.height}
-				style={{ background: 'blue', border: '1px solid black' }}
+				style={{
+					border: '5px solid',
+					borderColor: '#98aace',
+				}}
 			>
 				{/* Background graphics layer - static (no events) */}
 				<BackgroundLayer />

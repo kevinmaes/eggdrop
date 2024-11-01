@@ -1,6 +1,5 @@
 import type { Position } from '../types';
-import { DNA } from '../geneticAlgorithm/DNA';
-import type { PhenotypeKey } from '../geneticAlgorithm/phenotype';
+import type { Individual } from '../geneticAlgorithm/ga';
 
 export interface GenerationStats {
 	// Overall info
@@ -24,13 +23,15 @@ export interface GenerationStats {
 	averageRestAfterLayingEggMS: number;
 
 	// Average stats
-	averageEggsBroken: number;
-	averageEggsHatched: number;
 	averageEggsLaid: number;
+	averageEggsHatched: number;
+	averageEggsBroken: number;
+	averageEggsOffscreen: number;
 
 	// Result totals
 	totalEggsBroken: number;
 	totalEggsCaught: number;
+	totalEggsOffscreen: number;
 	totalBlackEggsCaught: number;
 	totalGoldEggsCaught: number;
 	totalWhiteEggsCaught: number;
@@ -68,12 +69,10 @@ export interface LevelResults {
 // 	}
 // >;
 
-export interface Hendividual {
+/** Hendividual = Hen + Individual for Egg Drop */
+export interface Hendividual extends Individual {
 	id: string;
-	// GA
-	dna: DNA;
-	phenotype: Record<PhenotypeKey, number>;
-	fitness: number;
+
 	// Configuration
 	initialPosition: Position;
 
@@ -87,5 +86,6 @@ export interface Hendividual {
 		};
 		eggsHatched: number;
 		eggsBroken: number;
+		eggsOffscreen: number;
 	};
 }

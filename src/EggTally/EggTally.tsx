@@ -1,6 +1,7 @@
 import useImage from 'use-image';
 import { AppActorContext } from '../app.machine';
 import { Group, Image, Text } from 'react-konva';
+import type { EggColor } from '../Egg/egg.machine';
 
 export function EggTally({
 	eggColor,
@@ -11,7 +12,7 @@ export function EggTally({
 	width,
 	height,
 }: {
-	eggColor: 'white' | 'gold' | 'black';
+	eggColor: EggColor;
 	eggSize?: number;
 	count: number;
 	x: number;
@@ -23,7 +24,7 @@ export function EggTally({
 		(state) => state?.context?.gameAssets?.egg?.frames ?? null
 	);
 
-	const [eggImage] = useImage(`../images/egg.sprite.png`);
+	const [eggImage] = useImage('images/egg.sprite.png');
 
 	if (!eggFrames) {
 		return null;

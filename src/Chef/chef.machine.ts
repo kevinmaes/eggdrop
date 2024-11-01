@@ -4,6 +4,8 @@ import { Animation } from 'konva/lib/Animation';
 import type { GameAssets } from '../types/assets';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position, Direction } from '../types';
+import { sounds } from '../sounds';
+import type { EggColor } from '../Egg/egg.machine';
 
 export const chefMachine = setup({
 	types: {} as {
@@ -36,11 +38,35 @@ export const chefMachine = setup({
 		};
 		events:
 			| { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
-			| { type: 'Catch' }
+			| { type: 'Catch'; eggColor: EggColor }
 			| { type: 'Set direction'; direction: Direction['value'] }
 			| { type: 'Reset isCatchingEgg' };
 	},
 	actions: {
+		setChefRef: assign({
+			chefRef: (_, params: React.RefObject<Konva.Image>) => params,
+		}),
+		playCatchReaction: (
+			_,
+			params: {
+				eggColor: EggColor;
+			}
+		) => {
+			console.log('playCatchReaction', params.eggColor);
+			switch (params.eggColor) {
+				case 'black':
+					if (Math.random() > 0.5) {
+						sounds.ohNo.play();
+					} else {
+						sounds.wsup.play();
+					}
+					break;
+				case 'gold':
+					sounds.yes.play();
+					break;
+				default:
+			}
+		},
 		updateChefPosition: assign(({ context }) => {
 			const {
 				speed,
@@ -119,6 +145,12 @@ export const chefMachine = setup({
 		resetIsCatchingEgg: assign({
 			isCatchingEgg: false,
 		}),
+		scheduleResetIsCatchingEgg: raise(
+			{ type: 'Reset isCatchingEgg' },
+			{
+				delay: 300,
+			}
+		),
 	},
 	actors: {
 		movingChefBackAndForthActor: fromPromise<{ timeDiff: number }>(() => {
@@ -136,7 +168,7 @@ export const chefMachine = setup({
 		}),
 	},
 }).createMachine({
-	id: 'chef',
+	id: 'Chef',
 	initial: 'Moving',
 	context: ({ input }) => ({
 		chefConfig: input.chefConfig,
@@ -156,9 +188,7 @@ export const chefMachine = setup({
 	}),
 	on: {
 		'Set chefRef': {
-			actions: assign({
-				chefRef: ({ event }) => event.chefRef,
-			}),
+			actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
 		},
 		'Set direction': {
 			actions: {
@@ -181,12 +211,11 @@ export const chefMachine = setup({
 				Catch: {
 					actions: [
 						'setIsCatchingEgg',
-						raise(
-							{ type: 'Reset isCatchingEgg' },
-							{
-								delay: 300,
-							}
-						),
+						{
+							type: 'playCatchReaction',
+							params: ({ event }) => ({ eggColor: event.eggColor }),
+						},
+						'scheduleResetIsCatchingEgg',
 					],
 				},
 				'Reset isCatchingEgg': {

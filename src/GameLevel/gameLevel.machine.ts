@@ -4,6 +4,7 @@ import { type ActorRefFrom, assign, sendTo, setup } from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
+	type EggColor,
 	type EggDoneEvent,
 	type EggResultStatus,
 	eggMachine,
@@ -60,17 +61,21 @@ export const gameLevelMachine = setup({
 					henPosition: Position;
 					henCurentTweenSpeed: number;
 					henCurrentTweenDirection: Direction['value'];
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					hatchRate: number;
 			  }
 			| {
 					type: 'Egg position updated';
 					eggId: string;
+					eggColor: EggColor;
 					position: Position;
 			  }
 			| { type: 'Tick'; remainingMS: number; done: boolean };
 	},
 	actions: {
+		setChefPotRimHitRef: assign({
+			chefPotRimHitRef: (_, params: React.RefObject<Rect>) => params,
+		}),
 		countdownTick: assign({
 			remainingMS: (_, params: { remainingMS: number }) => params.remainingMS,
 		}),
@@ -131,7 +136,7 @@ export const gameLevelMachine = setup({
 					henButtXOffset: number;
 					henButtYOffset: number;
 					henCurrentTweenDirection: Direction['value'];
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					hatchRate: number;
 				}
 			) => {
@@ -163,12 +168,23 @@ export const gameLevelMachine = setup({
 				];
 			},
 		}),
+		tellChefHeCaughtAnEgg: sendTo(
+			'chefMachine',
+			(_, params: { eggColor: EggColor }) => ({
+				type: 'Catch',
+				eggColor: params.eggColor,
+			})
+		),
+		tellEggItWasCaught: sendTo(
+			({ system }, params: { eggId: string }) => system.get(params.eggId),
+			{ type: 'Catch' }
+		),
 		updateHenStatsForEggLaid: assign(
 			(
 				{ context },
 				params: {
 					henId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 				}
 			) => {
 				const updatedHenStatsById = {
@@ -205,7 +221,7 @@ export const gameLevelMachine = setup({
 				params: {
 					henId: string;
 					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					resultStatus: EggResultStatus;
 				}
 			) => {
@@ -235,7 +251,7 @@ export const gameLevelMachine = setup({
 				params: {
 					henId: string;
 					eggId: string;
-					eggColor: 'white' | 'gold' | 'black';
+					eggColor: EggColor;
 					resultStatus: EggResultStatus;
 				}
 			) => {
@@ -273,6 +289,9 @@ export const gameLevelMachine = setup({
 						updatedHenStats.eggsBroken += 1;
 						updatedLevelStats.totalEggsBroken += 1;
 						break;
+					case 'Offscreen':
+						updatedHenStats.eggsOffscreen += 1;
+						updatedLevelStats.totalEggsOffscreen += 1;
 				}
 
 				const thisIndividualHen = updatedHenStatsById[params.henId];
@@ -372,6 +391,8 @@ export const gameLevelMachine = setup({
 					averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
 					averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
 					averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
+					averageEggsOffscreen:
+						context.levelStats.totalEggsOffscreen / totalHens,
 				};
 			},
 		}),
@@ -434,6 +455,7 @@ export const gameLevelMachine = setup({
 		},
 	},
 }).createMachine({
+	id: 'GameLevel',
 	context: ({ input }) => ({
 		gameConfig: input.gameConfig,
 		gameAssets: input.gameAssets,
@@ -476,9 +498,10 @@ export const gameLevelMachine = setup({
 			averageRestAfterLayingEggMS: 0,
 
 			// Average stats
-			averageEggsBroken: 0,
-			averageEggsHatched: 0,
 			averageEggsLaid: 0,
+			averageEggsHatched: 0,
+			averageEggsBroken: 0,
+			averageEggsOffscreen: 0,
 
 			// Result totals
 			totalEggsBroken: 0,
@@ -487,6 +510,7 @@ export const gameLevelMachine = setup({
 			totalGoldEggsCaught: 0,
 			totalWhiteEggsCaught: 0,
 			totalEggsHatched: 0,
+			totalEggsOffscreen: 0,
 			totalEggsLaid: 0,
 			totalBlackEggsLaid: 0,
 			totalGoldEggsLaid: 0,
@@ -510,9 +534,10 @@ export const gameLevelMachine = setup({
 	initial: 'Playing',
 	on: {
 		'Set chefPotRimHitRef': {
-			actions: assign({
-				chefPotRimHitRef: ({ event }) => event.chefPotRimHitRef,
-			}),
+			actions: {
+				type: 'setChefPotRimHitRef',
+				params: ({ event }) => event.chefPotRimHitRef,
+			},
 		},
 		'Lay an egg': {
 			actions: [
@@ -545,13 +570,21 @@ export const gameLevelMachine = setup({
 				params: ({ event }) => event.position,
 			},
 			actions: [
-				sendTo('chefMachine', { type: 'Catch' }),
+				{
+					type: 'tellChefHeCaughtAnEgg',
+					params: ({ event }) => ({
+						eggColor: event.eggColor,
+					}),
+				},
 				'playCatchEggSound',
-				// Sending Catch to the eggActor will lead to final state
-				// and automatic removal by this parent machine.
-				sendTo(({ system, event }) => system.get(event.eggId), {
-					type: 'Catch',
-				}),
+				// Notifying the eggActor that the egg was caught leads to
+				// the egg's final state and automatic removal
+				{
+					type: 'tellEggItWasCaught',
+					params: ({ event }) => ({
+						eggId: event.eggId,
+					}),
+				},
 			],
 		},
 	},

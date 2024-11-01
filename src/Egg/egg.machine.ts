@@ -7,7 +7,13 @@ import { eggMotionActor } from './eggMotionActor';
 import type { GameAssets } from '../types/assets';
 import type { Direction, Position } from '../types';
 
-export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught';
+export type EggColor = 'white' | 'gold' | 'black';
+export type EggResultStatus =
+	| null
+	| 'Hatched'
+	| 'Broken'
+	| 'Caught'
+	| 'Offscreen';
 
 export type EggDoneEvent = { output: OutputFrom<typeof eggMachine> };
 
@@ -23,14 +29,14 @@ export const eggMachine = setup({
 			henIsMoving: boolean;
 			position: Position;
 			henCurentTweenSpeed: number;
-			color: 'white' | 'gold' | 'black';
+			color: EggColor;
 			rotationDirection: Direction['value'];
 			hatchRate: number;
 		};
 		output: {
 			henId: string;
 			eggId: string;
-			eggColor: 'white' | 'gold' | 'black';
+			eggColor: EggColor;
 			resultStatus: EggResultStatus;
 		};
 		context: {
@@ -45,7 +51,7 @@ export const eggMachine = setup({
 			initialPosition: Position;
 			position: Position;
 			targetPosition: Position;
-			color: 'white' | 'gold' | 'black';
+			color: EggColor;
 			henCurentTweenSpeed: number;
 			rotationDirection: Direction['value'];
 			exitingSpeed: number;
@@ -88,8 +94,21 @@ export const eggMachine = setup({
 			if (!context.eggRef.current) return false;
 			return context.eggRef.current.y() >= context.gameConfig.chef.y;
 		},
+		isEggOffScreen: ({ context }) => {
+			if (!context.eggRef.current) return false;
+			return (
+				context.eggRef.current.x() < 0 ||
+				context.eggRef.current.x() > context.gameConfig.stageDimensions.width
+			);
+		},
 	},
 	actions: {
+		setEggRef: assign({
+			eggRef: (_, params: React.RefObject<Konva.Image>) => params,
+		}),
+		pause: assign({
+			gamePaused: true,
+		}),
 		setNewTargetPosition: assign({
 			targetPosition: ({ context }) => ({
 				x: context.position.x,
@@ -112,9 +131,10 @@ export const eggMachine = setup({
 			position: (_, params: Position) => params,
 		}),
 		notifyParentOfPosition: sendParent(
-			(_, params: { eggId: string; position: Position }) => ({
+			({ context }, params: { position: Position }) => ({
 				type: 'Egg position updated',
-				eggId: params.eggId,
+				eggId: context.id,
+				eggColor: context.color,
 				position: params.position,
 			})
 		),
@@ -126,9 +146,6 @@ export const eggMachine = setup({
 					context.gameConfig.egg.brokenEgg.height,
 			}),
 		}),
-		playSplatSound: () => {
-			sounds.splat.play();
-		},
 		hatchOnFloor: assign({
 			position: ({ context }) => ({
 				x: context.position.x,
@@ -138,15 +155,31 @@ export const eggMachine = setup({
 					context.gameConfig.stageDimensions.margin,
 			}),
 		}),
+		setResultStatus: assign({
+			resultStatus: (_, params: { resultStatus: EggResultStatus }) =>
+				params.resultStatus,
+		}),
+		// Sounds
+		playSplatSound: () => {
+			sounds.splat.play();
+		},
 		playHatchSound: () => {
 			sounds.hatch.play();
 		},
-		playHatchYipeeSound: () => {
-			sounds.yipee.play();
+		playHatchingChickSound: ({ context }) => {
+			switch (context.color) {
+				case 'gold':
+					sounds.yipee.play();
+					break;
+				case 'white':
+					sounds.haha.play();
+					break;
+				default:
+			}
 		},
 	},
 }).createMachine({
-	id: 'egg',
+	id: 'Egg',
 	initial: 'Idle',
 	context: ({ input }) => {
 		return {
@@ -182,9 +215,7 @@ export const eggMachine = setup({
 	},
 	on: {
 		'Pause game': {
-			actions: assign({
-				gamePaused: true,
-			}),
+			actions: 'pause',
 		},
 	},
 	states: {
@@ -192,30 +223,35 @@ export const eggMachine = setup({
 			on: {
 				'Set eggRef': {
 					target: 'Falling',
-					actions: assign({
-						eggRef: ({ event }) => event.eggRef,
-					}),
+					actions: {
+						type: 'setEggRef',
+						params: ({ event }) => event.eggRef,
+					},
 				},
 			},
 		},
 		Falling: {
 			tags: 'falling',
 			on: {
-				'Notify of animation position': {
-					guard: 'isEggNearChefPot',
-					actions: [
-						assign({
-							position: ({ event }) => event.position,
-						}),
-						{
+				'Notify of animation position': [
+					{
+						guard: 'isEggOffScreen',
+						target: 'Done',
+						actions: {
+							type: 'setResultStatus',
+							params: { resultStatus: 'Offscreen' },
+						},
+					},
+					{
+						guard: 'isEggNearChefPot',
+						actions: {
 							type: 'notifyParentOfPosition',
-							params: ({ context, event }) => ({
-								eggId: context.id,
+							params: ({ event }) => ({
 								position: event.position,
 							}),
 						},
-					],
-				},
+					},
+				],
 				Catch: [
 					{
 						guard: ({ context }) => context.color === 'gold',
@@ -335,7 +371,12 @@ export const eggMachine = setup({
 			],
 		},
 		Hatching: {
-			entry: 'playHatchYipeeSound',
+			after: {
+				300: 'Hatching Jump',
+			},
+		},
+		'Hatching Jump': {
+			entry: 'playHatchingChickSound',
 			initial: 'Jumping Up',
 			states: {
 				'Jumping Up': {
@@ -376,19 +417,13 @@ export const eggMachine = setup({
 			onDone: 'Hatched',
 		},
 		Hatched: {
-			entry: [
-				assign({
-					resultStatus: 'Hatched',
-				}),
-			],
+			entry: { type: 'setResultStatus', params: { resultStatus: 'Hatched' } },
 			after: {
 				500: 'Exiting',
 			},
 		},
 		Splatting: {
-			entry: assign({
-				resultStatus: 'Broken',
-			}),
+			entry: { type: 'setResultStatus', params: { resultStatus: 'Broken' } },
 			after: {
 				1000: 'Done',
 			},
