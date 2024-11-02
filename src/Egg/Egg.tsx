@@ -42,7 +42,7 @@ export function Egg({
 	const {
 		gameConfig,
 		exitingDirection,
-		showGoldPoints,
+		// showGoldPoints,
 		isHatching,
 		isHatchingJump,
 		isHatched,
@@ -51,7 +51,7 @@ export function Egg({
 		isDone,
 		eggFrames,
 		chickFrames,
-		uiFrames,
+		// uiFrames,
 		color,
 	} = useSelector(eggActorRef, (state) => {
 		const isExiting = state.matches('Exiting');
@@ -144,37 +144,37 @@ export function Egg({
 		return null;
 	}
 
-	if (showGoldPoints) {
-		const tenPointsFrame = uiFrames['10-points.png']?.frame;
+	// if (showGoldPoints) {
+	// 	const tenPointsFrame = uiFrames['10-points.png']?.frame;
 
-		if (!tenPointsFrame || !chefPosition) {
-			return null;
-		}
+	// 	if (!tenPointsFrame || !chefPosition) {
+	// 		return null;
+	// 	}
 
-		return (
-			<Image
-				ref={eggRef}
-				image={uiImage}
-				width={60}
-				height={60}
-				rotation={0}
-				x={chefPosition.x}
-				y={chefPosition.y - 200}
-				// offsetX={0.5 * gameConfig.egg.chick.width}
-				// offsetX={
-				// 	shouldFaceRight
-				// 		? chefPotRimConfig.offsetX
-				// 		: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
-				// }
-				crop={{
-					x: tenPointsFrame.x,
-					y: tenPointsFrame.y,
-					width: tenPointsFrame.w,
-					height: tenPointsFrame.h,
-				}}
-			/>
-		);
-	}
+	// 	return (
+	// 		<Image
+	// 			ref={eggRef}
+	// 			image={uiImage}
+	// 			width={60}
+	// 			height={60}
+	// 			rotation={0}
+	// 			x={chefPosition.x}
+	// 			y={chefPosition.y - 200}
+	// 			// offsetX={0.5 * gameConfig.egg.chick.width}
+	// 			// offsetX={
+	// 			// 	shouldFaceRight
+	// 			// 		? chefPotRimConfig.offsetX
+	// 			// 		: (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
+	// 			// }
+	// 			crop={{
+	// 				x: tenPointsFrame.x,
+	// 				y: tenPointsFrame.y,
+	// 				width: tenPointsFrame.w,
+	// 				height: tenPointsFrame.h,
+	// 			}}
+	// 		/>
+	// 	);
+	// }
 
 	if (isHatching || isHatchingJump || isHatched) {
 		const currentChickFrame = chickFrames[currentChickFrameName]?.frame;
