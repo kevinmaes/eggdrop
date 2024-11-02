@@ -184,10 +184,10 @@ const appMachine = setup({
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
 			const uiResult = await fetch('images/ui.sprite.json');
-			const uiSpriteSata = await uiResult.json();
+			const uiSpriteData = await uiResult.json();
 
 			return {
-				ui: uiSpriteSata,
+				ui: uiSpriteData,
 				hen: henSpriteData,
 				egg: eggSpriteData,
 				chick: chickSpriteData,
