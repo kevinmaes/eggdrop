@@ -252,18 +252,12 @@ export const eggMachine = setup({
 						},
 					},
 				],
-				Catch: [
-					{
-						guard: ({ context }) => context.color === 'gold',
-						target: 'Gold Points',
-					},
-					{
-						target: 'Done',
-						actions: assign({
-							resultStatus: 'Caught',
-						}),
-					},
-				],
+				Catch: {
+					target: 'Done',
+					actions: assign({
+						resultStatus: 'Caught',
+					}),
+				},
 			},
 			initial: 'Init Falling',
 			states: {
@@ -350,12 +344,6 @@ export const eggMachine = setup({
 				},
 			},
 			onDone: 'Landed',
-		},
-		'Gold Points': {
-			tags: ['gold points'],
-			after: {
-				1000: 'Done',
-			},
 		},
 		Landed: {
 			always: [

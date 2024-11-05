@@ -10,6 +10,7 @@ import { useSelector } from '@xstate/react';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
 import { HensCountdown } from '../HensCountdown/HensCountdown';
+import { EggCaughtPoints } from '../EggCaughtPoints/EggCaughtPoints';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
@@ -24,7 +25,7 @@ export function GameLevel() {
 		'gameLevelMachine'
 	) as ActorRefFrom<typeof gameLevelMachine>;
 
-	const { henActorRefs, eggActorRefs } = useSelector(
+	const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
 		gameLevelActorRef,
 		(state) => {
 			if (!state) {
@@ -32,12 +33,14 @@ export function GameLevel() {
 					remainingMS: 0,
 					henActorRefs: [],
 					eggActorRefs: [],
+					eggCaughtPointsActorRefs: [],
 				};
 			}
 			return {
 				remainingMS: state.context.remainingMS,
 				henActorRefs: state.context.henActorRefs,
 				eggActorRefs: state.context.eggActorRefs,
+				eggCaughtPointsActorRefs: state.context.eggCaughtPointsActorRefs,
 			};
 		}
 	);
@@ -58,6 +61,12 @@ export function GameLevel() {
 				<Chef layerRef={layerRef} />
 				{eggActorRefs.map((eggActorRef) => (
 					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
+				))}
+				{eggCaughtPointsActorRefs.map((eggCaughtPointsActorRef) => (
+					<EggCaughtPoints
+						key={eggCaughtPointsActorRef.id}
+						eggCaughtPointsActorRefs={eggCaughtPointsActorRef}
+					/>
 				))}
 			</Layer>
 
