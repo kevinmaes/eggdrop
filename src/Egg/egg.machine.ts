@@ -24,7 +24,6 @@ export const eggMachine = setup({
 			id: string;
 			eggAssets: GameAssets['egg'];
 			chickAssets: GameAssets['chick'];
-			uiAssets: GameAssets['ui'];
 			henId: string;
 			henIsMoving: boolean;
 			position: Position;
@@ -46,7 +45,6 @@ export const eggMachine = setup({
 			henId: string;
 			eggAssets: GameAssets['egg'];
 			chickAssets: GameAssets['chick'];
-			uiAssets: GameAssets['ui'];
 			henIsMoving: boolean;
 			initialPosition: Position;
 			position: Position;
@@ -189,7 +187,6 @@ export const eggMachine = setup({
 			henId: input.henId,
 			eggAssets: input.eggAssets,
 			chickAssets: input.chickAssets,
-			uiAssets: input.uiAssets,
 			henIsMoving: input.henIsMoving,
 			initialPosition: input.position,
 			position: input.position,
