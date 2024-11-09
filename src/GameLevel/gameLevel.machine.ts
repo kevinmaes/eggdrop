@@ -631,14 +631,6 @@ export const gameLevelMachine = setup({
 					}),
 				},
 			],
-			// actions: {
-			// 	type: 'handleCaughtEgg',
-			// 	params: ({ event }) => ({
-			// 		eggId: event.eggId,
-			// 		eggColor: event.eggColor,
-			// 		position: event.position,
-			// 	}),
-			// },
 		},
 	},
 	states: {
