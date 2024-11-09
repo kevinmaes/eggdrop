@@ -76,7 +76,7 @@ export function LevelScoreBox({
 			x: rect.x() + 5, // Move 5px to the right initially
 			easing: Konva.Easings.EaseInOut,
 			yoyo: true, // Back and forth effect
-			repeat: 20, // Number of shakes (for a total of ~1 second)
+			repeat: 10, // Number of shakes (for a total of ~1 second)
 		});
 
 		// Start shaking
