@@ -51,12 +51,12 @@ export function LevelScoreBox({
 		};
 	});
 
-	const [shouldShakeToZeroPoints, setShouldShakeToZeroPoints] = useState(false);
+	const [animateForBlackEggCaught, setAnimateForBlackEggCaught] =
+		useState(false);
 	useEffect(() => {
 		gameLevelActorRef.on('Egg caught', (event) => {
 			if (event.eggColor === 'black') {
-				console.log('White egg caught');
-				setShouldShakeToZeroPoints(true);
+				setAnimateForBlackEggCaught(true);
 			}
 		});
 	}, [gameLevelActorRef]);
@@ -65,7 +65,7 @@ export function LevelScoreBox({
 
 	useEffect(() => {
 		const rect = boxRef.current;
-		if (!rect || !shouldShakeToZeroPoints) {
+		if (!rect || !animateForBlackEggCaught) {
 			return;
 		}
 
@@ -85,11 +85,11 @@ export function LevelScoreBox({
 		// Stop the shake after 1 second
 		const timeout = setTimeout(() => {
 			shakeTween.destroy(); // Stop the tween
-			setShouldShakeToZeroPoints(false); // Reset the state
+			setAnimateForBlackEggCaught(false); // Reset the state
 		}, 1000);
 
 		return () => clearTimeout(timeout); // Clean up on component unmount
-	}, [shouldShakeToZeroPoints]);
+	}, [animateForBlackEggCaught]);
 
 	const anticipatedGameScore =
 		gameScoreData.gameScore + (scoreData?.levelScore ?? 0);
@@ -124,7 +124,11 @@ export function LevelScoreBox({
 					fontFamily="Arco"
 					height={24}
 					verticalAlign="bottom"
-					fill={gameConfig.colors.secondaryOrange}
+					fill={
+						animateForBlackEggCaught
+							? 'black'
+							: gameConfig.colors.secondaryOrange
+					}
 				/>
 				<Text
 					x={0}
@@ -134,7 +138,11 @@ export function LevelScoreBox({
 					text={`${scoreData.levelScore.toLocaleString()}`}
 					fontSize={32}
 					fontFamily="Arco"
-					fill={gameConfig.colors.secondaryOrange}
+					fill={
+						animateForBlackEggCaught
+							? 'black'
+							: gameConfig.colors.secondaryOrange
+					}
 					height={24}
 					verticalAlign="bottom"
 				/>
