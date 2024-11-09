@@ -7,12 +7,12 @@ import Konva from 'konva';
 import { useEffect, useRef } from 'react';
 import { AppActorContext } from '../app.machine';
 import type { gameLevelMachine } from '../GameLevel/gameLevel.machine';
-import type { eggCaughtPointsActor } from './eggCaughtPoints.actor';
+import type { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 
 export function EggCaughtPoints({
 	eggCaughtPointsActorRefs,
 }: {
-	eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsActor>;
+	eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsMachine>;
 }) {
 	const appActorRef = AppActorContext.useActorRef();
 	const { gameConfig } = AppActorContext.useSelector((state) => {

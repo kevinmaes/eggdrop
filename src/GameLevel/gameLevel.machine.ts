@@ -16,9 +16,9 @@ import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
 import type { Direction, Position } from '../types';
 import {
-	eggCaughtPointsActor,
+	eggCaughtPointsMachine,
 	type EggCaughtPointsDoneEvent,
-} from '../EggCaughtPoints/eggCaughtPoints.actor';
+} from '../EggCaughtPoints/eggCaughtPoints.machine';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -37,7 +37,7 @@ export const gameLevelMachine = setup({
 			generationNumber: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
-			eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsActor>[];
+			eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			nextHenIndex: number;
 			hensLeft: number;
@@ -196,7 +196,7 @@ export const gameLevelMachine = setup({
 				}
 				return [
 					...context.eggCaughtPointsActorRefs,
-					spawn(eggCaughtPointsActor, {
+					spawn(eggCaughtPointsMachine, {
 						input: {
 							eggCaughtPointsId: nanoid(),
 							eggColor: params.eggColor,

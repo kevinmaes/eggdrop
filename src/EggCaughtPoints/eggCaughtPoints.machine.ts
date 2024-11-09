@@ -5,10 +5,10 @@ import Konva from 'konva';
 import { tweenActor } from '../motionActors';
 
 export type EggCaughtPointsDoneEvent = {
-	output: OutputFrom<typeof eggCaughtPointsActor>;
+	output: OutputFrom<typeof eggCaughtPointsMachine>;
 };
 
-export const eggCaughtPointsActor = setup({
+export const eggCaughtPointsMachine = setup({
 	types: {} as {
 		input: {
 			eggCaughtPointsId: string;
