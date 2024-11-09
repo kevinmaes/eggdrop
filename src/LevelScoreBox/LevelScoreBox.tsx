@@ -1,9 +1,26 @@
 import { useSelector } from '@xstate/react';
-import { Group, Rect, Text } from 'react-konva';
+import { Group, Rect, Text, type KonvaNodeEvents } from 'react-konva';
 import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { EggTally } from '../EggTally/EggTally';
 import type { ActorRefFrom } from 'xstate';
+import { forwardRef, useEffect, useRef, useState } from 'react';
+import Konva from 'konva';
+import type { Group as KonvaGroup } from 'konva/lib/Group';
+
+interface ShakableGroupProps extends KonvaNodeEvents {
+	children?: React.ReactNode;
+	x: number;
+	y: number;
+}
+
+const ShakableGroup = forwardRef<KonvaGroup, ShakableGroupProps>(
+	(props, ref) => (
+		<Group ref={ref} {...props}>
+			{props.children}
+		</Group>
+	)
+);
 
 export function LevelScoreBox({
 	x,
@@ -34,6 +51,46 @@ export function LevelScoreBox({
 		};
 	});
 
+	const [shouldShakeToZeroPoints, setShouldShakeToZeroPoints] = useState(false);
+	useEffect(() => {
+		gameLevelActorRef.on('Egg caught', (event) => {
+			if (event.eggColor === 'black') {
+				console.log('White egg caught');
+				setShouldShakeToZeroPoints(true);
+			}
+		});
+	}, [gameLevelActorRef]);
+
+	const boxRef = useRef<Konva.Group>(null);
+
+	useEffect(() => {
+		const rect = boxRef.current;
+		if (!rect || !shouldShakeToZeroPoints) {
+			return;
+		}
+
+		// Define the shaking tween
+		const shakeTween = new Konva.Tween({
+			node: rect,
+			duration: 0.05, // Time per shake movement
+			x: rect.x() + 5, // Move 5px to the right initially
+			easing: Konva.Easings.EaseInOut,
+			yoyo: true, // Back and forth effect
+			repeat: 20, // Number of shakes (for a total of ~1 second)
+		});
+
+		// Start shaking
+		shakeTween.play();
+
+		// Stop the shake after 1 second
+		const timeout = setTimeout(() => {
+			shakeTween.destroy(); // Stop the tween
+			setShouldShakeToZeroPoints(false); // Reset the state
+		}, 1000);
+
+		return () => clearTimeout(timeout); // Clean up on component unmount
+	}, [shouldShakeToZeroPoints]);
+
 	const anticipatedGameScore =
 		gameScoreData.gameScore + (scoreData?.levelScore ?? 0);
 
@@ -42,7 +99,7 @@ export function LevelScoreBox({
 	}
 
 	return (
-		<Group x={x} y={y}>
+		<ShakableGroup ref={boxRef} x={x} y={y}>
 			{/* Background box */}
 			<Rect
 				width={width}
@@ -130,6 +187,6 @@ export function LevelScoreBox({
 					verticalAlign="bottom"
 				/>
 			</Group>
-		</Group>
+		</ShakableGroup>
 	);
 }

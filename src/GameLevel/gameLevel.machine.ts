@@ -1,6 +1,13 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { type ActorRefFrom, assign, sendTo, setup } from 'xstate';
+import {
+	type ActorRefFrom,
+	assertEvent,
+	assign,
+	emit,
+	sendTo,
+	setup,
+} from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
@@ -30,6 +37,10 @@ export const gameLevelMachine = setup({
 			population: Hendividual[];
 		};
 		output: LevelResults;
+		emitted: {
+			type: 'Egg caught';
+			eggColor: EggColor;
+		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
@@ -630,6 +641,13 @@ export const gameLevelMachine = setup({
 						position: event.position,
 					}),
 				},
+				emit(({ event }) => {
+					assertEvent(event, 'Egg position updated');
+					return {
+						type: 'Egg caught',
+						eggColor: event.eggColor,
+					};
+				}),
 			],
 		},
 	},
