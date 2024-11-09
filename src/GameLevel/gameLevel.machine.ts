@@ -191,6 +191,9 @@ export const gameLevelMachine = setup({
 					position: Position;
 				}
 			) => {
+				if (params.eggColor === 'black') {
+					return context.eggCaughtPointsActorRefs;
+				}
 				return [
 					...context.eggCaughtPointsActorRefs,
 					spawn(eggCaughtPointsActor, {
@@ -623,7 +626,6 @@ export const gameLevelMachine = setup({
 				{
 					type: 'spawnEggCaughtPoints',
 					params: ({ event }) => ({
-						eggId: event.eggId,
 						eggColor: event.eggColor,
 						position: event.position,
 					}),
