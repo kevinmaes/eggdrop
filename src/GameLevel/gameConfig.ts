@@ -122,6 +122,7 @@ export function getGameConfig() {
 		eggCaughtPoints: {
 			width: 30,
 			height: 30,
+			yStartOffset: -20,
 		},
 		countdownTimer: {
 			width: 100,

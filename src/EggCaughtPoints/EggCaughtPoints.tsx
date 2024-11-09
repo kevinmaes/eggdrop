@@ -66,7 +66,7 @@ export function EggCaughtPoints({
 			ref={eggCaughtPointsRef}
 			image={uiImage}
 			x={position.x}
-			y={position.y - 20}
+			y={position.y + gameConfig.eggCaughtPoints.yStartOffset}
 			offsetX={0.5 * gameConfig.eggCaughtPoints.width}
 			width={50}
 			height={50}
