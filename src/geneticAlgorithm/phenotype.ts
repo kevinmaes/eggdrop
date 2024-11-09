@@ -91,14 +91,11 @@ export const phenotypeConfig: PhenotypeConfig = {
 	blackEggRate: {
 		min: 0,
 		max: 0.3,
-		// max: 0,
 	},
 	// Rate in which the hen will lay gold eggs if not already laying black eggs
 	goldEggRate: {
 		min: 0,
 		max: 0.5,
-		// min: 1,
-		// max: 1,
 	},
 
 	// The time the hen will rest after laying an egg (while stationary)
