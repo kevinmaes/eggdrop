@@ -104,7 +104,6 @@ export function getGameConfig() {
 			points: {
 				white: 1,
 				gold: 10,
-				black: -5,
 			},
 			fallingEgg: {
 				width: 30,
@@ -118,6 +117,11 @@ export function getGameConfig() {
 				width: 60,
 				height: 60,
 			},
+		},
+		eggCaughtPoints: {
+			width: 30,
+			height: 30,
+			yStartOffset: -20,
 		},
 		countdownTimer: {
 			width: 100,

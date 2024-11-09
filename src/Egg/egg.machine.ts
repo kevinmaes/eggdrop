@@ -60,7 +60,10 @@ export const eggMachine = setup({
 			currentAnimation: Konva.Animation | null;
 		};
 		events:
-			| { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
+			| {
+					type: 'Set eggRef';
+					eggRef: React.RefObject<Konva.Image>;
+			  }
 			| { type: 'Land on floor' }
 			| { type: 'Catch' }
 			| { type: 'Finished exiting' }
@@ -248,10 +251,9 @@ export const eggMachine = setup({
 				],
 				Catch: {
 					target: 'Done',
-					actions: {
-						type: 'setResultStatus',
-						params: { resultStatus: 'Caught' },
-					},
+					actions: assign({
+						resultStatus: 'Caught',
+					}),
 				},
 			},
 			initial: 'Init Falling',
