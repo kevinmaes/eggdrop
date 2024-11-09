@@ -29,14 +29,18 @@ export function EggCaughtPoints({
 		};
 	});
 
-	const { position } = useSelector(eggCaughtPointsActorRefs, (state) => {
-		if (!state) {
-			return { position: { x: 0, y: 0 } };
+	const { position, eggColor } = useSelector(
+		eggCaughtPointsActorRefs,
+		(state) => {
+			if (!state) {
+				return { position: { x: 0, y: 0 } };
+			}
+			return {
+				position: state.context.position,
+				eggColor: state.context.eggColor,
+			};
 		}
-		return {
-			position: state.context.position,
-		};
-	});
+	);
 
 	const eggCaughtPointsRef = useRef<Konva.Image>(null);
 	useEffect(() => {
@@ -51,7 +55,9 @@ export function EggCaughtPoints({
 
 	const [uiImage] = useImage('images/ui.sprite.png');
 
-	const currentFrame = uiFrames['10-points.png']?.frame;
+	const imageKey = eggColor === 'gold' ? '10-points.png' : '1-point.png';
+	const currentFrame = uiFrames[imageKey]?.frame;
+
 	if (!currentFrame) {
 		return null;
 	}
