@@ -104,7 +104,6 @@ export function getGameConfig() {
 			points: {
 				white: 1,
 				gold: 10,
-				black: -5,
 			},
 			fallingEgg: {
 				width: 30,
