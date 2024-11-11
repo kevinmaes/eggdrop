@@ -12,8 +12,8 @@ This game is a fun side project of building a game for web. It was created using
 
 This project was a demo for a talk, "Evolving Game Development with Genetic Algorithms" that was delivered at
 
-- [What The Stack](https://wts.sh) - Skopje, North Macedonia, September 14, 2024
-- [React Alicante](https://reactalicante.es) - Alicante, Spain, September 21, 2024
+- [What The Stack](https://wts.sh) - Skopje, North Macedonia, September 14, 2024 [slides](https://noti.st/kvmaes/k4mqD6/evolving-game-development-with-genetic-algorithms)
+- [React Alicante](https://reactalicante.es) - Alicante, Spain, September 21, 2024 [slides](https://noti.st/kvmaes/cLmMPq/evolving-game-development-with-genetic-algorithms) | [video](https://youtu.be/b2TJoNDQ1co)
 
 ### Technologies
 
