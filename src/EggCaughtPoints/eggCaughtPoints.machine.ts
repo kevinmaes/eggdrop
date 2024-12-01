@@ -83,10 +83,7 @@ export const eggCaughtPointsMachine = setup({
 						tween,
 					};
 				},
-				onDone: {
-					target: 'Done',
-					actions: log('Tween done'),
-				},
+				onDone: 'Done',
 			},
 		},
 		Done: {
