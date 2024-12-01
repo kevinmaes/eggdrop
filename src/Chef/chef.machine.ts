@@ -52,7 +52,6 @@ export const chefMachine = setup({
 				eggColor: EggColor;
 			}
 		) => {
-			console.log('playCatchReaction', params.eggColor);
 			switch (params.eggColor) {
 				case 'black':
 					if (Math.random() > 0.5) {
