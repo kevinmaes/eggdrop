@@ -11,6 +11,7 @@ import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 import { AppActorContext } from '../app.machine';
 import { HensCountdown } from '../HensCountdown/HensCountdown';
 import { EggCaughtPoints } from '../EggCaughtPoints/EggCaughtPoints';
+import { CountdownTimer } from '../CountdownTimer/CountdownTimer';
 
 export function GameLevel() {
 	const appActorRef = AppActorContext.useActorRef();
@@ -99,6 +100,7 @@ export function GameLevel() {
 					width={120}
 					height={320}
 				/>
+				<CountdownTimer x={100} y={400} width={100} height={100} />
 			</Layer>
 		</>
 	);
