@@ -1,6 +1,13 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { type ActorRefFrom, assign, sendTo, setup } from 'xstate';
+import {
+	type ActorRefFrom,
+	assertEvent,
+	assign,
+	emit,
+	sendTo,
+	setup,
+} from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
@@ -15,6 +22,10 @@ import { sounds } from '../sounds';
 import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
 import type { Direction, Position } from '../types';
+import {
+	eggCaughtPointsMachine,
+	type EggCaughtPointsDoneEvent,
+} from '../EggCaughtPoints/eggCaughtPoints.machine';
 
 export const gameLevelMachine = setup({
 	types: {} as {
@@ -26,6 +37,10 @@ export const gameLevelMachine = setup({
 			population: Hendividual[];
 		};
 		output: LevelResults;
+		emitted: {
+			type: 'Egg caught';
+			eggColor: EggColor;
+		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
 			gameAssets: GameAssets;
@@ -33,6 +48,7 @@ export const gameLevelMachine = setup({
 			generationNumber: number;
 			henActorRefs: ActorRefFrom<typeof henMachine>[];
 			eggActorRefs: ActorRefFrom<typeof eggMachine>[];
+			eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsMachine>[];
 			chefPotRimHitRef: React.RefObject<Rect> | null;
 			nextHenIndex: number;
 			hensLeft: number;
@@ -178,6 +194,36 @@ export const gameLevelMachine = setup({
 			({ system }, params: { eggId: string }) => system.get(params.eggId),
 			{ type: 'Catch' }
 		),
+		spawnEggCaughtPoints: assign({
+			eggCaughtPointsActorRefs: (
+				{ context, spawn },
+				params: {
+					eggColor: EggColor;
+					position: Position;
+				}
+			) => {
+				if (params.eggColor === 'black') {
+					return context.eggCaughtPointsActorRefs;
+				}
+				return [
+					...context.eggCaughtPointsActorRefs,
+					spawn(eggCaughtPointsMachine, {
+						input: {
+							eggCaughtPointsId: nanoid(),
+							eggColor: params.eggColor,
+							position: params.position,
+						},
+					}),
+				];
+			},
+		}),
+		removeEggCaughtPoints: assign({
+			eggCaughtPointsActorRefs: ({ context }) =>
+				context.eggCaughtPointsActorRefs.filter(
+					(eggCaughtPointsActorRef) =>
+						eggCaughtPointsActorRef.getSnapshot().status !== 'done'
+				),
+		}),
 		updateHenStatsForEggLaid: assign(
 			(
 				{ context },
@@ -424,6 +470,9 @@ export const gameLevelMachine = setup({
 		isAHenActorDone: (_, params: { henId: string }) => {
 			return !!params.henId;
 		},
+		isEggCaughtPointsActorDone: (_, params: { eggCaughtPointsid: string }) => {
+			return !!params.eggCaughtPointsid;
+		},
 		testPotRimHit: ({ context }, params: Position) => {
 			if (!context.chefPotRimHitRef?.current) {
 				return false;
@@ -462,6 +511,7 @@ export const gameLevelMachine = setup({
 		generationNumber: input.generationNumber,
 		henActorRefs: [],
 		eggActorRefs: [],
+		eggCaughtPointsActorRefs: [],
 		chefPotRimHitRef: null,
 		nextHenIndex: 0,
 		hensLeft: input.population.length,
@@ -584,6 +634,20 @@ export const gameLevelMachine = setup({
 						eggId: event.eggId,
 					}),
 				},
+				{
+					type: 'spawnEggCaughtPoints',
+					params: ({ event }) => ({
+						eggColor: event.eggColor,
+						position: event.position,
+					}),
+				},
+				emit(({ event }) => {
+					assertEvent(event, 'Egg position updated');
+					return {
+						type: 'Egg caught',
+						eggColor: event.eggColor,
+					};
+				}),
 			],
 		},
 	},
@@ -647,6 +711,16 @@ export const gameLevelMachine = setup({
 							}),
 						},
 						actions: ['removeHenActorRef', 'decrementHensLeft'],
+					},
+					// Egg Caught Points actor done
+					{
+						guard: {
+							type: 'isEggCaughtPointsActorDone',
+							params: ({ event }: { event: EggCaughtPointsDoneEvent }) => ({
+								eggCaughtPointsId: event.output.eggCaughtPointsId,
+							}),
+						},
+						actions: ['removeEggCaughtPoints'],
 					},
 				],
 			},

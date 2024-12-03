@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 type ChickFrameName =
 	| 'egg-broken-white.png'
 	| 'egg-broken-black.png'
+	| 'chick-hatch.png'
 	| 'chick-forward-1.png'
 	| 'chick-forward-2.png'
 	| 'chick-run-left-1.png'
@@ -28,6 +29,7 @@ export function Egg({
 		gameConfig,
 		exitingDirection,
 		isHatching,
+		isHatchingJump,
 		isHatched,
 		isBroken,
 		isExiting,
@@ -50,6 +52,7 @@ export function Egg({
 			isExiting,
 			exitingDirection,
 			isHatching: state.matches('Hatching'),
+			isHatchingJump: state.matches('Hatching Jump'),
 			isHatched: state.matches('Hatched'),
 			isBroken: state.matches('Splatting'),
 			isDone: state.matches('Done'),
@@ -79,6 +82,10 @@ export function Egg({
 
 		switch (true) {
 			case isHatching: {
+				setCurrentChickFrameName('chick-hatch.png');
+				break;
+			}
+			case isHatchingJump: {
 				setCurrentChickFrameName('chick-forward-2.png');
 				break;
 			}
@@ -112,13 +119,13 @@ export function Egg({
 				clearInterval(interval);
 			}
 		};
-	}, [isHatching, isHatched, isExiting, exitingDirection]);
+	}, [isHatching, isHatchingJump, isHatched, isExiting, exitingDirection]);
 
 	if (isDone) {
 		return null;
 	}
 
-	if (isHatching || isHatched) {
+	if (isHatching || isHatchingJump || isHatched) {
 		const currentChickFrame = chickFrames[currentChickFrameName]?.frame;
 
 		if (!currentChickFrame) {

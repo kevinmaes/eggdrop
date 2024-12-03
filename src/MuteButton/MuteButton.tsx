@@ -4,20 +4,20 @@ import useImage from 'use-image';
 
 export function MuteButton() {
 	const appActorRef = AppActorContext.useActorRef();
-	const { gameConfig, controlsFrames, isMuted } = AppActorContext.useSelector(
+	const { gameConfig, uiFrames, isMuted } = AppActorContext.useSelector(
 		(state) => ({
 			gameConfig: state.context.gameConfig,
-			controlsFrames: state.context.gameAssets?.controls.frames ?? {},
+			uiFrames: state.context.gameAssets?.ui.frames ?? {},
 			isMuted: state.context.isMuted,
 		})
 	);
 
-	const [controlsImage] = useImage('images/controls.sprite.png');
-	const controlsFrame = isMuted
-		? controlsFrames['sound-off.png']?.frame
-		: controlsFrames['sound-on.png']?.frame;
+	const [controlsImage] = useImage('images/ui.sprite.png');
+	const uiFrame = isMuted
+		? uiFrames['sound-off.png']?.frame
+		: uiFrames['sound-on.png']?.frame;
 
-	if (!controlsFrame || !gameConfig) {
+	if (!uiFrame || !gameConfig) {
 		return null;
 	}
 
@@ -35,15 +35,15 @@ export function MuteButton() {
 			/>
 			{/* Mask version 1 (not working) */}
 			{/* <MaskImage
-				maskImageURL="images/controls.sprite.png"
-				// maskImageURL="images/controls.sprite.png"
-				maskImageFrame={controlsFrame}
+				maskImageURL="images/ui.sprite.png"
+				// maskImageURL="images/ui.sprite.png"
+				maskImageFrame={uiFrame}
 			/> */}
 
 			{/* Mask version 2 (working) */}
 			{/* <MaskedRect
-				maskImageURL="images/controls.sprite.png"
-				// maskImageFrame={controlsFrame}
+				maskImageURL="images/ui.sprite.png"
+				// maskImageFrame={uiFrame}
 			/> */}
 
 			<Rect
@@ -67,10 +67,10 @@ export function MuteButton() {
 				height={40}
 				opacity={isMuted ? 0.7 : 1}
 				crop={{
-					x: controlsFrame.x,
-					y: controlsFrame.y,
-					width: controlsFrame.w,
-					height: controlsFrame.h,
+					x: uiFrame.x,
+					y: uiFrame.y,
+					width: uiFrame.w,
+					height: uiFrame.h,
 				}}
 			/>
 		</Group>

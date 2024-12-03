@@ -39,6 +39,9 @@ const appMachine = setup({
 		events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
 	},
 	actions: {
+		setLoadedGameAssets: assign({
+			gameAssets: (_, params: GameAssets) => params,
+		}),
 		toggleMute: assign({
 			isMuted: ({ context }) => {
 				const isNowMuted = !context.isMuted;
@@ -180,11 +183,11 @@ const appMachine = setup({
 			const chickSpriteData = await chickResult.json();
 			const chefResult = await fetch('images/chef.sprite.json');
 			const chefSpriteData = await chefResult.json();
-			const controlsResult = await fetch('images/controls.sprite.json');
-			const controlsSpriteData = await controlsResult.json();
+			const uiResult = await fetch('images/ui.sprite.json');
+			const uiSpriteData = await uiResult.json();
 
 			return {
-				controls: controlsSpriteData,
+				ui: uiSpriteData,
 				hen: henSpriteData,
 				egg: eggSpriteData,
 				chick: chickSpriteData,
@@ -277,9 +280,10 @@ const appMachine = setup({
 					invoke: {
 						onDone: {
 							target: 'Done',
-							actions: assign({
-								gameAssets: ({ event }) => event.output,
-							}),
+							actions: {
+								type: 'setLoadedGameAssets',
+								params: ({ event }) => event.output,
+							},
 						},
 						onError: '#Egg Drop Game.Show Error',
 						src: 'loadSprites',
