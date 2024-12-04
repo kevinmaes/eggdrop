@@ -1,4 +1,4 @@
-import { fromCallback } from 'xstate';
+import { fromCallback, fromTransition } from 'xstate';
 
 /**
  * Creates a reusable countdown timer actor that
@@ -7,7 +7,7 @@ import { fromCallback } from 'xstate';
  *
  * The actor can be paused and resumed by sending a 'Pause' or 'Resume' event.
  */
-export const countdownTimer = fromCallback<
+export const countdownTimerx = fromCallback<
 	{ type: 'Pause' | 'Resume' },
 	{ totalMS: number; tickMS: number }
 >(({ input, sendBack, receive }) => {
@@ -41,3 +41,21 @@ export const countdownTimer = fromCallback<
 
 	countdown();
 });
+
+export const countdownTimer = fromTransition(
+	({ remainingMS }, event) => {
+		console.log('event', event);
+		return {
+			remainingMS: remainingMS - 1000,
+		};
+	},
+	({ input, self }) => {
+		setTimeout(() => {
+			self.send({ type: 'Tick' });
+
+			return {
+				remainingMS: 60000,
+			};
+		}, 1000);
+	}
+);
