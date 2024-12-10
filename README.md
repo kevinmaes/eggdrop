@@ -14,6 +14,7 @@ This project was a demo for a talk, "Evolving Game Development with Genetic Algo
 
 - [What The Stack](https://wts.sh) - Skopje, North Macedonia, September 14, 2024 [slides](https://noti.st/kvmaes/k4mqD6/evolving-game-development-with-genetic-algorithms)
 - [React Alicante](https://reactalicante.es) - Alicante, Spain, September 21, 2024 [slides](https://noti.st/kvmaes/cLmMPq/evolving-game-development-with-genetic-algorithms) | [video](https://youtu.be/b2TJoNDQ1co)
+- [CityJS Athens](https://greece.cityjsconf.org) - Athens, Greece, November 29, 2024
 
 ### Technologies
 
@@ -23,6 +24,13 @@ The following is a list of the primary technologies and libraries being used use
 - [Konva](https://konvajs.org) for React and HTML5 Canvas components
 - [XState](https://xstate.js.org) and [Stately.ai](https://stately.ai) for state machines
 - [Howler](https://howlerjs.com) for sounds
+
+### Other Tools
+
+- [ChatGPT](https://openai.com/index/chatgpt/) for character images
+- [Logoist 5](https://www.syniumsoftware.com/logoist) for vector graphics and animation alignment
+- [Texture Packer](https://www.codeandweb.com/texturepacker) for sprite sheet creation
+- [Audacity](https://www.audacityteam.org) for audio recording and editing
 
 ### Genetic Algorithm
 
