@@ -25,6 +25,13 @@ The following is a list of the primary technologies and libraries being used use
 - [XState](https://xstate.js.org) and [Stately.ai](https://stately.ai) for state machines
 - [Howler](https://howlerjs.com) for sounds
 
+### Other Tools
+
+- [ChatGPT](https://openai.com/index/chatgpt/) for character images
+- [Logoist 5](https://www.syniumsoftware.com/logoist) for vector graphics and animation alignment
+- [Texture Packer](https://www.codeandweb.com/texturepacker) for sprite sheet creation
+- [Audacity](https://www.audacityteam.org) for audio recording and editing
+
 ### Genetic Algorithm
 
 The game also includes a genetic algorithm to evolve the characteristics of the hens who drop eggs. The population is made up of the individual hens, each referred to as a "Hendividual". Their DNA is made up of characteristics related to their movement and egg laying capabilities.
