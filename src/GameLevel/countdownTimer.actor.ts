@@ -1,5 +1,10 @@
 import { fromCallback } from 'xstate';
 
+export type CountdownTimerTickEvent = {
+	type: 'Tick';
+	remainingMS: number;
+	done: boolean;
+};
 /**
  * Creates a reusable countdown timer actor that
  * sends a 'Tick' event every `tickMS` milliseconds.
@@ -10,7 +15,9 @@ import { fromCallback } from 'xstate';
 export const countdownTimer = fromCallback<
 	{ type: 'Pause' | 'Resume' },
 	{ totalMS: number; tickMS: number }
->(({ input, sendBack, receive }) => {
+>(({ input, sendBack: _sendBack, receive }) => {
+	const sendBack: (event: CountdownTimerTickEvent) => void = _sendBack;
+
 	let remainingMS = input.totalMS;
 	let isActive = true;
 
