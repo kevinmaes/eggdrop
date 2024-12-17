@@ -362,4 +362,6 @@ const appMachine = setup({
 	},
 });
 
-export const AppActorContext = createActorContext(appMachine);
+export const AppActorContext: ReturnType<
+	typeof createActorContext<typeof appMachine>
+> = createActorContext(appMachine);
