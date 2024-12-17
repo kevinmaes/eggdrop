@@ -728,7 +728,8 @@ export const gameLevelMachine = setup({
 				{
 					id: 'countdownTimer',
 					src: 'countdownTimer',
-					input: ({ context }) => ({
+					input: ({ context, self }) => ({
+						parent: self,
 						totalMS: context.remainingMS,
 						tickMS: 1000,
 					}),
