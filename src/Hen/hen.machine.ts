@@ -1,4 +1,4 @@
-import type { OutputFrom } from 'xstate';
+import type { DoneActorEvent, OutputFrom } from 'xstate';
 import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
@@ -34,7 +34,7 @@ function getDestinationAndPositions(
 	};
 }
 
-export type HenDoneEvent = { output: OutputFrom<typeof henMachine> };
+export type HenDoneEvent = DoneActorEvent<OutputFrom<typeof henMachine>>;
 
 export const henMachine = setup({
 	types: {} as {
