@@ -315,7 +315,7 @@ export const eggMachine = setup({
 					invoke: {
 						src: 'movingFallingActor',
 						input: ({ context, self }) => ({
-							parentRef: self,
+							parent: self,
 							node: context.eggRef.current,
 							initialPosition: context.initialPosition,
 							xSpeed: context.henCurentTweenSpeed,
