@@ -1,4 +1,10 @@
-import { setup, assign, sendParent, type OutputFrom } from 'xstate';
+import {
+	setup,
+	assign,
+	sendParent,
+	type OutputFrom,
+	type DoneActorEvent,
+} from 'xstate';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
@@ -15,7 +21,7 @@ export type EggResultStatus =
 	| 'Caught'
 	| 'Offscreen';
 
-export type EggDoneEvent = { output: OutputFrom<typeof eggMachine> };
+export type EggDoneEvent = DoneActorEvent<OutputFrom<typeof eggMachine>>;
 
 export const eggMachine = setup({
 	types: {} as {
