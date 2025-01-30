@@ -1,4 +1,10 @@
-import { fromCallback } from 'xstate';
+import { fromCallback, type ActorRef, type Snapshot } from 'xstate';
+
+export type CountdownTimerTickEvent = {
+	type: 'Tick';
+	remainingMS: number;
+	done: boolean;
+};
 
 /**
  * Creates a reusable countdown timer actor that
@@ -9,9 +15,15 @@ import { fromCallback } from 'xstate';
  */
 export const countdownTimer = fromCallback<
 	{ type: 'Pause' | 'Resume' },
-	{ totalMS: number; tickMS: number }
->(({ input, sendBack, receive }) => {
-	let remainingMS = input.totalMS;
+	{
+		parent: ActorRef<Snapshot<unknown>, CountdownTimerTickEvent>;
+		totalMS: number;
+		tickMS: number;
+	}
+>(({ input, receive }) => {
+	const { parent, totalMS, tickMS } = input;
+
+	let remainingMS = totalMS;
 	let isActive = true;
 
 	receive(({ type }) => {
@@ -26,16 +38,16 @@ export const countdownTimer = fromCallback<
 
 	function countdown() {
 		if (remainingMS <= 0) {
-			return sendBack({ type: 'Tick', remainingMS: 0, done: true });
+			return parent.send({ type: 'Tick', remainingMS: 0, done: true });
 		}
 
 		if (isActive) {
-			sendBack({ type: 'Tick', remainingMS, done: false });
+			parent.send({ type: 'Tick', remainingMS, done: false });
 
 			setTimeout(() => {
-				remainingMS -= input.tickMS;
+				remainingMS -= tickMS;
 				countdown();
-			}, input.tickMS);
+			}, tickMS);
 		}
 	}
 
