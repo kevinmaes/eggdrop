@@ -294,9 +294,7 @@ export const henMachine = setup({
 	},
 	states: {
 		Offscreen: {
-			after: {
-				getRandomStartDelay: { target: 'Moving' },
-			},
+			after: { getRandomStartDelay: 'Moving' },
 		},
 		Moving: {
 			entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
