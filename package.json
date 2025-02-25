@@ -15,7 +15,7 @@
 		"fontfaceobserver": "^2.3.0",
 		"howler": "^2.2.4",
 		"konva": "^9.3.18",
-		"nanoid": "^5.0.9",
+		"nanoid": "^5.1.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-konva": "^19.0.3",
