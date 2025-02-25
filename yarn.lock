@@ -1429,7 +1429,7 @@ react-dom@^19.0.0:
   dependencies:
     scheduler "^0.25.0"
 
-react-konva@^19.0.2:
+react-konva@^19.0.3:
   version "19.0.3"
   resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-19.0.3.tgz#ddbc5ad0546a5a9fcd934bb629dc62bf60b5b1fe"
   integrity sha512-MxaGCwKCo9DiGBPfsJKU1JShZ9YRsCjrJNF/KVyyzBB7UjrRtY7s46hH1Obr70y4trYZzFuqmW3ljB/mO0dAfA==
