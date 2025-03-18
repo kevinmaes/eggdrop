@@ -124,6 +124,9 @@ export const henMachine = setup({
 		pause: assign({
 			gamePaused: true,
 		}),
+		resume: assign({
+			gamePaused: false,
+		}),
 		pickNewTargetPosition: assign(({ context }) => {
 			const targetPosition = { ...context.position };
 			const newPosition = { ...context.position };
@@ -386,7 +389,10 @@ export const henMachine = setup({
 		},
 		Stopped: {
 			on: {
-				'Resume game': 'Moving',
+				'Resume game': {
+					target: 'Moving',
+					actions: 'resume',
+				},
 			},
 			after: {
 				getRandomStopDurationMS: [

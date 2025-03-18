@@ -76,13 +76,11 @@ describe('henMachine', () => {
 
 	it('should initialize with the correct context', async () => {
 		// Arrange
-		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
 		// Act
-		// Start the actor
 		actor.start();
 		actor.send({
 			type: 'Set henRef',
@@ -91,7 +89,6 @@ describe('henMachine', () => {
 		const state = actor.getSnapshot();
 
 		// Assert
-		// Check the initial state
 		expect(state.matches('Offscreen')).toBe(true);
 
 		await waitFor(actor, (state) =>
@@ -106,39 +103,37 @@ describe('henMachine', () => {
 		expect(state.context.gamePaused).toBe(false);
 	});
 
-	it.skip('should set henRef when receiving "Set henRef" event', () => {
+	it('should set henRef when receiving "Set henRef" event', () => {
 		// Arrange
-		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
 		// Act
-		// Start the actor
 		actor.start();
-		// Send the event
 		actor.send({
 			type: 'Set henRef',
 			henRef: mockRef,
 		});
-		const { context } = actor.getSnapshot();
+		const state = actor.getSnapshot();
 
 		// Assert
 		// Check that the ref was set
-		expect(context.henRef).toBe(mockRef);
+		expect(state.context.henRef).toBe(mockRef);
 	});
 
-	it.skip('should pause the game when receiving "Pause game" event', () => {
+	it('should pause the game when receiving "Pause game" event', () => {
 		// Arrange
-		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
 		// Act
-		// Start the actor
 		actor.start();
-
+		actor.send({
+			type: 'Set henRef',
+			henRef: mockRef,
+		});
 		// Send the event
 		actor.send({
 			type: 'Pause game',
@@ -149,16 +144,18 @@ describe('henMachine', () => {
 		expect(actor.getSnapshot().context.gamePaused).toBe(true);
 	});
 
-	it.skip('should resume the game when receiving "Resume game" event', () => {
+	it('should resume the game when receiving "Resume game" event', () => {
 		// Arrange
-		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
 		// Act
-		// Start the actor
 		actor.start();
+		actor.send({
+			type: 'Set henRef',
+			henRef: mockRef,
+		});
 		// First pause the game
 		actor.send({
 			type: 'Pause game',
@@ -169,6 +166,9 @@ describe('henMachine', () => {
 		});
 
 		// Assert
+		expect(actor.getSnapshot().matches({ Moving: 'Not laying egg' })).toBe(
+			true
+		);
 		// Check that the game is not paused
 		expect(actor.getSnapshot().context.gamePaused).toBe(false);
 	});

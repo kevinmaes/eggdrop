@@ -3,7 +3,6 @@
 const POPULATION_SIZE = 40;
 
 export function getGameConfig() {
-	console.log('getGameConfig');
 	const stageDimensions = {
 		width: 1280,
 		height: 720,
@@ -137,6 +136,5 @@ export function getGameConfig() {
 	// Set the audio mute according to the isMuted value
 	// Howler.mute(gameConfig.isMuted);
 
-	console.log('getGameConfig', gameConfig.hen.entranceDelayMS);
 	return gameConfig;
 }
