@@ -1,34 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createActor } from 'xstate';
+import { createActor, waitFor } from 'xstate';
 import { henMachine } from './hen.machine';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import type { RefObject } from 'react';
+import type { Image } from 'konva/lib/shapes/Image';
 
 // Create a simple mock for Konva.Image
 const createMockKonvaImage = () => ({
 	x: () => 0,
 	y: () => 0,
 	// Add any other methods that might be called on the ref
+	setPosition: vi.fn(),
 });
-
-// Mock the gameConfig
-vi.mock('../GameLevel/gameConfig', () => ({
-	getGameConfig: vi.fn().mockReturnValue({
-		hen: {
-			width: 100,
-			y: 50,
-			eggLayingXMin: 100,
-			eggLayingXMax: 500,
-		},
-		stageDimensions: {
-			width: 800,
-			height: 600,
-			margin: 20,
-		},
-	}),
-}));
 
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {
@@ -47,7 +32,7 @@ const mockPhenotype: PhenotypeValuesForIndividual = {
 	restAfterLayingEggMS: 500,
 };
 
-describe.skip('henMachine', () => {
+describe('henMachine', () => {
 	// Define test input with proper mock for henAssets
 	const testInput = {
 		gameConfig: getGameConfig(),
@@ -83,60 +68,78 @@ describe.skip('henMachine', () => {
 	// Create a mock ref with type assertion
 	const mockRef = {
 		current: createMockKonvaImage(),
-	} as RefObject<any>;
+	} as unknown as RefObject<Image>;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	it('should initialize with the correct context', () => {
+	it('should initialize with the correct context', async () => {
+		console.log(
+			'testInput.gameConfig.hen.entranceDelayMS',
+			testInput.gameConfig.hen.entranceDelayMS
+		);
+		// Arrange
 		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
+		// Act
 		// Start the actor
 		actor.start();
-
-		// Check the initial state
-		expect(actor.getSnapshot().value).toEqual({
-			Movement: 'Idle',
+		actor.send({
+			type: 'Set henRef',
+			henRef: mockRef,
 		});
+		const state = actor.getSnapshot();
+
+		// Assert
+		// Check the initial state
+		expect(state.matches('Offscreen')).toBe(true);
+
+		await waitFor(actor, (state) =>
+			state.matches({ Moving: 'Not laying egg' })
+		);
 
 		// Check the context
-		const context = actor.getSnapshot().context;
-		expect(context.id).toBe(testInput.id);
-		expect(context.index).toBe(testInput.index);
-		expect(context.phenotype).toEqual(testInput.phenotype);
-		expect(context.eggsLaid).toBe(0);
-		expect(context.gamePaused).toBe(false);
+		expect(state.context.id).toBe(testInput.id);
+		expect(state.context.index).toBe(testInput.index);
+		expect(state.context.phenotype).toEqual(testInput.phenotype);
+		expect(state.context.eggsLaid).toBe(0);
+		expect(state.context.gamePaused).toBe(false);
 	});
 
-	it('should set henRef when receiving "Set henRef" event', () => {
+	it.skip('should set henRef when receiving "Set henRef" event', () => {
+		// Arrange
 		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
+		// Act
 		// Start the actor
 		actor.start();
-
 		// Send the event
 		actor.send({
 			type: 'Set henRef',
 			henRef: mockRef,
 		});
+		const { context } = actor.getSnapshot();
 
+		// Assert
 		// Check that the ref was set
-		expect(actor.getSnapshot().context.henRef).toBe(mockRef);
+		expect(context.henRef).toBe(mockRef);
 	});
 
-	it('should pause the game when receiving "Pause game" event', () => {
+	it.skip('should pause the game when receiving "Pause game" event', () => {
+		// Arrange
 		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
+		// Act
 		// Start the actor
 		actor.start();
 
@@ -145,29 +148,31 @@ describe.skip('henMachine', () => {
 			type: 'Pause game',
 		});
 
+		// Assert
 		// Check that the game is paused
 		expect(actor.getSnapshot().context.gamePaused).toBe(true);
 	});
 
-	it('should resume the game when receiving "Resume game" event', () => {
+	it.skip('should resume the game when receiving "Resume game" event', () => {
+		// Arrange
 		// Create an actor from the machine
 		const actor = createActor(henMachine, {
 			input: testInput,
 		});
 
+		// Act
 		// Start the actor
 		actor.start();
-
 		// First pause the game
 		actor.send({
 			type: 'Pause game',
 		});
-
 		// Then resume it
 		actor.send({
 			type: 'Resume game',
 		});
 
+		// Assert
 		// Check that the game is not paused
 		expect(actor.getSnapshot().context.gamePaused).toBe(false);
 	});
