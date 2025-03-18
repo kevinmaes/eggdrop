@@ -1,5 +1,5 @@
 import type { DoneActorEvent, OutputFrom } from 'xstate';
-import { and, assign, log, sendParent, setup } from 'xstate';
+import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { GameAssets } from '../types/assets';
