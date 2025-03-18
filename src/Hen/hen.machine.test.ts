@@ -75,10 +75,6 @@ describe('henMachine', () => {
 	});
 
 	it('should initialize with the correct context', async () => {
-		console.log(
-			'testInput.gameConfig.hen.entranceDelayMS',
-			testInput.gameConfig.hen.entranceDelayMS
-		);
 		// Arrange
 		// Create an actor from the machine
 		const actor = createActor(henMachine, {
