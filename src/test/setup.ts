@@ -48,3 +48,31 @@ class MockRef<T> {
 (global as any).React = {
 	createRef: () => new MockRef(),
 };
+
+// Define mocks before any tests run
+const mockHowler = {
+	mute: vi.fn(),
+	volume: vi.fn(),
+	stop: vi.fn(),
+	unload: vi.fn(),
+};
+
+const mockHowlInstance = {
+	play: vi.fn().mockReturnValue(1),
+	stop: vi.fn(),
+	pause: vi.fn(),
+	volume: vi.fn(),
+	mute: vi.fn(),
+	seek: vi.fn(),
+	loop: vi.fn(),
+	state: vi.fn().mockReturnValue('loaded'),
+	playing: vi.fn(),
+	duration: vi.fn().mockReturnValue(1),
+};
+
+const mockHowl = vi.fn().mockImplementation(() => mockHowlInstance);
+
+vi.mock('howler', () => ({
+	Howler: mockHowler,
+	Howl: mockHowl,
+}));
