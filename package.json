@@ -11,7 +11,7 @@
 		"preview": "vite preview",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"check": "yarn lint && yarn tsc && yarn test"
+		"check": "yarn lint && yarn tsc && yarn test && yarn build"
 	},
 	"dependencies": {
 		"@xstate/react": "^5.0.2",
