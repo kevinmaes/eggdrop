@@ -188,7 +188,6 @@ export const henMachine = setup({
 			// before starting the tween
 			if (!context.henRef.current) {
 				throw new Error('Hen ref is not set');
-				// return;
 			}
 			context.henRef.current.setPosition(context.position);
 
