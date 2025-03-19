@@ -75,7 +75,7 @@ export function Egg({
 		if (eggRef.current) {
 			eggActorRef.send({ type: 'Set eggRef', eggRef });
 		}
-	}, [eggRef.current]);
+	}, [eggActorRef, eggRef]);
 
 	useEffect(() => {
 		let interval: ReturnType<typeof setInterval> | null = null;

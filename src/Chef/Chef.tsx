@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { type Ref, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Group, Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import type { ActorRefFrom } from 'xstate';
@@ -13,10 +13,7 @@ import type { SpriteData } from '../types/assets';
 type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 
-export function Chef({}: // dimensions,
-{
-	layerRef: Ref<Konva.Layer>;
-}) {
+export function Chef() {
 	const [image] = useImage('images/chef.sprite.png');
 	const appActorRef = AppActorContext.useActorRef();
 	const gameLevelActorRef = appActorRef.system.get(
@@ -86,7 +83,7 @@ export function Chef({}: // dimensions,
 		if (chefRef.current) {
 			chefActorRef.send({ type: 'Set chefRef', chefRef });
 		}
-	}, [chefRef.current]);
+	}, [chefActorRef, chefRef]);
 
 	// Set the chefPotRimHitRef in the gameLevel machine
 	const chefPotRimHitRef = useRef<Konva.Rect>(null);
@@ -97,7 +94,7 @@ export function Chef({}: // dimensions,
 				chefPotRimHitRef,
 			});
 		}
-	}, [chefPotRimHitRef.current]);
+	}, [gameLevelActorRef, chefPotRimHitRef]);
 
 	// Animate the chef's leg movement when the chef is moving
 	useEffect(() => {

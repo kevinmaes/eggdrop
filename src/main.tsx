@@ -5,7 +5,7 @@ import { AppActorContext } from './app.machine';
 
 import './index.css';
 import { getGameConfig } from './GameLevel/gameConfig.ts';
-
+import { Howler } from 'howler';
 // Get the game config which will be passed down to the app
 const gameConfig = getGameConfig();
 
