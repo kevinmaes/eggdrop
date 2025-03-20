@@ -124,6 +124,9 @@ export const henMachine = setup({
 		pause: assign({
 			gamePaused: true,
 		}),
+		resume: assign({
+			gamePaused: false,
+		}),
 		pickNewTargetPosition: assign(({ context }) => {
 			const targetPosition = { ...context.position };
 			const newPosition = { ...context.position };
@@ -183,7 +186,10 @@ export const henMachine = setup({
 
 			// Important! Make sure the hen node is positioned at the current context.position
 			// before starting the tween
-			context.henRef.current!.setPosition(context.position);
+			if (!context.henRef.current) {
+				throw new Error('Hen ref is not set');
+			}
+			context.henRef.current.setPosition(context.position);
 
 			const tween = new Konva.Tween({
 				node: context.henRef.current!,
@@ -254,10 +260,10 @@ export const henMachine = setup({
 	},
 }).createMachine({
 	id: 'Hen',
-	initial: 'Offscreen',
 	context: ({ input }) => {
 		const { destination, position, targetPosition } =
 			getDestinationAndPositions(input.gameConfig);
+
 		return {
 			gameConfig: input.gameConfig,
 			henRef: { current: null },
@@ -285,13 +291,18 @@ export const henMachine = setup({
 	}),
 	on: {
 		'Set henRef': {
-			actions: { type: 'setHenRef', params: ({ event }) => event.henRef },
+			actions: {
+				type: 'setHenRef',
+				params: ({ event }) => event.henRef,
+			},
 		},
 		'Pause game': {
 			target: '.Stopped',
 			actions: 'pause',
 		},
 	},
+	initial: 'Offscreen',
+
 	states: {
 		Offscreen: {
 			after: { getRandomStartDelay: 'Moving' },
@@ -377,7 +388,10 @@ export const henMachine = setup({
 		},
 		Stopped: {
 			on: {
-				'Resume game': 'Moving',
+				'Resume game': {
+					target: 'Moving',
+					actions: 'resume',
+				},
 			},
 			after: {
 				getRandomStopDurationMS: [

@@ -14,7 +14,7 @@ import {
 	phenotypeConfig,
 	type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
-
+import { Howler } from 'howler';
 const appMachine = setup({
 	types: {} as {
 		input: {
@@ -86,7 +86,6 @@ const appMachine = setup({
 					latestLevelResults,
 					individual.id
 				);
-				console.log('hendividualFitness', individual.fitness);
 				aggregateFitness += individual.fitness;
 				return individual;
 			});

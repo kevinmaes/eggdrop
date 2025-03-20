@@ -55,11 +55,7 @@ export function Hen({
 		if (henRef.current) {
 			henActorRef.send({ type: 'Set henRef', henRef });
 		}
-	}, [henRef.current]);
-
-	if (!position) {
-		return null;
-	}
+	}, [henActorRef, henRef]);
 
 	const [frameName, setFrameName] = useState<HenFrameName>('forward.png');
 	useEffect(() => {
@@ -123,6 +119,10 @@ export function Hen({
 			}
 		};
 	}, [isLaying, isMoving, movingDirection, absoluteTweenSpeed]);
+
+	if (!position) {
+		return null;
+	}
 
 	let currentFrame = henFrames[frameName]?.frame;
 	if (!currentFrame) {

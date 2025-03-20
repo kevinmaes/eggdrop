@@ -49,9 +49,9 @@ export function EggCaughtPoints({
 		}
 		eggCaughtPointsActorRefs.send({
 			type: 'Set egg caught points ref',
-			eggCaughtPointsRef: eggCaughtPointsRef,
+			eggCaughtPointsRef,
 		});
-	}, [eggCaughtPointsRef]);
+	}, [eggCaughtPointsActorRefs, eggCaughtPointsRef]);
 
 	const [uiImage] = useImage('images/ui.sprite.png');
 

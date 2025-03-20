@@ -4,7 +4,7 @@ import { AppActorContext } from '../app.machine';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { EggTally } from '../EggTally/EggTally';
 import type { ActorRefFrom } from 'xstate';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
 import type { Group as KonvaGroup } from 'konva/lib/Group';
 
