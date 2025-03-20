@@ -478,13 +478,12 @@ export const gameLevelMachine = setup({
 				return false;
 			}
 
-			const rect = context.chefPotRimHitRef.current.getClientRect();
 			const {
 				x: potRimHitX,
 				y: potRimHitY,
 				width: potRimHitWidth,
 				height: potRimHitHeight,
-			} = rect;
+			} = context.chefPotRimHitRef.current.getClientRect();
 
 			// Consider the leading edge of the egg for the hit test
 			const eggLeadingEdgeYPos =
