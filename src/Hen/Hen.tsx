@@ -43,7 +43,7 @@ export function Hen({
 		},
 		henFrames: state.context.henAssets.frames,
 		position: state.context.position,
-		isMoving: state.matches('Movingx'),
+		isMoving: state.matches('Movingxx'),
 		isLaying: state.matches('Laying Egg'),
 		movingDirection: state.context.movingDirection,
 		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
