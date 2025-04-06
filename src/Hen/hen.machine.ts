@@ -260,13 +260,15 @@ export const henMachine = setup({
 	},
 }).createMachine({
 	id: 'Hen',
-	context: ({ input }) => {
+	context: (({ input }: any) => {
 		const { destination, position, targetPosition } =
-			getDestinationAndPositions(input.gameConfig);
+			getDestinationAndPositions(
+				input.gameConfig as ReturnType<typeof getGameConfig>
+			);
 
 		return {
-			gameConfig: input.gameConfig,
-			henRef: { current: null },
+			gameConfig: input.gameConfig as ReturnType<typeof getGameConfig>,
+			henRef: { current: null } as unknown as React.RefObject<Konva.Image>,
 			id: input.id,
 			index: input.index,
 			henAssets: input.henAssets,
@@ -285,7 +287,7 @@ export const henMachine = setup({
 			gamePaused: false,
 			currentTween: null,
 		};
-	},
+	}) as any,
 	output: ({ context }) => ({
 		henId: context.id,
 	}),
