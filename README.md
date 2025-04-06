@@ -58,13 +58,31 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 
 ## 🛠️ Development Commands
 
-| Command        | Description                          |
-| -------------- | ------------------------------------ |
-| `yarn dev`     | Start the development server         |
-| `yarn build`   | Build the production-ready app       |
-| `yarn preview` | Preview the production build locally |
-| `yarn tsc`     | Run TypeScript type checking         |
-| `yarn lint`    | Run ESLint to check for code issues  |
+| Command        | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| `yarn dev`     | Start the development server                             |
+| `yarn build`   | Build the production-ready app                           |
+| `yarn preview` | Preview the production build locally                     |
+| `yarn tsc`     | Run TypeScript type checking                             |
+| `yarn lint`    | Run ESLint to check for code issues                      |
+| `yarn test`    | Run unit tests                                           |
+| `yarn ci`      | Run CI checks locally (lint, type check, test)           |
+| `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
+
+## 🧪 CI/CD Pipeline
+
+This project uses GitHub Actions for Continuous Integration. The CI workflow:
+
+1. Runs on all Pull Requests to the `main` branch
+2. Verifies code quality with TypeScript and ESLint checks
+3. Ensures all tests pass before merging
+4. Confirms the build process works correctly
+
+You can run these checks locally before pushing with:
+
+```bash
+yarn ci
+```
 
 ## 🧰 Technology Stack
 
