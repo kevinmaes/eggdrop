@@ -14,7 +14,7 @@
 		"check": "yarn lint && yarn tsc && yarn test && yarn build"
 	},
 	"dependencies": {
-		"@xstate/react": "^5.0.2",
+		"@xstate/react": "^5.0.3",
 		"fontfaceobserver": "^2.3.0",
 		"howler": "^2.2.4",
 		"konva": "^9.3.18",
