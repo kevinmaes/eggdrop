@@ -1321,10 +1321,10 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
-konva@^9.3.18:
-  version "9.3.19"
-  resolved "https://registry.yarnpkg.com/konva/-/konva-9.3.19.tgz#d8993d23dd14cb7760468effbb3a0a9307ae48a8"
-  integrity sha512-BJQTPL9ykX8TndeXZSz2ks4px6cb0K+uBBej/qShXKqVM8tVrU30eDSrcCa6ai+rHahvI6wzfZTXHUheICMcUQ==
+konva@^9.3.20:
+  version "9.3.20"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-9.3.20.tgz#0920a267284c320c4e6d903202656cf436e37f77"
+  integrity sha512-7XPD/YtgfzC8b1c7z0hhY5TF1IO/pBYNa29zMTA2PeBaqI0n5YplUeo4JRuRcljeAF8lWtW65jePZZF7064c8w==
 
 levn@^0.4.1:
   version "0.4.1"
