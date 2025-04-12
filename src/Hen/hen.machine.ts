@@ -3,7 +3,7 @@ import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { GameAssets } from '../types/assets';
-import { tweenActor } from '../motionActors';
+import { tweenActor } from '../tweenActor';
 import type { Direction, Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import { getRandomNumber } from '../utils';

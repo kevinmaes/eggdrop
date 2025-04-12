@@ -2,7 +2,7 @@ import { assign, log, setup, type OutputFrom } from 'xstate';
 import type { Position } from '../types';
 import type { EggColor } from '../Egg/egg.machine';
 import Konva from 'konva';
-import { tweenActor } from '../motionActors';
+import { tweenActor } from '../tweenActor';
 
 export type EggCaughtPointsDoneEvent = {
 	output: OutputFrom<typeof eggCaughtPointsMachine>;

@@ -8,7 +8,7 @@ import {
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
-import { tweenActor } from '../motionActors';
+import { tweenActor } from '../tweenActor';
 import { eggMotionActor } from './eggMotionActor';
 import type { GameAssets } from '../types/assets';
 import type { Direction, Position } from '../types';
