@@ -15,17 +15,16 @@ export const tweenActor = fromPromise<
 	}
 >(({ input }) => {
 	return new Promise((resolve, reject) => {
-		if (input.node !== null && input.tween !== null) {
-			input.tween.play();
-			input.tween.onFinish = () => {
-				input.tween?.destroy();
-				resolve({
-					x: input.node.x(),
-					y: input.node.y(),
-				});
-			};
-		} else {
-			return reject('No node or tween');
+		if (!input.node || !input.tween) {
+			return reject('Node or tween does not exist');
 		}
+		input.tween.play();
+		input.tween.onFinish = () => {
+			input.tween?.destroy();
+			resolve({
+				x: input.node.x(),
+				y: input.node.y(),
+			});
+		};
 	});
 });
