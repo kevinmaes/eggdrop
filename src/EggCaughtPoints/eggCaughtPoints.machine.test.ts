@@ -4,8 +4,7 @@ import { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 import type { Position } from '../types';
 import type { RefObject } from 'react';
 
-// We don't need to import Konva directly since we're mocking it
-// Create a simple mock for Konva.Image
+// Create a mock for Konva.Image
 const createMockKonvaImage = () => ({
 	x: () => 0,
 	y: () => 0,
