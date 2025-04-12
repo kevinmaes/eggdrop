@@ -25,7 +25,7 @@ export const eggCaughtPointsMachine = setup({
 			eggCaughtPointsRef: React.RefObject<Konva.Image>;
 		};
 		events: {
-			type: 'Set egg caught points ref';
+			type: 'Set eggCaughtPointsRef';
 			eggCaughtPointsRef: React.RefObject<Konva.Image>;
 		};
 	},
@@ -53,7 +53,7 @@ export const eggCaughtPointsMachine = setup({
 		Idle: {
 			entry: log('Entry: Idle'),
 			on: {
-				'Set egg caught points ref': {
+				'Set eggCaughtPointsRef': {
 					target: 'Animating',
 					actions: {
 						type: 'setEggCaughtPointsRef',

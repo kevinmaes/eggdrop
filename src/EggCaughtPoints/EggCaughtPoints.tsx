@@ -48,7 +48,7 @@ export function EggCaughtPoints({
 			return;
 		}
 		eggCaughtPointsActorRefs.send({
-			type: 'Set egg caught points ref',
+			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef,
 		});
 	}, [eggCaughtPointsActorRefs, eggCaughtPointsRef]);

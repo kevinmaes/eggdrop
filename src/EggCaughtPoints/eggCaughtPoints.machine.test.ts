@@ -46,7 +46,7 @@ describe('eggCaughtPointsMachine', () => {
 		expect(context.eggCaughtPointsRef.current).toBeNull();
 	});
 
-	it('should transition to Animating when receiving "Set egg caught points ref" event', () => {
+	it('should transition to Animating when receiving "Set eggCaughtPointsRef" event', () => {
 		// Arrange
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
@@ -55,7 +55,7 @@ describe('eggCaughtPointsMachine', () => {
 		// Act
 		actor.start();
 		actor.send({
-			type: 'Set egg caught points ref',
+			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
 
@@ -76,7 +76,7 @@ describe('eggCaughtPointsMachine', () => {
 
 		// Send the event
 		actor.send({
-			type: 'Set egg caught points ref',
+			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
 
@@ -107,7 +107,7 @@ describe('eggCaughtPointsMachine', () => {
 
 		// Send the event
 		actor.send({
-			type: 'Set egg caught points ref',
+			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
 
