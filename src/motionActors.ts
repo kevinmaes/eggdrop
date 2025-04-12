@@ -5,7 +5,10 @@ import type { Position } from './types';
 /**
  * Takes any node and its pre-existing tween and plays the tween
  * Any tween callbacks may have already been attached to the tween
- * outside of this actor
+ * outside of this actor.
+ *
+ * When finished, the tween is destroyed and the node's final coordinates
+ * are passed to the promises's resolve function
  */
 export const tweenActor = fromPromise<
 	Position,
