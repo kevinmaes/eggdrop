@@ -1,0 +1,23 @@
+{
+	"version": 2,
+	"github": {
+		"enabled": true,
+		"silent": false,
+		"autoAlias": true,
+		"deploymentEnabled": {
+			"main": true,
+			"preview": true,
+			"production": true
+		}
+	},
+	"builds": [
+		{
+			"src": "package.json",
+			"use": "@vercel/static-build",
+			"config": {
+				"buildCommand": "yarn build",
+				"outputDirectory": "dist"
+			}
+		}
+	]
+}
