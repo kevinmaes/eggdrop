@@ -4,7 +4,6 @@ import { henMachine } from './hen.machine';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
-import type Konva from 'konva';
 
 // Create a simple mock for Konva.Image
 const createMockKonvaImage = () => ({
