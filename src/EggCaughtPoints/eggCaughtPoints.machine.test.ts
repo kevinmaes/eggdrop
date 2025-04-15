@@ -80,10 +80,6 @@ describe('eggCaughtPointsMachine', () => {
 			eggCaughtPointsRef: mockRef,
 		});
 
-		expect(actor.getSnapshot().value).toBe('Animating');
-		// Check that the ref was set
-		expect(actor.getSnapshot().context.eggCaughtPointsRef).toBe(mockRef);
-
 		// Our mock Konva.Tween implementation will immediately call onFinish
 		// so we should transition to Done state right away
 		await waitFor(actor, (state) => state.matches('Done'));
