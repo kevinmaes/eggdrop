@@ -4,16 +4,7 @@ import { henMachine } from './hen.machine';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
-import type { RefObject } from 'react';
-import type { Image } from 'konva/lib/shapes/Image';
-
-// Create a simple mock for Konva.Image
-const createMockKonvaImage = () => ({
-	x: () => 0,
-	y: () => 0,
-	// Add any other methods that might be called on the ref
-	setPosition: vi.fn(),
-});
+import { createMockKonvaImage } from '../test/helpers';
 
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {
@@ -66,9 +57,9 @@ describe('henMachine', () => {
 	};
 
 	// Create a mock ref with type assertion
-	const mockRef = {
+	const mockRef: React.RefObject<any> = {
 		current: createMockKonvaImage(),
-	} as unknown as RefObject<Image>;
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -87,15 +78,12 @@ describe('henMachine', () => {
 			henRef: mockRef,
 		});
 		const state = actor.getSnapshot();
-
-		// Assert
-		expect(state.matches('Offscreen')).toBe(true);
-
 		await waitFor(actor, (state) =>
 			state.matches({ Moving: 'Not laying egg' })
 		);
 
-		// Check the context
+		// Assert
+		expect(state.matches('Offscreen')).toBe(true);
 		expect(state.context.id).toBe(testInput.id);
 		expect(state.context.index).toBe(testInput.index);
 		expect(state.context.phenotype).toEqual(testInput.phenotype);
@@ -115,11 +103,10 @@ describe('henMachine', () => {
 			type: 'Set henRef',
 			henRef: mockRef,
 		});
-		const state = actor.getSnapshot();
 
 		// Assert
 		// Check that the ref was set
-		expect(state.context.henRef).toBe(mockRef);
+		expect(actor.getSnapshot().context.henRef).toBe(mockRef);
 	});
 
 	it('should pause the game when receiving "Pause game" event', () => {
@@ -152,24 +139,16 @@ describe('henMachine', () => {
 
 		// Act
 		actor.start();
-		actor.send({
-			type: 'Set henRef',
-			henRef: mockRef,
-		});
+		actor.send({ type: 'Set henRef', henRef: mockRef });
 		// First pause the game
-		actor.send({
-			type: 'Pause game',
-		});
+		actor.send({ type: 'Pause game' });
 		// Then resume it
-		actor.send({
-			type: 'Resume game',
-		});
+		actor.send({ type: 'Resume game' });
 
 		// Assert
-		expect(actor.getSnapshot().matches({ Moving: 'Not laying egg' })).toBe(
-			true
-		);
+		const state = actor.getSnapshot();
+		expect(state.matches({ Moving: 'Not laying egg' })).toBe(true);
 		// Check that the game is not paused
-		expect(actor.getSnapshot().context.gamePaused).toBe(false);
+		expect(state.context.gamePaused).toBe(false);
 	});
 });

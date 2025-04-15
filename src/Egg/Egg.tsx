@@ -6,6 +6,7 @@ import { eggMachine } from './egg.machine';
 import type { ActorRefFrom } from 'xstate';
 import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
+import { isImageRef } from '../types';
 
 type ChickFrameName =
 	| 'egg-broken-white.png'
@@ -72,7 +73,7 @@ export function Egg({
 		useState<ChickFrameName>('chick-forward-1.png');
 
 	useEffect(() => {
-		if (eggRef.current) {
+		if (isImageRef(eggRef)) {
 			eggActorRef.send({ type: 'Set eggRef', eggRef });
 		}
 	}, [eggActorRef, eggRef]);

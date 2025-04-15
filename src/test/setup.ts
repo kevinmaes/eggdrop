@@ -16,12 +16,18 @@ vi.mock('konva', () => {
 				}
 
 				play() {
-					// Immediately call onFinish if it exists
-					if (this.onFinish) {
-						this.onFinish();
-					}
+					setTimeout(() => {
+						// Immediately call onFinish if it exists
+						// (but wait for next event tick to allow onFinish event handlers to be attached)
+						if (this.onFinish) {
+							this.onFinish();
+						}
+					}, 0);
+
 					return this;
 				}
+
+				destroy() {}
 			},
 			Easings: {
 				EaseOut: 'easeOut',

@@ -9,6 +9,7 @@ import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import useImage from 'use-image';
 import { Image } from 'react-konva';
 import type { SpriteData } from '../types/assets';
+import { isImageRef } from '../types';
 
 type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
@@ -80,7 +81,7 @@ export function Chef() {
 	// Set the chefRef in the chef machine
 	const chefRef = useRef<Konva.Image>(null);
 	useEffect(() => {
-		if (chefRef.current) {
+		if (isImageRef(chefRef)) {
 			chefActorRef.send({ type: 'Set chefRef', chefRef });
 		}
 	}, [chefActorRef, chefRef]);
@@ -88,7 +89,7 @@ export function Chef() {
 	// Set the chefPotRimHitRef in the gameLevel machine
 	const chefPotRimHitRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
-		if (chefPotRimHitRef.current) {
+		if (isImageRef(chefPotRimHitRef)) {
 			gameLevelActorRef.send({
 				type: 'Set chefPotRimHitRef',
 				chefPotRimHitRef,

@@ -3,7 +3,7 @@ import useImage from 'use-image';
 import { useSelector } from '@xstate/react';
 import type { ActorRefFrom } from 'xstate';
 import { henMachine } from './hen.machine';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import Konva from 'konva';
 
 type HenFrameName =
@@ -22,6 +22,13 @@ type HenFrameName =
 	| 'walk-right-2.png'
 	| 'walk-right-3.png'
 	| 'walk-right-4.png';
+
+function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
+	if (imageRef) {
+		return true;
+	}
+	return false;
+}
 
 export function Hen({
 	henActorRef,
@@ -43,7 +50,12 @@ export function Hen({
 		},
 		henFrames: state.context.henAssets.frames,
 		position: state.context.position,
-		isMoving: state.matches('Moving'),
+		// TODO: Getting TS errors matching on 'Moving' and need to find a fix.
+		isMoving:
+			state.matches({ Moving: 'Laying egg' }) ||
+			state.matches({ Moving: 'Done laying egg' }) ||
+			state.matches({ Moving: 'Not laying egg' }) ||
+			state.matches({ Moving: 'Preparing to lay egg' }),
 		isLaying: state.matches('Laying Egg'),
 		movingDirection: state.context.movingDirection,
 		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
@@ -52,7 +64,7 @@ export function Hen({
 
 	const henRef = useRef<Konva.Image>(null);
 	useEffect(() => {
-		if (henRef.current) {
+		if (isImageRef(henRef)) {
 			henActorRef.send({ type: 'Set henRef', henRef });
 		}
 	}, [henActorRef, henRef]);
