@@ -92,7 +92,7 @@ export function Chef() {
 		if (isImageRef(chefPotRimHitRef)) {
 			gameLevelActorRef.send({
 				type: 'Set chefPotRimHitRef',
-				chefPotRimHitRef: chefPotRimHitRef as React.RefObject<Konva.Rect>,
+				chefPotRimHitRef: chefPotRimHitRef,
 			});
 		}
 	}, [gameLevelActorRef, chefPotRimHitRef]);
