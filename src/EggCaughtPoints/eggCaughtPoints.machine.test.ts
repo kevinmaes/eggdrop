@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createActor, type InputFrom } from 'xstate';
+import { createActor, waitFor, type InputFrom } from 'xstate';
 import { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 import type { Position } from '../types';
 import type { RefObject } from 'react';
@@ -65,7 +65,7 @@ describe('eggCaughtPointsMachine', () => {
 		expect(actor.getSnapshot().context.eggCaughtPointsRef).toBe(mockRef);
 	});
 
-	it.skip('should transition to Done after animation completes', async () => {
+	it('should transition to Done after animation completes', async () => {
 		// Create an actor from the machine
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
@@ -80,19 +80,13 @@ describe('eggCaughtPointsMachine', () => {
 			eggCaughtPointsRef: mockRef,
 		});
 
+		expect(actor.getSnapshot().value).toBe('Animating');
+		// Check that the ref was set
+		expect(actor.getSnapshot().context.eggCaughtPointsRef).toBe(mockRef);
+
 		// Our mock Konva.Tween implementation will immediately call onFinish
 		// so we should transition to Done state right away
-
-		// Check that we eventually reach the Done state
-		await new Promise<void>((resolve) => {
-			const subscription = actor.subscribe((state) => {
-				if (state.value === 'Done') {
-					subscription.unsubscribe();
-					resolve();
-				}
-			});
-		});
-
+		await waitFor(actor, (state) => state.matches('Done'));
 		expect(actor.getSnapshot().value).toBe('Done');
 	});
 
