@@ -1,8 +1,8 @@
 import { assign, log, setup, type OutputFrom } from 'xstate';
-import type { Position } from '../types';
+import { isImageRef, type Position } from '../types';
 import type { EggColor } from '../Egg/egg.machine';
 import Konva from 'konva';
-import { tweenActor } from '../motionActors';
+import { tweenActor } from '../tweenActor';
 
 export type EggCaughtPointsDoneEvent = {
 	output: OutputFrom<typeof eggCaughtPointsMachine>;
@@ -22,10 +22,10 @@ export const eggCaughtPointsMachine = setup({
 			eggCaughtPointsId: string;
 			eggColor: EggColor;
 			position: Position;
-			eggCaughtPointsRef: React.RefObject<Konva.Image>;
+			eggCaughtPointsRef: React.RefObject<Konva.Image> | { current: null };
 		};
 		events: {
-			type: 'Set egg caught points ref';
+			type: 'Set eggCaughtPointsRef';
 			eggCaughtPointsRef: React.RefObject<Konva.Image>;
 		};
 	},
@@ -53,7 +53,7 @@ export const eggCaughtPointsMachine = setup({
 		Idle: {
 			entry: log('Entry: Idle'),
 			on: {
-				'Set egg caught points ref': {
+				'Set eggCaughtPointsRef': {
 					target: 'Animating',
 					actions: {
 						type: 'setEggCaughtPointsRef',
@@ -67,7 +67,7 @@ export const eggCaughtPointsMachine = setup({
 			invoke: {
 				src: 'tweenActor',
 				input: ({ context }) => {
-					if (!context.eggCaughtPointsRef.current) {
+					if (!isImageRef(context.eggCaughtPointsRef)) {
 						throw new Error('eggCaughtPointsRef is not set');
 					}
 					const tween = new Konva.Tween({

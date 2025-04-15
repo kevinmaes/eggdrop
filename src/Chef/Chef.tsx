@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { type Ref, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Group, Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import type { ActorRefFrom } from 'xstate';
@@ -9,14 +9,12 @@ import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import useImage from 'use-image';
 import { Image } from 'react-konva';
 import type { SpriteData } from '../types/assets';
+import { isImageRef } from '../types';
 
 type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 
-export function Chef({}: // dimensions,
-{
-	layerRef: Ref<Konva.Layer>;
-}) {
+export function Chef() {
 	const [image] = useImage('images/chef.sprite.png');
 	const appActorRef = AppActorContext.useActorRef();
 	const gameLevelActorRef = appActorRef.system.get(
@@ -83,21 +81,21 @@ export function Chef({}: // dimensions,
 	// Set the chefRef in the chef machine
 	const chefRef = useRef<Konva.Image>(null);
 	useEffect(() => {
-		if (chefRef.current) {
+		if (isImageRef(chefRef)) {
 			chefActorRef.send({ type: 'Set chefRef', chefRef });
 		}
-	}, [chefRef.current]);
+	}, [chefActorRef, chefRef]);
 
 	// Set the chefPotRimHitRef in the gameLevel machine
 	const chefPotRimHitRef = useRef<Konva.Rect>(null);
 	useEffect(() => {
-		if (chefPotRimHitRef.current) {
+		if (isImageRef(chefPotRimHitRef)) {
 			gameLevelActorRef.send({
 				type: 'Set chefPotRimHitRef',
 				chefPotRimHitRef,
 			});
 		}
-	}, [chefPotRimHitRef.current]);
+	}, [gameLevelActorRef, chefPotRimHitRef]);
 
 	// Animate the chef's leg movement when the chef is moving
 	useEffect(() => {

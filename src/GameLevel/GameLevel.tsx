@@ -1,8 +1,6 @@
-import { useRef } from 'react';
 import { Layer, Text } from 'react-konva';
 import { Hen } from '../Hen/Hen';
 import { Chef } from '../Chef/Chef';
-import Konva from 'konva';
 import { gameLevelMachine } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
 import type { ActorRefFrom } from 'xstate';
@@ -45,12 +43,10 @@ export function GameLevel() {
 		}
 	);
 
-	const layerRef = useRef<Konva.Layer>(null);
-
 	return (
 		<>
 			{/* Hen layer */}
-			<Layer ref={layerRef}>
+			<Layer>
 				{henActorRefs.map((henActorRef) => (
 					<Hen key={henActorRef.id} henActorRef={henActorRef} />
 				))}
@@ -58,7 +54,7 @@ export function GameLevel() {
 
 			{/* Chef and Egg layers (they interact) */}
 			<Layer>
-				<Chef layerRef={layerRef} />
+				<Chef />
 				{eggActorRefs.map((eggActorRef) => (
 					<Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
 				))}

@@ -1,10 +1,10 @@
-import type { OutputFrom } from 'xstate';
+import type { DoneActorEvent, OutputFrom } from 'xstate';
 import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { GameAssets } from '../types/assets';
-import { tweenActor } from '../motionActors';
-import type { Direction, Position } from '../types';
+import { tweenActor } from '../tweenActor';
+import { isImageRef, type Direction, type Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import { getRandomNumber } from '../utils';
 
@@ -34,7 +34,7 @@ function getDestinationAndPositions(
 	};
 }
 
-export type HenDoneEvent = { output: OutputFrom<typeof henMachine> };
+export type HenDoneEvent = DoneActorEvent<OutputFrom<typeof henMachine>>;
 
 export const henMachine = setup({
 	types: {} as {
@@ -51,7 +51,7 @@ export const henMachine = setup({
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
-			henRef: React.RefObject<Konva.Image>;
+			henRef: React.RefObject<Konva.Image> | { current: null };
 			id: string;
 			index: number;
 			henAssets: GameAssets['hen'];
@@ -124,6 +124,9 @@ export const henMachine = setup({
 		pause: assign({
 			gamePaused: true,
 		}),
+		resume: assign({
+			gamePaused: false,
+		}),
 		pickNewTargetPosition: assign(({ context }) => {
 			const targetPosition = { ...context.position };
 			const newPosition = { ...context.position };
@@ -183,10 +186,13 @@ export const henMachine = setup({
 
 			// Important! Make sure the hen node is positioned at the current context.position
 			// before starting the tween
-			context.henRef.current!.setPosition(context.position);
+			if (!isImageRef(context.henRef)) {
+				throw new Error('Hen ref is not set');
+			}
+			context.henRef.current.setPosition(context.position);
 
 			const tween = new Konva.Tween({
-				node: context.henRef.current!,
+				node: context.henRef.current,
 				duration,
 				x: targetPosition.x,
 				y: targetPosition.y,
@@ -254,12 +260,14 @@ export const henMachine = setup({
 	},
 }).createMachine({
 	id: 'Hen',
-	initial: 'Offscreen',
-	context: ({ input }) => {
+	context: (({ input }: any) => {
 		const { destination, position, targetPosition } =
-			getDestinationAndPositions(input.gameConfig);
+			getDestinationAndPositions(
+				input.gameConfig as ReturnType<typeof getGameConfig>
+			);
+
 		return {
-			gameConfig: input.gameConfig,
+			gameConfig: input.gameConfig as ReturnType<typeof getGameConfig>,
 			henRef: { current: null },
 			id: input.id,
 			index: input.index,
@@ -279,24 +287,27 @@ export const henMachine = setup({
 			gamePaused: false,
 			currentTween: null,
 		};
-	},
+	}) as any,
 	output: ({ context }) => ({
 		henId: context.id,
 	}),
 	on: {
 		'Set henRef': {
-			actions: { type: 'setHenRef', params: ({ event }) => event.henRef },
+			actions: {
+				type: 'setHenRef',
+				params: ({ event }) => event.henRef,
+			},
 		},
 		'Pause game': {
 			target: '.Stopped',
 			actions: 'pause',
 		},
 	},
+	initial: 'Offscreen',
+
 	states: {
 		Offscreen: {
-			after: {
-				getRandomStartDelay: { target: 'Moving' },
-			},
+			after: { getRandomStartDelay: 'Moving' },
 		},
 		Moving: {
 			entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
@@ -335,6 +346,9 @@ export const henMachine = setup({
 				'Laying egg': {
 					entry: [
 						sendParent(({ context }) => {
+							if (!isImageRef(context.henRef)) {
+								throw new Error('Hen ref is not set');
+							}
 							const randomEggColorNumber = Math.random();
 							const eggColor =
 								randomEggColorNumber < context.phenotype.blackEggRate
@@ -348,7 +362,7 @@ export const henMachine = setup({
 								henId: context.id,
 								henCurentTweenSpeed: context.currentTweenSpeed,
 								henCurrentTweenDirection: context.currentTweenDirection,
-								henPosition: context.henRef.current!.getPosition(),
+								henPosition: context.henRef.current.getPosition(),
 								eggColor,
 								hatchRate: context.phenotype.hatchRate,
 							};
@@ -379,7 +393,10 @@ export const henMachine = setup({
 		},
 		Stopped: {
 			on: {
-				'Resume game': 'Moving',
+				'Resume game': {
+					target: 'Moving',
+					actions: 'resume',
+				},
 			},
 			after: {
 				getRandomStopDurationMS: [
@@ -392,6 +409,10 @@ export const henMachine = setup({
 			tags: 'laying',
 			entry: [
 				sendParent(({ context }) => {
+					if (!isImageRef(context.henRef)) {
+						throw new Error('Hen ref is not set');
+					}
+
 					const randomEggColorNumber = Math.random();
 					const eggColor =
 						randomEggColorNumber < context.phenotype.blackEggRate
@@ -405,7 +426,7 @@ export const henMachine = setup({
 						henId: context.id,
 						henCurentTweenSpeed: context.currentTweenSpeed,
 						henCurrentTweenDirection: context.currentTweenDirection,
-						henPosition: context.henRef.current!.getPosition(),
+						henPosition: context.henRef.current.getPosition(),
 						eggColor,
 						hatchRate: context.phenotype.hatchRate,
 					};

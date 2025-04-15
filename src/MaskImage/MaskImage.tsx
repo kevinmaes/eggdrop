@@ -3,6 +3,7 @@ import { Image, Group, Rect } from 'react-konva';
 import useImage from 'use-image';
 import Konva from 'konva';
 import type { SpriteData } from '../types/assets';
+import { isImageRef } from '../types';
 
 export function MaskImage({
 	maskImageFrame,
@@ -12,11 +13,11 @@ export function MaskImage({
 	maskImageURL: string;
 }) {
 	const [maskImage] = useImage(maskImageURL);
-	const rectRef = useRef<Konva.Rect | null>(null);
-	const maskRef = useRef<Konva.Image | null>(null);
+	const rectRef = useRef<Konva.Rect>(null);
+	const maskRef = useRef<Konva.Image>(null);
 
 	useEffect(() => {
-		if (maskImage && rectRef.current && maskRef.current) {
+		if (maskImage && isImageRef(rectRef) && isImageRef(maskRef)) {
 			const maskNode = maskRef.current;
 			const rectNode = rectRef.current;
 			const layer = rectNode.getLayer();
@@ -36,12 +37,10 @@ export function MaskImage({
 
 			layer?.batchDraw();
 		}
-	}, [maskImage, maskImageFrame]);
+	}, [maskImage, maskImageFrame, maskRef, rectRef]);
 
 	return (
-		<Group
-		// listening={false}
-		>
+		<Group>
 			<Rect
 				ref={rectRef}
 				x={5}
@@ -49,11 +48,7 @@ export function MaskImage({
 				width={40}
 				height={40}
 				cornerRadius={4}
-				onClick={() => {
-					// appActorRef.send({ type: 'Toggle mute' });
-				}}
 				fill="white"
-				// opacity={isMuted ? 0.7 : 0.3}
 				opacity={0.7}
 			/>
 			{/* Image with the alpha mask applied */}
@@ -64,13 +59,7 @@ export function MaskImage({
 	);
 }
 
-export function MaskedRect({
-	// maskImageFrame,
-	maskImageURL,
-}: {
-	// maskImageFrame: SpriteData['frames'][string]['frame'];
-	maskImageURL: string;
-}) {
+export function MaskedRect({ maskImageURL }: { maskImageURL: string }) {
 	const [maskImage] = useImage(maskImageURL);
 	const groupRef = useRef<Konva.Group>(null);
 
@@ -81,24 +70,17 @@ export function MaskedRect({
 				ctx.drawImage(maskImage, 0, 0, maskImage.width, maskImage.height);
 			});
 		}
-	}, [maskImage]);
+	}, [maskImage, groupRef]);
 
 	return (
 		<Group ref={groupRef}>
 			<Rect
-				// x={50} y={50} width={200} height={200} fill="blue"
-
-				// ref={rectRef}
 				x={5}
 				y={5}
 				width={40}
 				height={40}
 				cornerRadius={4}
-				onClick={() => {
-					// appActorRef.send({ type: 'Toggle mute' });
-				}}
 				fill="white"
-				// opacity={isMuted ? 0.7 : 0.3}
 				opacity={0.7}
 			/>
 			<Image

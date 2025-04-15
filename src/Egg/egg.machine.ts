@@ -1,11 +1,17 @@
-import { setup, assign, sendParent, type OutputFrom } from 'xstate';
+import {
+	setup,
+	assign,
+	sendParent,
+	type OutputFrom,
+	type DoneActorEvent,
+} from 'xstate';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
-import { tweenActor } from '../motionActors';
+import { tweenActor } from '../tweenActor';
 import { eggMotionActor } from './eggMotionActor';
 import type { GameAssets } from '../types/assets';
-import type { Direction, Position } from '../types';
+import { isImageRef, type Direction, type Position } from '../types';
 
 export type EggColor = 'white' | 'gold' | 'black';
 export type EggResultStatus =
@@ -15,7 +21,7 @@ export type EggResultStatus =
 	| 'Caught'
 	| 'Offscreen';
 
-export type EggDoneEvent = { output: OutputFrom<typeof eggMachine> };
+export type EggDoneEvent = DoneActorEvent<OutputFrom<typeof eggMachine>>;
 
 export const eggMachine = setup({
 	types: {} as {
@@ -40,7 +46,7 @@ export const eggMachine = setup({
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
-			eggRef: React.RefObject<Konva.Image>;
+			eggRef: React.RefObject<Konva.Image> | { current: null };
 			id: string;
 			henId: string;
 			eggAssets: GameAssets['egg'];
@@ -89,11 +95,11 @@ export const eggMachine = setup({
 			return Math.random() < context.hatchRate;
 		},
 		isEggNearChefPot: ({ context }) => {
-			if (!context.eggRef.current) return false;
+			if (!isImageRef(context.eggRef)) return false;
 			return context.eggRef.current.y() >= context.gameConfig.chef.y;
 		},
 		isEggOffScreen: ({ context }) => {
-			if (!context.eggRef.current) return false;
+			if (!isImageRef(context.eggRef)) return false;
 			return (
 				context.eggRef.current.x() < 0 ||
 				context.eggRef.current.x() > context.gameConfig.stageDimensions.width
@@ -272,9 +278,7 @@ export const eggMachine = setup({
 						'setNewTargetPosition',
 						assign({
 							currentTween: ({ context, self }) => {
-								if (!context.eggRef.current) {
-									return null;
-								}
+								if (!isImageRef(context.eggRef)) return null;
 								return new Konva.Tween({
 									node: context.eggRef.current,
 									duration: context.gameConfig.egg.fallingDuration,
@@ -282,12 +286,15 @@ export const eggMachine = setup({
 									y: context.targetPosition.y,
 									rotation: Math.random() > 0.5 ? 720 : -720,
 									onUpdate: () => {
-										if (self.getSnapshot().status === 'active') {
+										if (
+											self.getSnapshot().status === 'active' &&
+											isImageRef(context.eggRef)
+										) {
 											self.send({
 												type: 'Notify of animation position',
 												position: {
-													x: context.eggRef.current!.x(),
-													y: context.eggRef.current!.y(),
+													x: context.eggRef.current.x(),
+													y: context.eggRef.current.y(),
 												},
 											});
 										}
@@ -315,7 +322,7 @@ export const eggMachine = setup({
 					invoke: {
 						src: 'movingFallingActor',
 						input: ({ context, self }) => ({
-							parentRef: self,
+							parent: self,
 							node: context.eggRef.current,
 							initialPosition: context.initialPosition,
 							xSpeed: context.henCurentTweenSpeed,
