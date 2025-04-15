@@ -20,7 +20,10 @@ import { getGameConfig } from './gameConfig';
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import { sounds } from '../sounds';
 import type { GameAssets } from '../types/assets';
-import { countdownTimer } from './countdownTimer.actor';
+import {
+	countdownTimer,
+	type CountdownTimerTickEvent,
+} from './countdownTimer.actor';
 import { isImageRef, type Direction, type Position } from '../types';
 import {
 	eggCaughtPointsMachine,
@@ -86,7 +89,7 @@ export const gameLevelMachine = setup({
 					eggColor: EggColor;
 					position: Position;
 			  }
-			| { type: 'Tick'; remainingMS: number; done: boolean };
+			| CountdownTimerTickEvent;
 	},
 	actions: {
 		setChefPotRimHitRef: assign({
@@ -727,7 +730,8 @@ export const gameLevelMachine = setup({
 				{
 					id: 'countdownTimer',
 					src: 'countdownTimer',
-					input: ({ context }) => ({
+					input: ({ context, self }) => ({
+						parent: self,
 						totalMS: context.remainingMS,
 						tickMS: 1000,
 					}),

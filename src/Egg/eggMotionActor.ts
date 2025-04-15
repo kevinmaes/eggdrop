@@ -11,7 +11,7 @@ export const eggMotionActor = fromPromise<
 		ySpeed: number;
 		testForDestination: (yPos: number) => boolean;
 		rotationDirection: Direction['value'];
-		parentRef: AnyActorRef;
+		parent: AnyActorRef;
 	}
 >(({ input }) => {
 	return new Promise((resolve, reject) => {
@@ -54,8 +54,8 @@ export const eggMotionActor = fromPromise<
 
 				// Send a message to the parent to update the egg position
 				// Make sure the egg actor ref is still active
-				if (input.parentRef.getSnapshot().status === 'active') {
-					input.parentRef.send({
+				if (input.parent.getSnapshot().status === 'active') {
+					input.parent.send({
 						type: 'Notify of animation position',
 						position: { x: newXPos, y: newYPos },
 					});
