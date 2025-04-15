@@ -14,7 +14,7 @@ const createMockKonvaImage = () => ({
 describe('eggCaughtPointsMachine', () => {
 	const testInput: InputFrom<typeof eggCaughtPointsMachine> = {
 		eggCaughtPointsId: 'test-id',
-		eggColor: 'white' as const,
+		eggColor: 'white',
 		position: { x: 100, y: 200 } as Position,
 	};
 	// Create a mock ref with type assertion
