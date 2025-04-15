@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Group, Rect } from 'react-konva';
 import { chefMachine } from './chef.machine';
 import type { ActorRefFrom } from 'xstate';
@@ -92,7 +92,7 @@ export function Chef() {
 		if (isImageRef(chefPotRimHitRef)) {
 			gameLevelActorRef.send({
 				type: 'Set chefPotRimHitRef',
-				chefPotRimHitRef,
+				chefPotRimHitRef: chefPotRimHitRef as React.RefObject<Konva.Rect>,
 			});
 		}
 	}, [gameLevelActorRef, chefPotRimHitRef]);
