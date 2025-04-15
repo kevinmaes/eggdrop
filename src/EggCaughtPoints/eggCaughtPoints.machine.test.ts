@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, waitFor, type InputFrom } from 'xstate';
 import { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 import type { Position } from '../types';
-import type { RefObject } from 'react';
+import type Konva from 'konva';
 
 // Create a mock for Konva.Image
 const createMockKonvaImage = () => ({
@@ -17,10 +17,9 @@ describe('eggCaughtPointsMachine', () => {
 		eggColor: 'white',
 		position: { x: 100, y: 200 } as Position,
 	};
-	// Create a mock ref with type assertion
 	const mockRef = {
 		current: createMockKonvaImage(),
-	} as RefObject<any>;
+	} as React.RefObject<Konva.Image>;
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -66,19 +65,20 @@ describe('eggCaughtPointsMachine', () => {
 	});
 
 	it('should transition to Done after animation completes', async () => {
-		// Arrange
+		// Create an actor from the machine
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
 		});
 
-		// Act
+		// Start the actor
 		actor.start();
+
+		// Send the event
 		actor.send({
 			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
 
-		// Assert
 		// Our mock Konva.Tween implementation will immediately call onFinish
 		// so we should transition to Done state right away
 		await waitFor(actor, (state) => state.matches('Done'));
@@ -86,20 +86,23 @@ describe('eggCaughtPointsMachine', () => {
 	});
 
 	it('should output the correct data when done', async () => {
-		// Arrange
+		// Create an actor from the machine
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
 		});
 
-		// Act
+		// Start the actor
 		actor.start();
+
+		// Send the event
 		actor.send({
 			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
+
 		await waitFor(actor, (state) => state.matches('Done'));
 
-		// Assert
+		// Check the output
 		expect(actor.getSnapshot().output).toEqual({
 			eggCaughtPointsId: testInput.eggCaughtPointsId,
 		});

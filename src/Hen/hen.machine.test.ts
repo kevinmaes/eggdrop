@@ -4,8 +4,7 @@ import { henMachine } from './hen.machine';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
-import type { RefObject } from 'react';
-import type { Image } from 'konva/lib/shapes/Image';
+import type Konva from 'konva';
 
 // Create a simple mock for Konva.Image
 const createMockKonvaImage = () => ({
@@ -66,9 +65,9 @@ describe('henMachine', () => {
 	};
 
 	// Create a mock ref with type assertion
-	const mockRef = {
+	const mockRef: React.RefObject<any> = {
 		current: createMockKonvaImage(),
-	} as unknown as RefObject<Image>;
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();
