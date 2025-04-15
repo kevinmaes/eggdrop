@@ -92,7 +92,7 @@ export function Chef() {
 		if (isImageRef(chefPotRimHitRef)) {
 			gameLevelActorRef.send({
 				type: 'Set chefPotRimHitRef',
-				chefPotRimHitRef: chefPotRimHitRef,
+				chefPotRimHitRef,
 			});
 		}
 	}, [gameLevelActorRef, chefPotRimHitRef]);
