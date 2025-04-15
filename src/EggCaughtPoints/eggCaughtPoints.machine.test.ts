@@ -2,14 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, waitFor, type InputFrom } from 'xstate';
 import { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 import type { Position } from '../types';
-import type Konva from 'konva';
-
-// Create a mock for Konva.Image
-const createMockKonvaImage = () => ({
-	x: () => 0,
-	y: () => 0,
-	// Add any other methods that might be called on the ref
-});
+import { createMockKonvaImage } from '../test/setup';
 
 describe('eggCaughtPointsMachine', () => {
 	const testInput: InputFrom<typeof eggCaughtPointsMachine> = {
@@ -17,9 +10,9 @@ describe('eggCaughtPointsMachine', () => {
 		eggColor: 'white',
 		position: { x: 100, y: 200 } as Position,
 	};
-	const mockRef = {
+	const mockRef: React.RefObject<any> = {
 		current: createMockKonvaImage(),
-	} as React.RefObject<Konva.Image>;
+	};
 
 	beforeEach(() => {
 		vi.clearAllMocks();

@@ -4,14 +4,7 @@ import { henMachine } from './hen.machine';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
-
-// Create a simple mock for Konva.Image
-const createMockKonvaImage = () => ({
-	x: () => 0,
-	y: () => 0,
-	// Add any other methods that might be called on the ref
-	setPosition: vi.fn(),
-});
+import { createMockKonvaImage } from '../test/setup';
 
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {
