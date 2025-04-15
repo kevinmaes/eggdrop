@@ -268,7 +268,7 @@ export const henMachine = setup({
 
 		return {
 			gameConfig: input.gameConfig as ReturnType<typeof getGameConfig>,
-			henRef: { current: null } as unknown as React.RefObject<Konva.Image>,
+			henRef: { current: null },
 			id: input.id,
 			index: input.index,
 			henAssets: input.henAssets,
