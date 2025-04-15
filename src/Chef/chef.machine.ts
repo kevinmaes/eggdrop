@@ -22,7 +22,7 @@ export const chefMachine = setup({
 		};
 		context: {
 			chefConfig: ReturnType<typeof getGameConfig>['chef'];
-			chefRef: React.RefObject<Konva.Image>;
+			chefRef: React.RefObject<Konva.Image> | { current: null };
 			chefAssets: GameAssets['chef'];
 			position: Position;
 			speed: number;

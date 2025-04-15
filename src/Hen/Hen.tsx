@@ -3,7 +3,7 @@ import useImage from 'use-image';
 import { useSelector } from '@xstate/react';
 import type { ActorRefFrom } from 'xstate';
 import { henMachine } from './hen.machine';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import Konva from 'konva';
 
 type HenFrameName =
@@ -22,6 +22,13 @@ type HenFrameName =
 	| 'walk-right-2.png'
 	| 'walk-right-3.png'
 	| 'walk-right-4.png';
+
+function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
+	if (imageRef) {
+		return true;
+	}
+	return false;
+}
 
 export function Hen({
 	henActorRef,
@@ -52,7 +59,7 @@ export function Hen({
 
 	const henRef = useRef<Konva.Image>(null);
 	useEffect(() => {
-		if (henRef.current) {
+		if (isImageRef(henRef)) {
 			henActorRef.send({ type: 'Set henRef', henRef });
 		}
 	}, [henActorRef, henRef]);

@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import { AppActorContext } from '../app.machine';
 import type { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import type { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
+import { isImageRef } from '../types';
 
 export function EggCaughtPoints({
 	eggCaughtPointsActorRefs,
@@ -44,7 +45,7 @@ export function EggCaughtPoints({
 
 	const eggCaughtPointsRef = useRef<Konva.Image>(null);
 	useEffect(() => {
-		if (!eggCaughtPointsRef.current) {
+		if (!isImageRef(eggCaughtPointsRef)) {
 			return;
 		}
 		eggCaughtPointsActorRefs.send({
