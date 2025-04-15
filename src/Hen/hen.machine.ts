@@ -4,7 +4,7 @@ import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { GameAssets } from '../types/assets';
 import { tweenActor } from '../motionActors';
-import type { Direction, Position } from '../types';
+import { isImageRef, type Direction, type Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import { getRandomNumber } from '../utils';
 
@@ -51,7 +51,7 @@ export const henMachine = setup({
 		};
 		context: {
 			gameConfig: ReturnType<typeof getGameConfig>;
-			henRef: React.RefObject<Konva.Image>;
+			henRef: React.RefObject<Konva.Image> | { current: null };
 			id: string;
 			index: number;
 			henAssets: GameAssets['hen'];
@@ -186,13 +186,13 @@ export const henMachine = setup({
 
 			// Important! Make sure the hen node is positioned at the current context.position
 			// before starting the tween
-			if (!context.henRef.current) {
+			if (!isImageRef(context.henRef)) {
 				throw new Error('Hen ref is not set');
 			}
 			context.henRef.current.setPosition(context.position);
 
 			const tween = new Konva.Tween({
-				node: context.henRef.current!,
+				node: context.henRef.current,
 				duration,
 				x: targetPosition.x,
 				y: targetPosition.y,
@@ -344,6 +344,9 @@ export const henMachine = setup({
 				'Laying egg': {
 					entry: [
 						sendParent(({ context }) => {
+							if (!context.henRef.current) {
+								throw new Error('Hen ref is not set');
+							}
 							const randomEggColorNumber = Math.random();
 							const eggColor =
 								randomEggColorNumber < context.phenotype.blackEggRate
@@ -357,7 +360,7 @@ export const henMachine = setup({
 								henId: context.id,
 								henCurentTweenSpeed: context.currentTweenSpeed,
 								henCurrentTweenDirection: context.currentTweenDirection,
-								henPosition: context.henRef.current!.getPosition(),
+								henPosition: context.henRef.current.getPosition(),
 								eggColor,
 								hatchRate: context.phenotype.hatchRate,
 							};
@@ -404,6 +407,10 @@ export const henMachine = setup({
 			tags: 'laying',
 			entry: [
 				sendParent(({ context }) => {
+					if (!isImageRef(context.henRef)) {
+						throw new Error('Hen ref is not set');
+					}
+
 					const randomEggColorNumber = Math.random();
 					const eggColor =
 						randomEggColorNumber < context.phenotype.blackEggRate

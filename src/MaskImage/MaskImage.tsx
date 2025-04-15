@@ -12,8 +12,8 @@ export function MaskImage({
 	maskImageURL: string;
 }) {
 	const [maskImage] = useImage(maskImageURL);
-	const rectRef = useRef<Konva.Rect | null>(null);
-	const maskRef = useRef<Konva.Image | null>(null);
+	const rectRef = useRef<Konva.Rect>(null);
+	const maskRef = useRef<Konva.Image>(null);
 
 	useEffect(() => {
 		if (maskImage && rectRef.current && maskRef.current) {
