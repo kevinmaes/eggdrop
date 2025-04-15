@@ -86,7 +86,7 @@ describe('eggCaughtPointsMachine', () => {
 		expect(actor.getSnapshot().value).toBe('Done');
 	});
 
-	it.skip('should output the correct data when done', async () => {
+	it('should output the correct data when done', async () => {
 		// Create an actor from the machine
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
@@ -101,20 +101,10 @@ describe('eggCaughtPointsMachine', () => {
 			eggCaughtPointsRef: mockRef,
 		});
 
-		// Wait for the actor to complete
-		const donePromise = new Promise<any>((resolve) => {
-			const subscription = actor.subscribe((state) => {
-				if (state.status === 'done') {
-					subscription.unsubscribe();
-					resolve(state.output);
-				}
-			});
-		});
-
-		const output = await donePromise;
+		await waitFor(actor, (state) => state.matches('Done'));
 
 		// Check the output
-		expect(output).toEqual({
+		expect(actor.getSnapshot().output).toEqual({
 			eggCaughtPointsId: testInput.eggCaughtPointsId,
 		});
 	});
