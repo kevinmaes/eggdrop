@@ -66,20 +66,19 @@ describe('eggCaughtPointsMachine', () => {
 	});
 
 	it('should transition to Done after animation completes', async () => {
-		// Create an actor from the machine
+		// Arrange
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
 		});
 
-		// Start the actor
+		// Act
 		actor.start();
-
-		// Send the event
 		actor.send({
 			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
 
+		// Assert
 		// Our mock Konva.Tween implementation will immediately call onFinish
 		// so we should transition to Done state right away
 		await waitFor(actor, (state) => state.matches('Done'));
@@ -87,23 +86,20 @@ describe('eggCaughtPointsMachine', () => {
 	});
 
 	it('should output the correct data when done', async () => {
-		// Create an actor from the machine
+		// Arrange
 		const actor = createActor(eggCaughtPointsMachine, {
 			input: testInput,
 		});
 
-		// Start the actor
+		// Act
 		actor.start();
-
-		// Send the event
 		actor.send({
 			type: 'Set eggCaughtPointsRef',
 			eggCaughtPointsRef: mockRef,
 		});
-
 		await waitFor(actor, (state) => state.matches('Done'));
 
-		// Check the output
+		// Assert
 		expect(actor.getSnapshot().output).toEqual({
 			eggCaughtPointsId: testInput.eggCaughtPointsId,
 		});
