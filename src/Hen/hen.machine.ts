@@ -344,7 +344,7 @@ export const henMachine = setup({
 				'Laying egg': {
 					entry: [
 						sendParent(({ context }) => {
-							if (!context.henRef.current) {
+							if (!isImageRef(context.henRef)) {
 								throw new Error('Hen ref is not set');
 							}
 							const randomEggColorNumber = Math.random();

@@ -3,6 +3,7 @@ import { Image, Group, Rect } from 'react-konva';
 import useImage from 'use-image';
 import Konva from 'konva';
 import type { SpriteData } from '../types/assets';
+import { isImageRef } from '../types';
 
 export function MaskImage({
 	maskImageFrame,
@@ -16,7 +17,7 @@ export function MaskImage({
 	const maskRef = useRef<Konva.Image>(null);
 
 	useEffect(() => {
-		if (maskImage && rectRef.current && maskRef.current) {
+		if (maskImage && isImageRef(rectRef) && isImageRef(maskRef)) {
 			const maskNode = maskRef.current;
 			const rectNode = rectRef.current;
 			const layer = rectNode.getLayer();
