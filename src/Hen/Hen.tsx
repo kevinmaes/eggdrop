@@ -50,7 +50,12 @@ export function Hen({
 		},
 		henFrames: state.context.henAssets.frames,
 		position: state.context.position,
-		isMoving: state.matches('Moving'),
+		// TODO: Getting TS errors matching on 'Moving' and need to find a fix.
+		isMoving:
+			state.matches({ Moving: 'Laying egg' }) ||
+			state.matches({ Moving: 'Done laying egg' }) ||
+			state.matches({ Moving: 'Not laying egg' }) ||
+			state.matches({ Moving: 'Preparing to lay egg' }),
 		isLaying: state.matches('Laying Egg'),
 		movingDirection: state.context.movingDirection,
 		absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
