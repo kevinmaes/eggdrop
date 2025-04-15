@@ -86,6 +86,7 @@ export function mutateIndividual<T extends Individual>(
 					)
 				);
 			}
+			return mutatedValue;
 		}
 		// Un-mutated value
 		return value;

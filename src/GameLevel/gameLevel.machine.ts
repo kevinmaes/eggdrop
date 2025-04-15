@@ -21,7 +21,7 @@ import type { GenerationStats, Hendividual, LevelResults } from './types';
 import { sounds } from '../sounds';
 import type { GameAssets } from '../types/assets';
 import { countdownTimer } from './countdownTimer.actor';
-import type { Direction, Position } from '../types';
+import { isImageRef, type Direction, type Position } from '../types';
 import {
 	eggCaughtPointsMachine,
 	type EggCaughtPointsDoneEvent,
@@ -474,17 +474,16 @@ export const gameLevelMachine = setup({
 			return !!params.eggCaughtPointsid;
 		},
 		testPotRimHit: ({ context }, params: Position) => {
-			if (!context.chefPotRimHitRef?.current) {
+			if (!isImageRef(context.chefPotRimHitRef)) {
 				return false;
 			}
 
-			// Pot rim hit box
 			const {
 				x: potRimHitX,
 				y: potRimHitY,
 				width: potRimHitWidth,
 				height: potRimHitHeight,
-			} = context.chefPotRimHitRef.current?.getClientRect();
+			} = context.chefPotRimHitRef.current.getClientRect();
 
 			// Consider the leading edge of the egg for the hit test
 			const eggLeadingEdgeYPos =

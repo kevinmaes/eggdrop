@@ -5,7 +5,10 @@ import type { Position } from './types';
 /**
  * Takes any node and its pre-existing tween and plays the tween
  * Any tween callbacks may have already been attached to the tween
- * outside of this actor
+ * outside of this actor.
+ *
+ * When finished, the tween is destroyed and the node's final coordinates
+ * are passed to the promises's resolve function
  */
 export const tweenActor = fromPromise<
 	Position,
@@ -15,17 +18,16 @@ export const tweenActor = fromPromise<
 	}
 >(({ input }) => {
 	return new Promise((resolve, reject) => {
-		if (input.node !== null && input.tween !== null) {
-			input.tween.play();
-			input.tween.onFinish = () => {
-				input.tween?.destroy();
-				resolve({
-					x: input.node.x(),
-					y: input.node.y(),
-				});
-			};
-		} else {
-			return reject('No node or tween');
+		if (!input.node || !input.tween) {
+			return reject('Node or tween does not exist');
 		}
+		input.tween.play();
+		input.tween.onFinish = () => {
+			input.tween?.destroy();
+			resolve({
+				x: input.node.x(),
+				y: input.node.y(),
+			});
+		};
 	});
 });
