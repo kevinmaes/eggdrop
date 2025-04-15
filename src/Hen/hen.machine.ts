@@ -426,7 +426,7 @@ export const henMachine = setup({
 						henId: context.id,
 						henCurentTweenSpeed: context.currentTweenSpeed,
 						henCurrentTweenDirection: context.currentTweenDirection,
-						henPosition: context.henRef.current!.getPosition(),
+						henPosition: context.henRef.current.getPosition(),
 						eggColor,
 						hatchRate: context.phenotype.hatchRate,
 					};
