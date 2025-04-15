@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, waitFor, type InputFrom } from 'xstate';
 import { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 import type { Position } from '../types';
-import { createMockKonvaImage } from '../test/setup';
+import { createMockKonvaImage } from '../test/helpers';
 
 describe('eggCaughtPointsMachine', () => {
 	const testInput: InputFrom<typeof eggCaughtPointsMachine> = {

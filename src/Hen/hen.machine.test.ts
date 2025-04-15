@@ -4,7 +4,7 @@ import { henMachine } from './hen.machine';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import type { Position } from '../types';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
-import { createMockKonvaImage } from '../test/setup';
+import { createMockKonvaImage } from '../test/helpers';
 
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {
