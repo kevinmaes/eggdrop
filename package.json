@@ -16,6 +16,7 @@
 		"update:badges": "node scripts/update-badge-versions.js"
 	},
 	"dependencies": {
+		"@statelyai/inspect": "^0.4.0",
 		"@xstate/react": "^5.0.3",
 		"fontfaceobserver": "^2.3.0",
 		"howler": "^2.2.4",
