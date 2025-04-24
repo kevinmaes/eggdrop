@@ -1,4 +1,6 @@
 import React from 'react';
+// import { createBrowserInspector } from '@statelyai/inspect';
+
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import { AppActorContext } from './app.machine';
@@ -12,6 +14,8 @@ const gameConfig = getGameConfig();
 // Set the audio mute according to the isMuted value
 Howler.mute(gameConfig.isMuted);
 
+// const { inspect } = createBrowserInspector();
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<AppActorContext.Provider
@@ -19,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 				input: {
 					gameConfig,
 				},
+				// inspect,
 			}}
 		>
 			<App />
