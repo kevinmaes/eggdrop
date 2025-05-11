@@ -13,7 +13,7 @@
 		"test:watch": "vitest",
 		"check": "yarn lint && yarn tsc && yarn test && yarn build",
 		"ci": "yarn lint && yarn tsc && yarn test",
-		"badges:update:local": "node scripts/test-badge-update.js"
+		"badges:local:test": "node scripts/test-badge-update.js"
 	},
 	"dependencies": {
 		"@xstate/react": "^5.0.3",
