@@ -43,20 +43,20 @@ jobs:
             { name: 'Howler', npm: 'howler', link: 'https://howlerjs.com', logo: '', color: 'FF6600' },
           ];
 
-          // Read package.json
+          // Read package.json to get current dependency versions
           const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
           const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
 
-          // Read README.md
+          // Read README.md to update badge versions
           let readme = fs.readFileSync('README.md', 'utf8');
 
-          // Update each badge
+          // Update each badge with the latest version from package.json
           for (const badge of badges) {
             const version = dependencies[badge.npm]?.replace(/^\D+/, '') || '';
             if (!version) continue;
             const badgeUrl = `https://img.shields.io/badge/${badge.name}-${version}-${badge.color}?style=flat-square${badge.logo ? `&logo=${badge.logo}` : ''}`;
             const badgeMd = `[![${badge.name}](${badgeUrl})](${badge.link})`;
-            // More robust regex to match the full badge markdown (with any version, color, optional logo, and exact link)
+            // Regex to match the full badge markdown
             const badgeRegex = new RegExp(
               `\\[!\\[${badge.name}\\]\\(https://img\\.shields\\.io/badge/${badge.name}-[^-]+-[^?]+\\?style=flat-square(?:&logo=[^&\\)]*)?\\)\\]\\(${badge.link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`,
               'g'
@@ -64,15 +64,15 @@ jobs:
             readme = readme.replace(badgeRegex, badgeMd);
           }
 
-          // Write back to README.md
+          // Write the updated README.md back to the file
           fs.writeFileSync('README.md', readme);
 
-          // Configure git
+          // Configure git for committing changes
           const { execSync } = await import('child_process');
           execSync('git config --global user.email "github-actions[bot]@users.noreply.github.com"');
           execSync('git config --global user.name "github-actions[bot]"');
 
-          // Check if there are changes
+          // Check if there are changes to commit
           const status = execSync('git status --porcelain').toString();
           if (status) {
             // Commit and push changes
