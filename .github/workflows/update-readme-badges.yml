@@ -23,73 +23,61 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: Update README badges
         run: |
-          node -e "
-          const fs = require('fs');
-          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-          const readme = fs.readFileSync('README.md', 'utf8');
-          
-          // Combine both dependencies and devDependencies
-          const allDeps = {
-            ...packageJson.dependencies,
-            ...packageJson.devDependencies
-          };
-          
-          // Function to generate badge URL
-          const getBadgeUrl = (name, version) => {
-            const colors = {
-              react: '61DAFB',
-              typescript: '3178C6',
-              vite: '646CFF',
-              xstate: '121212',
-              konva: '0DB7ED',
-              howler: 'FF6600',
-              // Add more color mappings as needed
-            };
-            
-            const color = colors[name.toLowerCase()] || 'blue';
-            return \`https://img.shields.io/badge/\${name}-\${version}-${color}?style=flat-square&logo=\${name.toLowerCase()}\`;
-          };
-          
-          // Function to generate badge markdown
-          const getBadgeMarkdown = (name, version) => {
-            const badgeUrl = getBadgeUrl(name, version);
-            const docsUrl = \`https://www.npmjs.com/package/\${name}\`;
-            return \`[![${name}](${badgeUrl})](${docsUrl})\`;
-          };
-          
-          // Generate badges for all dependencies
-          const badges = Object.entries(allDeps)
-            .filter(([name]) => {
-              // List of packages we want to show badges for
-              const showBadgeFor = ['react', 'typescript', 'vite', 'xstate', 'konva', 'howler'];
-              return showBadgeFor.includes(name.toLowerCase());
-            })
-            .map(([name, version]) => {
-              // Remove the ^ or ~ from version
-              const cleanVersion = version.replace(/[\^~]/, '');
-              return getBadgeMarkdown(name, cleanVersion);
-            })
-            .join('\\n');
-          
-          // Replace the badges section in README
-          const updatedReadme = readme.replace(
-            /(\[!\[.*?\].*?\n)+/,
-            badges + '\\n'
-          );
-          
-          fs.writeFileSync('README.md', updatedReadme);
-          "
+          node --input-type=module << 'EOF'
+          import fs from 'fs';
 
-      - name: Commit and push changes
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add README.md
-          git diff --quiet && git diff --staged --quiet || (git commit -m "docs: update README badges [skip ci]" && git push) 
+          // Badge config: name, npmName, link, logo, color
+          const badges = [
+            { name: 'React', npm: 'react', link: 'https://react.dev', logo: 'react', color: '61DAFB' },
+            { name: 'TypeScript', npm: 'typescript', link: 'https://www.typescriptlang.org', logo: 'typescript', color: '3178C6' },
+            { name: 'Vite', npm: 'vite', link: 'https://vitejs.dev', logo: 'vite', color: '646CFF' },
+            { name: 'XState', npm: 'xstate', link: 'https://xstate.js.org', logo: 'xstate', color: '121212' },
+            { name: 'Konva', npm: 'konva', link: 'https://konvajs.org', logo: 'konva', color: '0DB7ED' },
+            { name: 'Howler', npm: 'howler', link: 'https://howlerjs.com', logo: '', color: 'FF6600' },
+          ];
+
+          // Read package.json
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+
+          // Read README.md
+          let readme = fs.readFileSync('README.md', 'utf8');
+
+          // Update each badge
+          for (const badge of badges) {
+            const version = dependencies[badge.npm]?.replace(/^\D+/, '') || '';
+            if (!version) continue;
+            const badgeUrl = `https://img.shields.io/badge/${badge.name}-${version}-${badge.color}?style=flat-square${badge.logo ? `&logo=${badge.logo}` : ''}`;
+            const badgeMd = `[![${badge.name}](${badgeUrl})](${badge.link})`;
+            // More robust regex to match the full badge markdown (with any version, color, optional logo, and exact link)
+            const badgeRegex = new RegExp(
+              `\\[!\\[${badge.name}\\]\\(https://img\\.shields\\.io/badge/${badge.name}-[^-]+-[^?]+\\?style=flat-square(?:&logo=[^&\\)]*)?\\)\\]\\(${badge.link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\)`,
+              'g'
+            );
+            readme = readme.replace(badgeRegex, badgeMd);
+          }
+
+          // Write back to README.md
+          fs.writeFileSync('README.md', readme);
+
+          // Configure git
+          const { execSync } = await import('child_process');
+          execSync('git config --global user.email "github-actions[bot]@users.noreply.github.com"');
+          execSync('git config --global user.name "github-actions[bot]"');
+
+          // Check if there are changes
+          const status = execSync('git status --porcelain').toString();
+          if (status) {
+            // Commit and push changes
+            execSync('git add README.md');
+            execSync('git commit -m "docs: update tech shields"');
+            execSync('git push');
+          }
+          EOF 
