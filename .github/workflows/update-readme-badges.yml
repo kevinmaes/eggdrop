@@ -12,7 +12,7 @@ jobs:
     name: Update README Badges
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write  # Required for pushing changes
       pull-requests: write # Required for pushing changes
 
     steps:
