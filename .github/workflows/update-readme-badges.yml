@@ -6,7 +6,7 @@ on:
       - 'package.json'
     branches:
       - main
-
+  workflow_dispatch:
 jobs:
   update-badges:
     name: Update README Badges
@@ -50,6 +50,12 @@ jobs:
           // Read README.md to update badge versions
           let readme = fs.readFileSync('README.md', 'utf8');
 
+          // DEBUG-LOG: Print working directory
+          console.log('DEBUG-LOG: CWD', process.cwd());
+
+          // DEBUG-LOG: Print original README badge lines
+          console.log('DEBUG-LOG: Original README (first 20 lines):\n', readme.split('\n').slice(0, 20).join('\n'));
+
           // Update each badge with the latest version from package.json
           for (const badge of badges) {
             const version = dependencies[badge.npm]?.replace(/^\D+/, '') || '';
@@ -61,8 +67,18 @@ jobs:
               `\[!\[${badge.name}\]\(https://img\.shields\.io/badge/${badge.name}-[^-]+-[^?]+\?style=flat-square(?:&logo=[^&\)]*)?\)\]\(${badge.link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\)`,
               'g'
             );
+            const matches = readme.match(badgeRegex);
+            console.log(`DEBUG-LOG: Found ${matches ? matches.length : 0} matches for ${badge.name}`);
+            if (matches) {
+              console.log('DEBUG-LOG: Matched lines:', matches);
+            }
             readme = readme.replace(badgeRegex, badgeMd);
+            // DEBUG-LOG: Print updated README badge line for this badge
+            console.log(`DEBUG-LOG: Updated badge line for ${badge.name}:`, badgeMd);
           }
+
+          // DEBUG-LOG: Print updated README (first 20 lines)
+          console.log('DEBUG-LOG: Updated README (first 20 lines):\n', readme.split('\n').slice(0, 20).join('\n'));
 
           // Write the updated README.md back to the file
           fs.writeFileSync('README.md', readme);
