@@ -29,6 +29,7 @@
 		"xstate": "^5.19.2"
 	},
 	"devDependencies": {
+		"@playwright/mcp": "^0.0.22",
 		"@playwright/test": "^1.51.1",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/fontfaceobserver": "^2.1.3",

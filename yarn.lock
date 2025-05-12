@@ -446,6 +446,22 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@modelcontextprotocol/sdk@^1.11.0":
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/@modelcontextprotocol/sdk/-/sdk-1.11.2.tgz#d81784c140d1a9cc937f61af9f071d8b78befe30"
+  integrity sha512-H9vwztj5OAqHg9GockCQC06k1natgcxWQSRpQcPJf6i5+MWBzfKkRtxGbjQf0X2ihii0ffLZCRGbYV2f2bjNCQ==
+  dependencies:
+    content-type "^1.0.5"
+    cors "^2.8.5"
+    cross-spawn "^7.0.3"
+    eventsource "^3.0.2"
+    express "^5.0.1"
+    express-rate-limit "^7.5.0"
+    pkce-challenge "^5.0.0"
+    raw-body "^3.0.0"
+    zod "^3.23.8"
+    zod-to-json-schema "^3.24.1"
+
 "@modelcontextprotocol/sdk@^1.8.0":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@modelcontextprotocol/sdk/-/sdk-1.11.1.tgz#c7f4a1432872ef10130f5d9b0072060c17a3946b"
@@ -482,6 +498,17 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@playwright/mcp@^0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@playwright/mcp/-/mcp-0.0.22.tgz#181538e27c8aa003463e10278a96600adeae396d"
+  integrity sha512-mn7IQkrAEj1Myi4gUvbUAAVjm+bzp7C7m1xJ2RgR28fHqtrtmf7xyJuDzMX33G72/WaLIBXvQHE/Wvp+QCjJTA==
+  dependencies:
+    "@modelcontextprotocol/sdk" "^1.11.0"
+    commander "^13.1.0"
+    playwright "1.53.0-alpha-1746218818000"
+    yaml "^2.7.1"
+    zod-to-json-schema "^3.24.4"
 
 "@playwright/test@^1.51.1":
   version "1.51.1"
@@ -1099,6 +1126,11 @@ color-name@~1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
+
+commander@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-13.1.0.tgz#776167db68c78f38dcce1f9b8d7b8b9a488abf46"
+  integrity sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -2003,12 +2035,26 @@ playwright-core@1.51.1:
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.51.1.tgz#d57f0393e02416f32a47cf82b27533656a8acce1"
   integrity sha512-/crRMj8+j/Nq5s8QcvegseuyeZPxpQCZb6HNk3Sos3BlZyAknRjoyJPFWkpNn8v0+P3WiwqFF8P+zQo4eqiNuw==
 
+playwright-core@1.53.0-alpha-1746218818000:
+  version "1.53.0-alpha-1746218818000"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.53.0-alpha-1746218818000.tgz#efa49ad0d496c048579059d202f2af2799033665"
+  integrity sha512-iaIZmhO/psGssWpxIprJkFrn2h4xFjgL0jZsKGtReAMZ/XhlqMUJxtSitwWM4BV+wxJIptsZD0s5Ml2KU62Z3w==
+
 playwright@1.51.1:
   version "1.51.1"
   resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.51.1.tgz#ae1467ee318083968ad28d6990db59f47a55390f"
   integrity sha512-kkx+MB2KQRkyxjYPc3a0wLZZoDczmppyGJIvQ43l+aZihkaVvmu/21kiyaHeHjiFxjxNNFnUncKmcGIyOojsaw==
   dependencies:
     playwright-core "1.51.1"
+  optionalDependencies:
+    fsevents "2.3.2"
+
+playwright@1.53.0-alpha-1746218818000:
+  version "1.53.0-alpha-1746218818000"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.53.0-alpha-1746218818000.tgz#09c602094aaf8b21520570ba92f09c746a1e49c9"
+  integrity sha512-mVIjtdqIawIqWVyvCaLmV6XTALCT4oWWrbMjoHyyWRln3jQjnm3RUO9LkaINz+Yh88O3FkuY6RfjGXPXeFeJ4Q==
+  dependencies:
+    playwright-core "1.53.0-alpha-1746218818000"
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -2550,12 +2596,17 @@ yallist@^3.0.2:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.1.1.tgz#dbb7daf9bfd8bac9ab45ebf602b8cbad0d5d08fd"
   integrity sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
 
+yaml@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.7.1.tgz#44a247d1b88523855679ac7fa7cda6ed7e135cf6"
+  integrity sha512-10ULxpnOCQXxJvBgxsn9ptjq6uviG/htZKk9veJGhlqn3w/DxQ631zFF+nlQXLwmImeS5amR2dl2U8sg6U9jsQ==
+
 yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod-to-json-schema@^3.24.1:
+zod-to-json-schema@^3.24.1, zod-to-json-schema@^3.24.4:
   version "3.24.5"
   resolved "https://registry.yarnpkg.com/zod-to-json-schema/-/zod-to-json-schema-3.24.5.tgz#d1095440b147fb7c2093812a53c54df8d5df50a3"
   integrity sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==
