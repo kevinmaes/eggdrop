@@ -12,7 +12,8 @@ jobs:
     name: Update README Badges
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for pushing changes
+      contents: write 
+      pull-requests: write # Required for pushing changes
 
     steps:
       - uses: actions/checkout@v4
