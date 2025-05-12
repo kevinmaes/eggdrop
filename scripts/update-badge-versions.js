@@ -1,4 +1,4 @@
-// test-badge-update.js
+// update-badge-versions.js
 import fs from 'fs';
 
 // Badge config: name, npmName, link, logo, color
