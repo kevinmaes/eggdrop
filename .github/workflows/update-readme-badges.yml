@@ -36,10 +36,10 @@ jobs:
       - name: Create Pull Request for README badge update
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "docs: update tech shields"
+          commit-message: "docs: update readme badges"
           branch: update/readme-badges
-          title: "docs: update tech shields"
+          title: "docs: update readme badges"
           body: |
-            This PR updates the technology shields in the README to match the latest versions in package.json.
+            This PR updates the badges (technology shields) in the README to match the latest versions in package.json.
           base: main
           add-paths: README.md 
