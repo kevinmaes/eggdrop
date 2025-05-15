@@ -115,7 +115,7 @@ As the game progresses, hens evolve based on their performance, creating a dynam
 
 The game includes a developer panel to track statistics related to the genetic algorithm:
 
-- Press `cmd-d` (or `ctrl-d` on Windows/Linux) to toggle the Dev Panel visibility
+- Press `cmd-d` (Mac) or `ctrl-d` (Windows/Linux) to toggle the Dev Panel visibility
 - Monitor hen population statistics and evolution metrics
 - Track game performance and state
 
