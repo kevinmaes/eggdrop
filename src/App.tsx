@@ -1,6 +1,7 @@
 import { Layer, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { GameLevel } from './GameLevel/GameLevel';
+import { LOADING_MSG } from './constants';
 
 import './App.css';
 import { DevPanel } from './DevPanel/DevPanel';
@@ -25,7 +26,7 @@ function App() {
 	}
 
 	if (isLoading) {
-		return <div>Loading...</div>;
+		return <div>{LOADING_MSG}</div>;
 	}
 
 	return (
