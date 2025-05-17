@@ -115,12 +115,16 @@ Several XState state machines are used throughout the game:
 - [Chef](#chef-machine) - Player character controlled by the user
 - Hen
 - Egg (hatching into chicks)
-- Points (from catching eggs)
+- [Egg Points](#egg-caught-points-machine) - Points won when catching an egg
 - Sounds
 
 ### Chef machine
 
-[![Game State Machine](docs/images/chef.machine.png)](https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=6e326602-d929-4a40-b57a-d4cf067b6442&mode=design)
+[![Game State Machine](docs/images/statecharts/chef.machine.png)](https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=6e326602-d929-4a40-b57a-d4cf067b6442)
+
+### Egg Caught Points machine
+
+[![Game State Machine](docs/images/statecharts/eggCaughtPoints.machine.png)](https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=67ee088f-7005-4919-a155-673965bfef40)
 
 ## 🧬 Genetic Algorithm
 
