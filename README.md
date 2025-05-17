@@ -106,6 +106,23 @@ yarn ci
 - **[XState](https://xstate.js.org)** - State management using state machines and the actor model
 - **[Howler](https://howlerjs.com)** - Audio library for game sounds
 
+## State Machines
+
+Several XState state machines are used throughout the game:
+
+- Application (loading and overall coordination)
+- Game Play (levels)
+- Chef
+- [Chef](#chef-machine) - Player character controlled by the user
+- Hen
+- Egg (hatching into chicks)
+- Points (from catching eggs)
+- Sounds
+
+Chef machine
+
+[![Game State Machine](docs/images/chef.machine.png)](https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=6e326602-d929-4a40-b57a-d4cf067b6442&mode=design)
+
 ## 🧬 Genetic Algorithm
 
 The game features a genetic algorithm that evolves the characteristics of the hens who drop eggs. Each hen (referred to as a "Hendividual") has DNA composed of traits related to:
@@ -183,5 +200,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📬 Contact
 
 Kevin Maes - [@kvmaes](https://twitter.com/kvmaes)
-
-Project Link: [https://github.com/kevinmaes/eggdrop](https://github.com/kevinmaes/eggdrop)
