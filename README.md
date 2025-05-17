@@ -120,7 +120,7 @@ Several XState state machines are used throughout the game:
 
 ### Chef machine
 
-[![Game State Machine](docs/images/chef.machine.png)](https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=6e326602-d929-4a40-b57a-d4cf067b6442&mode=design)
+[![Game State Machine](docs/images/chef.machine.png)](https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=6e326602-d929-4a40-b57a-d4cf067b6442&mode=design)
 
 ## 🧬 Genetic Algorithm
 
