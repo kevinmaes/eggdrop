@@ -112,7 +112,6 @@ Several XState state machines are used throughout the game:
 
 - Application (loading and overall coordination)
 - Game Play (levels)
-- Chef
 - [Chef](#chef-machine) - Player character controlled by the user
 - Hen
 - Egg (hatching into chicks)
