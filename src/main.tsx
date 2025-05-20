@@ -1,11 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
-import { AppActorContext } from './app.machine';
 
-import './index.css';
-import { getGameConfig } from './GameLevel/gameConfig.ts';
+import ReactDOM from 'react-dom/client';
+
 import { Howler } from 'howler';
+
+import { AppActorContext } from './app.machine';
+import './index.css';
+import App from './App.tsx';
+import { getGameConfig } from './GameLevel/gameConfig.ts';
+
 // Get the game config which will be passed down to the app
 const gameConfig = getGameConfig();
 
