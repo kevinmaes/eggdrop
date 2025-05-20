@@ -13,13 +13,13 @@ jobs:
     name: Update README Badges
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for pushing changes
+      contents: write # Required for pushing changes
       pull-requests: write # Required for pushing changes
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for proper versioning
+          fetch-depth: 0 # Fetch all history for proper versioning
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,10 +36,10 @@ jobs:
       - name: Create Pull Request for README badge update
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "docs: update readme badges"
+          commit-message: 'docs: update readme badges'
           branch: update/readme-badges
-          title: "docs: update readme badges"
+          title: 'docs: update readme badges'
           body: |
             This PR updates the badges (technology shields) in the README to match the latest versions in package.json.
           base: main
-          add-paths: README.md 
+          add-paths: README.md

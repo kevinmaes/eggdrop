@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { LOADING_MSG } from '../src/constants';
 
 test.describe('Game Initial Load', () => {
-  test('should show start button after loading and start game when clicked', async ({ page }) => {
+  test('should show start button after loading and start game when clicked', async ({
+    page,
+  }) => {
     // Navigate to the game
     await page.goto('/');
 
@@ -30,9 +32,9 @@ test.describe('Game Initial Load', () => {
     // Verify we enter the game state by checking that the loading text is still hidden
     // and the game level is visible
     await expect(page.getByText(LOADING_MSG)).toBeHidden();
-    
+
     // Additional verification that we're in the game state
     // This could be enhanced with more specific checks based on your game's UI
     // await expect(page.locator('canvas')).toBeVisible();
   });
-}); 
+});

@@ -2,13 +2,13 @@ import type Konva from 'konva';
 import type { RefObject } from 'react';
 
 export interface Position {
-	x: number;
-	y: number;
+  x: number;
+  y: number;
 }
 
 export interface Direction {
-	value: -1 | 0 | 1;
-	label: 'left' | 'right' | 'none';
+  value: -1 | 0 | 1;
+  label: 'left' | 'right' | 'none';
 }
 
 /**
@@ -17,10 +17,10 @@ export interface Direction {
  * @returns
  */
 export function isImageRef(
-	imageRef: unknown
+  imageRef: unknown
 ): imageRef is RefObject<Konva.Image> {
-	if (imageRef) {
-		return true;
-	}
-	return false;
+  if (imageRef) {
+    return true;
+  }
+  return false;
 }

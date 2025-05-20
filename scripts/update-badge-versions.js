@@ -3,17 +3,56 @@ import fs from 'fs';
 
 // Badge config: name, npmName, link, logo, color
 const badges = [
-  { name: 'React', npm: 'react', link: 'https://react.dev', logo: 'react', color: '61DAFB' },
-  { name: 'TypeScript', npm: 'typescript', link: 'https://www.typescriptlang.org', logo: 'typescript', color: '3178C6' },
-  { name: 'Vite', npm: 'vite', link: 'https://vitejs.dev', logo: 'vite', color: '646CFF' },
-  { name: 'XState', npm: 'xstate', link: 'https://xstate.js.org', logo: 'xstate', color: '121212' },
-  { name: 'Konva', npm: 'konva', link: 'https://konvajs.org', logo: 'konva', color: '0DB7ED' },
-  { name: 'Howler', npm: 'howler', link: 'https://howlerjs.com', logo: '', color: 'FF6600' },
+  {
+    name: 'React',
+    npm: 'react',
+    link: 'https://react.dev',
+    logo: 'react',
+    color: '61DAFB',
+  },
+  {
+    name: 'TypeScript',
+    npm: 'typescript',
+    link: 'https://www.typescriptlang.org',
+    logo: 'typescript',
+    color: '3178C6',
+  },
+  {
+    name: 'Vite',
+    npm: 'vite',
+    link: 'https://vitejs.dev',
+    logo: 'vite',
+    color: '646CFF',
+  },
+  {
+    name: 'XState',
+    npm: 'xstate',
+    link: 'https://xstate.js.org',
+    logo: 'xstate',
+    color: '121212',
+  },
+  {
+    name: 'Konva',
+    npm: 'konva',
+    link: 'https://konvajs.org',
+    logo: 'konva',
+    color: '0DB7ED',
+  },
+  {
+    name: 'Howler',
+    npm: 'howler',
+    link: 'https://howlerjs.com',
+    logo: '',
+    color: 'FF6600',
+  },
 ];
 
 // Read package.json
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+const dependencies = {
+  ...packageJson.dependencies,
+  ...packageJson.devDependencies,
+};
 
 // Read README.md
 let readme = fs.readFileSync('README.md', 'utf8');

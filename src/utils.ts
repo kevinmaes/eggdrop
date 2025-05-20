@@ -6,12 +6,12 @@
  * @returns
  */
 export function getRandomNumber(
-	min: number,
-	max: number,
-	round: boolean = false
+  min: number,
+  max: number,
+  round: boolean = false
 ) {
-	const randomValue = Math.random() * (max - min) + min;
-	return round ? Math.round(randomValue) : randomValue;
+  const randomValue = Math.random() * (max - min) + min;
+  return round ? Math.round(randomValue) : randomValue;
 }
 
 /**
@@ -25,28 +25,28 @@ export function getRandomNumber(
  * @returns The transformed value
  */
 export function mapValue(
-	n: number,
-	start1: number,
-	stop1: number,
-	start2: number,
-	stop2: number,
-	withinBounds: boolean = false
+  n: number,
+  start1: number,
+  stop1: number,
+  start2: number,
+  stop2: number,
+  withinBounds: boolean = false
 ) {
-	const newValue =
-		((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
-	if (!withinBounds) {
-		return newValue;
-	}
-	if (start2 < stop2) {
-		return Math.max(Math.min(newValue, stop2), start2);
-	} else {
-		return Math.max(Math.min(newValue, start2), stop2);
-	}
+  const newValue =
+    ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+  if (!withinBounds) {
+    return newValue;
+  }
+  if (start2 < stop2) {
+    return Math.max(Math.min(newValue, stop2), start2);
+  } else {
+    return Math.max(Math.min(newValue, start2), stop2);
+  }
 }
 
 /**
  * Clamps a value between a minimum and maximum value.
  */
 export function clamp(value: number, min: number, max: number) {
-	return Math.max(min, Math.min(value, max));
+  return Math.max(min, Math.min(value, max));
 }
