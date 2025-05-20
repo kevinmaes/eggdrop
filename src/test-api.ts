@@ -63,7 +63,7 @@ let updateTimer: ReturnType<typeof setTimeout> | null = null;
  * If another update comes at t=250ms, it will be applied at t=450ms
  * (200ms after the last update)
  */
-const UPDATE_INTERVAL = 2_000;
+const UPDATE_INTERVAL = 500;
 
 // Function to create the test API from current state
 function createTestAPI(state: TestAPIState): TestAPI {
