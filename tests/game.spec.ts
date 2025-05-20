@@ -76,4 +76,46 @@ test.describe('Game', () => {
     // Assert the score is 0
     expect(score).toBe(0);
   });
+
+  test('should constrain chef position to max X position', async ({ page }) => {
+    // Start the game
+    await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
+
+    // Wait for the game to initialize
+    await page.waitForTimeout(1000);
+
+    // Get the chef's max X position from the test API
+    const maxXPos = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.chef?.getSnapshot().context.maxXPos;
+    });
+
+    // Press and hold the right arrow key
+    await page.keyboard.down('ArrowRight');
+
+    // Wait for the chef to reach max position
+    await page.waitForFunction(
+      maxPos => {
+        const testAPI = window.__TEST_API__;
+        const position = testAPI?.getChefPosition();
+        return position?.x === maxPos;
+      },
+      maxXPos,
+      { timeout: 5000 }
+    );
+
+    // Release the key
+    await page.keyboard.up('ArrowRight');
+
+    // Verify the chef's position is at max X
+    const finalPosition = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPosition();
+    });
+
+    expect(finalPosition?.x).toBe(maxXPos);
+  });
 });
