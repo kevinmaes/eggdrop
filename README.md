@@ -76,6 +76,89 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 | `yarn ci`      | Run CI checks locally (lint, type check, test)           |
 | `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
 
+## 🧪 End-to-End Testing
+
+The game uses [Playwright](https://playwright.dev) for end-to-end testing. These tests verify the game's functionality by simulating real user interactions and checking the game state.
+
+### Running Tests
+
+```bash
+# Run tests in headless mode
+yarn test:e2e
+
+# Run tests with browser visible
+yarn test:e2e:headed
+
+# Run tests in debug mode
+yarn test:e2e:debug
+```
+
+### Test Architecture
+
+The tests leverage the game's state machines through a special test API that's enabled when running in test mode. This approach overcomes several challenges typically associated with testing Canvas-based games:
+
+1. **Canvas Testing Challenges**: Traditional Canvas applications are notoriously difficult to test because:
+
+   - Canvas elements don't have a DOM representation to query
+   - Visual state is not directly accessible through standard DOM APIs
+   - Game state is often scattered across multiple components and render cycles
+   - Animation frames make it hard to assert on exact positions and states
+
+2. **State Machine Solution**: By using XState state machines, we can:
+
+   - Access game state directly through the state machine's context
+   - Query exact positions and velocities of game elements
+   - Monitor state transitions and side effects
+   - Make assertions about game state without relying on visual inspection
+
+3. **Test API**: When the game runs with `?testMode=true`, it exposes a `window.__TEST_API__` object that provides access to:
+
+   - State machine actor references (app, chef, gameLevel)
+   - Convenience getters for game state (score, chef position, etc.)
+   - Direct event sending to state machines
+
+4. **State Machine Integration**: Tests can:
+
+   - Query the current state of any machine using `getSnapshot()`
+   - Send events to machines using `send()`
+   - Monitor state transitions and side effects
+   - Assert on exact positions, velocities, and game state
+
+5. **Game Automation**: Tests can simulate:
+   - Keyboard input for chef movement
+   - Game state transitions (start, pause, game over)
+   - Score tracking and game progression
+   - Complex game scenarios that would be difficult to test visually
+
+This architecture makes it possible to write reliable, deterministic tests for a Canvas-based game, something that would be much more challenging with traditional testing approaches.
+
+### Viewing Test Results
+
+#### Local Results
+
+After running tests, you can view the HTML report:
+
+```bash
+# Open the last test report
+yarn test:e2e:report
+```
+
+#### GitHub Actions Results
+
+When tests run in GitHub Actions:
+
+1. Navigate to the Actions tab in your PR
+2. Click on the workflow run
+3. Scroll to the "Artifacts" section
+4. Download and open the `playwright-report` to view detailed test results
+
+The report includes:
+
+- Test execution videos
+- Screenshots at each step
+- Detailed error messages and stack traces
+- Test duration and performance metrics
+
 ## 🧪 CI/CD Pipeline
 
 This project uses GitHub Actions for Continuous Integration. The CI workflow:
