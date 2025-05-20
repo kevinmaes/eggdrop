@@ -51,9 +51,6 @@ pnpm-lock.yaml
 .prettierrc
 .editorconfig
 
-# Documentation
-*.md
-docs
 
 # Large files
 *.json
