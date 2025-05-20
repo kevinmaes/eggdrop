@@ -3,7 +3,7 @@
 [![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-6.3.5-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
-[![XState](https://img.shields.io/badge/XState-5.19.2-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
+[![XState](https://img.shields.io/badge/XState-5.19.3-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
 [![Konva](https://img.shields.io/badge/Konva-9.3.20-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
 [![Howler](https://img.shields.io/badge/Howler-2.2.4-FF6600?style=flat-square)](https://howlerjs.com)
 
@@ -13,7 +13,7 @@
 
 ## 📖 About the Game
 
-Egg Drop is a fun web-based game where you control Chef Rafi who tries to catch eggs dropped by hens to make his egg drop soup. It was inspired by the old [Atari 2600 game, Kaboom](https://www.atarimania.com/pgesoft.awp?soft=7179). The game features a genetic algorithm that evolves the characteristics of the hens over time, making each playthrough unique and progressively challenging.
+Egg Drop is a fun web-based game where you control Chef Rafi who tries to catch eggs dropped by hens to make his egg drop soup. It was inspired by the old [Atari 2600 game, Kaboom](https://www.atarimania.com/pgesoft.awp?soft=7179). Additionally, this version of game features a genetic algorithm that evolves the characteristics of the hens over time, making each playthrough unique and progressively challenging.
 
 ### 🎤 Conference Presentations
 
@@ -115,7 +115,7 @@ As the game progresses, hens evolve based on their performance, creating a dynam
 
 The game includes a developer panel to track statistics related to the genetic algorithm:
 
-- Press `cmd-d` (or `ctrl-d` on Windows/Linux) to toggle the Dev Panel visibility
+- Press `cmd-d` (Mac) or `ctrl-d` (Windows/Linux) to toggle the Dev Panel visibility
 - Monitor hen population statistics and evolution metrics
 - Track game performance and state
 
