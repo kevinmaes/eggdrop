@@ -20,7 +20,12 @@ export function BetweenLevelsLayer() {
 
   return (
     <Layer>
-      <GameScoreBox x={xPos} y={yPos} width={gameScoreBoxWidth} height={gameScoreBoxHeight} />
+      <GameScoreBox
+        x={xPos}
+        y={yPos}
+        width={gameScoreBoxWidth}
+        height={gameScoreBoxHeight}
+      />
     </Layer>
   );
 }

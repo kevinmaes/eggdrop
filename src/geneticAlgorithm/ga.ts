@@ -17,7 +17,10 @@ export interface Individual {
  */
 export function rouletteWheelSelection(population: Individual[]) {
   // Calculate the total fitness of the population
-  const totalFitness = population.reduce((acc, individual) => acc + individual.fitness, 0);
+  const totalFitness = population.reduce(
+    (acc, individual) => acc + individual.fitness,
+    0
+  );
 
   // Generate a random number between 0 and the total fitness
   let rand = Math.random() * totalFitness;
@@ -39,7 +42,11 @@ export function rouletteWheelSelection(population: Individual[]) {
   return lastIndividual;
 }
 
-export function eliteSelection(population: Individual[], totalCount: number, eliteCount: number) {
+export function eliteSelection(
+  population: Individual[],
+  totalCount: number,
+  eliteCount: number
+) {
   const sortedPopulation = population.sort((a: Individual, b: Individual) => {
     return b.fitness - a.fitness;
   });
@@ -72,7 +79,11 @@ export function mutateIndividual<T extends Individual>(
       let mutatedValue = value + Math.random() * 2 * variance - variance;
       if ('round' in phenotypeConfig[key] && phenotypeConfig[key].round) {
         mutatedValue = Math.round(
-          clamp(mutatedValue, phenotypeConfig[key].min, phenotypeConfig[key].max)
+          clamp(
+            mutatedValue,
+            phenotypeConfig[key].min,
+            phenotypeConfig[key].max
+          )
         );
       }
       return mutatedValue;

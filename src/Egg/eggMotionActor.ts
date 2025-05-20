@@ -42,7 +42,9 @@ export const eggMotionActor = fromPromise<
         // Ensure there's always a minimum change in the Y position
         const newYPos =
           input.node.y() +
-          (Math.abs(deltaY) > minYChange ? deltaY : minYChange * Math.sign(input.ySpeed));
+          (Math.abs(deltaY) > minYChange
+            ? deltaY
+            : minYChange * Math.sign(input.ySpeed));
         input.node.y(newYPos);
 
         // Rotate the egg

@@ -43,7 +43,10 @@ export default [
       'react-hooks': reactHooksPlugin,
     },
     rules: {
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'no-fallthrough': 'off',

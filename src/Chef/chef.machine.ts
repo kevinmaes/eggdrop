@@ -130,7 +130,9 @@ export const chefMachine = setup({
       // to the same value as the movingDirection
       // Otherwise, do not change the value so we can keep track of the last moving direction
       const newLastMovingDirection =
-        movingDirection !== 'none' ? movingDirection : context.lastMovingDirection;
+        movingDirection !== 'none'
+          ? movingDirection
+          : context.lastMovingDirection;
       return {
         direction,
         movingDirection,

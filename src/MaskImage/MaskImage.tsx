@@ -52,7 +52,9 @@ export function MaskImage({
         opacity={0.7}
       />
       {/* Image with the alpha mask applied */}
-      {maskImage && <Image ref={maskRef} x={12} y={12} image={maskImage} visible={true} />}
+      {maskImage && (
+        <Image ref={maskRef} x={12} y={12} image={maskImage} visible={true} />
+      )}
     </Group>
   );
 }
@@ -72,7 +74,15 @@ export function MaskedRect({ maskImageURL }: { maskImageURL: string }) {
 
   return (
     <Group ref={groupRef}>
-      <Rect x={5} y={5} width={40} height={40} cornerRadius={4} fill="white" opacity={0.7} />
+      <Rect
+        x={5}
+        y={5}
+        width={40}
+        height={40}
+        cornerRadius={4}
+        fill="white"
+        opacity={0.7}
+      />
       <Image
         image={maskImage}
         x={50}

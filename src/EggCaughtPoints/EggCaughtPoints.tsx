@@ -21,24 +21,27 @@ export function EggCaughtPoints({
       gameConfig: state.context.gameConfig,
     };
   });
-  const gameLevelActorRef = appActorRef.system.get('gameLevelMachine') as ActorRefFrom<
-    typeof gameLevelMachine
-  >;
+  const gameLevelActorRef = appActorRef.system.get(
+    'gameLevelMachine'
+  ) as ActorRefFrom<typeof gameLevelMachine>;
   const { uiFrames } = useSelector(gameLevelActorRef, state => {
     return {
       uiFrames: state.context.gameAssets.ui.frames,
     };
   });
 
-  const { position, eggColor } = useSelector(eggCaughtPointsActorRefs, state => {
-    if (!state) {
-      return { position: { x: 0, y: 0 } };
+  const { position, eggColor } = useSelector(
+    eggCaughtPointsActorRefs,
+    state => {
+      if (!state) {
+        return { position: { x: 0, y: 0 } };
+      }
+      return {
+        position: state.context.position,
+        eggColor: state.context.eggColor,
+      };
     }
-    return {
-      position: state.context.position,
-      eggColor: state.context.eggColor,
-    };
-  });
+  );
 
   const eggCaughtPointsRef = useRef<Konva.Image>(null);
   useEffect(() => {

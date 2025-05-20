@@ -1,4 +1,10 @@
-import { setup, assign, sendParent, type OutputFrom, type DoneActorEvent } from 'xstate';
+import {
+  setup,
+  assign,
+  sendParent,
+  type OutputFrom,
+  type DoneActorEvent,
+} from 'xstate';
 import { sounds } from '../sounds';
 import Konva from 'konva';
 import { getGameConfig } from '../GameLevel/gameConfig';
@@ -8,7 +14,12 @@ import type { GameAssets } from '../types/assets';
 import { isImageRef, type Direction, type Position } from '../types';
 
 export type EggColor = 'white' | 'gold' | 'black';
-export type EggResultStatus = null | 'Hatched' | 'Broken' | 'Caught' | 'Offscreen';
+export type EggResultStatus =
+  | null
+  | 'Hatched'
+  | 'Broken'
+  | 'Caught'
+  | 'Offscreen';
 
 export type EggDoneEvent = DoneActorEvent<OutputFrom<typeof eggMachine>>;
 
@@ -123,16 +134,20 @@ export const eggMachine = setup({
     setPositionToAnimationEndPostiion: assign({
       position: (_, params: Position) => params,
     }),
-    notifyParentOfPosition: sendParent(({ context }, params: { position: Position }) => ({
-      type: 'Egg position updated',
-      eggId: context.id,
-      eggColor: context.color,
-      position: params.position,
-    })),
+    notifyParentOfPosition: sendParent(
+      ({ context }, params: { position: Position }) => ({
+        type: 'Egg position updated',
+        eggId: context.id,
+        eggColor: context.color,
+        position: params.position,
+      })
+    ),
     splatOnFloor: assign({
       position: ({ context }) => ({
         x: context.position.x - 0.5 * context.gameConfig.egg.brokenEgg.width,
-        y: context.gameConfig.stageDimensions.height - context.gameConfig.egg.brokenEgg.height,
+        y:
+          context.gameConfig.stageDimensions.height -
+          context.gameConfig.egg.brokenEgg.height,
       }),
     }),
     hatchOnFloor: assign({
@@ -145,7 +160,8 @@ export const eggMachine = setup({
       }),
     }),
     setResultStatus: assign({
-      resultStatus: (_, params: { resultStatus: EggResultStatus }) => params.resultStatus,
+      resultStatus: (_, params: { resultStatus: EggResultStatus }) =>
+        params.resultStatus,
     }),
     // Sounds
     playSplatSound: () => {
@@ -270,7 +286,10 @@ export const eggMachine = setup({
                   y: context.targetPosition.y,
                   rotation: Math.random() > 0.5 ? 720 : -720,
                   onUpdate: () => {
-                    if (self.getSnapshot().status === 'active' && isImageRef(context.eggRef)) {
+                    if (
+                      self.getSnapshot().status === 'active' &&
+                      isImageRef(context.eggRef)
+                    ) {
                       self.send({
                         type: 'Notify of animation position',
                         position: {

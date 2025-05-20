@@ -11,14 +11,15 @@ import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 import { TransparentButton } from './TransparentButton/TransparentButton';
 
 function App() {
-  const { isLoading, showError, showGamePlayLevel } = AppActorContext.useSelector(state => ({
-    stateValue: state.value,
-    showError: state.matches('Show Error'),
-    isLoading: state.matches('Loading'),
-    showGameIntro: state.matches('Intro'),
-    showGamePlay: state.matches('Game Play'),
-    showGamePlayLevel: state.hasTag('actively playing'),
-  }));
+  const { isLoading, showError, showGamePlayLevel } =
+    AppActorContext.useSelector(state => ({
+      stateValue: state.value,
+      showError: state.matches('Show Error'),
+      isLoading: state.matches('Loading'),
+      showGameIntro: state.matches('Intro'),
+      showGamePlay: state.matches('Game Play'),
+      showGamePlayLevel: state.hasTag('actively playing'),
+    }));
 
   if (showError) {
     return <div>Error loading the game...</div>;

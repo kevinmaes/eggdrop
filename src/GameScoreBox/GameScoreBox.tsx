@@ -16,11 +16,14 @@ export function GameScoreBox({
   height: number;
 }) {
   const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig, gameScoreData, lastLevelResults } = AppActorContext.useSelector(state => ({
-    gameConfig: state.context.gameConfig,
-    gameScoreData: state.context.gameScoreData,
-    lastLevelResults: state.context.levelResultsHistory.slice(-1)[0] as LevelResults,
-  }));
+  const { gameConfig, gameScoreData, lastLevelResults } =
+    AppActorContext.useSelector(state => ({
+      gameConfig: state.context.gameConfig,
+      gameScoreData: state.context.gameScoreData,
+      lastLevelResults: state.context.levelResultsHistory.slice(
+        -1
+      )[0] as LevelResults,
+    }));
 
   const lastLevelNumber = lastLevelResults.generationNumber;
   const lastLevelScore = lastLevelResults.scoreData.levelScore;

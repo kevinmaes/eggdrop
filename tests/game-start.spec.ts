@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { LOADING_MSG } from '../src/constants';
 
 test.describe('Game Initial Load', () => {
-  test('should show start button after loading and start game when clicked', async ({ page }) => {
+  test('should show start button after loading and start game when clicked', async ({
+    page,
+  }) => {
     // Navigate to the game
     await page.goto('/');
 

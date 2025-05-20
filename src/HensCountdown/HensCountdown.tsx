@@ -17,22 +17,25 @@ export function HensCountdown({
   height: number;
 }) {
   const appActorRef = AppActorContext.useActorRef();
-  const gameLevelActorRef = appActorRef.system.get('gameLevelMachine') as ActorRefFrom<
-    typeof gameLevelMachine
-  >;
-  const { henFrames, gameConfig, totalHens, hensLeft } = useSelector(gameLevelActorRef, state => {
-    if (!state) {
-      return {};
+  const gameLevelActorRef = appActorRef.system.get(
+    'gameLevelMachine'
+  ) as ActorRefFrom<typeof gameLevelMachine>;
+  const { henFrames, gameConfig, totalHens, hensLeft } = useSelector(
+    gameLevelActorRef,
+    state => {
+      if (!state) {
+        return {};
+      }
+      return {
+        gameConfig: state.context.gameConfig,
+        henFrames: state.context.gameAssets.hen.frames,
+        totalLevelMS: state.context.gameConfig.levelDurationMS,
+        remainingMS: state.context.remainingMS,
+        totalHens: state.context.gameConfig.populationSize,
+        hensLeft: state.context.hensLeft,
+      };
     }
-    return {
-      gameConfig: state.context.gameConfig,
-      henFrames: state.context.gameAssets.hen.frames,
-      totalLevelMS: state.context.gameConfig.levelDurationMS,
-      remainingMS: state.context.remainingMS,
-      totalHens: state.context.gameConfig.populationSize,
-      hensLeft: state.context.hensLeft,
-    };
-  });
+  );
   const [image] = useImage('images/hen.sprite.png');
 
   if (!gameConfig) {
@@ -109,7 +112,12 @@ export function HensCountdown({
         opacity={0.5}
         stroke="white"
         strokeWidth={1}
-        cornerRadius={[0, 0, remainingTimeBarWidth > totalBarWidth - barInsetWidth ? 5 : 0, 5]}
+        cornerRadius={[
+          0,
+          0,
+          remainingTimeBarWidth > totalBarWidth - barInsetWidth ? 5 : 0,
+          5,
+        ]}
       />
     </Group>
   );

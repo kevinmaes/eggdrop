@@ -4,14 +4,18 @@ import useImage from 'use-image';
 
 export function MuteButton() {
   const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig, uiFrames, isMuted } = AppActorContext.useSelector(state => ({
-    gameConfig: state.context.gameConfig,
-    uiFrames: state.context.gameAssets?.ui.frames ?? {},
-    isMuted: state.context.isMuted,
-  }));
+  const { gameConfig, uiFrames, isMuted } = AppActorContext.useSelector(
+    state => ({
+      gameConfig: state.context.gameConfig,
+      uiFrames: state.context.gameAssets?.ui.frames ?? {},
+      isMuted: state.context.isMuted,
+    })
+  );
 
   const [controlsImage] = useImage('images/ui.sprite.png');
-  const uiFrame = isMuted ? uiFrames['sound-off.png']?.frame : uiFrames['sound-on.png']?.frame;
+  const uiFrame = isMuted
+    ? uiFrames['sound-off.png']?.frame
+    : uiFrames['sound-on.png']?.frame;
 
   if (!uiFrame || !gameConfig) {
     return null;

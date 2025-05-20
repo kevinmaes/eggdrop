@@ -8,7 +8,13 @@ interface TransparentButtonProps {
   onClick: () => void;
 }
 
-export function TransparentButton({ x, y, width, height, onClick }: TransparentButtonProps) {
+export function TransparentButton({
+  x,
+  y,
+  width,
+  height,
+  onClick,
+}: TransparentButtonProps) {
   return (
     <Rect
       x={x}

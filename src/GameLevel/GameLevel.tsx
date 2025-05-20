@@ -12,14 +12,16 @@ import { EggCaughtPoints } from '../EggCaughtPoints/EggCaughtPoints';
 
 export function GameLevel() {
   const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig, generationNumber } = AppActorContext.useSelector(state => ({
-    gameConfig: state.context.gameConfig,
-    generationNumber: state.context.generationNumber,
-  }));
+  const { gameConfig, generationNumber } = AppActorContext.useSelector(
+    state => ({
+      gameConfig: state.context.gameConfig,
+      generationNumber: state.context.generationNumber,
+    })
+  );
 
-  const gameLevelActorRef = appActorRef.system.get('gameLevelMachine') as ActorRefFrom<
-    typeof gameLevelMachine
-  >;
+  const gameLevelActorRef = appActorRef.system.get(
+    'gameLevelMachine'
+  ) as ActorRefFrom<typeof gameLevelMachine>;
 
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
     gameLevelActorRef,
@@ -84,7 +86,11 @@ export function GameLevel() {
           height={gameConfig.hensCountdown.height}
         />
         <LevelScoreBox
-          x={gameConfig.stageDimensions.width - 120 - gameConfig.stageDimensions.margin}
+          x={
+            gameConfig.stageDimensions.width -
+            120 -
+            gameConfig.stageDimensions.margin
+          }
           y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
           width={120}
           height={320}

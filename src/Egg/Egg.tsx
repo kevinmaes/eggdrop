@@ -19,7 +19,11 @@ type ChickFrameName =
   | 'chick-run-right-1.png'
   | 'chick-run-right-2.png';
 
-export function Egg({ eggActorRef }: { eggActorRef: ActorRefFrom<typeof eggMachine> }) {
+export function Egg({
+  eggActorRef,
+}: {
+  eggActorRef: ActorRefFrom<typeof eggMachine>;
+}) {
   const eggState = useSelector(eggActorRef, state => state);
 
   const {

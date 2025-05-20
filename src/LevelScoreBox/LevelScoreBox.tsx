@@ -14,11 +14,13 @@ interface ShakableGroupProps extends KonvaNodeEvents {
   y: number;
 }
 
-const ShakableGroup = forwardRef<KonvaGroup, ShakableGroupProps>((props, ref) => (
-  <Group ref={ref} {...props}>
-    {props.children}
-  </Group>
-));
+const ShakableGroup = forwardRef<KonvaGroup, ShakableGroupProps>(
+  (props, ref) => (
+    <Group ref={ref} {...props}>
+      {props.children}
+    </Group>
+  )
+);
 
 export function LevelScoreBox({
   x,
@@ -32,10 +34,12 @@ export function LevelScoreBox({
   height: number;
 }) {
   const appActorRef = AppActorContext.useActorRef();
-  const gameScoreData = AppActorContext.useSelector(state => state.context.gameScoreData);
-  const gameLevelActorRef = appActorRef.system.get('gameLevelMachine') as ActorRefFrom<
-    typeof gameLevelMachine
-  >;
+  const gameScoreData = AppActorContext.useSelector(
+    state => state.context.gameScoreData
+  );
+  const gameLevelActorRef = appActorRef.system.get(
+    'gameLevelMachine'
+  ) as ActorRefFrom<typeof gameLevelMachine>;
 
   const { gameConfig, scoreData } = useSelector(gameLevelActorRef, state => {
     if (!state) {
@@ -47,7 +51,8 @@ export function LevelScoreBox({
     };
   });
 
-  const [animateForBlackEggCaught, setAnimateForBlackEggCaught] = useState(false);
+  const [animateForBlackEggCaught, setAnimateForBlackEggCaught] =
+    useState(false);
   useEffect(() => {
     gameLevelActorRef.on('Egg caught', event => {
       if (event.eggColor === 'black') {
@@ -86,7 +91,8 @@ export function LevelScoreBox({
     return () => clearTimeout(timeout); // Clean up on component unmount
   }, [animateForBlackEggCaught]);
 
-  const anticipatedGameScore = gameScoreData.gameScore + (scoreData?.levelScore ?? 0);
+  const anticipatedGameScore =
+    gameScoreData.gameScore + (scoreData?.levelScore ?? 0);
 
   if (!gameConfig) {
     return null;
@@ -118,7 +124,11 @@ export function LevelScoreBox({
           fontFamily="Arco"
           height={24}
           verticalAlign="bottom"
-          fill={animateForBlackEggCaught ? 'black' : gameConfig.colors.secondaryOrange}
+          fill={
+            animateForBlackEggCaught
+              ? 'black'
+              : gameConfig.colors.secondaryOrange
+          }
         />
         <Text
           x={0}
@@ -128,16 +138,35 @@ export function LevelScoreBox({
           text={`${scoreData.levelScore.toLocaleString()}`}
           fontSize={32}
           fontFamily="Arco"
-          fill={animateForBlackEggCaught ? 'black' : gameConfig.colors.secondaryOrange}
+          fill={
+            animateForBlackEggCaught
+              ? 'black'
+              : gameConfig.colors.secondaryOrange
+          }
           height={24}
           verticalAlign="bottom"
         />
       </Group>
       {/* Egg Tally for white, gold, black eggs */}
       <Group x={20} y={100}>
-        <EggTally eggColor="white" count={scoreData.eggsCaught.white} x={0} y={0} />
-        <EggTally eggColor="gold" count={scoreData.eggsCaught.gold} x={0} y={45} />
-        <EggTally eggColor="black" count={scoreData.eggsCaught.black} x={0} y={90} />
+        <EggTally
+          eggColor="white"
+          count={scoreData.eggsCaught.white}
+          x={0}
+          y={0}
+        />
+        <EggTally
+          eggColor="gold"
+          count={scoreData.eggsCaught.gold}
+          x={0}
+          y={45}
+        />
+        <EggTally
+          eggColor="black"
+          count={scoreData.eggsCaught.black}
+          x={0}
+          y={90}
+        />
       </Group>
       {/* Game Score */}
       <Group x={10} y={210}>

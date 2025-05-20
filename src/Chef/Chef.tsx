@@ -17,51 +17,64 @@ type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
 export function Chef() {
   const [image] = useImage('images/chef.sprite.png');
   const appActorRef = AppActorContext.useActorRef();
-  const gameLevelActorRef = appActorRef.system.get('gameLevelMachine') as ActorRefFrom<
-    typeof gameLevelMachine
+  const gameLevelActorRef = appActorRef.system.get(
+    'gameLevelMachine'
+  ) as ActorRefFrom<typeof gameLevelMachine>;
+  const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
+    typeof chefMachine
   >;
-  const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<typeof chefMachine>;
-  const { movingDirection, lastMovingDirection } = useSelector(chefActorRef, state => {
-    if (!state) {
-      return { movingDirection: 'none', lastMovingDirection: 'none' };
+  const { movingDirection, lastMovingDirection } = useSelector(
+    chefActorRef,
+    state => {
+      if (!state) {
+        return { movingDirection: 'none', lastMovingDirection: 'none' };
+      }
+      return {
+        movingDirection: state.context.movingDirection,
+        lastMovingDirection: state.context.lastMovingDirection,
+      };
     }
-    return {
-      movingDirection: state.context.movingDirection,
-      lastMovingDirection: state.context.lastMovingDirection,
-    };
-  });
+  );
   const { chefPotRimConfig } = AppActorContext.useSelector(state => ({
     chefPotRimConfig: state.context.gameConfig.chef.potRim,
   }));
 
-  const { chefConfig, chefFrames, chefFrameNames, position, isAnimateAsMoving, isCatchingEgg } =
-    useSelector(chefActorRef, state => {
-      if (typeof state === 'undefined') {
-        return {
-          chefConfig: {
-            width: 0,
-            height: 0,
-            x: 0,
-            y: 0,
-          },
-          chefFrames: {} as ChefFrames,
-          chefFrameNames: [],
-          position: { x: 0, y: 0 },
-          isAnimateAsMoving: false,
-          isCatchingEgg: false,
-        };
-      }
+  const {
+    chefConfig,
+    chefFrames,
+    chefFrameNames,
+    position,
+    isAnimateAsMoving,
+    isCatchingEgg,
+  } = useSelector(chefActorRef, state => {
+    if (typeof state === 'undefined') {
       return {
-        chefConfig: state.context.chefConfig,
-        chefFrames: state.context.chefAssets.frames as ChefFrames,
-        chefFrameNames: Object.keys(state.context.chefAssets.frames) as ChefFrameName[],
-        position: state.context.position,
-        // Use direction here instead of speed so that the chef's leg movement
-        // stops as soon as the user releases the arrow key
-        isAnimateAsMoving: state.context.direction !== 0,
-        isCatchingEgg: state.context.isCatchingEgg,
+        chefConfig: {
+          width: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+        },
+        chefFrames: {} as ChefFrames,
+        chefFrameNames: [],
+        position: { x: 0, y: 0 },
+        isAnimateAsMoving: false,
+        isCatchingEgg: false,
       };
-    });
+    }
+    return {
+      chefConfig: state.context.chefConfig,
+      chefFrames: state.context.chefAssets.frames as ChefFrames,
+      chefFrameNames: Object.keys(
+        state.context.chefAssets.frames
+      ) as ChefFrameName[],
+      position: state.context.position,
+      // Use direction here instead of speed so that the chef's leg movement
+      // stops as soon as the user releases the arrow key
+      isAnimateAsMoving: state.context.direction !== 0,
+      isCatchingEgg: state.context.isCatchingEgg,
+    };
+  });
 
   const [frameIndex, setFrameIndex] = useState(1);
 
@@ -138,7 +151,8 @@ export function Chef() {
   }
 
   // Calculate the chef's direction based on movingDirection and lastMovingDirection
-  const shouldFaceRight = movingDirection === 'right' || lastMovingDirection === 'right';
+  const shouldFaceRight =
+    movingDirection === 'right' || lastMovingDirection === 'right';
 
   return (
     <Group x={position.x} y={position.y}>

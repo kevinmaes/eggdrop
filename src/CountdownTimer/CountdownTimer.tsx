@@ -16,23 +16,26 @@ export function CountdownTimer({
   height: number;
 }) {
   const appActorRef = AppActorContext.useActorRef();
-  const gameLevelActorRef = appActorRef.system.get('gameLevelMachine') as ActorRefFrom<
-    typeof gameLevelMachine
-  >;
-  const { totalLevelMS, remainingMS, gameConfig } = useSelector(gameLevelActorRef, state => {
-    if (!state) {
+  const gameLevelActorRef = appActorRef.system.get(
+    'gameLevelMachine'
+  ) as ActorRefFrom<typeof gameLevelMachine>;
+  const { totalLevelMS, remainingMS, gameConfig } = useSelector(
+    gameLevelActorRef,
+    state => {
+      if (!state) {
+        return {
+          gameConfig: null,
+          totalLevelMS: 0,
+          remainingMS: 0,
+        };
+      }
       return {
-        gameConfig: null,
-        totalLevelMS: 0,
-        remainingMS: 0,
+        gameConfig: state.context.gameConfig,
+        totalLevelMS: state.context.gameConfig.levelDurationMS,
+        remainingMS: state.context.remainingMS,
       };
     }
-    return {
-      gameConfig: state.context.gameConfig,
-      totalLevelMS: state.context.gameConfig.levelDurationMS,
-      remainingMS: state.context.remainingMS,
-    };
-  });
+  );
 
   if (!gameConfig) {
     return null;
@@ -96,7 +99,12 @@ export function CountdownTimer({
         opacity={0.5}
         stroke="white"
         strokeWidth={1}
-        cornerRadius={[0, 0, remainingTimeBarWidth > totalBarWidth - barInsetWidth ? 5 : 0, 5]}
+        cornerRadius={[
+          0,
+          0,
+          remainingTimeBarWidth > totalBarWidth - barInsetWidth ? 5 : 0,
+          5,
+        ]}
       />
     </Group>
   );

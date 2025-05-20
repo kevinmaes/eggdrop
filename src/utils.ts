@@ -5,7 +5,11 @@
  * @param round - Whether to round the number to the nearest integer (optional)
  * @returns
  */
-export function getRandomNumber(min: number, max: number, round: boolean = false) {
+export function getRandomNumber(
+  min: number,
+  max: number,
+  round: boolean = false
+) {
   const randomValue = Math.random() * (max - min) + min;
   return round ? Math.round(randomValue) : randomValue;
 }
@@ -28,7 +32,8 @@ export function mapValue(
   stop2: number,
   withinBounds: boolean = false
 ) {
-  const newValue = ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+  const newValue =
+    ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
   if (!withinBounds) {
     return newValue;
   }

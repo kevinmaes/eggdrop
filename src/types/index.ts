@@ -16,7 +16,9 @@ export interface Direction {
  * @param imageRef
  * @returns
  */
-export function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
+export function isImageRef(
+  imageRef: unknown
+): imageRef is RefObject<Konva.Image> {
   if (imageRef) {
     return true;
   }

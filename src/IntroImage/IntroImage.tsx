@@ -27,7 +27,15 @@ export function IntroImage() {
         strokeWidth={10}
       />
       {/* Transparent background overlay */}
-      <Rect width={980} height={480} x={10} y={10} fill="#222d57" opacity={0.5} cornerRadius={20} />
+      <Rect
+        width={980}
+        height={480}
+        x={10}
+        y={10}
+        fill="#222d57"
+        opacity={0.5}
+        cornerRadius={20}
+      />
       {/* Main title image */}
       <Image image={titleImage} width={900} height={405} x={50} y={47} />
     </Group>

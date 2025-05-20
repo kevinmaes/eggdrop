@@ -118,7 +118,13 @@ export function getPhenotypeValue(
   gene: number,
   phenotypeConfigValue: (typeof phenotypeConfig)[keyof typeof phenotypeConfig]
 ) {
-  const value = mapValue(gene, 0, 1, phenotypeConfigValue.min, phenotypeConfigValue.max);
+  const value = mapValue(
+    gene,
+    0,
+    1,
+    phenotypeConfigValue.min,
+    phenotypeConfigValue.max
+  );
 
   if ('round' in phenotypeConfigValue && phenotypeConfigValue.round) {
     return Math.round(value);
@@ -133,7 +139,10 @@ export function getPhenotypeValue(
  * @param phenotypeConfig The configuration for the phenotype
  * @returns An object with phenotype values for the individual
  */
-export function createPhenotypeForIndividual(genes: number[], phenotypeConfig: PhenotypeConfig) {
+export function createPhenotypeForIndividual(
+  genes: number[],
+  phenotypeConfig: PhenotypeConfig
+) {
   const configEntries = typedEntries(phenotypeConfig);
   let phenotypeValues: Partial<PhenotypeValuesForIndividual> = {};
   let i = 0;

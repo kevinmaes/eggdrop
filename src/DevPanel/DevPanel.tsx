@@ -140,14 +140,19 @@ export function DevPanel() {
         {/* Insert the first row for headers */}
         <div className="grid-item header generation-label">Generation</div>{' '}
         {levelResultsHistory.map(levelResults => (
-          <div key={`header-${levelResults.generationNumber}`} className="grid-item header">
+          <div
+            key={`header-${levelResults.generationNumber}`}
+            className="grid-item header"
+          >
             {`${levelResults.generationNumber}`}
           </div>
         ))}
         {/* Hardcoded prop names in the first column */}
         {statNames.map((statName, rowIndex) => (
           <Fragment key={rowIndex}>
-            <div className={`grid-item title ${statName.length === 0 ? 'empty-space' : ''}`}>
+            <div
+              className={`grid-item title ${statName.length === 0 ? 'empty-space' : ''}`}
+            >
               {statName}
             </div>
             {levelResultsHistory.map((levelResults, colIndex) => (

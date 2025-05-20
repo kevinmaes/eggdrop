@@ -17,7 +17,8 @@ const createGameConfig = () => {
   // The position and dimensions of the chef
   const chefWidth = 344;
   const chefHeight = 344;
-  const chefYPosition = stageDimensions.height - chefHeight - stageDimensions.margin;
+  const chefYPosition =
+    stageDimensions.height - chefHeight - stageDimensions.margin;
 
   // The duration in seconds for the egg to fall from the hen to the ground
   // Somewhere between 0.25 and 0.75 is reasonable.

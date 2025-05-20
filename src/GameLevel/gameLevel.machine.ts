@@ -1,6 +1,13 @@
 import { Rect } from 'konva/lib/shapes/Rect';
 import { nanoid } from 'nanoid';
-import { type ActorRefFrom, assertEvent, assign, emit, sendTo, setup } from 'xstate';
+import {
+  type ActorRefFrom,
+  assertEvent,
+  assign,
+  emit,
+  sendTo,
+  setup,
+} from 'xstate';
 import { chefMachine } from '../Chef/chef.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
@@ -13,7 +20,10 @@ import { getGameConfig } from './gameConfig';
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import { sounds } from '../sounds';
 import type { GameAssets } from '../types/assets';
-import { countdownTimer, type CountdownTimerTickEvent } from './countdownTimer.actor';
+import {
+  countdownTimer,
+  type CountdownTimerTickEvent,
+} from './countdownTimer.actor';
 import { isImageRef, type Direction, type Position } from '../types';
 import {
   eggCaughtPointsMachine,
@@ -93,11 +103,15 @@ export const gameLevelMachine = setup({
     }),
     removeHenActorRef: assign({
       henActorRefs: ({ context }) =>
-        context.henActorRefs.filter(henActorRef => henActorRef.getSnapshot().status !== 'done'),
+        context.henActorRefs.filter(
+          henActorRef => henActorRef.getSnapshot().status !== 'done'
+        ),
     }),
     removeEggActorRef: assign({
       eggActorRefs: ({ context }) =>
-        context.eggActorRefs.filter(eggActorRef => eggActorRef.getSnapshot().status !== 'done'),
+        context.eggActorRefs.filter(
+          eggActorRef => eggActorRef.getSnapshot().status !== 'done'
+        ),
     }),
     spawnNewHen: assign(({ context, spawn }) => {
       const index = context.nextHenIndex;
@@ -164,17 +178,21 @@ export const gameLevelMachine = setup({
               henId: params.henId,
               henIsMoving: params.henCurentTweenSpeed > 0,
               henCurentTweenSpeed: params.henCurentTweenSpeed,
-              rotationDirection: (-1 * params.henCurrentTweenDirection) as Direction['value'],
+              rotationDirection: (-1 *
+                params.henCurrentTweenDirection) as Direction['value'],
               hatchRate: params.hatchRate,
             },
           }),
         ];
       },
     }),
-    tellChefHeCaughtAnEgg: sendTo('chefMachine', (_, params: { eggColor: EggColor }) => ({
-      type: 'Catch',
-      eggColor: params.eggColor,
-    })),
+    tellChefHeCaughtAnEgg: sendTo(
+      'chefMachine',
+      (_, params: { eggColor: EggColor }) => ({
+        type: 'Catch',
+        eggColor: params.eggColor,
+      })
+    ),
     tellEggItWasCaught: sendTo(
       ({ system }, params: { eggId: string }) => system.get(params.eggId),
       { type: 'Catch' }
@@ -205,7 +223,8 @@ export const gameLevelMachine = setup({
     removeEggCaughtPoints: assign({
       eggCaughtPointsActorRefs: ({ context }) =>
         context.eggCaughtPointsActorRefs.filter(
-          eggCaughtPointsActorRef => eggCaughtPointsActorRef.getSnapshot().status !== 'done'
+          eggCaughtPointsActorRef =>
+            eggCaughtPointsActorRef.getSnapshot().status !== 'done'
         ),
     }),
     updateHenStatsForEggLaid: assign(
@@ -265,7 +284,8 @@ export const gameLevelMachine = setup({
             // Wipe out the level score if a black egg is caught
             newScoreData.levelScore = 0;
           } else {
-            newScoreData.levelScore += context.gameConfig.egg.points[params.eggColor];
+            newScoreData.levelScore +=
+              context.gameConfig.egg.points[params.eggColor];
           }
 
           return newScoreData;
@@ -343,11 +363,16 @@ export const gameLevelMachine = setup({
           // Generation Stats
           // Overall info
           generationNumber: context.generationNumber,
-          catchRate: context.levelStats.totalEggsCaught / context.levelStats.totalEggsLaid,
+          catchRate:
+            context.levelStats.totalEggsCaught /
+            context.levelStats.totalEggsLaid,
 
           // Average phenotype values
           averageHenSpeed:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.speed, 0) / totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.speed,
+              0
+            ) / totalHens,
           averageBaseTweenDurationSeconds:
             context.population.reduce(
               (acc, hen) => acc + hen.phenotype.baseTweenDurationSeconds,
@@ -359,37 +384,63 @@ export const gameLevelMachine = setup({
               0
             ) / totalHens,
           averageMovingEggLayingRate:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.movingEggLayingRate, 0) /
-            totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.movingEggLayingRate,
+              0
+            ) / totalHens,
           averageHatchRate:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.hatchRate, 0) / totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.hatchRate,
+              0
+            ) / totalHens,
           averageMinXMovement:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.minXMovement, 0) /
-            totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.minXMovement,
+              0
+            ) / totalHens,
           averageMaxXMovement:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.maxXMovement, 0) /
-            totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.maxXMovement,
+              0
+            ) / totalHens,
           averageMinStopMS:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.minStopMS, 0) / totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.minStopMS,
+              0
+            ) / totalHens,
           averageMaxStopMS:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.maxStopMS, 0) / totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.maxStopMS,
+              0
+            ) / totalHens,
           averageMaxEggs:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.maxEggs, 0) / totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.maxEggs,
+              0
+            ) / totalHens,
           averageBlackEggRate:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.blackEggRate, 0) /
-            totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.blackEggRate,
+              0
+            ) / totalHens,
           averageGoldEggRate:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.goldEggRate, 0) / totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.goldEggRate,
+              0
+            ) / totalHens,
           averageRestAfterLayingEggMS:
-            context.population.reduce((acc, hen) => acc + hen.phenotype.restAfterLayingEggMS, 0) /
-            totalHens,
+            context.population.reduce(
+              (acc, hen) => acc + hen.phenotype.restAfterLayingEggMS,
+              0
+            ) / totalHens,
 
           // Average stats
           averageEggsLaid: context.levelStats.totalEggsLaid / totalHens,
           averageEggsCaught: context.levelStats.totalEggsCaught / totalHens,
           averageEggsHatched: context.levelStats.totalEggsHatched / totalHens,
           averageEggsBroken: context.levelStats.totalEggsBroken / totalHens,
-          averageEggsOffscreen: context.levelStats.totalEggsOffscreen / totalHens,
+          averageEggsOffscreen:
+            context.levelStats.totalEggsOffscreen / totalHens,
         };
       },
     }),
@@ -438,7 +489,8 @@ export const gameLevelMachine = setup({
       } = context.chefPotRimHitRef.current.getClientRect();
 
       // Consider the leading edge of the egg for the hit test
-      const eggLeadingEdgeYPos = params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+      const eggLeadingEdgeYPos =
+        params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
 
       if (eggLeadingEdgeYPos < potRimHitY) {
         return false;

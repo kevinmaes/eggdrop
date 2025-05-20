@@ -9,8 +9,11 @@ import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype
 import { getRandomNumber } from '../utils';
 
 type Destination = 'offscreen-right' | 'offscreen-left';
-function getDestinationAndPositions(gameConfig: ReturnType<typeof getGameConfig>) {
-  const destination: Destination = Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left';
+function getDestinationAndPositions(
+  gameConfig: ReturnType<typeof getGameConfig>
+) {
+  const destination: Destination =
+    Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left';
   const initialPosition =
     destination === 'offscreen-right'
       ? {
@@ -18,7 +21,9 @@ function getDestinationAndPositions(gameConfig: ReturnType<typeof getGameConfig>
           y: gameConfig.hen.y,
         }
       : {
-          x: gameConfig.stageDimensions.width + gameConfig.stageDimensions.margin,
+          x:
+            gameConfig.stageDimensions.width +
+            gameConfig.stageDimensions.margin,
           y: gameConfig.hen.y,
         };
 
@@ -72,7 +77,9 @@ export const henMachine = setup({
   },
   guards: {
     'has more eggs': ({ context }) =>
-      context.phenotype.maxEggs < 0 ? true : context.eggsLaid < context.phenotype.maxEggs,
+      context.phenotype.maxEggs < 0
+        ? true
+        : context.eggsLaid < context.phenotype.maxEggs,
     'is within stationary laying rate': ({ context }) =>
       Math.random() < context.phenotype.stationaryEggLayingRate,
     'is within moving laying rate': ({ context }) =>
@@ -132,14 +139,23 @@ export const henMachine = setup({
 
       if (context.destination === 'offscreen-right') {
         targetPosition.x =
-          getRandomNumber(context.phenotype.minXMovement, context.phenotype.maxXMovement, true) +
-          context.position.x;
+          getRandomNumber(
+            context.phenotype.minXMovement,
+            context.phenotype.maxXMovement,
+            true
+          ) + context.position.x;
       } else if (context.destination === 'offscreen-left') {
         targetPosition.x =
-          -Math.round(Math.random() * movementRange) + context.position.x - minDistance;
+          -Math.round(Math.random() * movementRange) +
+          context.position.x -
+          minDistance;
         targetPosition.x =
           context.position.x -
-          getRandomNumber(context.phenotype.minXMovement, context.phenotype.maxXMovement, true);
+          getRandomNumber(
+            context.phenotype.minXMovement,
+            context.phenotype.maxXMovement,
+            true
+          );
       }
 
       return {
@@ -152,7 +168,8 @@ export const henMachine = setup({
       const totalDistance = context.gameConfig.stageDimensions.width;
       const xDistance = targetPosition.x - context.position.x;
       const direction: Direction['value'] = xDistance > 0 ? 1 : -1;
-      const movingDirection: Direction['label'] = direction === 1 ? 'right' : 'left';
+      const movingDirection: Direction['label'] =
+        direction === 1 ? 'right' : 'left';
 
       // Calculate absolute distances for tween duration
       const absoluteXDistance = Math.abs(xDistance);
@@ -219,28 +236,35 @@ export const henMachine = setup({
       // Pick a value somewhere between the min and max stop duration.
       return Math.random() * (maxStopMS - minStopMS) + minStopMS;
     },
-    restAfterLayingAnEgg: ({ context }) => context.phenotype.restAfterLayingEggMS,
-    animationEasingEggLayingBufferMS: ({ context }) => context.animationEasingEggLayingBufferMS,
+    restAfterLayingAnEgg: ({ context }) =>
+      context.phenotype.restAfterLayingEggMS,
+    animationEasingEggLayingBufferMS: ({ context }) =>
+      context.animationEasingEggLayingBufferMS,
     getRandomMidTweenDelay: ({ context }) => {
       if (!context.currentTween) {
         throw new Error('No current tween');
       }
       const currentTime = new Date().getTime();
       const elapsedTime = currentTime - context.currentTweenStartTime;
-      const remainingMS = Math.round(context.currentTweenDurationMS - elapsedTime);
+      const remainingMS = Math.round(
+        context.currentTweenDurationMS - elapsedTime
+      );
       const remainingBufferedMS = Math.round(
         remainingMS - 2 * context.animationEasingEggLayingBufferMS
       );
-      const delay = Math.round(Math.max(Math.random() * remainingBufferedMS, 0));
+      const delay = Math.round(
+        Math.max(Math.random() * remainingBufferedMS, 0)
+      );
       return delay;
     },
   },
 }).createMachine({
   id: 'Hen',
   context: (({ input }: any) => {
-    const { destination, position, targetPosition } = getDestinationAndPositions(
-      input.gameConfig as ReturnType<typeof getGameConfig>
-    );
+    const { destination, position, targetPosition } =
+      getDestinationAndPositions(
+        input.gameConfig as ReturnType<typeof getGameConfig>
+      );
 
     return {
       gameConfig: input.gameConfig as ReturnType<typeof getGameConfig>,
@@ -252,7 +276,8 @@ export const henMachine = setup({
       destination,
       position,
       targetPosition,
-      animationEasingEggLayingBufferMS: input.gameConfig.hen.animationEasingEggLayingBufferMS,
+      animationEasingEggLayingBufferMS:
+        input.gameConfig.hen.animationEasingEggLayingBufferMS,
       currentTweenSpeed: 0,
       currentTweenDurationMS: 0,
       currentTweenStartTime: 0,
