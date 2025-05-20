@@ -1,3 +1,4 @@
+/* global process */
 // This file contains the configuration for the game
 
 const POPULATION_SIZE = 40;
