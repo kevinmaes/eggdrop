@@ -2,8 +2,8 @@
 
 const POPULATION_SIZE = 40;
 
- const  createGameConfig = () => {
-		const stageDimensions = {
+const createGameConfig = () => {
+	const stageDimensions = {
 		width: 1280,
 		height: 720,
 		// Generally respected margin for rendering content within the stage dimensions,
@@ -132,22 +132,22 @@ const POPULATION_SIZE = 40;
 			height: 50,
 		},
 	} as const;
-}
+};
 
 // Create a single instance
 let gameConfigInstance: ReturnType<typeof createGameConfig> | null = null;
 
 // Export a function that returns the singleton instance
 export function getGameConfig(): ReturnType<typeof createGameConfig> {
-  if (!gameConfigInstance) {
-    gameConfigInstance = createGameConfig();
-  }
-  return gameConfigInstance;
+	if (!gameConfigInstance) {
+		gameConfigInstance = createGameConfig();
+	}
+	return gameConfigInstance;
 }
 
 // Export a function to reset the config (useful for testing)
 export function resetGameConfig() {
-  gameConfigInstance = null;
+	gameConfigInstance = null;
 }
 
 // Export the type for use in other files
