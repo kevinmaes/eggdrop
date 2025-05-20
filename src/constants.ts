@@ -1,1 +1,1 @@
-export const LOADING_MSG = 'Loading...'; 
+export const LOADING_MSG = 'Loading...';
