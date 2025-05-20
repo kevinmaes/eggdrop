@@ -33,6 +33,16 @@ test.describe('Game', () => {
       },
       { timeout: 5000 }
     );
+
+    // Wait for the app to be in a stable state
+    await page.waitForFunction(
+      () => {
+        const testAPI = window.__TEST_API__;
+        const snapshot = testAPI?.app?.getSnapshot();
+        return snapshot?.status === 'active' && snapshot?.value === 'Intro';
+      },
+      { timeout: 5000 }
+    );
   });
 
   test('should show start button after loading', async ({ page }) => {
