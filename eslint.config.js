@@ -3,6 +3,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import importPlugin from 'eslint-plugin-import';
 
 export default [
   {
@@ -12,6 +13,9 @@ export default [
       '**/node_modules/**/*',
       '**/coverage/**/*',
       '**/.git/**/*',
+      '*.config.*',
+      'scripts/**/*',
+      'tests/**/*',
     ],
   },
   js.configs.recommended,
@@ -22,6 +26,8 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        tsconfigRootDir: '.',
       },
       globals: {
         document: 'readonly',
@@ -37,10 +43,25 @@ export default [
         global: 'readonly',
       },
     },
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx'],
+      },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        },
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+      },
+    },
     plugins: {
       '@typescript-eslint': tsPlugin,
       'react-refresh': reactRefreshPlugin,
       'react-hooks': reactHooksPlugin,
+      import: importPlugin,
     },
     rules: {
       'react-refresh/only-export-components': [
@@ -61,6 +82,47 @@ export default [
           varsIgnorePattern: '^_',
         },
       ],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'object',
+            'type',
+          ],
+          pathGroups: [
+            {
+              pattern: 'react',
+              group: 'builtin',
+              position: 'before',
+            },
+            {
+              pattern: 'react-dom/**',
+              group: 'builtin',
+              position: 'before',
+            },
+            {
+              pattern: 'howler',
+              group: 'external',
+              position: 'before',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['react'],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+      'import/no-duplicates': 'error',
+      'import/no-unresolved': 'warn',
+      'import/no-cycle': 'warn',
     },
   },
 ];

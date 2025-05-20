@@ -1,7 +1,9 @@
 import { Group, Rect, Text } from 'react-konva';
-import { Button } from '../Button/Button';
+
 import { AppActorContext } from '../app.machine';
+import { Button } from '../Button/Button';
 import { EggTally } from '../EggTally/EggTally';
+
 import type { LevelResults } from '../GameLevel/types';
 
 export function GameScoreBox({

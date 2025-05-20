@@ -1,5 +1,6 @@
-import { type AnyActorRef, fromPromise } from 'xstate';
 import Konva from 'konva';
+import { type AnyActorRef, fromPromise } from 'xstate';
+
 import type { Direction, Position } from '../types';
 
 export const eggMotionActor = fromPromise<

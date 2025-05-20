@@ -1,4 +1,5 @@
 import { clamp } from '../utils';
+
 import type { DNA } from './DNA';
 import type { PhenotypeConfig, PhenotypeKey } from './phenotype';
 

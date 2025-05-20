@@ -8,27 +8,32 @@ import {
   sendTo,
   setup,
 } from 'xstate';
+
 import { chefMachine } from '../Chef/chef.machine';
-import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import {
   type EggColor,
   type EggDoneEvent,
   type EggResultStatus,
   eggMachine,
 } from '../Egg/egg.machine';
-import { getGameConfig } from './gameConfig';
-import type { GenerationStats, Hendividual, LevelResults } from './types';
-import { sounds } from '../sounds';
-import type { GameAssets } from '../types/assets';
-import {
-  countdownTimer,
-  type CountdownTimerTickEvent,
-} from './countdownTimer.actor';
-import { isImageRef, type Direction, type Position } from '../types';
 import {
   eggCaughtPointsMachine,
   type EggCaughtPointsDoneEvent,
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
+import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
+import { sounds } from '../sounds';
+import { isImageRef, type Direction, type Position } from '../types';
+
+import {
+  countdownTimer,
+  type CountdownTimerTickEvent,
+} from './countdownTimer.actor';
+import { getGameConfig } from './gameConfig';
+
+import type { GenerationStats, Hendividual, LevelResults } from './types';
+import type { GameAssets } from '../types/assets';
+
+
 
 export const gameLevelMachine = setup({
   types: {} as {

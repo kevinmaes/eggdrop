@@ -1,14 +1,19 @@
-import { Layer, Text } from 'react-konva';
-import { Hen } from '../Hen/Hen';
-import { Chef } from '../Chef/Chef';
-import { gameLevelMachine } from './gameLevel.machine';
-import { Egg } from '../Egg/Egg';
-import type { ActorRefFrom } from 'xstate';
 import { useSelector } from '@xstate/react';
-import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
+import { Layer, Text } from 'react-konva';
+
 import { AppActorContext } from '../app.machine';
-import { HensCountdown } from '../HensCountdown/HensCountdown';
+import { Chef } from '../Chef/Chef';
+import { Egg } from '../Egg/Egg';
 import { EggCaughtPoints } from '../EggCaughtPoints/EggCaughtPoints';
+import { Hen } from '../Hen/Hen';
+import { HensCountdown } from '../HensCountdown/HensCountdown';
+import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
+
+import { gameLevelMachine } from './gameLevel.machine';
+
+
+import type { ActorRefFrom } from 'xstate';
+
 
 export function GameLevel() {
   const appActorRef = AppActorContext.useActorRef();

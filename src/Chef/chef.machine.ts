@@ -1,11 +1,14 @@
-import { assign, fromPromise, raise, setup } from 'xstate';
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
-import type { GameAssets } from '../types/assets';
+import { assign, fromPromise, raise, setup } from 'xstate';
+
+
 import { getGameConfig } from '../GameLevel/gameConfig';
-import type { Position, Direction } from '../types';
 import { sounds } from '../sounds';
+
 import type { EggColor } from '../Egg/egg.machine';
+import type { Position, Direction } from '../types';
+import type { GameAssets } from '../types/assets';
 
 export const chefMachine = setup({
   types: {} as {

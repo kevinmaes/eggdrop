@@ -1,5 +1,6 @@
 import { Group, Image, Layer, Rect } from 'react-konva';
 import useImage from 'use-image';
+
 import { AppActorContext } from '../app.machine';
 import { IntroImage } from '../IntroImage/IntroImage';
 

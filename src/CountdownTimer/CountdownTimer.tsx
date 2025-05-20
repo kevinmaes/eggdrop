@@ -1,8 +1,10 @@
 import { useSelector } from '@xstate/react';
 import { Group, Rect, Text } from 'react-konva';
-import type { ActorRefFrom } from 'xstate';
-import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+
 import { AppActorContext } from '../app.machine';
+import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+
+import type { ActorRefFrom } from 'xstate';
 
 export function CountdownTimer({
   x,

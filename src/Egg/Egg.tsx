@@ -1,12 +1,15 @@
-import { useSelector } from '@xstate/react';
-import { Image } from 'react-konva';
-
-import useImage from 'use-image';
-import { eggMachine } from './egg.machine';
-import type { ActorRefFrom } from 'xstate';
-import Konva from 'konva';
 import { useEffect, useRef, useState } from 'react';
+
+import { useSelector } from '@xstate/react';
+import Konva from 'konva';
+import { Image } from 'react-konva';
+import useImage from 'use-image';
+
 import { isImageRef } from '../types';
+
+import { eggMachine } from './egg.machine';
+
+import type { ActorRefFrom } from 'xstate';
 
 type ChickFrameName =
   | 'egg-broken-white.png'

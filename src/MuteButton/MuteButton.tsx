@@ -1,6 +1,7 @@
 import { Group, Image, Rect } from 'react-konva';
-import { AppActorContext } from '../app.machine';
 import useImage from 'use-image';
+
+import { AppActorContext } from '../app.machine';
 
 export function MuteButton() {
   const appActorRef = AppActorContext.useActorRef();

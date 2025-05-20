@@ -1,9 +1,12 @@
 import { useSelector } from '@xstate/react';
 import { Group, Image, Rect, Text } from 'react-konva';
-import type { ActorRefFrom } from 'xstate';
-import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
-import { AppActorContext } from '../app.machine';
 import useImage from 'use-image';
+
+import { AppActorContext } from '../app.machine';
+import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+
+import type { ActorRefFrom } from 'xstate';
+
 
 export function HensCountdown({
   x,

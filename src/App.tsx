@@ -1,13 +1,13 @@
 import { Layer, Stage } from 'react-konva';
-import { AppActorContext } from './app.machine';
-import { GameLevel } from './GameLevel/GameLevel';
-import { LOADING_MSG } from './constants';
 
-import './App.css';
-import { DevPanel } from './DevPanel/DevPanel';
-import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
-import { MuteButton } from './MuteButton/MuteButton';
+import { AppActorContext } from './app.machine';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
+import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
+import { LOADING_MSG } from './constants';
+import { DevPanel } from './DevPanel/DevPanel';
+import { GameLevel } from './GameLevel/GameLevel';
+import './App.css';
+import { MuteButton } from './MuteButton/MuteButton';
 import { TransparentButton } from './TransparentButton/TransparentButton';
 
 function App() {

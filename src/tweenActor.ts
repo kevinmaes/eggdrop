@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import { fromPromise } from 'xstate';
+
 import type { Position } from './types';
 
 /**

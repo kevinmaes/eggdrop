@@ -1,5 +1,6 @@
-import type Konva from 'konva';
 import type { RefObject } from 'react';
+
+import type Konva from 'konva';
 
 export interface Position {
   x: number;

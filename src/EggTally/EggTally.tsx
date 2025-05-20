@@ -1,6 +1,8 @@
-import useImage from 'use-image';
-import { AppActorContext } from '../app.machine';
 import { Group, Image, Text } from 'react-konva';
+import useImage from 'use-image';
+
+import { AppActorContext } from '../app.machine';
+
 import type { EggColor } from '../Egg/egg.machine';
 
 export function EggTally({
