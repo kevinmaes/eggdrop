@@ -139,7 +139,7 @@ let gameConfigInstance: ReturnType<typeof createGameConfig> | null = null;
 
 // Export a function that returns the singleton instance
 export function getGameConfig(
-  isTestMode: boolean
+  isTestMode: boolean = true
 ): ReturnType<typeof createGameConfig> {
   if (!gameConfigInstance) {
     gameConfigInstance = createGameConfig(isTestMode);
