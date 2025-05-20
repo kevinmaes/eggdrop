@@ -13,6 +13,9 @@ export default [
       '**/node_modules/**/*',
       '**/coverage/**/*',
       '**/.git/**/*',
+      '*.config.*',
+      'scripts/**/*',
+      'tests/**/*',
     ],
   },
   js.configs.recommended,
@@ -23,7 +26,7 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        projectService: true,
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
         tsconfigRootDir: '.',
       },
       globals: {
@@ -47,7 +50,7 @@ export default [
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
-          project: ['./tsconfig.app.json'],
+          project: ['./tsconfig.app.json', './tsconfig.node.json'],
         },
         node: {
           extensions: ['.js', '.jsx', '.ts', '.tsx'],

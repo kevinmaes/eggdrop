@@ -9,7 +9,7 @@
 		"tsc": "tsc --noEmit",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"lint": "eslint ./src --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
+		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
 		"preview": "vite preview",
 		"test": "vitest run",
 		"test:watch": "vitest",
