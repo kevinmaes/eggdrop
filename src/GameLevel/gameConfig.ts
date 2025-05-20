@@ -27,6 +27,7 @@ const createGameConfig = (isTestMode: boolean) => {
   const henSize = 120;
 
   return {
+    isTestMode,
     isMuted: false,
     // The number of hens in the game
     populationSize: POPULATION_SIZE,
