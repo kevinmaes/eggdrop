@@ -22,4 +22,6 @@ test.describe('Game Visuals', () => {
     // Compare to baseline snapshot (will create one on first run)
     expect(screenshot).toMatchSnapshot('intro-screen-canvas.png');
   });
+
+  test.skip('should show the game level scoreboard and the Start button between game play levels ', () => {});
 });
