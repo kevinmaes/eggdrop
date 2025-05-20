@@ -27,3 +27,11 @@ export function createTestAPI(
     },
   };
 }
+
+// Function to update the test API on the window object
+export function updateTestAPI(chefActor: ActorRefFrom<typeof chefMachine>) {
+  if (typeof window !== 'undefined') {
+    window.__TEST_API__ = createTestAPI(chefActor);
+    // console.log('Test API updated', window.__TEST_API__);
+  }
+}

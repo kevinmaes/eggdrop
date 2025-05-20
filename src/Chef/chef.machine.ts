@@ -1,10 +1,11 @@
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
-
+import type { ActorRefFrom } from 'xstate';
 
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { sounds } from '../sounds';
+import { updateTestAPI } from '../test-api';
 
 import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
@@ -46,6 +47,11 @@ export const chefMachine = setup({
       | { type: 'Reset isCatchingEgg' };
   },
   actions: {
+    updateTestAPI: ({ self }) => {
+      if (getGameConfig().isTestMode) {
+        updateTestAPI(self as ActorRefFrom<typeof chefMachine>);
+      }
+    },
     setChefRef: assign({
       chefRef: (_, params: React.RefObject<Konva.Image>) => params,
     }),
@@ -119,11 +125,13 @@ export const chefMachine = setup({
         newXPos = maxXPos;
         newSpeed = 0;
       }
+
       return {
         speed: newSpeed,
         position: { x: newXPos, y: position.y },
       };
     }),
+
     setDirectionProps: assign(({ context }, params: Direction['value']) => {
       const direction = params;
       const movingDirection: Direction['label'] =
@@ -207,7 +215,7 @@ export const chefMachine = setup({
         onDone: {
           target: 'Moving',
           reenter: true,
-          actions: 'updateChefPosition',
+          actions: ['updateChefPosition', 'updateTestAPI'],
         },
       },
       on: {
