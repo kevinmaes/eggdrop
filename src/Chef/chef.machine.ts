@@ -23,6 +23,7 @@ export const chefMachine = setup({
       deceleration: number;
       minXPos: number;
       maxXPos: number;
+      isTestMode: boolean;
     };
     context: {
       chefConfig: ReturnType<typeof getGameConfig>['chef'];
@@ -39,6 +40,7 @@ export const chefMachine = setup({
       minXPos: number;
       maxXPos: number;
       isCatchingEgg: boolean;
+      isTestMode: boolean;
     };
     events:
       | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
@@ -47,9 +49,9 @@ export const chefMachine = setup({
       | { type: 'Reset isCatchingEgg' };
   },
   actions: {
-    updateTestAPI: ({ self }) => {
-      if (getGameConfig().isTestMode) {
-        updateTestAPI(self as ActorRefFrom<typeof chefMachine>);
+    updateTestAPI: ({ self, context }) => {
+      if (context.isTestMode) {
+        updateTestAPI({ chef: self as ActorRefFrom<typeof chefMachine> });
       }
     },
     setChefRef: assign({
@@ -196,6 +198,7 @@ export const chefMachine = setup({
     minXPos: input.minXPos,
     maxXPos: input.maxXPos,
     isCatchingEgg: false,
+    isTestMode: input.isTestMode,
   }),
   on: {
     'Set chefRef': {

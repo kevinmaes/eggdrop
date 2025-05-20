@@ -147,7 +147,6 @@ export function getGameConfig(): ReturnType<typeof createGameConfig> {
   if (!gameConfigInstance) {
     gameConfigInstance = createGameConfig(isTestMode);
   }
-  console.log('gameConfigInstance', gameConfigInstance);
   return gameConfigInstance;
 }
 

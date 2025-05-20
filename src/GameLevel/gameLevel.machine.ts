@@ -33,8 +33,6 @@ import { getGameConfig } from './gameConfig';
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
 
-
-
 export const gameLevelMachine = setup({
   types: {} as {
     input: {
@@ -758,6 +756,7 @@ export const gameLevelMachine = setup({
             deceleration: context.gameConfig.chef.acceleration,
             minXPos: context.gameConfig.chef.minXPos,
             maxXPos: context.gameConfig.chef.maxXPos,
+            isTestMode: context.gameConfig.isTestMode,
           }),
         },
       ],
