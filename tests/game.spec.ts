@@ -124,4 +124,46 @@ test.describe('Game', () => {
 
     expect(finalPosition?.x).toBe(maxXPos);
   });
+
+  test('should constrain chef position to min X position', async ({ page }) => {
+    // Start the game
+    await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
+
+    // Wait for the game to initialize
+    await page.waitForTimeout(1000);
+
+    // Get the chef's max X position from the test API
+    const minXPos = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.chef?.getSnapshot().context.minXPos;
+    });
+
+    // Press and hold the right arrow key
+    await page.keyboard.down('ArrowLeft');
+
+    // Wait for the chef to reach max position
+    await page.waitForFunction(
+      minXPos => {
+        const testAPI = window.__TEST_API__;
+        const position = testAPI?.getChefPosition();
+        return position?.x === minXPos;
+      },
+      minXPos,
+      { timeout: 5000 }
+    );
+
+    // Release the key
+    await page.keyboard.up('ArrowLeft');
+
+    // Verify the chef's position is at max X
+    const finalPosition = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPosition();
+    });
+
+    expect(finalPosition?.x).toBe(minXPos);
+  });
 });
