@@ -53,18 +53,14 @@ test.describe('Game', () => {
     });
     expect(gameState?.value).toBe('Intro');
 
-    // // Verify the stage dimensions are set correctly
-    const stageWidth = await page.evaluate(() => {
-      const stage = document.querySelector('canvas');
-      return stage?.width || 0;
+    // Verify the stage dimensions from the state machine config
+    const stageDimensions = await page.evaluate(() => {
+      return window.__TEST_API__?.app?.getSnapshot().context.gameConfig
+        .stageDimensions;
     });
-    const stageHeight = await page.evaluate(() => {
-      const stage = document.querySelector('canvas');
-      return stage?.height || 0;
-    });
-
-    expect(stageWidth).toBe(STAGE_DIMENSIONS.width);
-    expect(stageHeight).toBe(STAGE_DIMENSIONS.height);
+    expect(stageDimensions).toBeDefined();
+    expect(stageDimensions?.width).toBe(STAGE_DIMENSIONS.width);
+    expect(stageDimensions?.height).toBe(STAGE_DIMENSIONS.height);
   });
 
   test('should start with score of 0', async ({ page }) => {
