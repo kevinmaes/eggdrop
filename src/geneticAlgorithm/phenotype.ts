@@ -48,7 +48,7 @@ export const phenotypeConfig: PhenotypeConfig = {
   // The maximum number of eggs the hen can lay while moving
   movingEggLayingRate: {
     min: 0,
-    max: 0.7,
+    max: 0,
   },
   // The rate at which the eggs will hatch when they land on the ground
   // TODO: Not sure this is needed here.
