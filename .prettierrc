@@ -1,0 +1,7 @@
+{
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": false,
+  "jsxBracketSameLine": false,
+  "htmlWhitespaceSensitivity": "css",
+  "embeddedLanguageFormatting": "auto"
+}
