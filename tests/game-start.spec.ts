@@ -30,9 +30,9 @@ test.describe('Game Initial Load', () => {
     // Verify we enter the game state by checking that the loading text is still hidden
     // and the game level is visible
     await expect(page.getByText(LOADING_MSG)).toBeHidden();
-    
+
     // Additional verification that we're in the game state
     // This could be enhanced with more specific checks based on your game's UI
     // await expect(page.locator('canvas')).toBeVisible();
   });
-}); 
+});
