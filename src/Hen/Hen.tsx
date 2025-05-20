@@ -1,10 +1,16 @@
+import { useEffect, useRef, useState, type RefObject } from 'react';
+
+import { useSelector } from '@xstate/react';
+import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
-import { useSelector } from '@xstate/react';
-import type { ActorRefFrom } from 'xstate';
+
 import { henMachine } from './hen.machine';
-import { useEffect, useRef, useState, type RefObject } from 'react';
-import Konva from 'konva';
+
+import type { ActorRefFrom } from 'xstate';
+
+
+
 
 type HenFrameName =
   | 'angle-left.png'

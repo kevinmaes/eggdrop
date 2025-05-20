@@ -1,12 +1,14 @@
-import type { DoneActorEvent, OutputFrom } from 'xstate';
-import { and, assign, sendParent, setup } from 'xstate';
 import Konva from 'konva';
+import { and, assign, sendParent, setup } from 'xstate';
+
 import { getGameConfig } from '../GameLevel/gameConfig';
-import type { GameAssets } from '../types/assets';
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Direction, type Position } from '../types';
-import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import { getRandomNumber } from '../utils';
+
+import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
+import type { GameAssets } from '../types/assets';
+import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 type Destination = 'offscreen-right' | 'offscreen-left';
 function getDestinationAndPositions(

@@ -1,12 +1,15 @@
-import { useSelector } from '@xstate/react';
-import { Group, Rect, Text, type KonvaNodeEvents } from 'react-konva';
-import { AppActorContext } from '../app.machine';
-import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
-import { EggTally } from '../EggTally/EggTally';
-import type { ActorRefFrom } from 'xstate';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
+
+import { useSelector } from '@xstate/react';
 import Konva from 'konva';
+import { Group, Rect, Text, type KonvaNodeEvents } from 'react-konva';
+
+import { AppActorContext } from '../app.machine';
+import { EggTally } from '../EggTally/EggTally';
+import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+
 import type { Group as KonvaGroup } from 'konva/lib/Group';
+import type { ActorRefFrom } from 'xstate';
 
 interface ShakableGroupProps extends KonvaNodeEvents {
   children?: React.ReactNode;

@@ -1,5 +1,5 @@
-import type { Position } from '../types';
 import type { Individual } from '../geneticAlgorithm/ga';
+import type { Position } from '../types';
 
 export interface GenerationStats {
   // Overall info

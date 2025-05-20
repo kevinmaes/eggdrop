@@ -1,20 +1,25 @@
+import { Howler } from 'howler';
+
 import { createActorContext } from '@xstate/react';
-import { assign, fromPromise, setup } from 'xstate';
-import { gameLevelMachine } from './GameLevel/gameLevel.machine';
-import { nanoid } from 'nanoid';
-import { getGameConfig } from './GameLevel/gameConfig';
-import type { Hendividual, LevelResults } from './GameLevel/types';
-import { eliteSelection, mutateIndividual } from './geneticAlgorithm/ga';
-import { calculateFitness } from './geneticAlgorithm/eggdropGA';
-import type { GameAssets } from './types/assets';
 import FontFaceObserver from 'fontfaceobserver';
+import { nanoid } from 'nanoid';
+import { assign, fromPromise, setup } from 'xstate';
+
+import { getGameConfig } from './GameLevel/gameConfig';
+import { gameLevelMachine } from './GameLevel/gameLevel.machine';
 import { DNA } from './geneticAlgorithm/DNA';
+import { calculateFitness } from './geneticAlgorithm/eggdropGA';
+import { eliteSelection, mutateIndividual } from './geneticAlgorithm/ga';
 import {
   createPhenotypeForIndividual,
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
-import { Howler } from 'howler';
+
+import type { Hendividual, LevelResults } from './GameLevel/types';
+import type { GameAssets } from './types/assets';
+
+
 const appMachine = setup({
   types: {} as {
     input: {

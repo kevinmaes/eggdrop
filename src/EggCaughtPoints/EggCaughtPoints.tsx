@@ -1,14 +1,16 @@
-import { useSelector } from '@xstate/react';
-import { Image } from 'react-konva';
-
-import useImage from 'use-image';
-import type { ActorRefFrom } from 'xstate';
-import Konva from 'konva';
 import { useEffect, useRef } from 'react';
+
+import { useSelector } from '@xstate/react';
+import Konva from 'konva';
+import { Image } from 'react-konva';
+import useImage from 'use-image';
+
 import { AppActorContext } from '../app.machine';
-import type { gameLevelMachine } from '../GameLevel/gameLevel.machine';
-import type { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
 import { isImageRef } from '../types';
+
+import type { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
+import type { gameLevelMachine } from '../GameLevel/gameLevel.machine';
+import type { ActorRefFrom } from 'xstate';
 
 export function EggCaughtPoints({
   eggCaughtPointsActorRefs,

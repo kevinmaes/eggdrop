@@ -1,3 +1,4 @@
+import Konva from 'konva';
 import {
   setup,
   assign,
@@ -5,13 +6,15 @@ import {
   type OutputFrom,
   type DoneActorEvent,
 } from 'xstate';
-import { sounds } from '../sounds';
-import Konva from 'konva';
+
 import { getGameConfig } from '../GameLevel/gameConfig';
+import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
-import { eggMotionActor } from './eggMotionActor';
-import type { GameAssets } from '../types/assets';
 import { isImageRef, type Direction, type Position } from '../types';
+
+import { eggMotionActor } from './eggMotionActor';
+
+import type { GameAssets } from '../types/assets';
 
 export type EggColor = 'white' | 'gold' | 'black';
 export type EggResultStatus =

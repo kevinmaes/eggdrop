@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
+
 import { Fragment } from 'react/jsx-runtime';
 
 import './DevPanel.css';
-import { sounds } from '../sounds';
-import { useEffect, useState } from 'react';
 import { AppActorContext } from '../app.machine';
+import { sounds } from '../sounds';
+
 import type { GenerationStats, LevelResults } from '../GameLevel/types';
 
 function formatGenerationStats(generationStats: GenerationStats) {
