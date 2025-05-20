@@ -2,7 +2,7 @@
 
 const POPULATION_SIZE = 40;
 
-const createGameConfig = () => {
+const createGameConfig = (isTestMode: boolean) => {
   const stageDimensions = {
     width: 1280,
     height: 720,
@@ -138,9 +138,11 @@ const createGameConfig = () => {
 let gameConfigInstance: ReturnType<typeof createGameConfig> | null = null;
 
 // Export a function that returns the singleton instance
-export function getGameConfig(): ReturnType<typeof createGameConfig> {
+export function getGameConfig(
+  isTestMode: boolean
+): ReturnType<typeof createGameConfig> {
   if (!gameConfigInstance) {
-    gameConfigInstance = createGameConfig();
+    gameConfigInstance = createGameConfig(isTestMode);
   }
   return gameConfigInstance;
 }
