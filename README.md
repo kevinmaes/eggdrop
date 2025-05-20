@@ -103,11 +103,7 @@ The tests leverage the game's state machines through a special test API that's e
    - Visual state is not directly accessible through standard DOM APIs
    - Game state is often scattered across multiple components and render cycles
    - Animation frames make it hard to assert on exact positions and states
-
-   For more on these challenges, see:
-
-   - [MDN Web Docs: Testing Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#testing_performance) - Focuses on performance testing and optimization
-   - [Playwright's Canvas Testing Guide](https://playwright.dev/docs/test-assertions#screenshot-comparisons) - Covers visual testing approaches
+   - **Fake DOM elements:** Some projects add hidden or offscreen DOM elements to mirror canvas state for testing. While this allows DOM-based assertions, it introduces extra maintenance, risks test drift from real rendering, and pollutes the codebase with test-only logic. Ultimately, it doesn't guarantee the canvas output matches the tested state.
 
    While these traditional approaches are valid, they have significant drawbacks:
 
@@ -115,6 +111,12 @@ The tests leverage the game's state machines through a special test API that's e
    - Screenshot comparisons are slow and computationally expensive
    - Performance testing doesn't verify game logic
    - Visual tests can't easily verify internal state
+   - Creating fake DOM elements adds overhead and extra code througout the application
+
+   For more on these challenges, see:
+
+   - [MDN Web Docs: Testing Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#testing_performance) - Focuses on performance testing and optimization
+   - [Playwright's Canvas Testing Guide](https://playwright.dev/docs/test-assertions#screenshot-comparisons) - Covers visual testing approaches
 
 2. **State Machine Solution**: By using XState state machines, we can:
 
