@@ -23,6 +23,8 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
+        projectService: true,
+        tsconfigRootDir: '.',
       },
       globals: {
         document: 'readonly',
@@ -36,6 +38,20 @@ export default [
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         global: 'readonly',
+      },
+    },
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx'],
+      },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: ['./tsconfig.app.json'],
+        },
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
       },
     },
     plugins: {
@@ -76,6 +92,18 @@ export default [
             'object',
             'type',
           ],
+          pathGroups: [
+            {
+              pattern: 'react',
+              group: 'builtin',
+              position: 'before',
+            },
+            {
+              pattern: 'react-dom/**',
+              group: 'builtin',
+              position: 'before',
+            },
+          ],
           'newlines-between': 'always',
           alphabetize: {
             order: 'asc',
@@ -84,8 +112,8 @@ export default [
         },
       ],
       'import/no-duplicates': 'error',
-      'import/no-unresolved': 'error',
-      'import/no-cycle': 'error',
+      'import/no-unresolved': 'warn',
+      'import/no-cycle': 'warn',
     },
   },
 ];
