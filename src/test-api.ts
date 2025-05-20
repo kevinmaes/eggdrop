@@ -1,6 +1,6 @@
+import type { AppActorRef } from './app.machine';
 import type { ChefActorRef } from './Chef/chef.machine';
 import type { GameLevelActorRef } from './GameLevel/gameLevel.machine';
-import type { AppActorRef } from './app.machine';
 
 // Basic interface for the test API
 export interface TestAPI {
@@ -14,6 +14,7 @@ export interface TestAPI {
 
 // Type declaration for the window object
 declare global {
+  // eslint-disable-next-line no-unused-vars
   interface Window {
     __TEST_API__?: TestAPI;
   }

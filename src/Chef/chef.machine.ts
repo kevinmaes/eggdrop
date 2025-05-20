@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
-import type { ActorRefFrom } from 'xstate';
+
 
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { sounds } from '../sounds';
@@ -10,6 +10,7 @@ import { updateTestAPI } from '../test-api';
 import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
 import type { GameAssets } from '../types/assets';
+import type { ActorRefFrom } from 'xstate';
 
 export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
 export const chefMachine = setup({
