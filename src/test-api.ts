@@ -93,14 +93,13 @@ function updateWindowObject(state: TestAPIState): void {
     // Update metadata
     const now = Date.now();
     metadata.totalUpdates += metadata.updateCount;
-    const timeSinceLastUpdate = now - metadata.lastUpdateTime;
 
-    console.log('Test API Update:', {
-      totalUpdates: metadata.totalUpdates,
-      batchedUpdates: metadata.updateCount,
-      timeSinceLastUpdate: `${timeSinceLastUpdate}ms`,
-      currentTime: new Date(now).toISOString(),
-    });
+    // console.log('Test API Update:', {
+    //   totalUpdates: metadata.totalUpdates,
+    //   batchedUpdates: metadata.updateCount,
+    //   timeSinceLastUpdate: `${now - metadata.lastUpdateTime;}ms`,
+    //   currentTime: new Date(now).toISOString(),
+    // });
 
     // Reset for next batch
     metadata.lastUpdateTime = now;
