@@ -76,7 +76,7 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 | `yarn ci`      | Run CI checks locally (lint, type check, test)           |
 | `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
 
-## 🧪 End-to-End Testing
+## 🎭 End-to-End Testing with Playwright
 
 The game uses [Playwright](https://playwright.dev) for end-to-end testing. These tests verify the game's functionality by simulating real user interactions and checking the game state.
 
