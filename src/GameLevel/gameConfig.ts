@@ -2,7 +2,7 @@
 
 const POPULATION_SIZE = 40;
 
-const createGameConfig = (isTestMode: boolean) => {
+const createGameConfig = (isTestMode: boolean = false) => {
   const stageDimensions = {
     width: 1280,
     height: 720,
@@ -139,12 +139,15 @@ const createGameConfig = (isTestMode: boolean) => {
 let gameConfigInstance: ReturnType<typeof createGameConfig> | null = null;
 
 // Export a function that returns the singleton instance
-export function getGameConfig(
-  isTestMode: boolean = true
-): ReturnType<typeof createGameConfig> {
+export function getGameConfig(): ReturnType<typeof createGameConfig> {
+  // Check URL for test mode parameter
+  const urlParams = new URLSearchParams(window.location.search as string);
+  const isTestMode = urlParams.get('testMode') === 'true';
+
   if (!gameConfigInstance) {
     gameConfigInstance = createGameConfig(isTestMode);
   }
+  console.log('gameConfigInstance', gameConfigInstance);
   return gameConfigInstance;
 }
 
