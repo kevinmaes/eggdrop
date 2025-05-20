@@ -155,6 +155,10 @@ export function getGameConfig(): ReturnType<typeof createGameConfig> {
     isTestMode = urlParams.get('testMode') === 'true';
   }
 
+  if (gameConfigInstance) {
+    return gameConfigInstance;
+  }
+
   return createGameConfig(isTestMode);
 }
 
