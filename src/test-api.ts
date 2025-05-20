@@ -1,16 +1,15 @@
-import type { ActorRefFrom } from 'xstate';
-import type { chefMachine } from './Chef/chef.machine';
-import type { gameLevelMachine } from './GameLevel/gameLevel.machine';
+import type { ChefActorRef } from './Chef/chef.machine';
+import type { GameLevelActorRef } from './GameLevel/gameLevel.machine';
+import type { AppActorRef } from './app.machine';
 
 // Basic interface for the test API
 export interface TestAPI {
-  chef: {
-    position: { x: number; y: number };
-  };
-  gameLevel: {
-    remainingTime: number;
-    score: number;
-  };
+  app: AppActorRef | null;
+  chef: ChefActorRef | null;
+  gameLevel: GameLevelActorRef | null;
+  getChefPosition: () => { x: number; y: number };
+  getGameLevelScore: () => number;
+  getGameLevelRemainingTime: () => number;
 }
 
 // Type declaration for the window object
@@ -21,10 +20,8 @@ declare global {
 }
 
 // Store the latest state from each machine
-interface TestAPIState {
-  chef: ActorRefFrom<typeof chefMachine> | null;
-  gameLevel: ActorRefFrom<typeof gameLevelMachine> | null;
-}
+type TestAPIState = Pick<TestAPI, 'app' | 'chef' | 'gameLevel'>;
+type TestAPIUpdate = Partial<TestAPIState>;
 
 // Metadata about test API updates
 interface UpdateMetadata {
@@ -35,6 +32,7 @@ interface UpdateMetadata {
 
 // Initialize state
 const state: TestAPIState = {
+  app: null,
   chef: null,
   gameLevel: null,
 };
@@ -63,23 +61,25 @@ let updateTimer: ReturnType<typeof setTimeout> | null = null;
  * If another update comes at t=250ms, it will be applied at t=450ms
  * (200ms after the last update)
  */
-const UPDATE_INTERVAL = 500;
+const UPDATE_INTERVAL = 200;
 
 // Function to create the test API from current state
 function createTestAPI(state: TestAPIState): TestAPI {
   return {
-    chef: {
-      get position() {
-        return state.chef?.getSnapshot().context.position ?? { x: 0, y: 0 };
-      },
+    // Expose actor refs for direct access to state machines
+    app: state.app as AppActorRef,
+    chef: state.chef as ChefActorRef,
+    gameLevel: state.gameLevel as GameLevelActorRef,
+
+    // Convenience getters for commonly accessed values
+    getChefPosition: () => {
+      return state.chef?.getSnapshot().context.position ?? { x: 0, y: 0 };
     },
-    gameLevel: {
-      get remainingTime() {
-        return state.gameLevel?.getSnapshot().context.remainingMS ?? 0;
-      },
-      get score() {
-        return state.gameLevel?.getSnapshot().context.scoreData.levelScore ?? 0;
-      },
+    getGameLevelScore: () => {
+      return state.gameLevel?.getSnapshot().context.scoreData.levelScore ?? 0;
+    },
+    getGameLevelRemainingTime: () => {
+      return state.gameLevel?.getSnapshot().context.remainingMS ?? 0;
     },
   };
 }
@@ -120,12 +120,7 @@ function scheduleUpdate(currentState: TestAPIState): void {
 }
 
 // Function to update the test API with new state
-export function updateTestAPI(
-  updates: Partial<{
-    chef: ActorRefFrom<typeof chefMachine>;
-    gameLevel: ActorRefFrom<typeof gameLevelMachine>;
-  }>
-): void {
+export function updateTestAPI(updates: TestAPIUpdate): void {
   // Update the state with new values
   Object.assign(state, updates);
 

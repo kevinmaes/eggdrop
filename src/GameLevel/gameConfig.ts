@@ -2,17 +2,21 @@
 
 const POPULATION_SIZE = 40;
 
+export const STAGE_DIMENSIONS = {
+  width: 1280,
+  height: 720,
+
+  // Generally respected margin for rendering content within the stage dimensions,
+  // similar to CSS padding.
+  margin: 10,
+
+  // Similar to the margin, above, but further limiting the movement of the hens
+  // and chef so that they don't overlap as much with UI close to the margin.
+  movementMargin: 25,
+} as const;
+
 const createGameConfig = (isTestMode: boolean = false) => {
-  const stageDimensions = {
-    width: 1280,
-    height: 720,
-    // Generally respected margin for rendering content within the stage dimensions,
-    // similar to CSS padding.
-    margin: 10,
-    // Similar to the margin, above, but further limiting the movement of the hens
-    // and chef so that they don't overlap as much with UI close to the margin.
-    movementMargin: 25,
-  };
+  const stageDimensions = STAGE_DIMENSIONS;
 
   // The position and dimensions of the chef
   const chefWidth = 344;

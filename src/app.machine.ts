@@ -3,7 +3,7 @@ import { Howler } from 'howler';
 import { createActorContext } from '@xstate/react';
 import FontFaceObserver from 'fontfaceobserver';
 import { nanoid } from 'nanoid';
-import { assign, fromPromise, setup } from 'xstate';
+import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
 import { getGameConfig } from './GameLevel/gameConfig';
 import { gameLevelMachine } from './GameLevel/gameLevel.machine';
@@ -15,11 +15,12 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
+import { updateTestAPI } from './test-api';
 
 import type { Hendividual, LevelResults } from './GameLevel/types';
 import type { GameAssets } from './types/assets';
 
-
+export type AppActorRef = ActorRefFrom<typeof appMachine>;
 const appMachine = setup({
   types: {} as {
     input: {
@@ -44,6 +45,9 @@ const appMachine = setup({
     events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
   },
   actions: {
+    updateTestAPI: ({ self }) => {
+      updateTestAPI({ app: self as AppActorRef });
+    },
     setLoadedGameAssets: assign({
       gameAssets: (_, params: GameAssets) => params,
     }),
@@ -269,6 +273,7 @@ const appMachine = setup({
     },
   },
   initial: 'Loading',
+  entry: 'updateTestAPI',
   states: {
     Loading: {
       initial: 'Loading Fonts',

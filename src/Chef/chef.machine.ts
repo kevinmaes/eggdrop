@@ -11,6 +11,7 @@ import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
 import type { GameAssets } from '../types/assets';
 
+export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
 export const chefMachine = setup({
   types: {} as {
     input: {
