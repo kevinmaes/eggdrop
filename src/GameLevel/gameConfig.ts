@@ -144,14 +144,18 @@ let gameConfigInstance: ReturnType<typeof createGameConfig> | null = null;
 
 // Export a function that returns the singleton instance
 export function getGameConfig(): ReturnType<typeof createGameConfig> {
-  // Check URL for test mode parameter
-  const urlParams = new URLSearchParams(window.location.search as string);
-  const isTestMode = urlParams.get('testMode') === 'true';
+  let isTestMode = false;
 
-  if (!gameConfigInstance) {
-    gameConfigInstance = createGameConfig(isTestMode);
+  // Prefer env var if present (for Playwright/Node tests)
+  if (typeof process !== 'undefined' && process.env.TEST_MODE) {
+    isTestMode = process.env.TEST_MODE === 'true';
+  } else if (typeof window !== 'undefined') {
+    // Fallback to query string in browser
+    const urlParams = new URLSearchParams(window.location.search as string);
+    isTestMode = urlParams.get('testMode') === 'true';
   }
-  return gameConfigInstance;
+
+  return createGameConfig(isTestMode);
 }
 
 // Export a function to reset the config (useful for testing)
