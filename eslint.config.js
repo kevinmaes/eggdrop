@@ -103,7 +103,13 @@ export default [
               group: 'builtin',
               position: 'before',
             },
+            {
+              pattern: 'howler',
+              group: 'external',
+              position: 'before',
+            },
           ],
+          pathGroupsExcludedImportTypes: ['react'],
           'newlines-between': 'always',
           alphabetize: {
             order: 'asc',
