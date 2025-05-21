@@ -167,7 +167,7 @@ test.describe('Game', () => {
     expect(finalPosition?.x).toBe(minXPos);
   });
 
-  test('should track the first egg and move the chef to catch it', async ({
+  test('should position the chef to catch the first catchable egg', async ({
     page,
   }) => {
     let testAPI: TestAPI | undefined;
