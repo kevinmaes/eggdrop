@@ -1,5 +1,6 @@
-import type { AppActorRef } from './app.machine';
+import type { AppActorRef, EggDropGameActorRef } from './app.machine';
 import type { ChefActorRef } from './Chef/chef.machine';
+import type { EggActorRef } from './Egg/egg.machine';
 import type { GameLevelActorRef } from './GameLevel/gameLevel.machine';
 
 // Basic interface for the test API
@@ -7,6 +8,7 @@ export interface TestAPI {
   app: AppActorRef | null;
   chef: ChefActorRef | null;
   gameLevel: GameLevelActorRef | null;
+  eggMap: Map<string, EggActorRef>;
   getChefPosition: () => { x: number; y: number };
   getGameLevelScore: () => number;
   getGameLevelRemainingTime: () => number;
@@ -21,7 +23,7 @@ declare global {
 }
 
 // Store the latest state from each machine
-type TestAPIState = Pick<TestAPI, 'app' | 'chef' | 'gameLevel'>;
+type TestAPIState = Pick<TestAPI, 'app' | 'chef' | 'gameLevel' | 'eggMap'>;
 type TestAPIUpdate = Partial<TestAPIState>;
 
 // Metadata about test API updates
@@ -36,6 +38,7 @@ const state: TestAPIState = {
   app: null,
   chef: null,
   gameLevel: null,
+  eggMap: new Map(),
 };
 
 // Initialize metadata
@@ -46,7 +49,7 @@ const metadata: UpdateMetadata = {
 };
 
 // Update timer
-let updateTimer: ReturnType<typeof setTimeout> | null = null;
+// let updateTimer: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * The update interval for the test API (200ms).
@@ -62,7 +65,7 @@ let updateTimer: ReturnType<typeof setTimeout> | null = null;
  * If another update comes at t=250ms, it will be applied at t=450ms
  * (200ms after the last update)
  */
-const UPDATE_INTERVAL = 200;
+// const UPDATE_INTERVAL = 200;
 
 // Function to create the test API from current state
 function createTestAPI(state: TestAPIState): TestAPI {
@@ -71,7 +74,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
     app: state.app as AppActorRef,
     chef: state.chef as ChefActorRef,
     gameLevel: state.gameLevel as GameLevelActorRef,
-
+    eggMap: state.eggMap,
     // Convenience getters for commonly accessed values
     getChefPosition: () => {
       return state.chef?.getSnapshot().context.position ?? { x: 0, y: 0 };
@@ -108,16 +111,16 @@ function updateWindowObject(state: TestAPIState): void {
 }
 
 // Function to schedule a batched update
-function scheduleUpdate(currentState: TestAPIState): void {
-  if (updateTimer) {
-    return; // Update already scheduled
-  }
+// function scheduleUpdate(currentState: TestAPIState): void {
+//   if (updateTimer) {
+//     return; // Update already scheduled
+//   }
 
-  updateTimer = setTimeout(() => {
-    updateWindowObject(currentState);
-    updateTimer = null;
-  }, UPDATE_INTERVAL);
-}
+//   updateTimer = setTimeout(() => {
+//     updateWindowObject(currentState);
+//     updateTimer = null;
+//   }, UPDATE_INTERVAL);
+// }
 
 // // Function to update the test API with new state
 // export function updateTestAPI(updates: TestAPIUpdate): void {
@@ -131,9 +134,7 @@ function scheduleUpdate(currentState: TestAPIState): void {
 //   scheduleUpdate(state);
 // }
 
-export function setActorRef(
-  actorRef: AppActorRef | ChefActorRef | GameLevelActorRef
-) {
+export function setActorRef(actorRef: EggDropGameActorRef) {
   const partialUpdate: TestAPIUpdate = {};
 
   switch (actorRef.getSnapshot().machine.id) {
@@ -146,6 +147,7 @@ export function setActorRef(
     case 'Chef':
       partialUpdate.chef = actorRef as ChefActorRef;
       break;
+    case 'Egg':
 
     default: {
     }
@@ -163,4 +165,14 @@ export function setActorRef(
   // scheduleUpdate(state);
 
   updateWindowObject(state);
+}
+
+export function addEggActorRef(eggActorRef: EggActorRef) {
+  state.eggMap.set(eggActorRef.id, eggActorRef);
+  console.log('Added egg actor ref', eggActorRef.id);
+}
+
+export function removeEggActorRef(eggActorRef: EggActorRef) {
+  state.eggMap.delete(eggActorRef.id);
+  console.log('Removed egg actor ref', eggActorRef.id);
 }

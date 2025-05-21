@@ -6,7 +6,10 @@ import { nanoid } from 'nanoid';
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
 import { getGameConfig } from './GameLevel/gameConfig';
-import { gameLevelMachine } from './GameLevel/gameLevel.machine';
+import {
+  gameLevelMachine,
+  type GameLevelActorRef,
+} from './GameLevel/gameLevel.machine';
 import { DNA } from './geneticAlgorithm/DNA';
 import { calculateFitness } from './geneticAlgorithm/eggdropGA';
 import { eliteSelection, mutateIndividual } from './geneticAlgorithm/ga';
@@ -19,6 +22,8 @@ import {
 import type { Hendividual, LevelResults } from './GameLevel/types';
 import type { GameAssets } from './types/assets';
 import { setActorRef } from './test-api';
+import type { ChefActorRef } from './Chef/chef.machine';
+import type { EggActorRef } from './Egg/egg.machine';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
 const appMachine = setup({
@@ -374,6 +379,12 @@ const appMachine = setup({
     },
   },
 });
+
+export type EggDropGameActorRef =
+  | AppActorRef
+  | ChefActorRef
+  | GameLevelActorRef
+  | EggActorRef;
 
 export const AppActorContext: ReturnType<
   typeof createActorContext<typeof appMachine>
