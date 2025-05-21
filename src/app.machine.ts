@@ -15,10 +15,10 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
-import { updateTestAPI } from './test-api';
 
 import type { Hendividual, LevelResults } from './GameLevel/types';
 import type { GameAssets } from './types/assets';
+import { setActorRef } from './test-api';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
 const appMachine = setup({
@@ -45,8 +45,12 @@ const appMachine = setup({
     events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
   },
   actions: {
-    updateTestAPI: ({ self }) => {
-      updateTestAPI({ app: self as AppActorRef });
+    setActorRefForTests: ({ context, self }) => {
+      console.log('setActorRefForTests', context.gameConfig.isTestMode);
+      // Set the app ref on the test API only on creation
+      if (context.gameConfig.isTestMode) {
+        setActorRef(self as AppActorRef);
+      }
     },
     setLoadedGameAssets: assign({
       gameAssets: (_, params: GameAssets) => params,
@@ -273,7 +277,7 @@ const appMachine = setup({
     },
   },
   initial: 'Loading',
-  entry: 'updateTestAPI',
+  entry: 'setActorRefForTests',
   states: {
     Loading: {
       initial: 'Loading Fonts',

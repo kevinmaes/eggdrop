@@ -2,20 +2,20 @@ import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
-
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { sounds } from '../sounds';
-import { updateTestAPI } from '../test-api';
 
 import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
 import type { GameAssets } from '../types/assets';
 import type { ActorRefFrom } from 'xstate';
+import { setActorRef } from '../test-api';
 
 export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
 export const chefMachine = setup({
   types: {} as {
     input: {
+      gameConfig: ReturnType<typeof getGameConfig>;
       chefConfig: ReturnType<typeof getGameConfig>['chef'];
       chefAssets: GameAssets['chef'];
       position: Position;
@@ -28,6 +28,7 @@ export const chefMachine = setup({
       isTestMode: boolean;
     };
     context: {
+      gameConfig: ReturnType<typeof getGameConfig>;
       chefConfig: ReturnType<typeof getGameConfig>['chef'];
       chefRef: React.RefObject<Konva.Image> | { current: null };
       chefAssets: GameAssets['chef'];
@@ -51,9 +52,10 @@ export const chefMachine = setup({
       | { type: 'Reset isCatchingEgg' };
   },
   actions: {
-    updateTestAPI: ({ self, context }) => {
-      if (context.isTestMode) {
-        updateTestAPI({ chef: self as ActorRefFrom<typeof chefMachine> });
+    setActorRefForTests: ({ context, self }) => {
+      // Set the app ref on the test API only on creation
+      if (context.gameConfig.isTestMode) {
+        setActorRef(self as ChefActorRef);
       }
     },
     setChefRef: assign({
@@ -186,6 +188,7 @@ export const chefMachine = setup({
   id: 'Chef',
   initial: 'Moving',
   context: ({ input }) => ({
+    gameConfig: input.gameConfig,
     chefConfig: input.chefConfig,
     chefRef: { current: null },
     chefAssets: input.chefAssets,
@@ -202,6 +205,7 @@ export const chefMachine = setup({
     isCatchingEgg: false,
     isTestMode: input.isTestMode,
   }),
+  entry: 'setActorRefForTests',
   on: {
     'Set chefRef': {
       actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
@@ -220,7 +224,7 @@ export const chefMachine = setup({
         onDone: {
           target: 'Moving',
           reenter: true,
-          actions: ['updateChefPosition', 'updateTestAPI'],
+          actions: 'updateChefPosition',
         },
       },
       on: {

@@ -119,14 +119,48 @@ function scheduleUpdate(currentState: TestAPIState): void {
   }, UPDATE_INTERVAL);
 }
 
-// Function to update the test API with new state
-export function updateTestAPI(updates: TestAPIUpdate): void {
+// // Function to update the test API with new state
+// export function updateTestAPI(updates: TestAPIUpdate): void {
+//   // Update the state with new values
+//   Object.assign(state, updates);
+
+//   // Increment the update counter for this batch
+//   metadata.updateCount++;
+
+//   // Schedule a batched update with the current state
+//   scheduleUpdate(state);
+// }
+
+export function setActorRef(
+  actorRef: AppActorRef | ChefActorRef | GameLevelActorRef
+) {
+  const partialUpdate: TestAPIUpdate = {};
+
+  switch (actorRef.getSnapshot().machine.id) {
+    case 'Egg Drop Game':
+      partialUpdate.app = actorRef as AppActorRef;
+      break;
+    case 'Game Level':
+      partialUpdate.gameLevel = actorRef as GameLevelActorRef;
+      break;
+    case 'Chef':
+      partialUpdate.chef = actorRef as ChefActorRef;
+      break;
+
+    default: {
+    }
+  }
+
   // Update the state with new values
-  Object.assign(state, updates);
+  Object.assign(state, partialUpdate);
+
+  // Schedule a batched update with the current state  Object.assign(state, updates);
 
   // Increment the update counter for this batch
   metadata.updateCount++;
 
   // Schedule a batched update with the current state
-  scheduleUpdate(state);
+  // scheduleUpdate(state);
+
+  updateWindowObject(state);
 }

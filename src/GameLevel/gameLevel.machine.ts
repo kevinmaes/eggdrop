@@ -32,6 +32,7 @@ import { getGameConfig } from './gameConfig';
 
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
+import { setActorRef } from '../test-api';
 
 export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
 export const gameLevelMachine = setup({
@@ -96,6 +97,12 @@ export const gameLevelMachine = setup({
       | CountdownTimerTickEvent;
   },
   actions: {
+    setActorRefForTests: ({ context, self }) => {
+      // Set the app ref on the test API only on creation
+      if (context.gameConfig.isTestMode) {
+        setActorRef(self as GameLevelActorRef);
+      }
+    },
     setChefPotRimHitRef: assign({
       chefPotRimHitRef: (_, params: React.RefObject<Rect>) => params,
     }),
@@ -587,6 +594,7 @@ export const gameLevelMachine = setup({
     scoreData: context.scoreData,
   }),
   initial: 'Playing',
+  entry: 'setActorRefForTests',
   on: {
     'Set chefPotRimHitRef': {
       actions: {
@@ -745,6 +753,7 @@ export const gameLevelMachine = setup({
           src: 'chefMachine',
           systemId: 'chefMachine',
           input: ({ context }) => ({
+            gameConfig: context.gameConfig,
             chefConfig: context.gameConfig.chef,
             chefAssets: context.gameAssets.chef,
             position: {
