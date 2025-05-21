@@ -179,14 +179,19 @@ test.describe('Game', () => {
     });
 
     // Wait for the first egg actor to be added to the test API
-    const firstEggId = await page.waitForFunction(
+    const firstCatchableEggId = await page.waitForFunction(
       () => {
         // console.log('checking for first egg id');
         testAPI = window.__TEST_API__;
         const gameLevel = testAPI?.gameLevel;
         if (!gameLevel) return false;
         const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
-        return eggActorRefs.length > 0 ? eggActorRefs[0].id : false;
+        const catchableEggActorRefs = eggActorRefs.filter(
+          eggRef => eggRef.getSnapshot().context.color !== 'black'
+        );
+        return catchableEggActorRefs.length > 0
+          ? catchableEggActorRefs[0].id
+          : false;
       },
       { timeout: 20_000 }
     );
@@ -261,7 +266,7 @@ test.describe('Game', () => {
         const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
         return !eggActorRefs.some(ref => ref.id === eggId);
       },
-      await firstEggId,
+      await firstCatchableEggId,
       { timeout: 10000 }
     );
   });
