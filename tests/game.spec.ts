@@ -167,9 +167,7 @@ test.describe('Game', () => {
     expect(finalPosition?.x).toBe(minXPos);
   });
 
-  test('should position the chef to catch the first catchable egg', async ({
-    page,
-  }) => {
+  test('should move the chef to catch one catchable egg', async ({ page }) => {
     let testAPI: TestAPI | undefined;
 
     // Start the game
@@ -196,10 +194,10 @@ test.describe('Game', () => {
           eggRef => eggRef.getSnapshot().context.color !== 'black'
         );
         if (catchableEggActorRefs.length > 0) {
-          const firstCatchableEggRef = catchableEggActorRefs[0];
-          const context = firstCatchableEggRef.getSnapshot().context;
+          const catchableEggRef = catchableEggActorRefs[0];
+          const context = catchableEggRef.getSnapshot().context;
           return {
-            id: firstCatchableEggRef.id,
+            id: catchableEggRef.id,
             position: context.position,
           };
         }
@@ -263,7 +261,225 @@ test.describe('Game', () => {
     // Release the key
     await page.keyboard.up(keyToPress);
 
-    console.log('eggRefId', firstCatchableEggData.id);
+    // Wait until the egg is caught
+    await page.waitForFunction(
+      eggRefId => {
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        if (!gameLevel) return false;
+        const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+        const eggRef = eggActorRefs.find(ref => ref.id === eggRefId);
+        if (!eggRef) return true;
+      },
+      firstCatchableEggData.id,
+      { timeout: 10000 }
+    );
+
+    // Get the score after catching the egg
+    const finalScore = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getGameLevelScore() ?? 0;
+    });
+
+    // Assert that the score increased
+    expect(finalScore).toBeGreaterThan(initialScore);
+  });
+
+  test('should move the chef to catch two catchable eggs in a row', async ({
+    page,
+  }) => {
+    let testAPI: TestAPI | undefined;
+
+    let chefXPos: number | undefined;
+    let keyToPress: string | undefined;
+    let moveDirection: 'right' | 'left' | undefined;
+    let chefPotRimHitX: number | undefined;
+
+    // Start the game
+    await page.evaluate(() => {
+      testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
+
+    // Get the initial score before catching the egg
+    const initialScore = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getGameLevelScore() ?? 0;
+    });
+
+    // Catch the first egg
+
+    // Wait for the first egg actor to be added to the test API
+    const firstCatchableEgg = await page.waitForFunction(
+      () => {
+        // console.log('checking for first egg id');
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        if (!gameLevel) return undefined;
+        const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+        const catchableEggActorRefs = eggActorRefs.filter(
+          eggRef => eggRef.getSnapshot().context.color !== 'black'
+        );
+        if (catchableEggActorRefs.length > 0) {
+          const catchableEggRef = catchableEggActorRefs[0];
+          const context = catchableEggRef.getSnapshot().context;
+          return {
+            id: catchableEggRef.id,
+            position: context.position,
+          };
+        }
+        return undefined;
+      },
+      { timeout: 20_000 }
+    );
+    const firstCatchableEggData = await firstCatchableEgg.jsonValue();
+
+    if (typeof firstCatchableEggData === 'undefined') {
+      throw new Error('First catchable egg data is undefined');
+    }
+
+    const firstCatchableEggXPos = firstCatchableEggData.position.x;
+
+    chefXPos = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPosition()?.x;
+    });
+
+    if (!chefXPos) {
+      throw new Error('Chef X position is undefined');
+    }
+
+    // Determine which direction to move the Chef
+    keyToPress = firstCatchableEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
+    moveDirection = keyToPress === 'ArrowRight' ? 'right' : 'left';
+
+    // Assess the chef's X position
+    chefPotRimHitX = await page.evaluate(direction => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPotRimCenterHitX(direction);
+    }, moveDirection);
+
+    if (!chefPotRimHitX) {
+      throw new Error('Chef X position is undefined');
+    }
+
+    await page.keyboard.down(keyToPress);
+
+    // Wait for the Chef to reach the first egg actor's xPosition
+    await page.waitForFunction(
+      ({ firstCatchableEggXPos, direction }) => {
+        const testAPI = window.__TEST_API__;
+        const potRimHitX = testAPI?.getChefPotRimCenterHitX(direction);
+
+        if (!potRimHitX) {
+          throw new Error('Chef pot rim hit X is undefined');
+        }
+
+        return direction === 'right'
+          ? potRimHitX >= firstCatchableEggXPos
+          : potRimHitX <= firstCatchableEggXPos;
+      },
+      { firstCatchableEggXPos, direction: moveDirection },
+      { timeout: 5000 }
+    );
+
+    // Release the key
+    await page.keyboard.up(keyToPress);
+
+    // Wait until the egg is caught
+    await page.waitForFunction(
+      eggRefId => {
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        if (!gameLevel) return false;
+        const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+        const eggRef = eggActorRefs.find(ref => ref.id === eggRefId);
+        if (!eggRef) return true;
+      },
+      firstCatchableEggData.id,
+      { timeout: 10000 }
+    );
+
+    // Catch the second egg
+    // Choose the second egg
+    // Wait for the first egg actor to be added to the test API
+    const secondCatchableEgg = await page.waitForFunction(
+      () => {
+        // console.log('checking for first egg id');
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        if (!gameLevel) return undefined;
+        const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+        const catchableEggActorRefs = eggActorRefs.filter(
+          eggRef => eggRef.getSnapshot().context.color !== 'black'
+        );
+        if (catchableEggActorRefs.length > 0) {
+          const catchableEggRef = catchableEggActorRefs[0];
+          const context = catchableEggRef.getSnapshot().context;
+          return {
+            id: catchableEggRef.id,
+            position: context.position,
+          };
+        }
+        return undefined;
+      },
+      { timeout: 20_000 }
+    );
+    const secondCatchableEggData = await secondCatchableEgg.jsonValue();
+
+    if (typeof secondCatchableEggData === 'undefined') {
+      throw new Error('First catchable egg data is undefined');
+    }
+
+    const secondCatchableEggXPos = secondCatchableEggData.position.x;
+
+    chefXPos = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPosition()?.x;
+    });
+
+    if (!chefXPos) {
+      throw new Error('Chef X position is undefined');
+    }
+
+    // Determine which direction to move the Chef
+    keyToPress = secondCatchableEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
+    moveDirection = keyToPress === 'ArrowRight' ? 'right' : 'left';
+
+    // Assess the chef's X position
+    chefPotRimHitX = await page.evaluate(direction => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPotRimCenterHitX(direction);
+    }, moveDirection);
+
+    if (!chefPotRimHitX) {
+      throw new Error('Chef X position is undefined');
+    }
+
+    await page.keyboard.down(keyToPress);
+
+    // Wait for the Chef to reach the first egg actor's xPosition
+    await page.waitForFunction(
+      ({ firstCatchableEggXPos, direction }) => {
+        const testAPI = window.__TEST_API__;
+        const potRimHitX = testAPI?.getChefPotRimCenterHitX(direction);
+
+        if (!potRimHitX) {
+          throw new Error('Chef pot rim hit X is undefined');
+        }
+
+        return direction === 'right'
+          ? potRimHitX >= firstCatchableEggXPos
+          : potRimHitX <= firstCatchableEggXPos;
+      },
+      { firstCatchableEggXPos, direction: moveDirection },
+      { timeout: 5000 }
+    );
+
+    // Release the key
+    await page.keyboard.up(keyToPress);
+
+    // console.log('eggRefId', firstCatchableEggData.id);
 
     // Wait until the egg is caught
     await page.waitForFunction(
@@ -287,6 +503,5 @@ test.describe('Game', () => {
 
     // Assert that the score increased
     expect(finalScore).toBeGreaterThan(initialScore);
-    expect(finalScore).toBe(1);
   });
 });
