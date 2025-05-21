@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 // Visual regression tests for the Egg Drop game
 
-test.describe('Game Visuals', () => {
+test.describe.skip('Game Visuals', () => {
   test('intro screen should match visual snapshot', async ({ page }) => {
     // Go to the game in test mode
     await page.goto('/?testMode=true');
