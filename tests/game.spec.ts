@@ -179,35 +179,35 @@ test.describe('Game', () => {
     });
 
     // Wait for the first egg actor to be added to the test API
-    const firstCatchableEggId = await page.waitForFunction(
+    const firstCatchableEgg = await page.waitForFunction(
       () => {
         // console.log('checking for first egg id');
-        testAPI = window.__TEST_API__;
+        const testAPI = window.__TEST_API__;
         const gameLevel = testAPI?.gameLevel;
-        if (!gameLevel) return false;
+        if (!gameLevel) return undefined;
         const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
         const catchableEggActorRefs = eggActorRefs.filter(
           eggRef => eggRef.getSnapshot().context.color !== 'black'
         );
-        return catchableEggActorRefs.length > 0
-          ? catchableEggActorRefs[0].id
-          : false;
+        if (catchableEggActorRefs.length > 0) {
+          const firstCatchableEggRef = catchableEggActorRefs[0];
+          const context = firstCatchableEggRef.getSnapshot().context;
+          return {
+            id: firstCatchableEggRef.id,
+            position: context.position,
+          };
+        }
+        return undefined;
       },
       { timeout: 20_000 }
     );
+    const firstCatchableEggData = await firstCatchableEgg.jsonValue();
 
-    // Let's assess the egg actor ref's xPosition and move the Chef to that position
-    const firstEggXPos = await page.evaluate(() => {
-      const testAPI = window.__TEST_API__;
-      const gameLevel = testAPI?.gameLevel;
-      if (!gameLevel) return false;
-      const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
-      return eggActorRefs[0].getSnapshot().context.position.x;
-    });
-
-    if (!firstEggXPos) {
-      throw new Error('First egg X position is undefined');
+    if (typeof firstCatchableEggData === 'undefined') {
+      throw new Error('First catchable egg data is undefined');
     }
+
+    const firstCatchableEggXPos = firstCatchableEggData.position.x;
 
     const chefXPos = await page.evaluate(() => {
       const testAPI = window.__TEST_API__;
@@ -219,7 +219,8 @@ test.describe('Game', () => {
     }
 
     // Determine which direction to move the Chef
-    const keyToPress = firstEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
+    const keyToPress =
+      firstCatchableEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
     const moveDirection: 'right' | 'left' =
       keyToPress === 'ArrowRight' ? 'right' : 'left';
 
@@ -237,9 +238,8 @@ test.describe('Game', () => {
 
     // Wait for the Chef to reach the first egg actor's xPosition
     await page.waitForFunction(
-      ({ firstEggXPos, direction }) => {
+      ({ firstCatchableEggXPos, direction }) => {
         const testAPI = window.__TEST_API__;
-        const chefXPos = testAPI?.getChefPosition()?.x;
         const potRimHitX = testAPI?.getChefPotRimCenterHitX(direction);
 
         if (!potRimHitX) {
@@ -247,27 +247,32 @@ test.describe('Game', () => {
         }
 
         return direction === 'right'
-          ? potRimHitX >= firstEggXPos
-          : potRimHitX <= firstEggXPos;
+          ? potRimHitX >= firstCatchableEggXPos
+          : potRimHitX <= firstCatchableEggXPos;
       },
-      { firstEggXPos, direction: moveDirection },
+      { firstCatchableEggXPos, direction: moveDirection },
       { timeout: 5000 }
     );
 
     // Release the key
     await page.keyboard.up(keyToPress);
 
-    // Wait until the first egg actor is removed from the test API
+    console.log('eggRefId', firstCatchableEggData.id);
+
+    // Wait until the egg is caught
     await page.waitForFunction(
-      eggId => {
+      eggRefId => {
         const testAPI = window.__TEST_API__;
         const gameLevel = testAPI?.gameLevel;
         if (!gameLevel) return false;
         const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
-        return !eggActorRefs.some(ref => ref.id === eggId);
+        const eggRef = eggActorRefs.find(ref => ref.id === eggRefId);
+        if (!eggRef) return true;
       },
-      await firstCatchableEggId,
+      firstCatchableEggData.id,
       { timeout: 10000 }
     );
+
+    console.log('outside of egg was caught');
   });
 });
