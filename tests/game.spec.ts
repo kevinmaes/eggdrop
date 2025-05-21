@@ -178,6 +178,12 @@ test.describe('Game', () => {
       testAPI?.app?.send({ type: 'Play' });
     });
 
+    // Get the initial score before catching the egg
+    const initialScore = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getGameLevelScore() ?? 0;
+    });
+
     // Wait for the first egg actor to be added to the test API
     const firstCatchableEgg = await page.waitForFunction(
       () => {
@@ -273,6 +279,14 @@ test.describe('Game', () => {
       { timeout: 10000 }
     );
 
-    console.log('outside of egg was caught');
+    // Get the score after catching the egg
+    const finalScore = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getGameLevelScore() ?? 0;
+    });
+
+    // Assert that the score increased
+    expect(finalScore).toBeGreaterThan(initialScore);
+    expect(finalScore).toBe(1);
   });
 });
