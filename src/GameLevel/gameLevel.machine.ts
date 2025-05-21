@@ -22,6 +22,7 @@ import {
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
+import { setActorRef } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
 
 import {
@@ -32,7 +33,6 @@ import { getGameConfig } from './gameConfig';
 
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
-import { setActorRef } from '../test-api';
 
 export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
 export const gameLevelMachine = setup({
@@ -99,6 +99,7 @@ export const gameLevelMachine = setup({
   actions: {
     setActorRefForTests: ({ context, self }) => {
       // Set the app ref on the test API only on creation
+      console.log('setting gameLevel actor ref for tests');
       if (context.gameConfig.isTestMode) {
         setActorRef(self as GameLevelActorRef);
       }
@@ -516,7 +517,7 @@ export const gameLevelMachine = setup({
     },
   },
 }).createMachine({
-  id: 'GameLevel',
+  id: 'Game Level',
   context: ({ input }) => ({
     gameConfig: input.gameConfig,
     gameAssets: input.gameAssets,

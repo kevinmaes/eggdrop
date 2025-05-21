@@ -10,6 +10,7 @@ export interface TestAPI {
   gameLevel: GameLevelActorRef | null;
   eggMap: Map<string, EggActorRef>;
   getChefPosition: () => { x: number; y: number };
+  getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => number;
   getGameLevelScore: () => number;
   getGameLevelRemainingTime: () => number;
 }
@@ -79,6 +80,26 @@ function createTestAPI(state: TestAPIState): TestAPI {
     getChefPosition: () => {
       return state.chef?.getSnapshot().context.position ?? { x: 0, y: 0 };
     },
+    getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => {
+      const snapshot = state.chef?.getSnapshot();
+      const gameConfig = snapshot?.context.gameConfig;
+      const chefXPos = snapshot?.context.position.x ?? 0;
+      const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
+
+      if (moveDirection === 'right') {
+        return (
+          chefXPos +
+          potRimOffsetX +
+          0.5 * (gameConfig?.chef.potRim.width ?? 150)
+        );
+      } else {
+        return (
+          chefXPos -
+          potRimOffsetX -
+          0.5 * (gameConfig?.chef.potRim.width ?? 150)
+        );
+      }
+    },
     getGameLevelScore: () => {
       return state.gameLevel?.getSnapshot().context.scoreData.levelScore ?? 0;
     },
@@ -147,10 +168,7 @@ export function setActorRef(actorRef: EggDropGameActorRef) {
     case 'Chef':
       partialUpdate.chef = actorRef as ChefActorRef;
       break;
-    case 'Egg':
-
-    default: {
-    }
+    default:
   }
 
   // Update the state with new values
@@ -165,14 +183,4 @@ export function setActorRef(actorRef: EggDropGameActorRef) {
   // scheduleUpdate(state);
 
   updateWindowObject(state);
-}
-
-export function addEggActorRef(eggActorRef: EggActorRef) {
-  state.eggMap.set(eggActorRef.id, eggActorRef);
-  console.log('Added egg actor ref', eggActorRef.id);
-}
-
-export function removeEggActorRef(eggActorRef: EggActorRef) {
-  state.eggMap.delete(eggActorRef.id);
-  console.log('Removed egg actor ref', eggActorRef.id);
 }

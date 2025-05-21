@@ -166,4 +166,103 @@ test.describe('Game', () => {
 
     expect(finalPosition?.x).toBe(minXPos);
   });
+
+  test('should track the first egg and move the chef to catch it', async ({
+    page,
+  }) => {
+    let testAPI: TestAPI | undefined;
+
+    // Start the game
+    await page.evaluate(() => {
+      testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
+
+    // Wait for the first egg actor to be added to the test API
+    const firstEggId = await page.waitForFunction(
+      () => {
+        // console.log('checking for first egg id');
+        testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        if (!gameLevel) return false;
+        const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+        return eggActorRefs.length > 0 ? eggActorRefs[0].id : false;
+      },
+      { timeout: 20_000 }
+    );
+
+    // Let's assess the egg actor ref's xPosition and move the Chef to that position
+    const firstEggXPos = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      const gameLevel = testAPI?.gameLevel;
+      if (!gameLevel) return false;
+      const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+      return eggActorRefs[0].getSnapshot().context.position.x;
+    });
+
+    if (!firstEggXPos) {
+      throw new Error('First egg X position is undefined');
+    }
+
+    const chefXPos = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPosition()?.x;
+    });
+
+    if (!chefXPos) {
+      throw new Error('Chef X position is undefined');
+    }
+
+    // Determine which direction to move the Chef
+    const keyToPress = firstEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
+    const moveDirection: 'right' | 'left' =
+      keyToPress === 'ArrowRight' ? 'right' : 'left';
+
+    // Assess the chef's X position
+    const chefPotRimHitX = await page.evaluate(direction => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getChefPotRimCenterHitX(direction);
+    }, moveDirection);
+
+    if (!chefPotRimHitX) {
+      throw new Error('Chef X position is undefined');
+    }
+
+    await page.keyboard.down(keyToPress);
+
+    // Wait for the Chef to reach the first egg actor's xPosition
+    await page.waitForFunction(
+      ({ firstEggXPos, direction }) => {
+        const testAPI = window.__TEST_API__;
+        const chefXPos = testAPI?.getChefPosition()?.x;
+        const potRimHitX = testAPI?.getChefPotRimCenterHitX(direction);
+
+        if (!potRimHitX) {
+          throw new Error('Chef pot rim hit X is undefined');
+        }
+
+        return direction === 'right'
+          ? potRimHitX >= firstEggXPos
+          : potRimHitX <= firstEggXPos;
+      },
+      { firstEggXPos, direction: moveDirection },
+      { timeout: 5000 }
+    );
+
+    // Release the key
+    await page.keyboard.up(keyToPress);
+
+    // Wait until the first egg actor is removed from the test API
+    await page.waitForFunction(
+      eggId => {
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        if (!gameLevel) return false;
+        const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+        return !eggActorRefs.some(ref => ref.id === eggId);
+      },
+      await firstEggId,
+      { timeout: 10000 }
+    );
+  });
 });

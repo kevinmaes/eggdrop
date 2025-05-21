@@ -16,7 +16,6 @@ import { isImageRef, type Direction, type Position } from '../types';
 import { eggMotionActor } from './eggMotionActor';
 
 import type { GameAssets } from '../types/assets';
-import { addEggActorRef, removeEggActorRef } from '../test-api';
 
 export type EggColor = 'white' | 'gold' | 'black';
 export type EggResultStatus =
@@ -112,16 +111,6 @@ export const eggMachine = setup({
     },
   },
   actions: {
-    addActorRefForTests: ({ context, self }) => {
-      if (context.gameConfig.isTestMode) {
-        addEggActorRef(self as EggActorRef);
-      }
-    },
-    removeActorRefForTests: ({ context, self }) => {
-      if (context.gameConfig.isTestMode) {
-        removeEggActorRef(self as EggActorRef);
-      }
-    },
     setEggRef: assign({
       eggRef: (_, params: React.RefObject<Konva.Image>) => params,
     }),
@@ -231,8 +220,6 @@ export const eggMachine = setup({
       resultStatus: context.resultStatus,
     };
   },
-  entry: 'addActorRefForTests',
-  exit: 'removeActorRefForTests',
   on: {
     'Pause game': {
       actions: 'pause',
