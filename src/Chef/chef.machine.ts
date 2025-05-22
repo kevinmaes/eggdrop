@@ -4,12 +4,12 @@ import { assign, fromPromise, raise, setup } from 'xstate';
 
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { sounds } from '../sounds';
+import { setActorRef } from '../test-api';
 
 import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
 import type { GameAssets } from '../types/assets';
 import type { ActorRefFrom } from 'xstate';
-import { setActorRef } from '../test-api';
 
 export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
 export const chefMachine = setup({
@@ -67,7 +67,6 @@ export const chefMachine = setup({
         eggColor: EggColor;
       }
     ) => {
-      console.log('playCatchReaction', params.eggColor);
       switch (params.eggColor) {
         case 'black':
           if (Math.random() > 0.5) {
