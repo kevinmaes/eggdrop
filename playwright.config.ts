@@ -38,42 +38,15 @@ export default defineConfig({
   /* Configure projects for major browsers with different timeouts */
   projects: [
     {
-      name: 'chromium-regular',
-      testMatch: /.*\.spec\.ts/,
-      testIgnore: /.*game-automated\.spec\.ts/,
-      timeout: 30_000, // 30 seconds for regular tests
+      name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
     {
-      name: 'firefox-regular',
-      testMatch: /.*\.spec\.ts/,
-      testIgnore: /.*game-automated\.spec\.ts/,
-      timeout: 30_000, // 30 seconds for regular tests
+      name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
     {
-      name: 'webkit-regular',
-      testMatch: /.*\.spec\.ts/,
-      testIgnore: /.*game-automated\.spec\.ts/,
-      timeout: 30_000, // 30 seconds for regular tests
-      use: { ...devices['Desktop Safari'] },
-    },
-    {
-      name: 'chromium-automated',
-      testMatch: /.*game-automated\.spec\.ts/,
-      timeout: 300_000, // 5 minutes for automated tests
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox-automated',
-      testMatch: /.*game-automated\.spec\.ts/,
-      timeout: 300_000, // 5 minutes for automated tests
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit-automated',
-      testMatch: /.*game-automated\.spec\.ts/,
-      timeout: 300_000, // 5 minutes for automated tests
+      name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
   ],

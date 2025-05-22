@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-test.describe('Game', () => {
+test.describe('@regular Game', () => {
   let gameConfig: ReturnType<typeof getGameConfig> | undefined;
 
   // Shared setup for all tests

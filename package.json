@@ -13,7 +13,9 @@
 		"preview": "vite preview",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:e2e": "TEST_MODE=true playwright test",
+		"test:e2e": "TEST_MODE=true playwright test --grep @regular",
+		"test:automated": "playwright test --grep @automated",
+		"test:all": "playwright test",
 		"check": "yarn lint && yarn tsc && yarn test && yarn build",
 		"ci": "yarn lint && yarn tsc && yarn test",
 		"update:badges": "node scripts/update-badge-versions.js"
