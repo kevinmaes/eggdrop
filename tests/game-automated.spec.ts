@@ -12,7 +12,6 @@ declare global {
 
 test.describe('Game', () => {
   let gameConfig: ReturnType<typeof getGameConfig> | undefined;
-
   // Shared setup for all tests
   test.beforeEach(async ({ page }) => {
     // Listen for console messages from the browser
@@ -526,5 +525,178 @@ test.describe('Game', () => {
 
     // Assert that the score increased
     expect(finalScore).toBeGreaterThan(initialScore);
+  });
+
+  test('should move the chef to catch eggs one after another until the level ends', async ({
+    page,
+  }) => {
+    // let testAPI: TestAPI | undefined;
+    let whiteEggsCaught = 0;
+    let goldEggsCaught = 0;
+    let blackEggsCaught = 0;
+    let totalEggsCaught = 0;
+    let totalScore = 0;
+
+    // Start the game
+    await page.evaluate(() => {
+      window.__TEST_API__?.app?.send({ type: 'Play' });
+    });
+
+    // Get the initial score before catching any eggs
+    // let previousScore = await page.evaluate(() => {
+    //   const testAPI = window.__TEST_API__;
+    //   return testAPI?.getGameLevelScore() ?? 0;
+    // });
+
+    // Loop until the gameLevel exits the Playing state
+    while (true) {
+      // Check if the gameLevel is still in the Playing state
+      const isPlaying = await page.evaluate(() => {
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        return gameLevel?.getSnapshot().matches('Playing');
+      });
+      if (!isPlaying) break;
+
+      // Wait for the next catchable egg
+      const catchableEggHandle = await page.waitForFunction(
+        () => {
+          const testAPI = window.__TEST_API__;
+          const gameLevel = testAPI?.gameLevel;
+          if (!gameLevel) return undefined;
+          const eggActorRefs = gameLevel.getSnapshot().context.eggActorRefs;
+          const catchableEggActorRefs = eggActorRefs.filter(
+            eggRef => eggRef.getSnapshot().context.color !== 'black'
+          );
+          if (catchableEggActorRefs.length > 0) {
+            const catchableEggRef = catchableEggActorRefs[0];
+            const context = catchableEggRef.getSnapshot().context;
+            return {
+              id: catchableEggRef.id,
+              position: context.position,
+            };
+          }
+          return undefined;
+        },
+        { timeout: 20000 }
+      );
+      const catchableEggData = await catchableEggHandle.jsonValue();
+      if (!catchableEggData) break;
+
+      const eggXPos = catchableEggData.position.x;
+
+      // Get chef's current X position
+      const chefXPos = await page.evaluate(() => {
+        const testAPI = window.__TEST_API__;
+        return testAPI?.getChefPosition()?.x;
+      });
+      if (typeof chefXPos !== 'number') break;
+
+      // Determine which direction to move the Chef
+      const keyToPress = eggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
+      const moveDirection: 'right' | 'left' =
+        keyToPress === 'ArrowRight' ? 'right' : 'left';
+
+      // Assess the chef's X position
+      const chefPotRimHitX = await page.evaluate(
+        (direction: 'right' | 'left') => {
+          const testAPI = window.__TEST_API__;
+          return testAPI?.getChefPotRimCenterHitX(direction);
+        },
+        moveDirection
+      );
+      if (!chefPotRimHitX) break;
+
+      await page.keyboard.down(keyToPress);
+
+      // Wait for the Chef to reach the egg's xPosition
+      await page.waitForFunction(
+        ({
+          eggXPos,
+          direction,
+        }: {
+          eggXPos: number;
+          direction: 'right' | 'left';
+        }) => {
+          const testAPI = window.__TEST_API__;
+          const potRimHitX = testAPI?.getChefPotRimCenterHitX(direction);
+          if (!potRimHitX) return false;
+          return direction === 'right'
+            ? potRimHitX >= eggXPos
+            : potRimHitX <= eggXPos;
+        },
+        { eggXPos, direction: moveDirection },
+        { timeout: 5000 }
+      );
+
+      // Release the key to keep the chef at its present position
+      await page.keyboard.up(keyToPress);
+
+      // Wait until the egg is caught
+      const doneEggHandle = await page.waitForFunction(
+        async eggRefId => {
+          const testAPI = window.__TEST_API__;
+          if (testAPI) {
+            const doneEggActorRef =
+              testAPI?.findAndDeleteDoneEggActorRef(eggRefId);
+            if (doneEggActorRef !== null) {
+              const snapshot = doneEggActorRef?.getSnapshot();
+              const { resultStatus, color } = snapshot?.context ?? {};
+              return {
+                id: eggRefId,
+                resultStatus,
+                color,
+              };
+            }
+          }
+          return null;
+        },
+        catchableEggData.id,
+        { timeout: 6_000 }
+      );
+      const doneEggData = await doneEggHandle.jsonValue();
+      if (doneEggData !== null) {
+        if (doneEggData.resultStatus === 'Caught') {
+          totalEggsCaught++;
+          console.log('Egg caught', doneEggData.id, 'Total:', totalEggsCaught);
+          switch (doneEggData.color) {
+            case 'white':
+              whiteEggsCaught++;
+              totalScore += gameConfig?.egg.points.white ?? 0;
+              break;
+            case 'gold':
+              goldEggsCaught++;
+              totalScore += gameConfig?.egg.points.gold ?? 0;
+              break;
+            case 'black':
+              blackEggsCaught++;
+              totalScore = 0;
+              break;
+          }
+        } else {
+          console.log(
+            'Failed to catch egg',
+            doneEggData?.id,
+            doneEggData?.resultStatus
+          );
+          continue;
+        }
+      }
+    }
+
+    // Get the score after catching the egg
+    const currentScore = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      return testAPI?.getGameLevelScore() ?? 0;
+    });
+
+    const isGameLevelDone = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      const gameLevel = testAPI?.gameLevel;
+      return gameLevel?.getSnapshot().matches('Done');
+    });
+
+    expect(isGameLevelDone).toBe(true);
+    expect(currentScore).toEqual(totalScore);
   });
 });
