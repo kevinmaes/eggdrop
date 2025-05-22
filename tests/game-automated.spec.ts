@@ -76,6 +76,7 @@ test.describe('@automated Game', () => {
 
     // Helper function to catch a single egg
     async function catchNextEgg(): Promise<boolean> {
+      console.log('\n\nStart catchNextEgg');
       // Check if game is still playing
       const isPlaying = await page.evaluate(() => {
         const testAPI = window.__TEST_API__;
@@ -208,13 +209,15 @@ test.describe('@automated Game', () => {
         }
       }
 
-      const isGameLevelStillPlaying = await page.evaluate(() => {
-        const testAPI = window.__TEST_API__;
-        const gameLevel = testAPI?.gameLevel;
-        return gameLevel?.getSnapshot().matches('Playing');
-      });
+      // const isGameLevelStillPlaying = await page.evaluate(() => {
+      //   const testAPI = window.__TEST_API__;
+      //   const gameLevel = testAPI?.gameLevel;
+      //   return gameLevel?.getSnapshot().matches('Playing');
+      // });
 
-      return !!isGameLevelStillPlaying;
+      // return !!isGameLevelStillPlaying;
+
+      return true;
     }
 
     // Main test loop - recursively catch eggs until game ends
