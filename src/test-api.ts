@@ -8,11 +8,13 @@ export interface TestAPI {
   app: AppActorRef | null;
   chef: ChefActorRef | null;
   gameLevel: GameLevelActorRef | null;
-  eggMap: Map<string, EggActorRef>;
+  doneEggActorRefsMap: Map<string, EggActorRef>;
   getChefPosition: () => { x: number; y: number };
   getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => number;
   getGameLevelScore: () => number;
   getGameLevelRemainingTime: () => number;
+  markEggAsDone: (eggActorRef: EggActorRef) => void;
+  findAndDeleteDoneEggActorRef: (eggActorRefId: string) => EggActorRef | null;
 }
 
 // Type declaration for the window object
@@ -24,7 +26,10 @@ declare global {
 }
 
 // Store the latest state from each machine
-type TestAPIState = Pick<TestAPI, 'app' | 'chef' | 'gameLevel' | 'eggMap'>;
+type TestAPIState = Pick<
+  TestAPI,
+  'app' | 'chef' | 'gameLevel' | 'doneEggActorRefsMap'
+>;
 type TestAPIUpdate = Partial<TestAPIState>;
 
 // Metadata about test API updates
@@ -39,7 +44,7 @@ const state: TestAPIState = {
   app: null,
   chef: null,
   gameLevel: null,
-  eggMap: new Map(),
+  doneEggActorRefsMap: new Map(),
 };
 
 // Initialize metadata
@@ -75,7 +80,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
     app: state.app as AppActorRef,
     chef: state.chef as ChefActorRef,
     gameLevel: state.gameLevel as GameLevelActorRef,
-    eggMap: state.eggMap,
+    doneEggActorRefsMap: state.doneEggActorRefsMap,
     // Convenience getters for commonly accessed values
     getChefPosition: () => {
       return state.chef?.getSnapshot().context.position ?? { x: 0, y: 0 };
@@ -105,6 +110,17 @@ function createTestAPI(state: TestAPIState): TestAPI {
     },
     getGameLevelRemainingTime: () => {
       return state.gameLevel?.getSnapshot().context.remainingMS ?? 0;
+    },
+    markEggAsDone: (eggActorRef: EggActorRef) => {
+      state.doneEggActorRefsMap.set(eggActorRef.id, eggActorRef);
+    },
+    findAndDeleteDoneEggActorRef: (eggActorRefId: string) => {
+      const doneEggActorRef = state.doneEggActorRefsMap.get(eggActorRefId);
+      if (doneEggActorRef) {
+        state.doneEggActorRefsMap.delete(eggActorRefId);
+        return doneEggActorRef;
+      }
+      return null;
     },
   };
 }
@@ -183,4 +199,8 @@ export function setActorRef(actorRef: EggDropGameActorRef) {
   // scheduleUpdate(state);
 
   updateWindowObject(state);
+}
+
+export function markEggAsDone(eggActorRef: EggActorRef) {
+  state.doneEggActorRefsMap.set(eggActorRef.id, eggActorRef);
 }
