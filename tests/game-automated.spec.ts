@@ -123,6 +123,7 @@ test.describe('@automated Game', () => {
       const moveDirection: 'right' | 'left' =
         keyToPress === 'ArrowRight' ? 'right' : 'left';
 
+      // Get the x position of the chef's pot rim
       const chefPotRimHitX = await page.evaluate(
         (direction: 'right' | 'left') => {
           const testAPI = window.__TEST_API__;
@@ -180,39 +181,50 @@ test.describe('@automated Game', () => {
       );
       const doneEggData = await doneEggHandle.jsonValue();
 
-      if (doneEggData !== null && doneEggData.resultStatus === 'Caught') {
-        totalEggsCaught++;
-        console.log('Egg caught', doneEggData.id, 'Total:', totalEggsCaught);
-        switch (doneEggData.color) {
-          case 'white':
-            whiteEggsCaught++;
-            totalScore += gameConfig?.egg.points.white ?? 0;
-            break;
-          case 'gold':
-            goldEggsCaught++;
-            totalScore += gameConfig?.egg.points.gold ?? 0;
-            break;
-          case 'black':
-            blackEggsCaught++;
-            totalScore = 0;
-            break;
+      if (doneEggData !== null) {
+        if (doneEggData.resultStatus === 'Caught') {
+          totalEggsCaught++;
+          console.log('Egg caught', doneEggData.id, 'Total:', totalEggsCaught);
+          switch (doneEggData.color) {
+            case 'white':
+              whiteEggsCaught++;
+              totalScore += gameConfig?.egg.points.white ?? 0;
+              break;
+            case 'gold':
+              goldEggsCaught++;
+              totalScore += gameConfig?.egg.points.gold ?? 0;
+              break;
+            case 'black':
+              blackEggsCaught++;
+              totalScore = 0;
+              break;
+          }
+        } else {
+          console.log(
+            'Failed to catch egg',
+            doneEggData?.id,
+            doneEggData?.resultStatus
+          );
         }
-        return true;
-      } else {
-        console.log(
-          'Failed to catch egg',
-          doneEggData?.id,
-          doneEggData?.resultStatus
-        );
-        return false;
       }
+
+      const isGameLevelStillPlaying = await page.evaluate(() => {
+        const testAPI = window.__TEST_API__;
+        const gameLevel = testAPI?.gameLevel;
+        return gameLevel?.getSnapshot().matches('Playing');
+      });
+
+      return !!isGameLevelStillPlaying;
     }
 
     // Main test loop - recursively catch eggs until game ends
     while (await catchNextEgg()) {
+      console.log('Next egg');
       // Continue catching eggs until catchNextEgg returns false
       // (which happens when game ends or no more catchable eggs)
     }
+
+    console.log('Outside of loop');
 
     // Verify final game state
     const currentScore = await page.evaluate(() => {
