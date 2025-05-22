@@ -1,11 +1,9 @@
 name: Playwright Automated Tests
 on:
-  schedule:
-    # Run at 2 AM UTC every day
-    - cron: '0 2 * * *'
+  workflow_dispatch: # This makes the workflow only run manually
 
 jobs:
-  test-automated:
+  test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
