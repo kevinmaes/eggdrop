@@ -5,7 +5,7 @@ on:
     - cron: '0 2 * * *'
 
 jobs:
-  test:
+  test-automated:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
