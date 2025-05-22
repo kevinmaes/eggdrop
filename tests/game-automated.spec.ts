@@ -534,7 +534,6 @@ test.describe('Game', () => {
     page,
   }) => {
     test.setTimeout(300000); // 5 minutes for this specific test
-    // let testAPI: TestAPI | undefined;
     let whiteEggsCaught = 0;
     let goldEggsCaught = 0;
     let blackEggsCaught = 0;
@@ -546,23 +545,17 @@ test.describe('Game', () => {
       window.__TEST_API__?.app?.send({ type: 'Play' });
     });
 
-    // Get the initial score before catching any eggs
-    // let previousScore = await page.evaluate(() => {
-    //   const testAPI = window.__TEST_API__;
-    //   return testAPI?.getGameLevelScore() ?? 0;
-    // });
-
-    // Loop until the gameLevel exits the Playing state
-    while (true) {
-      // Check if the gameLevel is still in the Playing state
+    // Helper function to catch a single egg
+    async function catchNextEgg(): Promise<boolean> {
+      // Check if game is still playing
       const isPlaying = await page.evaluate(() => {
         const testAPI = window.__TEST_API__;
         const gameLevel = testAPI?.gameLevel;
         return gameLevel?.getSnapshot().matches('Playing');
       });
-      if (!isPlaying) break;
+      if (!isPlaying) return false;
 
-      // Wait for the next catchable egg
+      // Wait for and get the next catchable egg
       const catchableEggHandle = await page.waitForFunction(
         () => {
           const testAPI = window.__TEST_API__;
@@ -585,23 +578,22 @@ test.describe('Game', () => {
         { timeout: 20000 }
       );
       const catchableEggData = await catchableEggHandle.jsonValue();
-      if (!catchableEggData) break;
+      if (!catchableEggData) return false;
 
       const eggXPos = catchableEggData.position.x;
 
-      // Get chef's current X position
+      // Get chef's current position
       const chefXPos = await page.evaluate(() => {
         const testAPI = window.__TEST_API__;
         return testAPI?.getChefPosition()?.x;
       });
-      if (typeof chefXPos !== 'number') break;
+      if (typeof chefXPos !== 'number') return false;
 
-      // Determine which direction to move the Chef
+      // Move chef to catch the egg
       const keyToPress = eggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
       const moveDirection: 'right' | 'left' =
         keyToPress === 'ArrowRight' ? 'right' : 'left';
 
-      // Assess the chef's X position
       const chefPotRimHitX = await page.evaluate(
         (direction: 'right' | 'left') => {
           const testAPI = window.__TEST_API__;
@@ -609,11 +601,11 @@ test.describe('Game', () => {
         },
         moveDirection
       );
-      if (!chefPotRimHitX) break;
+      if (!chefPotRimHitX) return false;
 
       await page.keyboard.down(keyToPress);
 
-      // Wait for the Chef to reach the egg's xPosition
+      // Wait for chef to reach egg position
       await page.waitForFunction(
         ({
           eggXPos,
@@ -633,10 +625,9 @@ test.describe('Game', () => {
         { timeout: 5000 }
       );
 
-      // Release the key to keep the chef at its present position
       await page.keyboard.up(keyToPress);
 
-      // Wait until the egg is caught
+      // Wait for egg to be caught and get result
       const doneEggHandle = await page.waitForFunction(
         async eggRefId => {
           const testAPI = window.__TEST_API__;
@@ -656,39 +647,45 @@ test.describe('Game', () => {
           return null;
         },
         catchableEggData.id,
-        { timeout: 6_000 }
+        { timeout: 6000 }
       );
       const doneEggData = await doneEggHandle.jsonValue();
-      if (doneEggData !== null) {
-        if (doneEggData.resultStatus === 'Caught') {
-          totalEggsCaught++;
-          console.log('Egg caught', doneEggData.id, 'Total:', totalEggsCaught);
-          switch (doneEggData.color) {
-            case 'white':
-              whiteEggsCaught++;
-              totalScore += gameConfig?.egg.points.white ?? 0;
-              break;
-            case 'gold':
-              goldEggsCaught++;
-              totalScore += gameConfig?.egg.points.gold ?? 0;
-              break;
-            case 'black':
-              blackEggsCaught++;
-              totalScore = 0;
-              break;
-          }
-        } else {
-          console.log(
-            'Failed to catch egg',
-            doneEggData?.id,
-            doneEggData?.resultStatus
-          );
-          continue;
+
+      if (doneEggData !== null && doneEggData.resultStatus === 'Caught') {
+        totalEggsCaught++;
+        console.log('Egg caught', doneEggData.id, 'Total:', totalEggsCaught);
+        switch (doneEggData.color) {
+          case 'white':
+            whiteEggsCaught++;
+            totalScore += gameConfig?.egg.points.white ?? 0;
+            break;
+          case 'gold':
+            goldEggsCaught++;
+            totalScore += gameConfig?.egg.points.gold ?? 0;
+            break;
+          case 'black':
+            blackEggsCaught++;
+            totalScore = 0;
+            break;
         }
+        return true;
+      } else {
+        console.log(
+          'Failed to catch egg',
+          doneEggData?.id,
+          doneEggData?.resultStatus
+        );
+        return false;
       }
     }
 
-    // Get the score after catching the egg
+    // Main test loop - recursively catch eggs until game ends
+    while (await catchNextEgg()) {
+      // Continue catching eggs until catchNextEgg returns false
+      // (which happens when game ends or no more catchable eggs)
+    }
+
+    // Verify final game state
     const currentScore = await page.evaluate(() => {
       const testAPI = window.__TEST_API__;
       return testAPI?.getGameLevelScore() ?? 0;
