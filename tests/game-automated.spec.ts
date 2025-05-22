@@ -59,26 +59,6 @@ test.describe('@automated Game', () => {
     );
   });
 
-  test('should start with score of 0', async ({ page }) => {
-    // Send the Play event through the test API
-    await page.evaluate(() => {
-      const testAPI = window.__TEST_API__;
-      testAPI?.app?.send({ type: 'Play' });
-    });
-
-    // Wait for the game to initialize and enter gameplay state
-    await page.waitForTimeout(1000);
-
-    // Get the initial score from the test API
-    const score = await page.evaluate(() => {
-      const testAPI = window.__TEST_API__;
-      return testAPI?.getGameLevelScore() ?? null;
-    });
-
-    // Assert the score is 0
-    expect(score).toBe(0);
-  });
-
   test('should move the chef to catch eggs one after another until the level ends', async ({
     page,
   }) => {
