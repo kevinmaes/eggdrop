@@ -11,6 +11,7 @@ import {
 
 import { chefMachine } from '../Chef/chef.machine';
 import {
+  type EggActorRef,
   type EggColor,
   type EggDoneEvent,
   type EggResultStatus,
@@ -22,7 +23,7 @@ import {
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
-import { setActorRef } from '../test-api';
+import { markEggAsDone, setActorRef } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
 
 import {
@@ -120,10 +121,19 @@ export const gameLevelMachine = setup({
         ),
     }),
     removeEggActorRef: assign({
-      eggActorRefs: ({ context }) =>
-        context.eggActorRefs.filter(
-          eggActorRef => eggActorRef.getSnapshot().status !== 'done'
-        ),
+      eggActorRefs: ({ context }) => {
+        const remainingEggs = [];
+        for (const eggActorRef of context.eggActorRefs) {
+          if (eggActorRef.getSnapshot().status === 'done') {
+            if (context.gameConfig.isTestMode) {
+              markEggAsDone(eggActorRef as EggActorRef);
+            }
+          } else {
+            remainingEggs.push(eggActorRef);
+          }
+        }
+        return remainingEggs;
+      },
     }),
     spawnNewHen: assign(({ context, spawn }) => {
       const index = context.nextHenIndex;
