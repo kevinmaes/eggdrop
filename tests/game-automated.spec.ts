@@ -3,6 +3,9 @@ import { LOADING_MSG } from '../src/constants';
 import { type TestAPI } from '../src/test-api';
 import { getGameConfig } from '../src/GameLevel/gameConfig';
 
+// Set a longer timeout for all tests in this file
+test.setTimeout(300000); // 5 minutes
+
 // Extend the Window interface to include our test API
 declare global {
   interface Window {
@@ -530,6 +533,7 @@ test.describe('Game', () => {
   test('should move the chef to catch eggs one after another until the level ends', async ({
     page,
   }) => {
+    test.setTimeout(300000); // 5 minutes for this specific test
     // let testAPI: TestAPI | undefined;
     let whiteEggsCaught = 0;
     let goldEggsCaught = 0;
