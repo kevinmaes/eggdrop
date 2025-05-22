@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { assign, log, setup, type OutputFrom } from 'xstate';
+import { assign, setup, type OutputFrom } from 'xstate';
 
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Position } from '../types';
