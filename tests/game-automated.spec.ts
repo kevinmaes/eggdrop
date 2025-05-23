@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LOADING_MSG } from '../src/constants';
 import { type TestAPI } from '../src/test-api';
 import { getGameConfig } from '../src/GameLevel/gameConfig';
+import { createLogger } from './helpers';
 
 // Set a longer timeout for all tests in this file
 test.setTimeout(300000); // 5 minutes
@@ -63,6 +64,7 @@ test.describe('@automated Game', () => {
     page,
   }) => {
     test.setTimeout(300000); // 5 minutes for this specific test
+    const { logStep } = createLogger();
     let whiteEggsCaught = 0;
     let goldEggsCaught = 0;
     let blackEggsCaught = 0;
@@ -76,16 +78,22 @@ test.describe('@automated Game', () => {
 
     // Helper function to catch a single egg
     async function catchNextEgg(): Promise<boolean> {
-      console.log('\n\nStart catchNextEgg');
+      logStep('Starting new egg catch cycle');
+
       // Check if game is still playing
       const isPlaying = await page.evaluate(() => {
         const testAPI = window.__TEST_API__;
         const gameLevel = testAPI?.gameLevel;
         return gameLevel?.getSnapshot().matches('Playing');
       });
-      if (!isPlaying) return false;
+      if (!isPlaying) {
+        logStep('Game is no longer playing, ending cycle');
+        return false;
+      }
+      logStep('Game is still playing, proceeding with egg catch');
 
       // Wait for and get the next catchable egg
+      logStep('Looking for next catchable egg...');
       const catchableEggHandle = await page.waitForFunction(
         () => {
           const testAPI = window.__TEST_API__;
@@ -101,6 +109,7 @@ test.describe('@automated Game', () => {
             return {
               id: catchableEggRef.id,
               position: context.position,
+              color: context.color,
             };
           }
           return undefined;
@@ -108,21 +117,33 @@ test.describe('@automated Game', () => {
         { timeout: 20000 }
       );
       const catchableEggData = await catchableEggHandle.jsonValue();
-      if (!catchableEggData) return false;
+      if (!catchableEggData) {
+        logStep('No catchable eggs found, ending cycle');
+        return false;
+      }
+      logStep(
+        `Found catchable egg: ${catchableEggData.color} egg at x=${catchableEggData.position.x}`
+      );
 
       const eggXPos = catchableEggData.position.x;
 
       // Get chef's current position
+      logStep('Getting chef position...');
       const chefXPos = await page.evaluate(() => {
         const testAPI = window.__TEST_API__;
         return testAPI?.getChefPosition()?.x;
       });
-      if (typeof chefXPos !== 'number') return false;
+      if (typeof chefXPos !== 'number') {
+        logStep('Failed to get chef position, ending cycle');
+        return false;
+      }
+      logStep(`Chef position: x=${chefXPos}`);
 
       // Move chef to catch the egg
       const keyToPress = eggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
       const moveDirection: 'right' | 'left' =
         keyToPress === 'ArrowRight' ? 'right' : 'left';
+      logStep(`Moving chef ${moveDirection} to catch egg`);
 
       // Get the x position of the chef's pot rim
       const chefPotRimHitX = await page.evaluate(
@@ -132,11 +153,17 @@ test.describe('@automated Game', () => {
         },
         moveDirection
       );
-      if (!chefPotRimHitX) return false;
+      if (!chefPotRimHitX) {
+        logStep('Failed to get chef pot rim position, ending cycle');
+        return false;
+      }
+      logStep(`Chef pot rim position: x=${chefPotRimHitX}`);
 
+      logStep('Pressing movement key...');
       await page.keyboard.down(keyToPress);
 
       // Wait for chef to reach egg position
+      logStep('Waiting for chef to reach egg position...');
       await page.waitForFunction(
         ({
           eggXPos,
@@ -155,10 +182,13 @@ test.describe('@automated Game', () => {
         { eggXPos, direction: moveDirection },
         { timeout: 5000 }
       );
+      logStep('Chef reached target position');
 
+      logStep('Releasing movement key');
       await page.keyboard.up(keyToPress);
 
       // Wait for egg to be caught and get result
+      logStep('Waiting for egg catch result...');
       const doneEggHandle = await page.waitForFunction(
         async eggRefId => {
           const testAPI = window.__TEST_API__;
@@ -185,7 +215,9 @@ test.describe('@automated Game', () => {
       if (doneEggData !== null) {
         if (doneEggData.resultStatus === 'Caught') {
           totalEggsCaught++;
-          console.log('Egg caught', doneEggData.id, 'Total:', totalEggsCaught);
+          logStep(
+            `Successfully caught ${doneEggData.color} egg! Total eggs caught: ${totalEggsCaught}`
+          );
           switch (doneEggData.color) {
             case 'white':
               whiteEggsCaught++;
@@ -200,28 +232,26 @@ test.describe('@automated Game', () => {
               totalScore = 0;
               break;
           }
+          logStep(`Current score: ${totalScore}`);
         } else {
-          console.log(
-            'Failed to catch egg',
-            doneEggData?.id,
-            doneEggData?.resultStatus
-          );
+          logStep(`Failed to catch egg: ${doneEggData.resultStatus}`);
         }
+      } else {
+        logStep('No result received for egg catch attempt');
       }
 
       return true;
     }
 
     // Main test loop - recursively catch eggs until game ends
+    logStep('Starting main egg catching loop');
     while (await catchNextEgg()) {
-      console.log('Next egg');
-      // Continue catching eggs until catchNextEgg returns false
-      // (which happens when game ends or no more catchable eggs)
+      logStep('Completed egg catch cycle, starting next one');
     }
-
-    console.log('Outside of loop');
+    logStep('Main egg catching loop ended');
 
     // Verify final game state
+    logStep('Verifying final game state...');
     const currentScore = await page.evaluate(() => {
       const testAPI = window.__TEST_API__;
       return testAPI?.getGameLevelScore() ?? 0;
@@ -232,6 +262,12 @@ test.describe('@automated Game', () => {
       const gameLevel = testAPI?.gameLevel;
       return gameLevel?.getSnapshot().matches('Done');
     });
+
+    logStep(`Final score: ${currentScore}`);
+    logStep(`Game level done: ${isGameLevelDone}`);
+    logStep(
+      `Total eggs caught: ${totalEggsCaught} (White: ${whiteEggsCaught}, Gold: ${goldEggsCaught}, Black: ${blackEggsCaught})`
+    );
 
     expect(isGameLevelDone).toBe(true);
     expect(currentScore).toEqual(totalScore);
