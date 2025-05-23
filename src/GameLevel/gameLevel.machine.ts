@@ -22,6 +22,7 @@ import {
   type EggCaughtPointsDoneEvent,
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
+import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
 import { markEggAsDone, setActorRef } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
@@ -103,6 +104,8 @@ export const gameLevelMachine = setup({
       console.log('setting gameLevel actor ref for tests');
       if (context.gameConfig.isTestMode) {
         setActorRef(self as GameLevelActorRef);
+        // Register with event bus
+        eventBus.registerGameActor('gameLevel', self as GameLevelActorRef);
       }
     },
     setChefPotRimHitRef: assign({

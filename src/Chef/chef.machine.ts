@@ -3,6 +3,7 @@ import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
 import { getGameConfig } from '../GameLevel/gameConfig';
+import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
 import { setActorRef } from '../test-api';
 
@@ -56,6 +57,8 @@ export const chefMachine = setup({
       // Set the app ref on the test API only on creation
       if (context.gameConfig.isTestMode) {
         setActorRef(self as ChefActorRef);
+        // Register with event bus
+        eventBus.registerGameActor('chef', self as ChefActorRef);
       }
     },
     setChefRef: assign({

@@ -9,6 +9,7 @@ import {
 } from 'xstate';
 
 import { getGameConfig } from '../GameLevel/gameConfig';
+import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Direction, type Position } from '../types';
@@ -114,6 +115,11 @@ export const eggMachine = setup({
     setEggRef: assign({
       eggRef: (_, params: React.RefObject<Konva.Image>) => params,
     }),
+    registerWithEventBus: ({ context, self }) => {
+      if (context.gameConfig.isTestMode) {
+        eventBus.registerGameActor('egg', self as EggActorRef);
+      }
+    },
     pause: assign({
       gamePaused: true,
     }),
@@ -189,6 +195,7 @@ export const eggMachine = setup({
 }).createMachine({
   id: 'Egg',
   initial: 'Idle',
+  entry: ['registerWithEventBus'],
   context: ({ input }) => {
     return {
       gameConfig: input.gameConfig,
