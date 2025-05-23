@@ -5,6 +5,7 @@ import {
   sendParent,
   type OutputFrom,
   type DoneActorEvent,
+  type ActorRefFrom,
 } from 'xstate';
 
 import { getGameConfig } from '../GameLevel/gameConfig';
@@ -25,7 +26,7 @@ export type EggResultStatus =
   | 'Offscreen';
 
 export type EggDoneEvent = DoneActorEvent<OutputFrom<typeof eggMachine>>;
-
+export type EggActorRef = ActorRefFrom<typeof eggMachine>;
 export const eggMachine = setup({
   types: {} as {
     input: {

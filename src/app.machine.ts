@@ -6,7 +6,10 @@ import { nanoid } from 'nanoid';
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
 import { getGameConfig } from './GameLevel/gameConfig';
-import { gameLevelMachine } from './GameLevel/gameLevel.machine';
+import {
+  gameLevelMachine,
+  type GameLevelActorRef,
+} from './GameLevel/gameLevel.machine';
 import { DNA } from './geneticAlgorithm/DNA';
 import { calculateFitness } from './geneticAlgorithm/eggdropGA';
 import { eliteSelection, mutateIndividual } from './geneticAlgorithm/ga';
@@ -15,10 +18,12 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
-import { updateTestAPI } from './test-api';
 
 import type { Hendividual, LevelResults } from './GameLevel/types';
 import type { GameAssets } from './types/assets';
+import { setActorRef } from './test-api';
+import type { ChefActorRef } from './Chef/chef.machine';
+import type { EggActorRef } from './Egg/egg.machine';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
 const appMachine = setup({
@@ -45,8 +50,12 @@ const appMachine = setup({
     events: { type: 'Toggle mute' } | { type: 'Play' } | { type: 'Quit' };
   },
   actions: {
-    updateTestAPI: ({ self }) => {
-      updateTestAPI({ app: self as AppActorRef });
+    setActorRefForTests: ({ context, self }) => {
+      console.log('setActorRefForTests', context.gameConfig.isTestMode);
+      // Set the app ref on the test API only on creation
+      if (context.gameConfig.isTestMode) {
+        setActorRef(self as AppActorRef);
+      }
     },
     setLoadedGameAssets: assign({
       gameAssets: (_, params: GameAssets) => params,
@@ -273,7 +282,7 @@ const appMachine = setup({
     },
   },
   initial: 'Loading',
-  entry: 'updateTestAPI',
+  entry: 'setActorRefForTests',
   states: {
     Loading: {
       initial: 'Loading Fonts',
@@ -370,6 +379,12 @@ const appMachine = setup({
     },
   },
 });
+
+export type EggDropGameActorRef =
+  | AppActorRef
+  | ChefActorRef
+  | GameLevelActorRef
+  | EggActorRef;
 
 export const AppActorContext: ReturnType<
   typeof createActorContext<typeof appMachine>
