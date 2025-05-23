@@ -209,14 +209,6 @@ test.describe('@automated Game', () => {
         }
       }
 
-      // const isGameLevelStillPlaying = await page.evaluate(() => {
-      //   const testAPI = window.__TEST_API__;
-      //   const gameLevel = testAPI?.gameLevel;
-      //   return gameLevel?.getSnapshot().matches('Playing');
-      // });
-
-      // return !!isGameLevelStillPlaying;
-
       return true;
     }
 
