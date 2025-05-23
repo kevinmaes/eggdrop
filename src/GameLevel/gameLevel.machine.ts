@@ -10,6 +10,7 @@ import {
 } from 'xstate';
 
 import { chefMachine } from '../Chef/chef.machine';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import {
   type EggActorRef,
   type EggColor,
@@ -24,7 +25,7 @@ import {
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
-import { markEggAsDone, setActorRef } from '../test-api';
+import { markEggAsDone } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
 
 import {
@@ -37,8 +38,6 @@ import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
 
 export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
-
-export const GAME_LEVEL_ACTOR_ID = 'Game Level';
 
 export const gameLevelMachine = setup({
   types: {} as {
@@ -106,7 +105,7 @@ export const gameLevelMachine = setup({
       // Set the app ref on the test API only on creation
       console.log('setting gameLevel actor ref for tests');
       if (context.gameConfig.isTestMode) {
-        setActorRef(self as GameLevelActorRef);
+        // setActorRef(self as GameLevelActorRef);
         // Register with event bus
         eventBus.registerGameActor('gameLevel', self as GameLevelActorRef);
       }

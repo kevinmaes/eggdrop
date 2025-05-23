@@ -2,10 +2,10 @@ import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
+import { CHEF_ACTOR_ID } from '../constants';
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
-import { setActorRef } from '../test-api';
 
 import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
@@ -13,8 +13,6 @@ import type { GameAssets } from '../types/assets';
 import type { ActorRefFrom } from 'xstate';
 
 export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
-
-export const CHEF_ACTOR_ID = 'Chef';
 
 export const chefMachine = setup({
   types: {} as {
@@ -59,7 +57,7 @@ export const chefMachine = setup({
     setActorRefForTests: ({ context, self }) => {
       // Set the app ref on the test API only on creation
       if (context.gameConfig.isTestMode) {
-        setActorRef(self as ChefActorRef);
+        // setActorRef(self as ChefActorRef);
         // Register with event bus
         eventBus.registerGameActor('chef', self as ChefActorRef);
       }

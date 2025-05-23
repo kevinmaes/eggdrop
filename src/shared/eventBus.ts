@@ -22,15 +22,25 @@ class EventBus {
   }
 
   setTestActor(actor: ActorRef<any, any>) {
+    console.log('setTestActor', !!actor);
     this.testActor = actor;
+    console.log(
+      'setTestActor this.actor',
+      !!this.testActor,
+      'queue',
+      this.eventQueue
+    );
     // Process any queued events
     this.eventQueue.forEach(({ event, data }) => {
+      console.log('Processing event queue', event, data);
       this.emit(event, data);
     });
     this.eventQueue = [];
   }
 
   registerGameActor(actorId: string, actor: ActorRef<any, any>) {
+    console.log('registerGameActor', actorId, actor);
+    console.log('registerGameActor queue', this.eventQueue);
     this.emit('Register game actor', { actorId, actor });
   }
 
@@ -48,6 +58,7 @@ class EventBus {
 
   emit(event: string, data: any) {
     // If we have a test actor, send the event to it
+    console.log('emit', event, data, 'has testActor', !!this.testActor);
     if (this.testActor) {
       this.testActor.send({ type: event, data });
     } else {

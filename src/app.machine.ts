@@ -5,6 +5,7 @@ import FontFaceObserver from 'fontfaceobserver';
 import { nanoid } from 'nanoid';
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
+import { APP_ACTOR_ID } from './constants';
 import { getGameConfig } from './GameLevel/gameConfig';
 import {
   gameLevelMachine,
@@ -19,7 +20,6 @@ import {
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
 import { eventBus } from './shared/eventBus';
-import { setActorRef } from './test-api';
 
 import type { ChefActorRef } from './Chef/chef.machine';
 import type { EggActorRef } from './Egg/egg.machine';
@@ -27,8 +27,6 @@ import type { Hendividual, LevelResults } from './GameLevel/types';
 import type { GameAssets } from './types/assets';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
-
-export const APP_ACTOR_ID = 'App';
 
 const appMachine = setup({
   types: {} as {
@@ -58,8 +56,9 @@ const appMachine = setup({
       console.log('setActorRefForTests', context.gameConfig.isTestMode);
       // Set the app ref on the test API only on creation
       if (context.gameConfig.isTestMode) {
-        setActorRef(self as AppActorRef);
+        // setActorRef(self as AppActorRef);
         // Register with event bus
+        console.log('Setting AppActorRef on eventBus');
         eventBus.registerGameActor('app', self as AppActorRef);
       }
     },

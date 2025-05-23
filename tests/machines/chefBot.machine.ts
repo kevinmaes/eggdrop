@@ -1,31 +1,37 @@
 import { setup } from 'xstate';
-import { getGameConfig } from '../../src/GameLevel/gameConfig';
-import { CHEF_ACTOR_ID, ChefActorRef } from '../../src/Chef/chef.machine';
-import {
-  GAME_LEVEL_ACTOR_ID,
-  GameLevelActorRef,
-} from '../../src/GameLevel/gameLevel.machine';
-import { APP_ACTOR_ID, AppActorRef } from '../../src/app.machine';
-import { EggActorRef } from '../../src/Egg/egg.machine';
+import type { ChefActorRef } from '../../src/Chef/chef.machine';
+import type { GameLevelActorRef } from '../../src/GameLevel/gameLevel.machine';
+import type { AppActorRef } from '../../src/app.machine';
+import type { EggActorRef } from '../../src/Egg/egg.machine';
 import { eventBus } from '../../src/shared/eventBus';
 import { assign } from 'xstate';
+
+// Import only the IDs as values
+import {
+  APP_ACTOR_ID,
+  GAME_LEVEL_ACTOR_ID,
+  CHEF_ACTOR_ID,
+} from '../../src/constants';
 
 type GameActorId =
   | typeof APP_ACTOR_ID
   | typeof GAME_LEVEL_ACTOR_ID
   | typeof CHEF_ACTOR_ID;
+type AnyGameActorRef = AppActorRef | GameLevelActorRef | ChefActorRef;
 
 const chefBotMachine = setup({
   types: {} as {
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
-      gameActors: Map<string, any>;
+      gameActors: Map<string, AnyGameActorRef>;
       eggActors: Map<string, EggActorRef>;
     };
     events:
       | { type: 'Start' }
       | { type: 'Next' }
-      | { type: 'Register game actor'; data: { actorId: string; actor: any } }
+      | {
+          type: 'Register game actor';
+          data: { actorId: string; actor: AnyGameActorRef };
+        }
       | {
           type: 'Register egg actor';
           data: { actorId: string; actor: EggActorRef };
@@ -34,13 +40,14 @@ const chefBotMachine = setup({
   guards: {
     ifMoreEggs: ({ context }) => {
       return (
-        (context.gameActors.get('Game Level')?.gameLevelActor?.getSnapshot()
-          .context.eggActorRefs.length ?? 0) > 0
+        ((
+          context.gameActors.get(GAME_LEVEL_ACTOR_ID) as GameLevelActorRef
+        )?.getSnapshot().context.eggActorRefs.length ?? 0) > 0
       );
     },
   },
   actions: {
-    setTestActorOnEventBus: ({ context, self }) => {
+    setTestActorOnEventBus: ({ self }) => {
       eventBus.setTestActor(self);
     },
   },
@@ -48,11 +55,10 @@ const chefBotMachine = setup({
 }).createMachine({
   id: 'chefBot',
   initial: 'Idle',
-  context: {
-    gameConfig: getGameConfig(),
+  context: ({ input }) => ({
     gameActors: new Map(),
     eggActors: new Map(),
-  },
+  }),
   entry: 'setTestActorOnEventBus',
   states: {
     Idle: {

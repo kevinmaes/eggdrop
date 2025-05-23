@@ -16,7 +16,7 @@ export function createLogger() {
   function logStep(step: string): void {
     const now = Date.now();
     const elapsed = now - lastLogTime;
-    console.log(`[${elapsed}ms] ${step}`);
+    // console.log(`[${elapsed}ms] ${step}`);
     lastLogTime = now;
   }
 
