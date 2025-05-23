@@ -31,11 +31,19 @@ class EventBus {
   }
 
   registerGameActor(actorId: string, actor: ActorRef<any, any>) {
-    this.emit('gameActorRegistered', { actorId, actor });
+    this.emit('Register game actor', { actorId, actor });
   }
 
   unregisterGameActor(actorId: string) {
     this.emit('gameActorUnregistered', { actorId });
+  }
+
+  registerEggActor(actorId: string, actor: ActorRef<any, any>) {
+    this.emit('Register egg actor', { actorId, actor });
+  }
+
+  unregisterEggActor(actorId: string) {
+    this.emit('Egg actor unregistered', { actorId });
   }
 
   emit(event: string, data: any) {

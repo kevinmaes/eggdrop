@@ -37,6 +37,9 @@ import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
 
 export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
+
+export const GAME_LEVEL_ACTOR_ID = 'Game Level';
+
 export const gameLevelMachine = setup({
   types: {} as {
     input: {
@@ -530,7 +533,7 @@ export const gameLevelMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Game Level',
+  id: GAME_LEVEL_ACTOR_ID,
   context: ({ input }) => ({
     gameConfig: input.gameConfig,
     gameAssets: input.gameAssets,

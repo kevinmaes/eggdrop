@@ -175,7 +175,7 @@ export function setActorRef(actorRef: EggDropGameActorRef) {
   const partialUpdate: TestAPIUpdate = {};
 
   switch (actorRef.getSnapshot().machine.id) {
-    case 'Egg Drop Game':
+    case 'App':
       partialUpdate.app = actorRef as AppActorRef;
       break;
     case 'Game Level':

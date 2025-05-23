@@ -1,125 +1,131 @@
 import { setup } from 'xstate';
 import { getGameConfig } from '../../src/GameLevel/gameConfig';
-import { ChefActorRef } from '../../src/Chef/chef.machine';
-import { GameLevelActorRef } from '../../src/GameLevel/gameLevel.machine';
-import { AppActorRef } from '../../src/app.machine';
+import { CHEF_ACTOR_ID, ChefActorRef } from '../../src/Chef/chef.machine';
+import {
+  GAME_LEVEL_ACTOR_ID,
+  GameLevelActorRef,
+} from '../../src/GameLevel/gameLevel.machine';
+import { APP_ACTOR_ID, AppActorRef } from '../../src/app.machine';
 import { EggActorRef } from '../../src/Egg/egg.machine';
 import { eventBus } from '../../src/shared/eventBus';
 import { assign } from 'xstate';
+
+type GameActorId =
+  | typeof APP_ACTOR_ID
+  | typeof GAME_LEVEL_ACTOR_ID
+  | typeof CHEF_ACTOR_ID;
 
 const chefBotMachine = setup({
   types: {} as {
     context: {
       gameConfig: ReturnType<typeof getGameConfig>;
-      appActorRef: AppActorRef | null;
-      gameLevelActor: GameLevelActorRef | null;
-      chefActor: ChefActorRef | null;
-      doneEggActorRefsMap: Map<string, EggActorRef>;
+      gameActors: Map<string, any>;
+      eggActors: Map<string, EggActorRef>;
     };
     events:
-      | { type: 'Set appActorRef'; appActorRef: AppActorRef }
-      | { type: 'Set gameLevelActor'; gameLevelActor: GameLevelActorRef }
-      | { type: 'Set chefActor'; chefActor: ChefActorRef }
       | { type: 'Start' }
       | { type: 'Next' }
-      | { type: 'gameActorRegistered'; data: { actorId: string; actor: any } };
+      | { type: 'Register game actor'; data: { actorId: string; actor: any } }
+      | {
+          type: 'Register egg actor';
+          data: { actorId: string; actor: EggActorRef };
+        };
   },
   guards: {
     ifMoreEggs: ({ context }) => {
       return (
-        (context.gameLevelActor?.getSnapshot().context.eggActorRefs.length ??
-          0) > 0
+        (context.gameActors.get('Game Level')?.gameLevelActor?.getSnapshot()
+          .context.eggActorRefs.length ?? 0) > 0
       );
+    },
+  },
+  actions: {
+    setTestActorOnEventBus: ({ context, self }) => {
+      eventBus.setTestActor(self);
     },
   },
   actors: {},
 }).createMachine({
   id: 'chefBot',
-  initial: 'idle',
+  initial: 'Idle',
   context: {
     gameConfig: getGameConfig(),
-    appActorRef: null,
-    gameLevelActor: null,
-    chefActor: null,
-    doneEggActorRefsMap: new Map(),
+    gameActors: new Map(),
+    eggActors: new Map(),
   },
+  entry: 'setTestActorOnEventBus',
   states: {
-    idle: {
+    Idle: {
       on: {
-        Start: 'initializing',
+        Start: 'Initializing',
       },
     },
-    initializing: {
+    Initializing: {
       on: {
-        gameActorRegistered: {
-          actions: [
-            ({ event }) => {
-              if (!event || !('data' in event)) return;
-              const { actorId, actor } = event.data;
-              // Store the actor reference based on its type
-              if (actorId.includes('app')) {
-                eventBus.emit('Set appActorRef', { appActorRef: actor });
-              } else if (actorId.includes('gameLevel')) {
-                eventBus.emit('Set gameLevelActor', { gameLevelActor: actor });
-              } else if (actorId.includes('chef')) {
-                eventBus.emit('Set chefActor', { chefActor: actor });
-              }
+        'Register game actor': {
+          actions: assign({
+            gameActors: ({ context, event }) => {
+              context.gameActors.set(event.data.actorId, event.data.actor);
+              return new Map(context.gameActors);
             },
-          ],
-        },
-        'Set appActorRef': {
-          actions: assign({
-            appActorRef: (_, event) => event.appActorRef,
-          }),
-        },
-        'Set gameLevelActor': {
-          actions: assign({
-            gameLevelActor: (_, event) => event.gameLevelActor,
-          }),
-        },
-        'Set chefActor': {
-          actions: assign({
-            chefActor: (_, event) => event.chefActor,
           }),
         },
       },
       always: {
         guard: ({ context }) =>
-          context.appActorRef !== null &&
-          context.gameLevelActor !== null &&
-          context.chefActor !== null,
-        target: 'analyzing',
+          context.gameActors.get('App') !== undefined &&
+          context.gameActors.get('Game Level') !== undefined &&
+          context.gameActors.get('Chef') !== undefined,
+        target: 'Playing',
       },
     },
-    analyzing: {
+    Playing: {
       on: {
-        Next: 'moving',
+        'Register egg actor': {
+          actions: assign({
+            eggActors: ({ context, event }) => {
+              context.eggActors.set(event.data.actorId, event.data.actor);
+              return new Map(context.eggActors);
+            },
+          }),
+        },
       },
-    },
-    moving: {
-      on: {
-        Next: 'catching',
-      },
-    },
-    catching: {
-      on: {
-        Next: 'evaluating',
-      },
-    },
-    evaluating: {
-      on: {
-        Next: [
-          {
-            guard: 'ifMoreEggs',
-            target: 'analyzing',
+      initial: 'Analyzing',
+      states: {
+        Analyzing: {
+          on: {
+            Next: 'Moving',
           },
-          {
-            target: 'done',
+        },
+        Moving: {
+          on: {
+            Next: 'Catching',
           },
-        ],
+        },
+        Catching: {
+          on: {
+            Next: 'Evaluating',
+          },
+        },
+        Evaluating: {
+          on: {
+            Next: [
+              {
+                guard: 'ifMoreEggs',
+                target: 'Analyzing',
+              },
+              {
+                target: 'Level Complete',
+              },
+            ],
+          },
+        },
+        'Level Complete': {
+          type: 'final',
+        },
       },
     },
-    done: {
+    Done: {
       type: 'final',
     },
   },

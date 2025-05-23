@@ -13,6 +13,9 @@ import type { GameAssets } from '../types/assets';
 import type { ActorRefFrom } from 'xstate';
 
 export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
+
+export const CHEF_ACTOR_ID = 'Chef';
+
 export const chefMachine = setup({
   types: {} as {
     input: {
@@ -187,7 +190,7 @@ export const chefMachine = setup({
     }),
   },
 }).createMachine({
-  id: 'Chef',
+  id: CHEF_ACTOR_ID,
   initial: 'Moving',
   context: ({ input }) => ({
     gameConfig: input.gameConfig,

@@ -3,6 +3,9 @@ import { LOADING_MSG } from '../src/constants';
 import { type TestAPI } from '../src/test-api';
 import { getGameConfig } from '../src/GameLevel/gameConfig';
 import { createLogger } from './helpers';
+import { createActor } from 'xstate';
+import { chefBotMachine } from './machines/chefBot.machine';
+import { eventBus } from '../src/shared/eventBus';
 
 // Set a longer timeout for all tests in this file
 test.setTimeout(300000); // 5 minutes
@@ -65,6 +68,11 @@ test.describe('@automated Game', () => {
   }) => {
     test.setTimeout(300000); // 5 minutes for this specific test
     const { logStep } = createLogger();
+
+    const chefBot = createActor(chefBotMachine);
+    chefBot.start();
+    eventBus.setTestActor(chefBot);
+
     let whiteEggsCaught = 0;
     let goldEggsCaught = 0;
     let blackEggsCaught = 0;

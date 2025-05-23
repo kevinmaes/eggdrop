@@ -27,6 +27,9 @@ import type { Hendividual, LevelResults } from './GameLevel/types';
 import type { GameAssets } from './types/assets';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
+
+export const APP_ACTOR_ID = 'App';
+
 const appMachine = setup({
   types: {} as {
     input: {
@@ -223,7 +226,7 @@ const appMachine = setup({
   },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QFEpQAQBEBOB7ADugOICGAtmAMQAquaANmOmQK4AuYA2gAwC6iofLlgBLNiNwA7ASAAeiAIzcA7ADoALACYArAoCcyzeoDM65Xr0A2ADQgAnovXrV3EwA5Xxheu3c92zQBfQNtUDBwCYnIwVQAZXBIIEUkoSggpGNg2Eg5VMKw8QlIKOISklJ5+JBAhUXEpGXkEY2M3VWNNNycu1rc9BW1bBwQAy1V9dQVjXU1NUzdLYNC0AsjimPjE5KhSrZT0ADEpNlg0jNVkgDdcAGsY-Iii6N3ync3Xw+PYBCvcAGMchJJJVKjJamIgY1EJZJqoAtxLNovEYkVohohNJYFKo3EjNNxjMoEYZuNoliAHoUoiV3tsXttPpITpQwNg8NhVPh6DkAGa4bBkPIrR7UjZlOm0-ZHJnfX4A+rAvig6rghVQhCTZxmZR4zQKNzI4zojWaNTGSx6ZG4omW4zkylrZ6St7i-YAZXw2DEcDOkhivzuQvCVPW9JSYYwHq9HFlkmu8qBIL4YOEEIa1SaCm8eg0c16pIG2iLxrmOYUMOMlu4fT0PnUixCFOFIadrpde0jnu9p1Z7M53LYfIFQdWTxpbYj6Cj3Z+cf+gKkSaqglTaoziH6mhclm4WbMCmUyhag3siB8OYtClmmMPR4tDeWwcdJQAkky8JQAArcuzKld1SF1w1ZRnHMdQ3GUfQIJ8SwbFPBBzGMHF9QRA1dAGTp7WbZ8YnWdBvxIOxKAARRYMQ-xqVdANAJozGcCDpnUFRtHA-wFGNCwxm0Q8sS0Al+iLLCnzHXDonwn9VDfMR0FiMBLjAehKAo1VqLkRA3B0DQnA6DSIN3fRjQ8LVdB3LFdC6U0hNHUVVDwgi7FUeztl9f050DB0RNssT7Mcn9tlneMF0VXhlKo9MaMUUkt06XEdD1HdLXY+D-DGfQdyJSxNAsQkrJFUM7IkgA5MBZDYYgwD9bAgvQZBrnodggS-H9QoA8K1IQKw2mMBFwKxEDXFxDjD3aLpDD1LoAm0NxgkbSRcAgOAZA80UU1a6QgM6bg4WNTL2kMHpZkglQTFyltxw7Va03WiLmk6bb4OzOEdyvREplrWtTpwiNJ2lE5LrXG7CS4ktzVUED+r0DwVH6c1Ps851J2nGN-tUpo+jUBLIL1bLZiS4Y5jGcGmMh7hoe8OGbIRzAMhRtrMyY7Fs3NZFIaLdQSymnFKxMctq1mKw7UbZbQzfNg8Fp672tMbQcU6bp3D6AZjXMLc3BQyw0KzAJpqF7DPLdAALXAAHcarZfkJfVRLVHxeYfFNQ8jXgostoPDotA6I9tCxCn8u8n9LaArFUtg0k3Ag7wrxPYZLGUMZJm8eF9UhpxfeeArCMkyRpNk+T6EDm7YOccsdymiPJh0QzuC3DXvdjnVLQFtOSgzhynJSAv2qsZxOkJVpYI02Y3GVywkO0SGve6qbMUFx9rL9ihxMz4rSvKyrqtq3B6oByi1qt-pxgRPRXD1EliwelQ1H52sAkMA9-BmwIgA */
-  id: 'Egg Drop Game',
+  id: APP_ACTOR_ID,
   context: ({ input }) => {
     const initialPopulation = new Array(input.gameConfig.populationSize)
       .fill(null)
@@ -293,7 +296,7 @@ const appMachine = setup({
         'Loading Fonts': {
           invoke: {
             onDone: 'Loading Sprites',
-            onError: '#Egg Drop Game.Show Error',
+            onError: `#${APP_ACTOR_ID}.Show Error`,
             src: 'loadFonts',
           },
         },
@@ -306,7 +309,7 @@ const appMachine = setup({
                 params: ({ event }) => event.output,
               },
             },
-            onError: '#Egg Drop Game.Show Error',
+            onError: `#${APP_ACTOR_ID}.Show Error`,
             src: 'loadSprites',
           },
         },
