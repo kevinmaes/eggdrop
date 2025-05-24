@@ -7,11 +7,15 @@ class EventBus {
   private listeners: Map<string, EventCallback[]>;
   private testActor: ActorRef<any, any> | null;
   private eventQueue: Array<{ event: string; data: any }>;
+  private isTestContext: boolean;
 
   private constructor() {
     this.listeners = new Map();
     this.testActor = null;
     this.eventQueue = [];
+    this.isTestContext =
+      typeof window === 'undefined' ||
+      window.location.search.includes('testMode=true');
   }
 
   static getInstance(): EventBus {
@@ -22,25 +26,37 @@ class EventBus {
   }
 
   setTestActor(actor: ActorRef<any, any>) {
-    console.log('setTestActor', !!actor);
-    this.testActor = actor;
-    console.log(
-      'setTestActor this.actor',
-      !!this.testActor,
-      'queue',
-      this.eventQueue
-    );
-    // Process any queued events
-    this.eventQueue.forEach(({ event, data }) => {
-      console.log('Processing event queue', event, data);
-      this.emit(event, data);
+    console.log('setTestActor called', {
+      hasActor: !!actor,
+      isTestContext: this.isTestContext,
+      currentTestActor: !!this.testActor,
     });
-    this.eventQueue = [];
+
+    if (!this.isTestContext) {
+      console.warn('setTestActor called outside test context');
+      return;
+    }
+
+    this.testActor = actor;
+
+    // Process any queued events
+    if (this.eventQueue.length > 0) {
+      console.log('Processing queued events:', this.eventQueue.length);
+      this.eventQueue.forEach(({ event, data }) => {
+        console.log('Processing queued event:', event);
+        this.emit(event, data);
+      });
+      this.eventQueue = [];
+    }
   }
 
   registerGameActor(actorId: string, actor: ActorRef<any, any>) {
-    console.log('registerGameActor', actorId, actor);
-    console.log('registerGameActor queue', this.eventQueue);
+    console.log('registerGameActor', {
+      actorId,
+      hasActor: !!actor,
+      isTestContext: this.isTestContext,
+      queueLength: this.eventQueue.length,
+    });
     this.emit('Register game actor', { actorId, actor });
   }
 
@@ -57,16 +73,24 @@ class EventBus {
   }
 
   emit(event: string, data: any) {
-    // If we have a test actor, send the event to it
-    console.log('emit', event, data, 'has testActor', !!this.testActor);
-    if (this.testActor) {
-      this.testActor.send({ type: event, data });
-    } else {
-      // Queue the event if test actor isn't ready
-      this.eventQueue.push({ event, data });
+    console.log('emit called', {
+      event,
+      hasTestActor: !!this.testActor,
+      isTestContext: this.isTestContext,
+      queueLength: this.eventQueue.length,
+    });
+
+    if (this.isTestContext) {
+      if (this.testActor) {
+        console.log('Sending to test actor:', event);
+        this.testActor.send({ type: event, data });
+      } else {
+        console.log('Queueing event for test actor:', event);
+        this.eventQueue.push({ event, data });
+      }
     }
 
-    // Also notify any local listeners
+    // Always notify local listeners
     const callbacks = this.listeners.get(event) || [];
     callbacks.forEach(callback => callback(data));
   }

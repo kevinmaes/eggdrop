@@ -66,33 +66,40 @@ test.describe('@automated Game', () => {
   test('should move the chef to catch eggs one after another until the level ends', async ({
     page,
   }) => {
-    console.log('Starting test');
-    test.setTimeout(300000); // 5 minutes for this specific test
+    test.setTimeout(300000);
     const { logStep } = createLogger();
 
+    // Create and start the chefBot first
     const chefBot = createActor(chefBotMachine);
-    console.log('About to call setTestActor', !!chefBot);
-    eventBus.setTestActor(chefBot);
+
+    // Add logging to track the state
     chefBot.subscribe(state => {
-      console.log(
-        'Chef bot gameActors.size:',
-        state.value,
-        state.context.gameActors.size
-      );
+      test.info().annotations.push({
+        type: 'Chef bot state',
+        description: `State: ${state.value}, gameActors.size: ${state.context.gameActors.size}`,
+      });
     });
+
+    // Start the bot and set it as test actor
     chefBot.start();
+    eventBus.setTestActor(chefBot);
+
+    // Wait a bit to ensure the test actor is set
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Now start the game
+    chefBot.send({ type: 'Start' });
+
+    // Start the game in the browser
+    await page.evaluate(() => {
+      window.__TEST_API__?.app?.send({ type: 'Play' });
+    });
 
     let whiteEggsCaught = 0;
     let goldEggsCaught = 0;
     let blackEggsCaught = 0;
     let totalEggsCaught = 0;
     let totalScore = 0;
-
-    // Start the game
-    await page.evaluate(() => {
-      window.__TEST_API__?.app?.send({ type: 'Play' });
-    });
-    chefBot.send({ type: 'Start' });
 
     // Helper function to catch a single egg
     async function catchNextEgg(): Promise<boolean> {
