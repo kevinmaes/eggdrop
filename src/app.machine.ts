@@ -5,7 +5,7 @@ import FontFaceObserver from 'fontfaceobserver';
 import { nanoid } from 'nanoid';
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
-import { APP_ACTOR_ID } from './constants';
+import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
 import { getGameConfig } from './GameLevel/gameConfig';
 import {
   gameLevelMachine,
@@ -19,7 +19,7 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
-import { eventBus } from './shared/eventBus';
+import { setActorRef } from './test-api';
 
 import type { ChefActorRef } from './Chef/chef.machine';
 import type { EggActorRef } from './Egg/egg.machine';
@@ -56,10 +56,7 @@ const appMachine = setup({
       console.log('setActorRefForTests', context.gameConfig.isTestMode);
       // Set the app ref on the test API only on creation
       if (context.gameConfig.isTestMode) {
-        // setActorRef(self as AppActorRef);
-        // Register with event bus
-        console.log('Setting AppActorRef on eventBus');
-        eventBus.registerGameActor('app', self as AppActorRef);
+        setActorRef(self as AppActorRef);
       }
     },
     setLoadedGameAssets: assign({
@@ -343,7 +340,7 @@ const appMachine = setup({
           tags: ['actively playing'],
           invoke: {
             src: 'gameLevelMachine',
-            systemId: 'gameLevelMachine',
+            systemId: GAME_LEVEL_ACTOR_ID,
             input: ({ context }) => {
               if (!context.gameAssets) {
                 throw new Error('Game assets not loaded');

@@ -10,7 +10,7 @@ import {
 } from 'xstate';
 
 import { chefMachine } from '../Chef/chef.machine';
-import { GAME_LEVEL_ACTOR_ID } from '../constants';
+import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from '../constants';
 import {
   type EggActorRef,
   type EggColor,
@@ -23,7 +23,6 @@ import {
   type EggCaughtPointsDoneEvent,
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
-import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
 import { markEggAsDone } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
@@ -101,15 +100,6 @@ export const gameLevelMachine = setup({
       | CountdownTimerTickEvent;
   },
   actions: {
-    setActorRefForTests: ({ context, self }) => {
-      // Set the app ref on the test API only on creation
-      console.log('setting gameLevel actor ref for tests');
-      if (context.gameConfig.isTestMode) {
-        // setActorRef(self as GameLevelActorRef);
-        // Register with event bus
-        eventBus.registerGameActor('gameLevel', self as GameLevelActorRef);
-      }
-    },
     setChefPotRimHitRef: assign({
       chefPotRimHitRef: (_, params: React.RefObject<Rect>) => params,
     }),
@@ -610,7 +600,6 @@ export const gameLevelMachine = setup({
     scoreData: context.scoreData,
   }),
   initial: 'Playing',
-  entry: 'setActorRefForTests',
   on: {
     'Set chefPotRimHitRef': {
       actions: {
@@ -767,7 +756,7 @@ export const gameLevelMachine = setup({
         {
           id: 'chefMachine',
           src: 'chefMachine',
-          systemId: 'chefMachine',
+          systemId: CHEF_ACTOR_ID,
           input: ({ context }) => ({
             gameConfig: context.gameConfig,
             chefConfig: context.gameConfig.chef,

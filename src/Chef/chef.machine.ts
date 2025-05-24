@@ -4,7 +4,6 @@ import { assign, fromPromise, raise, setup } from 'xstate';
 
 import { CHEF_ACTOR_ID } from '../constants';
 import { getGameConfig } from '../GameLevel/gameConfig';
-import { eventBus } from '../shared/eventBus';
 import { sounds } from '../sounds';
 
 import type { EggColor } from '../Egg/egg.machine';
@@ -54,14 +53,6 @@ export const chefMachine = setup({
       | { type: 'Reset isCatchingEgg' };
   },
   actions: {
-    setActorRefForTests: ({ context, self }) => {
-      // Set the app ref on the test API only on creation
-      if (context.gameConfig.isTestMode) {
-        // setActorRef(self as ChefActorRef);
-        // Register with event bus
-        eventBus.registerGameActor('chef', self as ChefActorRef);
-      }
-    },
     setChefRef: assign({
       chefRef: (_, params: React.RefObject<Konva.Image>) => params,
     }),
@@ -208,7 +199,6 @@ export const chefMachine = setup({
     isCatchingEgg: false,
     isTestMode: input.isTestMode,
   }),
-  entry: 'setActorRefForTests',
   on: {
     'Set chefRef': {
       actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
