@@ -1,10 +1,8 @@
-import { fromPromise, log, setup } from 'xstate';
+import { assign, fromPromise, log, setup } from 'xstate';
 import type { ChefActorRef } from '../../src/Chef/chef.machine';
 import type { GameLevelActorRef } from '../../src/GameLevel/gameLevel.machine';
 import type { AppActorRef } from '../../src/app.machine';
 import type { EggActorRef } from '../../src/Egg/egg.machine';
-import { eventBus } from '../../src/shared/eventBus';
-import { assign } from 'xstate';
 
 // Import only the IDs as values
 import {
@@ -12,7 +10,7 @@ import {
   GAME_LEVEL_ACTOR_ID,
   CHEF_ACTOR_ID,
 } from '../../src/constants';
-import { ChefData, EggData } from '../../src/test-api';
+import { ChefAndEggsData, ChefData, EggData } from '../../src/test-api';
 import { Page } from '@playwright/test';
 
 type GameActorId =
@@ -29,7 +27,7 @@ const chefBotMachine = setup({
     context: {
       page: Page;
       chef: ChefData | null;
-      eggsData: EggData[];
+      targetEgg: EggData | null;
     };
     events:
       | { type: 'Start' }
@@ -54,7 +52,17 @@ const chefBotMachine = setup({
       // );
     },
   },
-  actions: {},
+  actions: {
+    chooseNextEgg: assign({
+      targetEgg: (_, params: ChefAndEggsData) => {
+        const nextEgg = params.eggs.find(egg => egg.color !== 'black');
+        if (nextEgg) {
+          return nextEgg;
+        }
+        return null;
+      },
+    }),
+  },
   actors: {
     checkForAppActorRef: fromPromise<{ isReady: boolean }, { page: Page }>(
       async ({ input }) => {
@@ -66,6 +74,17 @@ const chefBotMachine = setup({
         };
       }
     ),
+    getChefAndEggsData: fromPromise<ChefAndEggsData, { page: Page }>(
+      async ({ input }) => {
+        const chefAndEggsData = await input.page.evaluate(() => {
+          return window.__TEST_API__?.getChefAndEggsData();
+        });
+        if (!chefAndEggsData) {
+          throw new Error('No chef and eggs data found');
+        }
+        return chefAndEggsData;
+      }
+    ),
   },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QGMAWYBmAhA9gFwDoBJCAGzAGIBlPAQwCc8BtABgF1FQAHHWASzx8cAO04gAHogC0ARgAsAJgIBWOcpYB2FpoCcLBcp0AOADQgAntJkA2AtZlHryjXL0OdGjdYC+3s2kxcQiJhAT5aUj4ALz5hKAoIETACWIA3HABrZIDsfGJQwQjo2KgENJxkWkERVjZasR5+atEkCWk9Ag1jHTlPPU0WAGYFM0sEGUG5AhlVeUGhrSMl3390XOCC8MiYuISklOF0rIIcoPywop3S8srm2qYZDlbGsJExSQRhnQIFFiNVOTyOT6IwyUaICZTGaAuTzQaLZZ+ECnPIhC7bEoUMD0eg4egELikKoYPEAWxOazOaMKGLiZUOFSqQmE93YDV4rxaoA+UgMSicwMG1h0OncGgUYIsiB0ygIriMItFHg0gyMvRWyMpeQAgsIIuYrhQAHJgcTMNnPDnNd6IawsH59IyDGQKXp-HQGcEIBTighGIbzCV-DSgnxIlGEACyOFSmJNZvqlqazJtCDtDq6TpdboVnqlCFhUzk1nhWmBLB0qpkGojBAAwlU0HHTeantwrSnWh90z7M87XYsPcovXaZHYhdYSx6Q+KdDWtYQAKKpCIAVyZu3jrfZybeXekCnhdhmvw8SpkGmUI3zl40di6cwUMrVCnngTyy7XG-iW4ebZALzWvuCCyKKBDGAo1gKAojjKEYEo+l6TrfFoHqTPMs4Xr4SLCDgEBwGIEY7pyqZSPM9oCkMwqigq4perIErgV4HgKkshiwsob7rMQZBgMRQHcgeqp2K6wpeE4Toqho9E2H6arqIYTp2iwUFcVSmyXCU-GdoJIGQX6h4Sk4Njwg4Mz0ZMnQKsKToGA4IZqTqeqkAaWlJiRwGKOBbgSi+h5ONeYy-HeCq9D08L9o4gyOVGMZue2u5cm0CBXj8ygyA4chLCWPoil6gyqAQzpwWoah6CKBgxfWjaoPFAEdnuunFtM9iun8MgyleQzDvm6VKC4kwsBl0G6GGqzvkuK6kOughxNpjXJYCBAsIoijWHIWVaA4gwjh0NHaNC0EyJoVWLjieLzUlHwuEoEpdJBTrOh6OhesdIXaL0MyZc61bhguBAACJJJdqaKEhwkdcoUMaDYoKSdh3hAA */
@@ -73,7 +92,7 @@ const chefBotMachine = setup({
   context: ({ input }) => ({
     page: input.page,
     chef: null,
-    eggsData: [],
+    targetEgg: null,
   }),
   initial: 'Idle',
   states: {
@@ -102,8 +121,19 @@ const chefBotMachine = setup({
       },
     },
     Analyzing: {
-      on: {
-        Next: 'Moving',
+      invoke: {
+        src: 'getChefAndEggsData',
+        input: ({ context }) => ({ page: context.page }),
+        onDone: [
+          {
+            target: 'Moving',
+            actions: {
+              type: 'chooseNextEgg',
+              params: ({ event }) => event.output,
+            },
+          },
+        ],
+        onError: 'Error',
       },
     },
     Moving: {
