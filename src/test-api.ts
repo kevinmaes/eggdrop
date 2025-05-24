@@ -6,7 +6,7 @@ import type { Direction, Position } from './types';
 
 // Basic interface for the test API
 
-interface ChefData {
+export interface ChefData {
   position: Position;
   speed: number;
   speedLimit: number;
@@ -20,17 +20,17 @@ interface ChefData {
   potRimCenterOffsetX: number;
 }
 
-interface EggData {
+export interface EggData {
   id: string;
   position: Position;
   color: EggColor;
 }
 
-interface EggHistoryEntry extends EggData {
+export interface EggHistoryEntry extends EggData {
   resultStatus: EggResultStatus;
 }
 
-interface ChefAndEggsData {
+export interface ChefAndEggsData {
   chef: ChefData;
   eggs: EggData[];
 }
