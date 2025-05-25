@@ -372,13 +372,13 @@ const chefBotMachine = setup({
               params: ({ event }) => event.output,
             },
             target: 'Evaluating',
-            // actions: [
-            //   log('Target egg caught'),
-            //   {
-            //     type: 'updateExpectedScore',
-            //     params: ({ event }) => event.output,
-            //   },
-            // ],
+            actions: [
+              log('Target egg caught'),
+              {
+                type: 'updateExpectedScore',
+                params: ({ event }) => event.output,
+              },
+            ],
           },
         ],
         onError: {
