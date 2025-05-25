@@ -79,6 +79,75 @@ export function calculateMovementScore(henIsMoving: boolean): number {
 }
 
 /**
+ * Calculate penalties for an egg based on various factors
+ */
+export function calculatePenalties(
+  egg: EggData,
+  chef: ChefData,
+  timeToCatch: number
+): number {
+  let totalPenalty = 0;
+
+  // Penalty for eggs that require the chef to change direction
+  if (chef.movingDirection !== 'none') {
+    const eggIsToTheRight = egg.position.x > chef.position.x;
+    const chefIsMovingRight = chef.movingDirection === 'right';
+    if (eggIsToTheRight !== chefIsMovingRight) {
+      totalPenalty += 0.5; // Penalty for direction change
+    }
+  }
+
+  // Penalty for eggs that are very close to the catch line
+  const distanceToCatchLine = Math.abs(
+    chef.position.y + chef.potRimOffsetY - egg.position.y
+  );
+  if (distanceToCatchLine < 50) {
+    totalPenalty += 0.3; // Penalty for eggs that are too close to catch line
+  }
+
+  // Penalty for eggs that are moving very fast horizontally
+  if (Math.abs(egg.henCurentTweenSpeed) > 5) {
+    totalPenalty += 0.4; // Penalty for fast-moving eggs
+  }
+
+  return totalPenalty;
+}
+
+/**
+ * Calculate bonuses for an egg based on various factors
+ */
+export function calculateBonuses(
+  egg: EggData,
+  chef: ChefData,
+  timeToCatch: number
+): number {
+  let totalBonus = 0;
+
+  // Bonus for eggs that are already in the chef's path
+  if (chef.movingDirection !== 'none') {
+    const eggIsToTheRight = egg.position.x > chef.position.x;
+    const chefIsMovingRight = chef.movingDirection === 'right';
+    if (eggIsToTheRight === chefIsMovingRight) {
+      totalBonus += 0.3; // Bonus for eggs in current path
+    }
+  }
+
+  // Bonus for eggs that are at a good height (not too high, not too low)
+  const optimalHeight = 200; // Arbitrary "good" height
+  const heightDifference = Math.abs(egg.position.y - optimalHeight);
+  if (heightDifference < 100) {
+    totalBonus += 0.2; // Bonus for eggs at good height
+  }
+
+  // Bonus for eggs that are moving slowly horizontally
+  if (Math.abs(egg.henCurentTweenSpeed) < 2) {
+    totalBonus += 0.2; // Bonus for slow-moving eggs
+  }
+
+  return totalBonus;
+}
+
+/**
  * Calculate the final score for an egg
  */
 export function calculateEggScore(
@@ -90,8 +159,13 @@ export function calculateEggScore(
   const positionScore = calculatePositionScore(egg, chef);
   const timeScore = calculateTimeScore(timeToCatch);
   const movementScore = calculateMovementScore(egg.henIsMoving);
+  const penalties = calculatePenalties(egg, chef, timeToCatch);
+  const bonuses = calculateBonuses(egg, chef, timeToCatch);
 
-  return baseScore * (positionScore + timeScore + movementScore);
+  // Apply penalties and bonuses to the base score
+  const adjustedBaseScore = baseScore * (1 - penalties + bonuses);
+
+  return adjustedBaseScore * (positionScore + timeScore + movementScore);
 }
 
 /**
