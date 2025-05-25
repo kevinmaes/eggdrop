@@ -1,8 +1,10 @@
 import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
 
 import type { AppActorRef } from './app.machine';
+import type { ChefActorRef } from './Chef/chef.machine';
 import type { EggActorRef, EggColor, EggResultStatus } from './Egg/egg.machine';
 import type { GameConfig } from './GameLevel/gameConfig';
+import type { GameLevelActorRef } from './GameLevel/gameLevel.machine';
 import type { Direction, Position } from './types';
 
 // Basic interface for the test API
@@ -40,6 +42,7 @@ export interface TestAPI {
   eggHistory: Map<string, EggHistoryEntry>;
   getGameConfig: () => GameConfig | undefined;
   getChefPosition: () => ChefData;
+  getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => number;
   getChefAndEggsData: () => ChefAndEggsData;
   getGameLevelScore: () => number;
   getGameLevelRemainingTime: () => number;
@@ -91,11 +94,18 @@ function createTestAPI(state: TestAPIState): TestAPI {
     },
     getChefPosition: () => {
       const gameConfig = state.app?.getSnapshot()?.context.gameConfig;
-      const chefSnapshot = state.app?.system.get(CHEF_ACTOR_ID)?.getSnapshot();
-      const chefContext = chefSnapshot.context;
-      const chefXPos = chefContext.position.x ?? 0;
+      const chefActorRef = state.app?.system.get(CHEF_ACTOR_ID) as ChefActorRef;
+      const chefContext = chefActorRef.getSnapshot().context;
+      const chefXPos = chefContext.position.x;
       const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
-      const direction: number = chefContext.direction;
+      const movingDirection = chefContext.movingDirection;
+      const chefPotRimWidth = gameConfig?.chef.potRim.width ?? 150;
+      const halfChefPotRimWidth = 0.5 * chefPotRimWidth;
+
+      const potRimCenterOffsetX =
+        movingDirection === 'right'
+          ? chefXPos + potRimOffsetX + halfChefPotRimWidth
+          : chefXPos - potRimOffsetX - halfChefPotRimWidth;
 
       const chefData: ChefData = {
         position: chefContext.position ?? { x: 0, y: 0 },
@@ -108,25 +118,42 @@ function createTestAPI(state: TestAPIState): TestAPI {
         direction: chefContext.direction ?? 0,
         movingDirection: chefContext.movingDirection ?? 'none',
         potRimOffsetX: gameConfig?.chef.potRim.offsetX ?? 0,
-        potRimCenterOffsetX:
-          chefXPos *
-          direction *
-          potRimOffsetX *
-          0.5 *
-          (gameConfig?.chef.potRim.width ?? 150),
+        potRimCenterOffsetX,
       };
 
       return chefData;
     },
+    getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => {
+      const snapshot = state.app?.system.get(CHEF_ACTOR_ID).getSnapshot();
+      const gameConfig = snapshot?.context.gameConfig;
+      const chefXPos = snapshot?.context.position.x ?? 0;
+      const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
+
+      if (moveDirection === 'right') {
+        return (
+          chefXPos +
+          potRimOffsetX +
+          0.5 * (gameConfig?.chef.potRim.width ?? 150)
+        );
+      } else {
+        return (
+          chefXPos -
+          potRimOffsetX -
+          0.5 * (gameConfig?.chef.potRim.width ?? 150)
+        );
+      }
+    },
     getChefAndEggsData: () => {
       const gameConfig = state.app?.getSnapshot()?.context.gameConfig;
-      const chefActorRef = state.app?.system.get(CHEF_ACTOR_ID);
-      const gameLevelActorRef = state.app?.system.get(GAME_LEVEL_ACTOR_ID);
+      const gameLevelActorRef = state.app?.system.get(
+        GAME_LEVEL_ACTOR_ID
+      ) as GameLevelActorRef;
+      const chefActorRef = state.app?.system.get(CHEF_ACTOR_ID) as ChefActorRef;
       const chefSnapshot = chefActorRef?.getSnapshot();
       const chefContext = chefSnapshot.context;
       const chefXPos = chefContext.position.x ?? 0;
       const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
-      const direction: number = chefContext.direction;
+      const direction = chefContext.direction;
 
       const chefData: ChefData = {
         position: chefContext.position ?? { x: 0, y: 0 },

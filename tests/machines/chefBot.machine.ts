@@ -162,6 +162,7 @@ const chefBotMachine = setup({
       const keyToPress = targetEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
       console.log(`Pressing ${keyToPress} to catch egg`);
 
+      console.log('downing key', keyToPress);
       await page.keyboard.down(keyToPress);
 
       // Wait until the chef is in a position to catch the target egg
@@ -190,21 +191,46 @@ const chefBotMachine = setup({
           const targetEggXPosition = targetEgg.getSnapshot().context.position.x;
 
           const chefData = testAPI?.getChefPosition();
-          console.log('chefData from testAPI?.getChefPosition()', chefData);
+          // console.log('chefData from testAPI?.getChefPosition()', chefData);
           if (!chefData) {
             console.log('no chef data found');
             return null;
           }
-          const chefXPos = chefData?.position.x;
+          // const chefXPos = chefData?.position.x;
+          const chefPotRimCenterHitX = chefData.potRimCenterOffsetX;
+
+          console.log(
+            'target',
+            targetEggXPosition,
+            'chefXPos',
+            chefData.position.x,
+            'direction',
+            chefData.movingDirection,
+            'chefPotRimCenterHitX',
+            chefPotRimCenterHitX
+          );
+
           if (
             chefData.movingDirection === 'right' &&
-            chefXPos >= targetEggXPosition
+            chefPotRimCenterHitX >= targetEggXPosition
           ) {
+            console.log(
+              'chef is moving right and is close enough to target egg',
+              chefPotRimCenterHitX,
+              targetEggXPosition,
+              chefPotRimCenterHitX >= targetEggXPosition
+            );
             return chefData;
           } else if (
             chefData.movingDirection === 'left' &&
-            chefXPos <= targetEggXPosition
+            chefPotRimCenterHitX <= targetEggXPosition
           ) {
+            console.log(
+              'chef is moving left and is close enough to target egg',
+              chefPotRimCenterHitX,
+              targetEggXPosition,
+              chefPotRimCenterHitX <= targetEggXPosition
+            );
             return chefData;
           }
           return null;
@@ -216,6 +242,7 @@ const chefBotMachine = setup({
         { timeout: 10_000 }
       );
 
+      console.log('upping key', keyToPress);
       await page.keyboard.up(keyToPress);
 
       return await chefDataHandle.jsonValue();
