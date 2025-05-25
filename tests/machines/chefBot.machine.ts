@@ -56,14 +56,15 @@ const chefBotMachine = setup({
   },
   guards: {
     isGameAppReady: (_, params: GameConfig | undefined) => !!params,
-    wasTargetEggCaught: (_, params: EggHistoryEntry | null) => {
-      return params !== null && params.resultStatus === 'Caught';
+    wasTargetEggCaught: (_, params: EggHistoryEntry | undefined) => {
+      return params !== undefined && params.resultStatus === 'Caught';
     },
+    areThereMoreEggs: (_, params: { moreEggs: boolean }) => params.moreEggs,
   },
   actions: {
     updateExpectedScore: assign({
-      expectedScore: ({ context }, params: EggHistoryEntry | null) => {
-        if (params === null) {
+      expectedScore: ({ context }, params: EggHistoryEntry | undefined) => {
+        if (params === undefined) {
           return context.expectedScore;
         }
         if (params.resultStatus === 'Caught') {
@@ -214,7 +215,7 @@ const chefBotMachine = setup({
       return chefData;
     }),
     waitToCatchTargetEgg: fromPromise<
-      EggHistoryEntry | null,
+      EggHistoryEntry | undefined,
       { page: Page; targetEggId: string }
     >(async ({ input }) => {
       // console.log('waitToCatchTargetEgg called');
@@ -224,9 +225,6 @@ const chefBotMachine = setup({
           // Check for the existence of the target egg in the eggHistory
           const testAPI = window.__TEST_API__;
           const targetEggInHistory = testAPI?.findEggInHistory(targetEggId);
-          if (!targetEggInHistory) {
-            return null;
-          }
           return targetEggInHistory;
         },
         { targetEggId: targetEggId },
@@ -235,6 +233,16 @@ const chefBotMachine = setup({
 
       return doneEgg.jsonValue();
     }),
+    checkForMoreEggs: fromPromise<{ moreEggs: boolean }, { page: Page }>(
+      async ({ input }) => {
+        const { page } = input;
+        const moreEggs = await page.evaluate(() => {
+          const testAPI = window.__TEST_API__;
+          return testAPI?.areThereMoreEggs();
+        });
+        return { moreEggs: !!moreEggs };
+      }
+    ),
   },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QGMAWYBmAhA9gFwDoBJCAGzAGIBlPAQwCc8BtABgF1FQAHHWASzx8cAO04gAHogC0ARgAsAJgIBWOcpYB2FpoCcLBcp0AOADQgAntJkA2AtZlHryjXL0OdGjdYC+3s2kxcQiJhAT5aUj4ALz5hKAoIETACWIA3HABrZIDsfGJQwQjo2KgENJxkWkERVjZasR5+atEkCWk9Ag1jHTlPPU0WAGYFM0sEGUG5AhlVeUGhrSMl3390XOCC8MiYuISklOF0rIIcoPywop3S8srm2qYZDlbGsJExSQRhnQIFFiNVOTyOT6IwyUaICZTGaAuTzQaLZZ+ECnPIhC7bEoUMD0eg4egELikKoYPEAWxOazOaMKGLiZUOFSqQmE93YDV4rxaoA+UgMSicwMG1h0OncGgUYIsiB0ygIriMItFHg0gyMvRWyMpeQAgsIIuYrhQAHJgcTMNnPDnNd6IawsH59IyDGQKXp-HQGcEIBTighGIbzCV-DSgnxIlGEACyOFSmJNZvqlqazJtCDtDq6TpdboVnqlCFhUzk1nhWmBLB0qpkGojBAAwlU0HHTeantwrSnWh90z7M87XYsPcovXaZHYhdYSx6Q+KdDWtYQAKKpCIAVyZu3jrfZybeXekCnhdhmvw8SpkGmUI3zl40di6cwUMrVCnngTyy7XG-iW4ebZALzWvuCCyKKBDGAo1gKAojjKEYEo+l6TrfFoHqTPMs4Xr4SLCDgEBwGIEY7pyqZSPM9oCkMwqigq4perIErgV4HgKkshiwsob7rMQZBgMRQHcgeqp2K6wpeE4Toqho9E2H6arqIYTp2iwUFcVSmyXCU-GdoJIGQX6h4Sk4Njwg4Mz0ZMnQKsKToGA4IZqTqeqkAaWlJiRwGKOBbgSi+h5ONeYy-HeCq9D08L9o4gyOVGMZue2u5cm0CBXj8ygyA4chLCWPoil6gyqAQzpwWoah6CKBgxfWjaoPFAEdnuunFtM9iun8MgyleQzDvm6VKC4kwsBl0G6GGqzvkuK6kOughxNpjXJYCBAsIoijWHIWVaA4gwjh0NHaNC0EyJoVWLjieLzUlHwuEoEpdJBTrOh6OhesdIXaL0MyZc61bhguBAACJJJdqaKEhwkdcoUMaDYoKSdh3hAA */
@@ -380,15 +388,24 @@ const chefBotMachine = setup({
     },
     Evaluating: {
       entry: log(`${CHEF_BOT_ACTOR_ID} Evaluating`),
-      always: [
-        {
-          // guard: 'if there are still more eggs',
-          target: 'Analyzing',
-        },
-        {
-          target: 'Done',
-        },
-      ],
+      invoke: {
+        src: 'checkForMoreEggs',
+        input: ({ context }) => ({
+          page: context.page,
+        }),
+        onDone: [
+          {
+            guard: {
+              type: 'areThereMoreEggs',
+              params: ({ event }) => event.output,
+            },
+            target: 'Analyzing',
+          },
+          {
+            target: 'Waiting To Choose Another Egg',
+          },
+        ],
+      },
     },
     Error: {
       entry: log(`${CHEF_BOT_ACTOR_ID} Error`),

@@ -44,11 +44,10 @@ export interface TestAPI {
   getChefPosition: () => ChefData;
   getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => number;
   getChefAndEggsData: () => ChefAndEggsData;
+  areThereMoreEggs: () => boolean;
   getGameLevelScore: () => number;
   getGameLevelRemainingTime: () => number;
-  // addEggToHistory: (eggHistoryEntry: EggHistoryEntry) => void;
   findEggInHistory: (id: string) => EggHistoryEntry | undefined;
-  purgeEggFromHistory: (id: string) => void;
 }
 
 // Type declaration for the window object
@@ -81,6 +80,8 @@ const metadata: UpdateMetadata = {
   lastUpdateTime: Date.now(),
   updateCount: 0,
 };
+
+const MAX_EGG_HISTORY_SIZE = 10;
 
 // Function to create the test API from current state
 function createTestAPI(state: TestAPIState): TestAPI {
@@ -190,6 +191,13 @@ function createTestAPI(state: TestAPIState): TestAPI {
 
       return chefAndEggsData;
     },
+    areThereMoreEggs: () => {
+      const gameLevelActorRef = state.app?.system.get(
+        GAME_LEVEL_ACTOR_ID
+      ) as GameLevelActorRef;
+      const { eggActorRefs } = gameLevelActorRef.getSnapshot().context;
+      return eggActorRefs.length > 0;
+    },
     getGameLevelScore: () => {
       return (
         state.app?.system.get(GAME_LEVEL_ACTOR_ID).getSnapshot().context
@@ -203,10 +211,14 @@ function createTestAPI(state: TestAPIState): TestAPI {
       );
     },
     findEggInHistory: (id: string) => {
-      return state.eggHistory.get(id);
-    },
-    purgeEggFromHistory: (id: string) => {
-      state.eggHistory.delete(id);
+      const eggHistoryEntry = state.eggHistory.get(id);
+      if (eggHistoryEntry) {
+        if (state.eggHistory.size > MAX_EGG_HISTORY_SIZE) {
+          state.eggHistory.clear();
+        }
+        return eggHistoryEntry;
+      }
+      return undefined;
     },
   };
 }
