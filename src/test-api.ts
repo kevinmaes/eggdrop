@@ -22,6 +22,7 @@ export interface ChefData {
   potRimOffsetX: number;
   potRimOffsetY: number;
   potRimCenterOffsetX: number;
+  potRimWidth: number;
 }
 
 export interface EggData {
@@ -126,6 +127,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
         potRimOffsetX: gameConfig?.chef.potRim.offsetX ?? 0,
         potRimOffsetY: gameConfig?.chef.potRim.offsetY ?? 0,
         potRimCenterOffsetX,
+        potRimWidth: chefPotRimWidth,
       };
 
       return chefData;
@@ -180,6 +182,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
           potRimOffsetX *
           0.5 *
           (gameConfig?.chef.potRim.width ?? 150),
+        potRimWidth: gameConfig?.chef.potRim.width ?? 150,
       };
 
       const { eggActorRefs } = gameLevelActorRef.getSnapshot().context;
