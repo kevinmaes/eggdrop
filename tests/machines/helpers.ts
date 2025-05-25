@@ -18,13 +18,44 @@ export function calculateTimeToCatch(egg: EggData, chef: ChefData): number {
 }
 
 /**
- * Calculate the maximum distance the chef can travel in the given time
+ * Calculate the maximum distance the chef can travel in the given time,
+ * considering acceleration, current speed, and direction
  */
 export function calculateMaxTravel(
   timeToCatch: number,
-  chef: ChefData
+  chef: ChefData,
+  egg: EggData
 ): number {
-  return chef.speedLimit * timeToCatch;
+  // If chef is already moving in the right direction, use current speed
+  const currentSpeed = chef.speed;
+  const isMovingTowardsTarget =
+    (chef.movingDirection === 'right' && egg.position.x > chef.position.x) ||
+    (chef.movingDirection === 'left' && egg.position.x < chef.position.x);
+
+  // Calculate maximum possible distance using speed limit
+  const maxDistanceAtSpeedLimit = chef.speedLimit * timeToCatch;
+
+  // If moving towards target, we can potentially go further
+  if (isMovingTowardsTarget && currentSpeed > 0) {
+    // Distance covered at current speed
+    const distanceAtCurrentSpeed = currentSpeed * timeToCatch;
+
+    // Additional distance from acceleration
+    const accelerationTime = Math.min(
+      timeToCatch,
+      (chef.speedLimit - currentSpeed) / chef.acceleration
+    );
+    const distanceFromAcceleration =
+      0.5 * chef.acceleration * accelerationTime * accelerationTime;
+
+    return Math.max(
+      maxDistanceAtSpeedLimit,
+      distanceAtCurrentSpeed + distanceFromAcceleration
+    );
+  }
+
+  // If not moving towards target or stationary, use the simpler calculation
+  return maxDistanceAtSpeedLimit;
 }
 
 /**
@@ -36,9 +67,14 @@ export function isEggReachable(
   timeToCatch: number,
   maxTravel: number
 ): boolean {
-  return (
-    timeToCatch > 0 && Math.abs(egg.position.x - chef.position.x) <= maxTravel
-  );
+  // First check if the egg hasn't fallen past the catch line
+  if (timeToCatch <= 0) return false;
+
+  const distanceToTarget = Math.abs(egg.position.x - chef.position.x);
+
+  // Add a small buffer to account for potential timing variations
+  const safetyBuffer = 50; // Increased buffer to be more lenient
+  return distanceToTarget <= maxTravel + safetyBuffer;
 }
 
 /**
@@ -174,7 +210,7 @@ export function calculateEggScore(
  */
 export function enhanceEgg(egg: EggData, chef: ChefData): EnhancedEggData {
   const timeToCatch = calculateTimeToCatch(egg, chef);
-  const maxTravel = calculateMaxTravel(timeToCatch, chef);
+  const maxTravel = calculateMaxTravel(timeToCatch, chef, egg);
   const isReachable = isEggReachable(egg, chef, timeToCatch, maxTravel);
   const score = calculateEggScore(egg, chef, timeToCatch);
 
@@ -276,8 +312,7 @@ export function calculateClusterBonus(
  */
 export function findBestEgg(
   eggs: EggData[],
-  chef: ChefData,
-  gameConfig: GameConfig
+  chef: ChefData
 ): EnhancedEggData | null {
   // Pre-sort eggs by x position for efficient neighbor checking
   const sortedEggs = [...eggs].sort((a, b) => a.position.x - b.position.x);
