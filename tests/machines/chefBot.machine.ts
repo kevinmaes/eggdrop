@@ -382,7 +382,7 @@ const chefBotMachine = setup({
           },
         ],
         onError: {
-          target: 'Error',
+          target: 'Choosing Next Egg',
           actions: log('Failed to catch target egg'),
         },
       },
