@@ -272,17 +272,35 @@ export function calculateBlackEggDanger(
 }
 
 /**
- * Calculate a cluster bonus for eggs that are near other valuable eggs
+ * Calculate a cluster bonus for eggs that are near other valuable eggs.
+ * A cluster is a group of eggs that can be caught in sequence, with the first-to-fall
+ * egg being the most important to target. The bonus considers both spatial proximity
+ * and temporal sequence of the eggs.
+ *
+ * The function uses a dynamic approach where:
+ * 1. Eggs close in y-position (falling at similar times) need to be closer in x-position
+ * 2. Eggs far apart in y-position can be further apart in x-position
+ * 3. Eggs falling in sequence get additional bonus
+ *
+ * This creates a natural "chain" of catching eggs, where catching the first egg
+ * in a cluster makes the remaining eggs more attractive targets in subsequent passes.
  */
 export function calculateClusterBonus(
   egg: EggData,
   sortedEggs: EggData[],
+  chef: ChefData,
   clusterDistance: number = 150
 ): number {
   let clusterScore = 0;
   const eggIndex = sortedEggs.findIndex(e => e.id === egg.id);
 
+  // Calculate time-to-catch for the current egg
+  // This is crucial for determining if eggs will fall in sequence
+  const eggTimeToCatch = calculateTimeToCatch(egg, chef);
+
   // Check neighboring eggs in both directions
+  // We look at 2 eggs in each direction (5 eggs total including current)
+  // This is a balance between finding clusters and computational efficiency
   for (
     let i = Math.max(0, eggIndex - 2);
     i <= Math.min(sortedEggs.length - 1, eggIndex + 2);
@@ -294,12 +312,28 @@ export function calculateClusterBonus(
     if (neighborEgg.color !== 'black') {
       const xDistance = Math.abs(egg.position.x - neighborEgg.position.x);
       const yDistance = Math.abs(egg.position.y - neighborEgg.position.y);
+      const neighborTimeToCatch = calculateTimeToCatch(neighborEgg, chef);
 
-      // If valuable egg is within cluster distance
-      if (xDistance < clusterDistance && yDistance < clusterDistance) {
-        // Higher bonus for closer valuable eggs
-        const proximityBonus = 0.3 * (1 - xDistance / clusterDistance);
-        clusterScore += proximityBonus;
+      // Calculate dynamic x-distance threshold based on y-distance
+      // If eggs are close in y (falling at similar times), they need to be closer in x
+      // This is because the chef has less time to move between catches
+      const yDistanceFactor = Math.max(0.5, 1 - yDistance / clusterDistance);
+      const dynamicXThreshold = clusterDistance * yDistanceFactor;
+
+      // If valuable egg is within dynamic x-distance and y-distance thresholds
+      if (xDistance < dynamicXThreshold && yDistance < clusterDistance) {
+        // Base proximity bonus based on x-distance
+        // Closer eggs get higher bonus, scaled by the dynamic threshold
+        const proximityBonus = 0.3 * (1 - xDistance / dynamicXThreshold);
+
+        // Time sequence bonus - higher for eggs that will fall in sequence
+        // This encourages targeting the first-to-fall egg in a cluster
+        const timeDiff = Math.abs(eggTimeToCatch - neighborTimeToCatch);
+        const timeSequenceBonus = 0.2 * (1 - timeDiff / 2); // Max 0.2 bonus for eggs falling within 2 seconds of each other
+
+        // Combine both bonuses
+        // The total bonus for each neighboring egg can be up to 0.5 (0.3 proximity + 0.2 sequence)
+        clusterScore += proximityBonus + timeSequenceBonus;
       }
     }
   }
@@ -323,7 +357,7 @@ export function findBestEgg(
 
     // Add black egg danger score and cluster bonus
     const blackEggDanger = calculateBlackEggDanger(egg, sortedEggs, chef);
-    const clusterBonus = calculateClusterBonus(egg, sortedEggs);
+    const clusterBonus = calculateClusterBonus(egg, sortedEggs, chef);
 
     // Adjust the score based on black egg danger and cluster bonus
     enhancedEgg.score = enhancedEgg.score * (1 - blackEggDanger) + clusterBonus;
