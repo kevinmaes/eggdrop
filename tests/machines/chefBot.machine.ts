@@ -1,4 +1,4 @@
-import { assign, fromPromise, log, setup } from 'xstate';
+import { assertEvent, assign, fromPromise, log, setup } from 'xstate';
 import type { ChefActorRef } from '../../src/Chef/chef.machine';
 import type { GameLevelActorRef } from '../../src/GameLevel/gameLevel.machine';
 import type { AppActorRef } from '../../src/app.machine';
@@ -48,6 +48,10 @@ const chefBotMachine = setup({
       | {
           type: 'Register egg actor';
           data: { actorId: string; actor: EggActorRef };
+        }
+      | {
+          type: 'xstate.done.actor.0.Chef Bot.Analyzing';
+          output: ChefAndEggsData;
         };
   },
   guards: {
@@ -57,17 +61,6 @@ const chefBotMachine = setup({
     },
   },
   actions: {
-    chooseNextEgg: assign({
-      targetEgg: (_, params: ChefAndEggsData) => {
-        console.log('chooseNextEgg called with params', params);
-        const nextEgg = params.eggs.find(egg => egg.color !== 'black');
-        console.log('nextEgg', nextEgg);
-        if (nextEgg) {
-          return nextEgg;
-        }
-        return null;
-      },
-    }),
     updateExpectedScore: assign({
       expectedScore: ({ context }, params: EggHistoryEntry | null) => {
         if (params === null) {
@@ -92,7 +85,8 @@ const chefBotMachine = setup({
     checkForAppActorRef: fromPromise<GameConfig | undefined, { page: Page }>(
       async ({ input }) => {
         console.log('checkForAppActorRef called');
-        const gameConfig = await input.page.evaluate(() => {
+        const { page } = input;
+        const gameConfig = await page.evaluate(() => {
           const testAPI = window.__TEST_API__;
           return testAPI?.getGameConfig();
         });
@@ -105,7 +99,8 @@ const chefBotMachine = setup({
     ),
     getChefAndEggsData: fromPromise<ChefAndEggsData, { page: Page }>(
       async ({ input }) => {
-        const chefAndEggsDataHandle = await input.page.waitForFunction(() => {
+        const { page } = input;
+        const chefAndEggsDataHandle = await page.waitForFunction(() => {
           const chefAndEggsData = window.__TEST_API__?.getChefAndEggsData();
           if (chefAndEggsData === undefined) {
             return null;
@@ -124,20 +119,52 @@ const chefBotMachine = setup({
         return chefAndEggsData;
       }
     ),
+    chooseNextEgg: fromPromise<
+      EggData | null,
+      { page: Page; chefAndEggsData: ChefAndEggsData }
+    >(async ({ input }) => {
+      console.log('chooseNextEgg called');
+      const nextEgg = input.chefAndEggsData.eggs.find(
+        egg => egg.color !== 'black'
+      );
+      if (nextEgg === undefined) {
+        throw new Error('No valid egg target was found');
+      }
+      return nextEgg;
+    }),
     moveChefToEgg: fromPromise<
       ChefData | null,
-      { page: Page; targetEggId: string }
+      { page: Page; targetEgg: EggData | null }
     >(async ({ input }) => {
-      console.log('moveChefToEgg called with input', input.targetEggId);
-      if (!input.targetEggId) {
+      console.log('moveChefToEgg called with input', input.targetEgg);
+      const { page, targetEgg } = input;
+
+      if (targetEgg === null) {
         throw new Error(
           'No target egg id provided so can not move chef to target'
         );
       }
 
+      // Determine which direction to move the chef to the target egg
+      const chefXPos = await page.evaluate(() => {
+        const testAPI = window.__TEST_API__;
+        return testAPI?.getChefPosition().position.x;
+      });
+
+      if (chefXPos === undefined) {
+        throw new Error('Failed to get chef position');
+      }
+
+      const targetEggXPos = targetEgg.position.x;
+
+      const keyToPress = targetEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
+      console.log(`Pressing ${keyToPress} to catch egg`);
+
+      await page.keyboard.down(keyToPress);
+
       // Wait until the chef is in a position to catch the target egg
       // and then return the serialized chef data.
-      const chefDataHandle = await input.page.waitForFunction(
+      const chefDataHandle = await page.waitForFunction(
         ({
           targetEggId,
           gameLevelActorId,
@@ -158,29 +185,36 @@ const chefBotMachine = setup({
 
           console.log('found target egg', !!targetEgg);
 
-          const targetEggPosition = targetEgg.getSnapshot().context.position;
+          const targetEggXPosition = targetEgg.getSnapshot().context.position.x;
 
           const chefData = testAPI?.getChefPosition();
-          if (!chefData) return null;
+          console.log('chefData from testAPI?.getChefPosition()', chefData);
+          if (!chefData) {
+            console.log('no chef data found');
+            return null;
+          }
+          const chefXPos = chefData?.position.x;
           if (
             chefData.movingDirection === 'right' &&
-            chefData.position.x >= targetEggPosition.position.x
+            chefXPos >= targetEggXPosition
           ) {
             return chefData;
           } else if (
             chefData.movingDirection === 'left' &&
-            chefData.position.x <= targetEggPosition.position.x
+            chefXPos <= targetEggXPosition
           ) {
             return chefData;
           }
           return null;
         },
         {
-          targetEggId: input.targetEggId,
+          targetEggId: targetEgg.id,
           gameLevelActorId: GAME_LEVEL_ACTOR_ID,
         },
         { timeout: 10_000 }
       );
+
+      await page.keyboard.up(keyToPress);
 
       return await chefDataHandle.jsonValue();
     }),
@@ -188,7 +222,8 @@ const chefBotMachine = setup({
       EggHistoryEntry | null,
       { page: Page; targetEggId: string }
     >(async ({ input }) => {
-      const doneEgg = await input.page.waitForFunction(
+      const { page, targetEggId } = input;
+      const doneEgg = await page.waitForFunction(
         ({ targetEggId }: { targetEggId: string }) => {
           // Check for the existence of the target egg in the eggHistory
           const testAPI = window.__TEST_API__;
@@ -196,7 +231,7 @@ const chefBotMachine = setup({
           if (!targetEggInHistory) return null;
           return targetEggInHistory;
         },
-        { targetEggId: input.targetEggId },
+        { targetEggId: targetEggId },
         { timeout: 5000 }
       );
 
@@ -255,28 +290,54 @@ const chefBotMachine = setup({
         input: ({ context }) => {
           return { page: context.page };
         },
-        onDone: [
-          {
-            target: 'Moving',
-            actions: {
-              type: 'chooseNextEgg',
-              params: ({ event }) => event.output,
-            },
-          },
-        ],
+        onDone: {
+          target: 'Choosing Next Egg',
+        },
         onError: {
           target: 'Error',
           actions: log('Failed to get chef and eggs data'),
         },
       },
     },
+    'Choosing Next Egg': {
+      entry: log(`${CHEF_BOT_ACTOR_ID} Choosing Next Egg`),
+      invoke: {
+        src: 'chooseNextEgg',
+        input: ({ context, event }) => {
+          console.log('chooseNextEgg input', event);
+          assertEvent(event, 'xstate.done.actor.0.Chef Bot.Analyzing');
+          return {
+            page: context.page,
+            chefAndEggsData: event.output,
+          };
+        },
+        onDone: {
+          target: 'Moving',
+          actions: assign({
+            targetEgg: ({ event }) => {
+              console.log('targetEgg assign', event.output);
+              return event.output;
+            },
+          }),
+        },
+        onError: {
+          target: 'Waiting To Choose Another Egg',
+        },
+      },
+    },
+    'Waiting To Choose Another Egg': {
+      entry: log(`${CHEF_BOT_ACTOR_ID} Waiting To Choose Another Egg`),
+      after: {
+        1000: 'Analyzing',
+      },
+    },
     Moving: {
-      entry: log(`${CHEF_BOT_ACTOR_ID} Moving`),
+      entry: [log(`${CHEF_BOT_ACTOR_ID} Moving`)],
       invoke: {
         src: 'moveChefToEgg',
         input: ({ context }) => ({
           page: context.page,
-          targetEggId: context.targetEgg?.id ?? '',
+          targetEgg: context.targetEgg,
         }),
         onDone: 'Catching',
         onError: {
