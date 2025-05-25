@@ -157,6 +157,8 @@ const chefBotMachine = setup({
 
       const targetEggXPos = targetEgg.position.x;
 
+      console.log('Positions', { chefXPos, targetEggXPos });
+
       const keyToPress = targetEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
       console.log(`Pressing ${keyToPress} to catch egg`);
 
