@@ -352,8 +352,13 @@ const chefBotMachine = setup({
         }),
         onDone: 'Catching',
         onError: {
-          target: 'Error',
-          actions: log('Failed to move to target egg position'),
+          target: 'Choosing Next Egg',
+          actions: [
+            log('Failed to move to target egg position'),
+            ({ event }) => {
+              console.log('Error:', event.error);
+            },
+          ],
         },
       },
     },
