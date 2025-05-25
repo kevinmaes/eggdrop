@@ -117,12 +117,19 @@ export const gameLevelMachine = setup({
     }),
     removeEggActorRef: assign({
       eggActorRefs: ({ context }) => {
+        console.log('removeEggActorRef called', context.eggActorRefs);
         const remainingEggs = [];
         for (const eggActorRef of context.eggActorRefs) {
+          console.log(
+            'eggActorRef',
+            eggActorRef.id,
+            eggActorRef.getSnapshot().status
+          );
           if (eggActorRef.getSnapshot().status === 'done') {
             if (context.gameConfig.isTestMode) {
               addEggToHistory({
-                id: eggActorRef.getSnapshot().context.id,
+                // id: eggActorRef.getSnapshot().context.id,
+                id: eggActorRef.id,
                 position: eggActorRef.getSnapshot().context.position,
                 color: eggActorRef.getSnapshot().context.color,
                 resultStatus: 'Caught',
