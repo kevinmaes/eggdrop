@@ -157,12 +157,8 @@ const chefBotMachine = setup({
 
       const targetEggXPos = targetEgg.position.x;
 
-      console.log('Positions', { chefXPos, targetEggXPos });
-
       const keyToPress = targetEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
-      console.log(`Pressing ${keyToPress} to catch egg`);
 
-      console.log('downing key', keyToPress);
       await page.keyboard.down(keyToPress);
 
       // Wait until the chef is in a position to catch the target egg
@@ -184,8 +180,6 @@ const chefBotMachine = setup({
           const targetEgg = eggActorRefs.find(egg => {
             return egg.id === targetEggId;
           });
-
-          // console.log('found target egg', !!targetEgg);
 
           const targetEggXPosition = targetEgg.getSnapshot().context.position.x;
 
@@ -218,7 +212,6 @@ const chefBotMachine = setup({
         { timeout: 10_000 }
       );
 
-      console.log('upping key', keyToPress);
       await page.keyboard.up(keyToPress);
 
       const chefData = await chefDataHandle.jsonValue();
