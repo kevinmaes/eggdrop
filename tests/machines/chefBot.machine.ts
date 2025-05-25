@@ -345,7 +345,7 @@ const chefBotMachine = setup({
     'Waiting To Choose Another Egg': {
       entry: log(`${CHEF_BOT_ACTOR_ID} Waiting To Choose Another Egg`),
       after: {
-        1000: 'Analyzing',
+        500: 'Analyzing',
       },
     },
     Moving: {
