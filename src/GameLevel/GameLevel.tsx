@@ -3,6 +3,7 @@ import { Layer, Text } from 'react-konva';
 
 import { AppActorContext } from '../app.machine';
 import { Chef } from '../Chef/Chef';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { Egg } from '../Egg/Egg';
 import { EggCaughtPoints } from '../EggCaughtPoints/EggCaughtPoints';
 import { Hen } from '../Hen/Hen';
@@ -11,9 +12,7 @@ import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 
 import { gameLevelMachine } from './gameLevel.machine';
 
-
 import type { ActorRefFrom } from 'xstate';
-
 
 export function GameLevel() {
   const appActorRef = AppActorContext.useActorRef();
@@ -25,7 +24,7 @@ export function GameLevel() {
   );
 
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
 
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(

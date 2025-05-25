@@ -19,7 +19,7 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
-import { setActorRef } from './test-api';
+import { setAppActorRef } from './test-api';
 
 import type { ChefActorRef } from './Chef/chef.machine';
 import type { EggActorRef } from './Egg/egg.machine';
@@ -56,7 +56,7 @@ const appMachine = setup({
       console.log('setActorRefForTests', context.gameConfig.isTestMode);
       // Set the app ref on the test API only on creation
       if (context.gameConfig.isTestMode) {
-        setActorRef(self as AppActorRef);
+        setAppActorRef(self as AppActorRef);
       }
     },
     setLoadedGameAssets: assign({

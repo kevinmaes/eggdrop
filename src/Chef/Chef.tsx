@@ -6,6 +6,7 @@ import { Group, Rect, Image } from 'react-konva';
 import useImage from 'use-image';
 
 import { AppActorContext } from '../app.machine';
+import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from '../constants';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import { isImageRef } from '../types';
 
@@ -21,9 +22,9 @@ export function Chef() {
   const [image] = useImage('images/chef.sprite.png');
   const appActorRef = AppActorContext.useActorRef();
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
-  const chefActorRef = appActorRef.system.get('chefMachine') as ActorRefFrom<
+  const chefActorRef = appActorRef.system.get(CHEF_ACTOR_ID) as ActorRefFrom<
     typeof chefMachine
   >;
   const { movingDirection, lastMovingDirection } = useSelector(

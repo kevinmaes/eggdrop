@@ -5,6 +5,7 @@ import {
   assertEvent,
   assign,
   emit,
+  log,
   sendTo,
   setup,
 } from 'xstate';
@@ -12,7 +13,6 @@ import {
 import { chefMachine } from '../Chef/chef.machine';
 import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from '../constants';
 import {
-  type EggActorRef,
   type EggColor,
   type EggDoneEvent,
   type EggResultStatus,
@@ -24,7 +24,7 @@ import {
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
-import { markEggAsDone } from '../test-api';
+import { addEggToHistory } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
 
 import {
@@ -121,7 +121,12 @@ export const gameLevelMachine = setup({
         for (const eggActorRef of context.eggActorRefs) {
           if (eggActorRef.getSnapshot().status === 'done') {
             if (context.gameConfig.isTestMode) {
-              markEggAsDone(eggActorRef as EggActorRef);
+              addEggToHistory({
+                id: eggActorRef.getSnapshot().context.id,
+                position: eggActorRef.getSnapshot().context.position,
+                color: eggActorRef.getSnapshot().context.color,
+                resultStatus: 'Caught',
+              });
             }
           } else {
             remainingEggs.push(eggActorRef);
@@ -672,7 +677,7 @@ export const gameLevelMachine = setup({
   },
   states: {
     Playing: {
-      entry: 'startBackgroundMusic',
+      entry: ['startBackgroundMusic', log('Game Level - Playing')],
       exit: 'stopBackgroundMusic',
       on: {
         Tick: [

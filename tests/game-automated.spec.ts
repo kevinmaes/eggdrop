@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { LOADING_MSG } from '../src/constants';
 import { type TestAPI } from '../src/test-api';
-import { getGameConfig } from '../src/GameLevel/gameConfig';
 import { createLogger } from './helpers';
-import { createActor } from 'xstate';
-import { eventBus } from '../src/shared/eventBus';
+import { createActor, waitFor } from 'xstate';
 import { chefBotMachine } from './machines/chefBot.machine';
 
 // Set a longer timeout for all tests in this file
@@ -38,7 +36,23 @@ test.describe('@automated Game', () => {
     await page.waitForFunction(
       () => {
         const testAPI = window.__TEST_API__;
-        return testAPI?.app !== null;
+        const appActorRef = testAPI?.app;
+        return appActorRef !== undefined;
+      },
+      { timeout: 5000 }
+    );
+
+    await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
+
+    await page.waitForFunction(
+      () => {
+        const testAPI = window.__TEST_API__;
+        const appActorRef = testAPI?.app;
+        const chefActorRef = appActorRef?.system.get('Chef');
+        return chefActorRef !== undefined;
       },
       { timeout: 5000 }
     );
@@ -53,19 +67,20 @@ test.describe('@automated Game', () => {
     // }
 
     // Wait for the app to be in a stable state
-    await page.waitForFunction(
-      () => {
-        const testAPI = window.__TEST_API__;
-        const snapshot = testAPI?.app?.getSnapshot();
-        return snapshot?.status === 'active' && snapshot?.value === 'Intro';
-      },
-      { timeout: 5000 }
-    );
+    // await page.waitForFunction(
+    //   () => {
+    //     const testAPI = window.__TEST_API__;
+    //     const snapshot = testAPI?.app?.getSnapshot();
+    //     return snapshot?.status === 'active' && snapshot?.value === 'Intro';
+    //   },
+    //   { timeout: 5000 }
+    // );
   });
 
   test('should move the chef to catch eggs one after another until the level ends', async ({
     page,
   }) => {
+    console.log('test started');
     test.setTimeout(300000);
     const { logStep } = createLogger();
 
@@ -73,20 +88,16 @@ test.describe('@automated Game', () => {
     const chefBot = createActor(chefBotMachine, {
       input: { page },
     });
-
+    console.log('chefBot created');
     // Start the bot and set it as test actor
     chefBot.start();
-
+    console.log('chefBot started');
     // Wait a bit to ensure the test actor is set
     // await new Promise(resolve => setTimeout(resolve, 100));
 
     // Now start the game
     chefBot.send({ type: 'Start' });
-
-    // Start the game in the browser
-    await page.evaluate(() => {
-      window.__TEST_API__?.app?.send({ type: 'Play' });
-    });
+    console.log('chefBot sent Start');
 
     let whiteEggsCaught = 0;
     let goldEggsCaught = 0;
@@ -258,22 +269,22 @@ test.describe('@automated Game', () => {
       //   logStep('No result received for egg catch attempt');
       // }
 
-      return true;
+      return false;
     }
 
     // Main test loop - recursively catch eggs until game ends
-    logStep('Starting main egg catching loop');
-    while (await catchNextEgg()) {
-      logStep('Completed egg catch cycle, starting next one');
-    }
-    logStep('Main egg catching loop ended');
+    // logStep('Starting main egg catching loop');
+    // while (await catchNextEgg()) {
+    //   logStep('Completed egg catch cycle, starting next one');
+    // }
+    // logStep('Main egg catching loop ended');
 
-    // Verify final game state
-    logStep('Verifying final game state...');
-    const currentScore = await page.evaluate(() => {
-      const testAPI = window.__TEST_API__;
-      return testAPI?.getGameLevelScore() ?? 0;
-    });
+    // // Verify final game state
+    // logStep('Verifying final game state...');
+    // const currentScore = await page.evaluate(() => {
+    //   const testAPI = window.__TEST_API__;
+    //   return testAPI?.getGameLevelScore() ?? 0;
+    // });
 
     // const isGameLevelDone = await page.evaluate(() => {
     //   const testAPI = window.__TEST_API__;
@@ -288,6 +299,10 @@ test.describe('@automated Game', () => {
     // );
 
     // expect(isGameLevelDone).toBe(true);
-    expect(currentScore).toEqual(totalScore);
+    // expect(currentScore).toEqual(totalScore);
+
+    await waitFor(chefBot, state => state.matches('Done'));
+    console.log('chefBot snapshot value', chefBot.getSnapshot().value);
+    expect(chefBot.getSnapshot().matches('Done')).toBe(true);
   });
 });

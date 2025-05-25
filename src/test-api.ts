@@ -2,6 +2,7 @@ import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
 
 import type { AppActorRef } from './app.machine';
 import type { EggActorRef, EggColor, EggResultStatus } from './Egg/egg.machine';
+import type { GameConfig } from './GameLevel/gameConfig';
 import type { Direction, Position } from './types';
 
 // Basic interface for the test API
@@ -37,11 +38,12 @@ export interface ChefAndEggsData {
 export interface TestAPI {
   app: AppActorRef | null;
   eggHistory: Map<string, EggHistoryEntry>;
-  getChefPosition: () => { x: number; y: number };
+  getGameConfig: () => GameConfig | undefined;
+  getChefPosition: () => ChefData;
   getChefAndEggsData: () => ChefAndEggsData;
   getGameLevelScore: () => number;
   getGameLevelRemainingTime: () => number;
-  addEggToHistory: (eggHistoryEntry: EggHistoryEntry) => void;
+  // addEggToHistory: (eggHistoryEntry: EggHistoryEntry) => void;
   findEggInHistory: (id: string) => EggHistoryEntry | undefined;
   purgeEggFromHistory: (id: string) => void;
 }
@@ -84,15 +86,43 @@ function createTestAPI(state: TestAPIState): TestAPI {
     app: state.app as AppActorRef,
     eggHistory: state.eggHistory,
     // Convenience getters for commonly accessed values
+    getGameConfig: () => {
+      return state.app?.getSnapshot()?.context.gameConfig;
+    },
     getChefPosition: () => {
-      return (
-        state.app?.system.get(CHEF_ACTOR_ID)?.getSnapshot().context
-          .position ?? { x: 0, y: 0 }
-      );
+      const gameConfig = state.app?.getSnapshot()?.context.gameConfig;
+      const chefSnapshot = state.app?.system.get(CHEF_ACTOR_ID)?.getSnapshot();
+      const chefContext = chefSnapshot.context;
+      const chefXPos = chefContext.position.x ?? 0;
+      const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
+      const direction: number = chefContext.direction;
+
+      const chefData: ChefData = {
+        position: chefContext.position ?? { x: 0, y: 0 },
+        speed: chefContext.speed ?? 0,
+        speedLimit: chefContext.speedLimit ?? 0,
+        acceleration: chefContext.acceleration ?? 0,
+        deceleration: chefContext.deceleration ?? 0,
+        minXPos: chefContext.minXPos ?? 0,
+        maxXPos: chefContext.maxXPos ?? 0,
+        direction: chefContext.direction ?? 0,
+        movingDirection: chefContext.movingDirection ?? 'none',
+        potRimOffsetX: gameConfig?.chef.potRim.offsetX ?? 0,
+        potRimCenterOffsetX:
+          chefXPos *
+          direction *
+          potRimOffsetX *
+          0.5 *
+          (gameConfig?.chef.potRim.width ?? 150),
+      };
+
+      return chefData;
     },
     getChefAndEggsData: () => {
       const gameConfig = state.app?.getSnapshot()?.context.gameConfig;
-      const chefSnapshot = state.app?.system.get(CHEF_ACTOR_ID)?.getSnapshot();
+      const chefActorRef = state.app?.system.get(CHEF_ACTOR_ID);
+      const gameLevelActorRef = state.app?.system.get(GAME_LEVEL_ACTOR_ID);
+      const chefSnapshot = chefActorRef?.getSnapshot();
       const chefContext = chefSnapshot.context;
       const chefXPos = chefContext.position.x ?? 0;
       const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
@@ -131,13 +161,8 @@ function createTestAPI(state: TestAPIState): TestAPI {
       //   );
       // }
 
-      const gameLevelSnapshot = state.app?.system
-        .get(GAME_LEVEL_ACTOR_ID)
-        .getSnapshot();
-
-      const gameLevelContext = gameLevelSnapshot.context;
-
-      const eggsData: EggData[] = gameLevelContext.eggActorRefs.map(
+      const { eggActorRefs } = gameLevelActorRef.getSnapshot().context;
+      const eggsData: EggData[] = eggActorRefs.map(
         (eggActorRef: EggActorRef) => ({
           id: eggActorRef.id,
           position: eggActorRef.getSnapshot().context.position,
@@ -164,9 +189,6 @@ function createTestAPI(state: TestAPIState): TestAPI {
           .context.remainingMS ?? 0
       );
     },
-    addEggToHistory: (eggHistoryEntry: EggHistoryEntry) => {
-      state.eggHistory.set(eggHistoryEntry.id, eggHistoryEntry);
-    },
     findEggInHistory: (id: string) => {
       return state.eggHistory.get(id);
     },
@@ -191,7 +213,7 @@ function updateWindowObject(state: TestAPIState): void {
   }
 }
 
-export function setActorRef(appActorRef: AppActorRef) {
+export function setAppActorRef(appActorRef: AppActorRef) {
   // Update the state with new values
   Object.assign(state, {
     app: appActorRef,
@@ -199,6 +221,9 @@ export function setActorRef(appActorRef: AppActorRef) {
 
   // Increment the update counter for this batch
   metadata.updateCount++;
-
   updateWindowObject(state);
+}
+
+export function addEggToHistory(eggHistoryEntry: EggHistoryEntry) {
+  state.eggHistory.set(eggHistoryEntry.id, eggHistoryEntry);
 }
