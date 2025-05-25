@@ -57,7 +57,6 @@ const chefBotMachine = setup({
   guards: {
     isGameAppReady: (_, params: GameConfig | undefined) => !!params,
     wasTargetEggCaught: (_, params: EggHistoryEntry | null) => {
-      console.log('wasTargetEggCaught guard', params);
       return params !== null && params.resultStatus === 'Caught';
     },
   },
@@ -200,38 +199,15 @@ const chefBotMachine = setup({
           // const chefXPos = chefData?.position.x;
           const chefPotRimCenterHitX = chefData.potRimCenterOffsetX;
 
-          console.log(
-            'target',
-            targetEggXPosition,
-            'chefXPos',
-            chefData.position.x,
-            'direction',
-            chefData.movingDirection,
-            'chefPotRimCenterHitX',
-            chefPotRimCenterHitX
-          );
-
           if (
             chefData.movingDirection === 'right' &&
             chefPotRimCenterHitX >= targetEggXPosition
           ) {
-            console.log(
-              'chef is moving right and is close enough to target egg',
-              chefPotRimCenterHitX,
-              targetEggXPosition,
-              chefPotRimCenterHitX >= targetEggXPosition
-            );
             return chefData;
           } else if (
             chefData.movingDirection === 'left' &&
             chefPotRimCenterHitX <= targetEggXPosition
           ) {
-            console.log(
-              'chef is moving left and is close enough to target egg',
-              chefPotRimCenterHitX,
-              targetEggXPosition,
-              chefPotRimCenterHitX <= targetEggXPosition
-            );
             return chefData;
           }
           return null;
@@ -261,7 +237,6 @@ const chefBotMachine = setup({
           // Check for the existence of the target egg in the eggHistory
           const testAPI = window.__TEST_API__;
           const targetEggInHistory = testAPI?.findEggInHistory(targetEggId);
-          console.log('targetEggInHistory', targetEggInHistory, targetEggId);
           if (!targetEggInHistory) {
             return null;
           }

@@ -120,15 +120,10 @@ export const gameLevelMachine = setup({
         console.log('removeEggActorRef called', context.eggActorRefs);
         const remainingEggs = [];
         for (const eggActorRef of context.eggActorRefs) {
-          console.log(
-            'eggActorRef',
-            eggActorRef.id,
-            eggActorRef.getSnapshot().status
-          );
           if (eggActorRef.getSnapshot().status === 'done') {
             if (context.gameConfig.isTestMode) {
               addEggToHistory({
-                // id: eggActorRef.getSnapshot().context.id,
+                // TODO: Consider always using the context.id which is the nanoid or "eggId"
                 id: eggActorRef.id,
                 position: eggActorRef.getSnapshot().context.position,
                 color: eggActorRef.getSnapshot().context.color,
