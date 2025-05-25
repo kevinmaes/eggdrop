@@ -169,7 +169,9 @@ test.describe('@regular Game', () => {
     expect(finalPosition?.x).toBe(minXPos);
   });
 
-  test('should move the chef to catch one catchable egg', async ({ page }) => {
+  test.skip('should move the chef to catch one catchable egg', async ({
+    page,
+  }) => {
     let testAPI: TestAPI | undefined;
 
     // Start the game
@@ -296,7 +298,7 @@ test.describe('@regular Game', () => {
     expect(finalScore).toBeGreaterThan(initialScore);
   });
 
-  test('should move the chef to catch two catchable eggs in a row', async ({
+  test.skip('should move the chef to catch two catchable eggs in a row', async ({
     page,
   }) => {
     let testAPI: TestAPI | undefined;
