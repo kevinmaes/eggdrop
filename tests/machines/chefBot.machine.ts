@@ -18,6 +18,7 @@ import {
 } from '../../src/test-api';
 import { Page } from '@playwright/test';
 import { GameConfig } from '../../src/GameLevel/gameConfig';
+import { findBestEgg } from './helpers';
 
 // Add new interface for enhanced egg data
 interface EnhancedEggData extends EggData {
@@ -134,65 +135,13 @@ const chefBotMachine = setup({
       const { chefAndEggsData } = input;
       const { chef, eggs } = chefAndEggsData;
 
-      // Enhance egg data with additional properties
-      const enhancedEggs: EnhancedEggData[] = eggs.map(egg => {
-        const catchY = chef.position.y + chef.potRimOffsetY;
-        const timeToCatch = (catchY - egg.position.y) / egg.speedY;
-        const maxTravel = chef.speedLimit * timeToCatch;
-        const isReachable =
-          timeToCatch > 0 &&
-          Math.abs(egg.position.x - chef.position.x) <= maxTravel;
+      const bestEgg = findBestEgg(eggs, chef);
 
-        // Calculate base score based on egg color
-        let baseScore = 0;
-        switch (egg.color) {
-          case 'gold':
-            baseScore = 5;
-            break;
-          case 'white':
-            baseScore = 1;
-            break;
-          case 'black':
-            baseScore = -10;
-            break;
-        }
-
-        // Calculate position score (prefer eggs closer to chef's current position)
-        const distanceToChef = Math.abs(egg.position.x - chef.position.x);
-        const positionScore = 1 / (1 + distanceToChef / 100); // Normalize distance score between 0 and 1
-
-        // Calculate time score (prefer eggs that need to be caught sooner)
-        const timeScore = 1 / (1 + timeToCatch); // Normalize time score between 0 and 1
-
-        // Calculate movement score (prefer eggs from moving hens)
-        const movementScore = egg.henIsMoving ? 0.5 : 0;
-
-        // Calculate final score
-        const score = baseScore * (positionScore + timeScore + movementScore);
-
-        return {
-          ...egg,
-          timeToCatch,
-          maxTravel,
-          isReachable,
-          score,
-        };
-      });
-
-      // Filter out unreachable eggs and black eggs
-      const validEggs = enhancedEggs.filter(
-        egg => egg.isReachable && egg.color !== 'black'
-      );
-
-      if (validEggs.length === 0) {
+      if (!bestEgg) {
         throw new Error('No valid egg target was found');
       }
 
-      // Sort eggs by score in descending order
-      validEggs.sort((a, b) => b.score - a.score);
-
-      // Return the highest scoring egg
-      return validEggs[0];
+      return bestEgg;
     }),
     moveChefToEgg: fromPromise<
       ChefData | null,
