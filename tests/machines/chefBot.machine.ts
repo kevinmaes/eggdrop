@@ -84,7 +84,7 @@ const chefBotMachine = setup({
   actors: {
     checkForAppActorRef: fromPromise<GameConfig | undefined, { page: Page }>(
       async ({ input }) => {
-        console.log('checkForAppActorRef called');
+        // console.log('checkForAppActorRef called');
         const { page } = input;
         const gameConfig = await page.evaluate(() => {
           const testAPI = window.__TEST_API__;
@@ -93,7 +93,6 @@ const chefBotMachine = setup({
         if (!gameConfig) {
           throw new Error('No app actor nor game config found');
         }
-        console.log('gameConfig exists', !!gameConfig);
         return gameConfig;
       }
     ),
@@ -109,7 +108,6 @@ const chefBotMachine = setup({
             // console.log('chefAndEggsData with no eggs');
             return null;
           }
-          console.log('chefAndEggsData WITH eggs', !!chefAndEggsData);
           return chefAndEggsData;
         });
         const chefAndEggsData = await chefAndEggsDataHandle.jsonValue();
@@ -123,7 +121,7 @@ const chefBotMachine = setup({
       EggData | null,
       { page: Page; chefAndEggsData: ChefAndEggsData }
     >(async ({ input }) => {
-      console.log('chooseNextEgg called');
+      // console.log('chooseNextEgg called');
       const nextEgg = input.chefAndEggsData.eggs.find(
         egg => egg.color !== 'black'
       );
@@ -136,7 +134,7 @@ const chefBotMachine = setup({
       ChefData | null,
       { page: Page; targetEgg: EggData | null }
     >(async ({ input }) => {
-      console.log('moveChefToEgg called with input', input.targetEgg);
+      // console.log('moveChefToEgg called with input', input.targetEgg);
       const { page, targetEgg } = input;
 
       if (targetEgg === null) {
@@ -184,12 +182,9 @@ const chefBotMachine = setup({
           const targetEggXPosition = targetEgg.getSnapshot().context.position.x;
 
           const chefData = testAPI?.getChefPosition();
-          // console.log('chefData from testAPI?.getChefPosition()', chefData);
           if (!chefData) {
-            console.log('no chef data found');
             return null;
           }
-          // const chefXPos = chefData?.position.x;
           const chefPotRimCenterHitX = chefData.potRimCenterOffsetX;
 
           if (
@@ -222,7 +217,7 @@ const chefBotMachine = setup({
       EggHistoryEntry | null,
       { page: Page; targetEggId: string }
     >(async ({ input }) => {
-      console.log('waitToCatchTargetEgg called');
+      // console.log('waitToCatchTargetEgg called');
       const { page, targetEggId } = input;
       const doneEgg = await page.waitForFunction(
         ({ targetEggId }: { targetEggId: string }) => {
