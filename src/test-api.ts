@@ -174,20 +174,6 @@ function createTestAPI(state: TestAPIState): TestAPI {
           (gameConfig?.chef.potRim.width ?? 150),
       };
 
-      // if (moveDirection === 'right') {
-      //   return (
-      //     chefXPos +
-      //     potRimOffsetX +
-      //     0.5 * (gameConfig?.chef.potRim.width ?? 150)
-      //   );
-      // } else {
-      //   return (
-      //     chefXPos -
-      //     potRimOffsetX -
-      //     0.5 * (gameConfig?.chef.potRim.width ?? 150)
-      //   );
-      // }
-
       const { eggActorRefs } = gameLevelActorRef.getSnapshot().context;
       const eggsData: EggData[] = eggActorRefs.map(
         (eggActorRef: EggActorRef) => ({
