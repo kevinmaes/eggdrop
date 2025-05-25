@@ -175,7 +175,6 @@ const chefBotMachine = setup({
           targetEggId: string;
           gameLevelActorId: string;
         }) => {
-          console.log('moveChefToEgg waitForFunction called');
           const testAPI = window.__TEST_API__;
           const appActorRef = testAPI?.app;
           const gameLevelActorRef = appActorRef?.system.get(gameLevelActorId);
