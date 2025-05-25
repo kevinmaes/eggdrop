@@ -315,7 +315,6 @@ const chefBotMachine = setup({
       invoke: {
         src: 'chooseNextEgg',
         input: ({ context, event }) => {
-          console.log('chooseNextEgg input', event);
           assertEvent(event, 'xstate.done.actor.0.Chef Bot.Analyzing');
           return {
             page: context.page,
