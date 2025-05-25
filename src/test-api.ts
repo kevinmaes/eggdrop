@@ -203,12 +203,6 @@ function createTestAPI(state: TestAPIState): TestAPI {
       );
     },
     findEggInHistory: (id: string) => {
-      console.log(
-        'findEggInHistory called',
-        id,
-        'size is',
-        state.eggHistory.size
-      );
       return state.eggHistory.get(id);
     },
     purgeEggFromHistory: (id: string) => {
@@ -245,10 +239,4 @@ export function setAppActorRef(appActorRef: AppActorRef) {
 
 export function addEggToHistory(eggHistoryEntry: EggHistoryEntry) {
   state.eggHistory.set(eggHistoryEntry.id, eggHistoryEntry);
-  console.log(
-    'addEggToHistory called',
-    eggHistoryEntry,
-    'size is now',
-    state.eggHistory.size
-  );
 }
