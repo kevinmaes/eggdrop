@@ -20,6 +20,7 @@ export interface ChefData {
   direction: Direction['value'];
   movingDirection: Direction['label'];
   potRimOffsetX: number;
+  potRimOffsetY: number;
   potRimCenterOffsetX: number;
 }
 
@@ -27,6 +28,10 @@ export interface EggData {
   id: string;
   position: Position;
   color: EggColor;
+  speedY: number;
+  henCurentTweenSpeed: number;
+  rotationDirection: Direction['value'];
+  henIsMoving: boolean;
 }
 
 export interface EggHistoryEntry extends EggData {
@@ -119,6 +124,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
         direction: chefContext.direction ?? 0,
         movingDirection: chefContext.movingDirection ?? 'none',
         potRimOffsetX: gameConfig?.chef.potRim.offsetX ?? 0,
+        potRimOffsetY: gameConfig?.chef.potRim.offsetY ?? 0,
         potRimCenterOffsetX,
       };
 
@@ -167,6 +173,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
         direction: chefContext.direction ?? 0,
         movingDirection: chefContext.movingDirection ?? 'none',
         potRimOffsetX: gameConfig?.chef.potRim.offsetX ?? 0,
+        potRimOffsetY: gameConfig?.chef.potRim.offsetY ?? 0,
         potRimCenterOffsetX:
           chefXPos *
           direction *
@@ -177,11 +184,18 @@ function createTestAPI(state: TestAPIState): TestAPI {
 
       const { eggActorRefs } = gameLevelActorRef.getSnapshot().context;
       const eggsData: EggData[] = eggActorRefs.map(
-        (eggActorRef: EggActorRef) => ({
-          id: eggActorRef.id,
-          position: eggActorRef.getSnapshot().context.position,
-          color: eggActorRef.getSnapshot().context.color,
-        })
+        (eggActorRef: EggActorRef) => {
+          const eggContext = eggActorRef.getSnapshot().context;
+          return {
+            id: eggActorRef.id,
+            position: eggContext.position,
+            color: eggContext.color,
+            speedY: gameConfig?.egg.fallingSpeed ?? 0,
+            henCurentTweenSpeed: eggContext.henCurentTweenSpeed,
+            rotationDirection: eggContext.rotationDirection,
+            henIsMoving: eggContext.henIsMoving,
+          };
+        }
       );
 
       const chefAndEggsData: ChefAndEggsData = {

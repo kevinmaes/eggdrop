@@ -19,6 +19,14 @@ import {
 import { Page } from '@playwright/test';
 import { GameConfig } from '../../src/GameLevel/gameConfig';
 
+// Add new interface for enhanced egg data
+interface EnhancedEggData extends EggData {
+  speedY: number;
+  timeToCatch: number;
+  maxTravel: number;
+  isReachable: boolean;
+}
+
 type GameActorId =
   | typeof APP_ACTOR_ID
   | typeof GAME_LEVEL_ACTOR_ID
@@ -122,13 +130,35 @@ const chefBotMachine = setup({
       EggData | null,
       { page: Page; chefAndEggsData: ChefAndEggsData }
     >(async ({ input }) => {
-      // console.log('chooseNextEgg called');
-      const nextEgg = input.chefAndEggsData.eggs.find(
-        egg => egg.color !== 'black'
+      const { chefAndEggsData } = input;
+      const { chef, eggs } = chefAndEggsData;
+
+      // Enhance egg data with additional properties
+      const enhancedEggs: EnhancedEggData[] = eggs.map(egg => {
+        const catchY = chef.position.y + chef.potRimOffsetY;
+        const timeToCatch = (catchY - egg.position.y) / egg.speedY;
+        const maxTravel = chef.speedLimit * timeToCatch;
+        const isReachable =
+          timeToCatch > 0 &&
+          Math.abs(egg.position.x - chef.position.x) <= maxTravel;
+
+        return {
+          ...egg,
+          timeToCatch,
+          maxTravel,
+          isReachable,
+        };
+      });
+
+      // For now, just find the first non-black egg that is reachable
+      const nextEgg = enhancedEggs.find(
+        egg => egg.color !== 'black' && egg.isReachable
       );
+
       if (nextEgg === undefined) {
         throw new Error('No valid egg target was found');
       }
+
       return nextEgg;
     }),
     moveChefToEgg: fromPromise<
