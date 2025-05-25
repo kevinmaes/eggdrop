@@ -46,15 +46,6 @@ test.describe('@automated Game', () => {
       const testAPI = window.__TEST_API__;
       testAPI?.app?.send({ type: 'Play' });
     });
-
-    await page.waitForFunction(
-      () => {
-        const testAPI = window.__TEST_API__;
-        const appActorRef = testAPI?.app;
-        return !!appActorRef;
-      },
-      { timeout: 5000 }
-    );
   });
 
   test('should move the chef to catch eggs one after another until the level ends', async ({
