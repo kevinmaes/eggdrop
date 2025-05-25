@@ -57,6 +57,7 @@ const chefBotMachine = setup({
   guards: {
     isGameAppReady: (_, params: GameConfig | undefined) => !!params,
     wasTargetEggCaught: (_, params: EggHistoryEntry | null) => {
+      console.log('wasTargetEggCaught guard', params);
       return params !== null && params.resultStatus === 'Caught';
     },
   },
@@ -186,7 +187,7 @@ const chefBotMachine = setup({
             return egg.id === targetEggId;
           });
 
-          console.log('found target egg', !!targetEgg);
+          // console.log('found target egg', !!targetEgg);
 
           const targetEggXPosition = targetEgg.getSnapshot().context.position.x;
 
@@ -245,19 +246,25 @@ const chefBotMachine = setup({
       console.log('upping key', keyToPress);
       await page.keyboard.up(keyToPress);
 
-      return await chefDataHandle.jsonValue();
+      const chefData = await chefDataHandle.jsonValue();
+      // console.log('chefData', chefData);
+      return chefData;
     }),
     waitToCatchTargetEgg: fromPromise<
       EggHistoryEntry | null,
       { page: Page; targetEggId: string }
     >(async ({ input }) => {
+      console.log('waitToCatchTargetEgg called');
       const { page, targetEggId } = input;
       const doneEgg = await page.waitForFunction(
         ({ targetEggId }: { targetEggId: string }) => {
           // Check for the existence of the target egg in the eggHistory
           const testAPI = window.__TEST_API__;
           const targetEggInHistory = testAPI?.findEggInHistory(targetEggId);
-          if (!targetEggInHistory) return null;
+          console.log('targetEggInHistory', targetEggInHistory, targetEggId);
+          if (!targetEggInHistory) {
+            return null;
+          }
           return targetEggInHistory;
         },
         { targetEggId: targetEggId },
@@ -390,13 +397,13 @@ const chefBotMachine = setup({
               params: ({ event }) => event.output,
             },
             target: 'Evaluating',
-            actions: [
-              log('Target egg caught'),
-              {
-                type: 'updateExpectedScore',
-                params: ({ event }) => event.output,
-              },
-            ],
+            // actions: [
+            //   log('Target egg caught'),
+            //   {
+            //     type: 'updateExpectedScore',
+            //     params: ({ event }) => event.output,
+            //   },
+            // ],
           },
         ],
         onError: {
