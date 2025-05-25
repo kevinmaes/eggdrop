@@ -51,8 +51,16 @@ test.describe('@automated Game', () => {
       () => {
         const testAPI = window.__TEST_API__;
         const appActorRef = testAPI?.app;
-        const chefActorRef = appActorRef?.system.get('Chef');
-        return chefActorRef !== undefined;
+        return !!appActorRef;
+        // const gameLevelActorRef = appActorRef?.system.get(GAME_LEVEL_ACTOR_ID);
+        // const chefActorRef = appActorRef?.system.get(CHEF_ACTOR_ID);
+        // console.log(
+        //   'beforeEach:gameLevelActorRef',
+        //   GAME_LEVEL_ACTOR_ID,
+        //   !!gameLevelActorRef
+        // );
+        // console.log('beforeEach:chefActorRef', CHEF_ACTOR_ID, !!chefActorRef);
+        // return !!appActorRef && !!gameLevelActorRef && !!chefActorRef;
       },
       { timeout: 5000 }
     );

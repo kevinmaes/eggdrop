@@ -129,44 +129,34 @@ const chefBotMachine = setup({
       { page: Page; targetEggId: string }
     >(async ({ input }) => {
       console.log('moveChefToEgg called with input', input.targetEggId);
-      if (typeof input.targetEggId === 'undefined') {
-        return null;
+      if (!input.targetEggId) {
+        throw new Error(
+          'No target egg id provided so can not move chef to target'
+        );
       }
-      console.log('moveChefToEgg after targetEggId check');
+
+      // Wait until the chef is in a position to catch the target egg
+      // and then return the serialized chef data.
       const chefDataHandle = await input.page.waitForFunction(
-        ({ targetEggId }: { targetEggId: string }) => {
+        ({
+          targetEggId,
+          gameLevelActorId,
+        }: {
+          targetEggId: string;
+          gameLevelActorId: string;
+        }) => {
           console.log('moveChefToEgg waitForFunction called');
           const testAPI = window.__TEST_API__;
-          // console.log('testAPI', !!testAPI);
-
           const appActorRef = testAPI?.app;
-          console.log('appActorRef', !!appActorRef);
-
-          // const chefActorRef = appActorRef?.system.get(CHEF_ACTOR_ID);
-          // console.log('chefActorRef', !!chefActorRef);
-
-          const gameLevelActorRef =
-            appActorRef?.system.get(GAME_LEVEL_ACTOR_ID);
-          console.log('gameLevelActorRef', !!gameLevelActorRef);
-
-          // return null;
-          // return {} as ChefData;
-
-          const gameLevelSnapshot = gameLevelActorRef?.getSnapshot();
-          console.log('gameLevelSnapshot', !!gameLevelSnapshot);
-          const gameLevelContext = gameLevelSnapshot.context;
-          console.log('gameLevelContext', !!gameLevelContext);
-
+          const gameLevelActorRef = appActorRef?.system.get(gameLevelActorId);
+          const gameLevelContext = gameLevelActorRef?.getSnapshot().context;
           const eggActorRefs = gameLevelContext.eggActorRefs;
-          console.log('eggActorRefs', !!eggActorRefs);
 
           const targetEgg = eggActorRefs.find(egg => {
-            console.log('egg', egg.systemId, targetEggId);
-            return egg.systemId === targetEggId;
+            return egg.id === targetEggId;
           });
 
           console.log('found target egg', !!targetEgg);
-          // if (!targetEgg) return null;
 
           const targetEggPosition = targetEgg.getSnapshot().context.position;
 
@@ -185,13 +175,14 @@ const chefBotMachine = setup({
           }
           return null;
         },
-        { targetEggId: input.targetEggId },
-        { timeout: 10000 }
+        {
+          targetEggId: input.targetEggId,
+          gameLevelActorId: GAME_LEVEL_ACTOR_ID,
+        },
+        { timeout: 10_000 }
       );
 
-      const chefData = await chefDataHandle.jsonValue();
-      console.log('chefData returned', chefData);
-      return chefData;
+      return await chefDataHandle.jsonValue();
     }),
     waitToCatchTargetEgg: fromPromise<
       EggHistoryEntry | null,
