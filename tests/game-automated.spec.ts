@@ -52,37 +52,9 @@ test.describe('@automated Game', () => {
         const testAPI = window.__TEST_API__;
         const appActorRef = testAPI?.app;
         return !!appActorRef;
-        // const gameLevelActorRef = appActorRef?.system.get(GAME_LEVEL_ACTOR_ID);
-        // const chefActorRef = appActorRef?.system.get(CHEF_ACTOR_ID);
-        // console.log(
-        //   'beforeEach:gameLevelActorRef',
-        //   GAME_LEVEL_ACTOR_ID,
-        //   !!gameLevelActorRef
-        // );
-        // console.log('beforeEach:chefActorRef', CHEF_ACTOR_ID, !!chefActorRef);
-        // return !!appActorRef && !!gameLevelActorRef && !!chefActorRef;
       },
       { timeout: 5000 }
     );
-
-    // Verify the stage dimensions from the state machine config
-    // gameConfig = await page.evaluate(() => {
-    //   return window.__TEST_API__?.app?.getSnapshot().context.gameConfig;
-    // });
-
-    // if (!gameConfig) {
-    //   throw new Error('Game config is undefined');
-    // }
-
-    // Wait for the app to be in a stable state
-    // await page.waitForFunction(
-    //   () => {
-    //     const testAPI = window.__TEST_API__;
-    //     const snapshot = testAPI?.app?.getSnapshot();
-    //     return snapshot?.status === 'active' && snapshot?.value === 'Intro';
-    //   },
-    //   { timeout: 5000 }
-    // );
   });
 
   test('should move the chef to catch eggs one after another until the level ends', async ({
