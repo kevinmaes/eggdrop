@@ -342,6 +342,55 @@ export function calculateClusterBonus(
 }
 
 /**
+ * Check if there are any black eggs in the path between the chef and target egg
+ * Returns a danger score between 0 and 1, where 1 means the path is completely unsafe
+ */
+export function calculatePathDanger(
+  targetEgg: EggData,
+  sortedEggs: EggData[],
+  chef: ChefData,
+  safeDistance: number = 50 // Half the pot rim width as default safe distance
+): number {
+  let maxDanger = 0;
+  const chefX = chef.position.x;
+  const targetX = targetEgg.position.x;
+  const isMovingRight = targetX > chefX;
+
+  // Check all eggs that could be in the path
+  for (const egg of sortedEggs) {
+    if (egg.id === targetEgg.id || egg.color !== 'black') continue;
+
+    const eggX = egg.position.x;
+    const eggY = egg.position.y;
+    const targetY = targetEgg.position.y;
+
+    // Only consider black eggs that are:
+    // 1. Between the chef and target horizontally
+    // 2. At a similar height to the target (within safe distance)
+    if (
+      (isMovingRight && eggX > chefX && eggX < targetX) ||
+      (!isMovingRight && eggX < chefX && eggX > targetX)
+    ) {
+      const yDistance = Math.abs(eggY - targetY);
+      if (yDistance < safeDistance) {
+        // Calculate how close the black egg is to the center of the path
+        const pathLength = Math.abs(targetX - chefX);
+        const distanceFromPath = Math.abs(
+          eggX - (isMovingRight ? chefX : targetX)
+        );
+        const normalizedDistance = distanceFromPath / pathLength;
+
+        // Higher danger for black eggs closer to the path center
+        const danger = 1 - normalizedDistance;
+        maxDanger = Math.max(maxDanger, danger);
+      }
+    }
+  }
+
+  return maxDanger;
+}
+
+/**
  * Find the best egg to catch from a list of eggs
  */
 export function findBestEgg(
@@ -359,8 +408,14 @@ export function findBestEgg(
     const blackEggDanger = calculateBlackEggDanger(egg, sortedEggs, chef);
     const clusterBonus = calculateClusterBonus(egg, sortedEggs, chef);
 
-    // Adjust the score based on black egg danger and cluster bonus
-    enhancedEgg.score = enhancedEgg.score * (1 - blackEggDanger) + clusterBonus;
+    // Add path danger check
+    const pathDanger = calculatePathDanger(egg, sortedEggs, chef);
+
+    // Adjust the score based on black egg danger, cluster bonus, and path danger
+    // Path danger is weighted more heavily as it's a direct safety concern
+    enhancedEgg.score =
+      enhancedEgg.score * (1 - blackEggDanger) * (1 - pathDanger * 1.5) +
+      clusterBonus;
 
     return enhancedEgg;
   });
