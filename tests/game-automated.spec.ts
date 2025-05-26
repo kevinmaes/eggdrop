@@ -76,11 +76,17 @@ test.describe('@automated Game', () => {
     //   `Total eggs caught: ${totalEggsCaught} (White: ${whiteEggsCaught}, Gold: ${goldEggsCaught}, Black: ${blackEggsCaught})`
     // );
 
-    // expect(isGameLevelDone).toBe(true);
-    // expect(currentScore).toEqual(totalScore);
-
     await waitFor(chefBot, state => state.matches('Done'));
     console.log('chefBot snapshot value', chefBot.getSnapshot().value);
     expect(chefBot.getSnapshot().matches('Done')).toBe(true);
+
+    const totalScore = await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      const totalScore = testAPI?.getGameLevelScore();
+      return totalScore;
+    });
+
+    const { expectedScore } = chefBot.getSnapshot().context;
+    expect(expectedScore).toEqual(totalScore);
   });
 });
