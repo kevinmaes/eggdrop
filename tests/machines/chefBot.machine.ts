@@ -331,10 +331,7 @@ const chefBotMachine = setup({
         onDone: {
           target: 'Moving',
           actions: assign({
-            targetEgg: ({ event }) => {
-              console.log('targetEgg assign', event.output);
-              return event.output;
-            },
+            targetEgg: ({ event }) => event.output,
           }),
         },
         onError: {
