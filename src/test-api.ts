@@ -35,7 +35,8 @@ export interface EggData {
   henIsMoving: boolean;
 }
 
-export interface EggHistoryEntry extends EggData {
+export interface EggHistoryEntry
+  extends Pick<EggData, 'id' | 'position' | 'color'> {
   resultStatus: EggResultStatus;
 }
 
