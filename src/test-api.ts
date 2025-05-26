@@ -97,7 +97,9 @@ function createTestAPI(state: TestAPIState): TestAPI {
     eggHistory: state.eggHistory,
     // Convenience getters for commonly accessed values
     getGameConfig: () => {
-      return state.app?.getSnapshot()?.context.gameConfig;
+      const appActorRef = state.app as AppActorRef;
+      const gameConfig = appActorRef.getSnapshot().context.gameConfig;
+      return gameConfig;
     },
     getChefPosition: () => {
       const gameConfig = state.app?.getSnapshot()?.context.gameConfig;
