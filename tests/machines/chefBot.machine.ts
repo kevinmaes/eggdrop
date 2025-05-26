@@ -93,7 +93,7 @@ const chefBotMachine = setup({
     }),
   },
   actors: {
-    checkForAppActorRef: fromPromise<GameConfig | undefined, { page: Page }>(
+    fetchGameConfig: fromPromise<GameConfig | undefined, { page: Page }>(
       async ({ input }) => {
         // console.log('checkForAppActorRef called');
         const { page } = input;
@@ -276,7 +276,7 @@ const chefBotMachine = setup({
     Initializing: {
       entry: log(`${CHEF_BOT_ACTOR_ID} Initializing`),
       invoke: {
-        src: 'checkForAppActorRef',
+        src: 'fetchGameConfig',
         input: ({ context }) => ({ page: context.page }),
         onDone: [
           {
