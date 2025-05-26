@@ -2,6 +2,11 @@ import type { ChefData, EggData } from '../../src/test-api';
 import type { Direction } from '../../src/types';
 import type { GameConfig } from '../../src/GameLevel/gameConfig';
 
+/**
+ * EggData pulls context values from the egg actor.
+ * EnhancedEggData adds additional properties used to determine the score
+ * when choosing the next best egg to catch.
+ */
 export interface EnhancedEggData extends EggData {
   timeToCatch: number;
   maxTravel: number;
