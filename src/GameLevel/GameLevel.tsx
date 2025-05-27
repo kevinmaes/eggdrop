@@ -74,7 +74,7 @@ export function GameLevel() {
       <Layer>
         {/* Level number */}
         <Text
-          x={gameConfig.stageDimensions.margin}
+          x={gameConfig.stage.margin}
           y={gameConfig.henBeam.y + 5}
           text={`LEVEL ${generationNumber}`}
           fontSize={18}
@@ -90,11 +90,7 @@ export function GameLevel() {
           height={gameConfig.hensCountdown.height}
         />
         <LevelScoreBox
-          x={
-            gameConfig.stageDimensions.width -
-            120 -
-            gameConfig.stageDimensions.margin
-          }
+          x={gameConfig.stage.width - 120 - gameConfig.stage.margin}
           y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
           width={120}
           height={320}

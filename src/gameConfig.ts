@@ -3,29 +3,18 @@
 
 const POPULATION_SIZE = 40;
 
-export const STAGE_DIMENSIONS = {
-  width: 1280,
-  height: 720,
-
-  // Generally respected margin for rendering content within the stage dimensions,
-  // similar to CSS padding.
-  margin: 10,
-
-  // Similar to the margin, above, but further limiting the movement of the hens
-  // and chef so that they don't overlap as much with UI close to the margin.
-  movementMargin: 25,
-} as const;
-
 export interface GameConfig {
   isTestMode: boolean;
   isMuted: boolean;
   populationSize: number;
   levelDurationMS: number;
-  stageDimensions: {
+  stage: {
     width: number;
     height: number;
     midX: number;
     midY: number;
+    margin: number;
+    movementMargin: number;
   };
   ga: {
     mutationRate: number;
@@ -110,14 +99,25 @@ export interface GameConfig {
   };
 }
 
-const createGameConfig = (isTestMode: boolean = false): GameConfig => {
-  const stageDimensions = STAGE_DIMENSIONS;
+export const STAGE_DIMENSIONS = {
+  width: 1280,
+  height: 720,
 
+  // Generally respected margin for rendering content within the stage dimensions,
+  // similar to CSS padding.
+  margin: 10,
+
+  // Similar to the margin, above, but further limiting the movement of the hens
+  // and chef so that they don't overlap as much with UI close to the margin.
+  movementMargin: 25,
+};
+
+const createGameConfig = (isTestMode: boolean = false): GameConfig => {
   // The position and dimensions of the chef
   const chefWidth = 344;
   const chefHeight = 344;
   const chefYPosition =
-    stageDimensions.height - chefHeight - stageDimensions.margin;
+    STAGE_DIMENSIONS.height - chefHeight - STAGE_DIMENSIONS.margin;
 
   // The duration in seconds for the egg to fall from the hen to the ground
   // Somewhere between 0.25 and 0.75 is reasonable.
@@ -132,10 +132,10 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
     populationSize: POPULATION_SIZE,
     // The duration each level lasts in milliseconds
     levelDurationMS: POPULATION_SIZE * 1000 + 60_000,
-    stageDimensions: {
-      ...stageDimensions,
-      midX: stageDimensions.width / 2,
-      midY: stageDimensions.height / 2,
+    stage: {
+      ...STAGE_DIMENSIONS,
+      midX: STAGE_DIMENSIONS.width / 2,
+      midY: STAGE_DIMENSIONS.height / 2,
     },
     ga: {
       mutationRate: 0.05,
@@ -150,7 +150,7 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
       secondaryBlue: '#455579',
     },
     chef: {
-      x: stageDimensions.width / 2,
+      x: STAGE_DIMENSIONS.width / 2,
       y: chefYPosition,
       width: chefWidth,
       height: chefHeight,
@@ -163,7 +163,7 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
       deceleration: 7,
       minXPos: 0.4 * chefWidth,
       // Right margin is reduced so that the pot can still catch eggs at the edge of the screen
-      maxXPos: stageDimensions.width - 0.4 * chefWidth,
+      maxXPos: STAGE_DIMENSIONS.width - 0.4 * chefWidth,
       potRim: {
         width: 150,
         height: 25,
@@ -176,7 +176,7 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
       width: henSize,
       height: henSize,
       offstageLeftX: -henSize,
-      offstageRightX: stageDimensions.width + henSize,
+      offstageRightX: STAGE_DIMENSIONS.width + henSize,
       y: -10,
       // The delay before each hen enters the stage
       entranceDelayMS: 1000,
@@ -188,10 +188,10 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
       buttXOffset: 0.5 * henSize,
       buttYOffset: 85,
       eggLayingXMin: 40,
-      eggLayingXMax: stageDimensions.width - 40,
+      eggLayingXMax: STAGE_DIMENSIONS.width - 40,
     },
     henBeam: {
-      width: stageDimensions.width,
+      width: STAGE_DIMENSIONS.width,
       height: 35,
       x: 0,
       y: 98,

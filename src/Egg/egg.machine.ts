@@ -106,7 +106,7 @@ export const eggMachine = setup({
       if (!isImageRef(context.eggRef)) return false;
       return (
         context.eggRef.current.x() < 0 ||
-        context.eggRef.current.x() > context.gameConfig.stageDimensions.width
+        context.eggRef.current.x() > context.gameConfig.stage.width
       );
     },
   },
@@ -121,16 +121,16 @@ export const eggMachine = setup({
       targetPosition: ({ context }) => ({
         x: context.position.x,
         y:
-          context.gameConfig.stageDimensions.height -
+          context.gameConfig.stage.height -
           context.gameConfig.egg.brokenEgg.height -
-          context.gameConfig.stageDimensions.margin,
+          context.gameConfig.stage.margin,
       }),
     }),
     setTargetPositionToExit: assign({
       targetPosition: ({ context }) => ({
         x:
-          context.position.x > context.gameConfig.stageDimensions.midX
-            ? context.gameConfig.stageDimensions.width + 50
+          context.position.x > context.gameConfig.stage.midX
+            ? context.gameConfig.stage.width + 50
             : -50,
         y: context.position.y,
       }),
@@ -150,7 +150,7 @@ export const eggMachine = setup({
       position: ({ context }) => ({
         x: context.position.x - 0.5 * context.gameConfig.egg.brokenEgg.width,
         y:
-          context.gameConfig.stageDimensions.height -
+          context.gameConfig.stage.height -
           context.gameConfig.egg.brokenEgg.height,
       }),
     }),
@@ -158,9 +158,9 @@ export const eggMachine = setup({
       position: ({ context }) => ({
         x: context.position.x,
         y:
-          context.gameConfig.stageDimensions.height -
+          context.gameConfig.stage.height -
           context.gameConfig.egg.chick.height -
-          context.gameConfig.stageDimensions.margin,
+          context.gameConfig.stage.margin,
       }),
     }),
     setResultStatus: assign({
@@ -334,9 +334,9 @@ export const eggMachine = setup({
               rotationDirection: context.rotationDirection,
               testForDestination: yPos =>
                 yPos >=
-                context.gameConfig.stageDimensions.height -
+                context.gameConfig.stage.height -
                   context.gameConfig.egg.brokenEgg.height -
-                  context.gameConfig.stageDimensions.margin,
+                  context.gameConfig.stage.margin,
             }),
             onDone: {
               target: 'Done Falling',

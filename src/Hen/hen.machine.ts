@@ -17,13 +17,11 @@ function getDestinationAndPositions(gameConfig: GameConfig) {
   const initialPosition =
     destination === 'offscreen-right'
       ? {
-          x: -1 * gameConfig.hen.width - gameConfig.stageDimensions.margin,
+          x: -1 * gameConfig.hen.width - gameConfig.stage.margin,
           y: gameConfig.hen.y,
         }
       : {
-          x:
-            gameConfig.stageDimensions.width +
-            gameConfig.stageDimensions.margin,
+          x: gameConfig.stage.width + gameConfig.stage.margin,
           y: gameConfig.hen.y,
         };
 
@@ -110,7 +108,7 @@ export const henMachine = setup({
     ]),
     'has reached destination': ({ context }) => {
       if (context.destination === 'offscreen-right') {
-        return context.position.x >= context.gameConfig.stageDimensions.width;
+        return context.position.x >= context.gameConfig.stage.width;
       } else if (context.destination === 'offscreen-left') {
         return context.position.x <= -1 * context.gameConfig.hen.width;
       }
@@ -165,7 +163,7 @@ export const henMachine = setup({
     }),
     createTweenToTargetPosition: assign(({ context }) => {
       const { targetPosition } = context;
-      const totalDistance = context.gameConfig.stageDimensions.width;
+      const totalDistance = context.gameConfig.stage.width;
       const xDistance = targetPosition.x - context.position.x;
       const direction: Direction['value'] = xDistance > 0 ? 1 : -1;
       const movingDirection: Direction['label'] =
