@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { LOADING_MSG } from '../src/constants';
+import { GAME_LEVEL_ACTOR_ID, LOADING_MSG } from '../src/constants';
 import { type TestAPI } from '../src/test-api';
 import { createLogger } from './helpers';
 import { createActor, waitFor } from 'xstate';
 import { chefBotMachine } from './machines/chefBot.machine';
+import { GameLevelActorRef } from '../src/GameLevel/gameLevel.machine';
+import { AppActorRef } from '../src/app.machine';
 
 // Set a longer timeout for all tests in this file
 test.setTimeout(300000); // 5 minutes
@@ -64,17 +66,24 @@ test.describe('@automated Game', () => {
     // Now start the game
     chefBot.send({ type: 'Start' });
 
-    // const isGameLevelDone = await page.evaluate(() => {
-    //   const testAPI = window.__TEST_API__;
-    //   const gameLevel = testAPI?.gameLevel;
-    //   return gameLevel?.getSnapshot().matches('Done');
-    // });
+    const isGameLevelDoneHandle = await page.waitForFunction(() => {
+      const testAPI = window.__TEST_API__;
+      const appActorRef = testAPI?.app as AppActorRef;
+      const gameLevelActorRef = appActorRef.system.get(
+        GAME_LEVEL_ACTOR_ID
+      ) as GameLevelActorRef;
+      return gameLevelActorRef.getSnapshot().matches('Done');
+    });
+    const isGameLevelDone = await isGameLevelDoneHandle.jsonValue();
 
     // logStep(`Final score: ${currentScore}`);
     // logStep(`Game level done: ${isGameLevelDone}`);
     // logStep(
     //   `Total eggs caught: ${totalEggsCaught} (White: ${whiteEggsCaught}, Gold: ${goldEggsCaught}, Black: ${blackEggsCaught})`
     // );
+    console.log('isGameLevelDone', isGameLevelDone);
+
+    expect(isGameLevelDone).toBe(true);
 
     await waitFor(chefBot, state => state.matches('Done'));
     console.log('chefBot snapshot value', chefBot.getSnapshot().value);
