@@ -136,23 +136,21 @@ function createTestAPI(state: TestAPIState): TestAPI {
       return chefData;
     },
     getChefPotRimCenterHitX: (moveDirection: 'right' | 'left') => {
-      const snapshot = state.app?.system.get(CHEF_ACTOR_ID).getSnapshot();
-      const gameConfig = snapshot?.context.gameConfig;
-      const chefXPos = snapshot?.context.position.x ?? 0;
-      const potRimOffsetX = gameConfig?.chef.potRim.offsetX ?? 0;
+      const appActorRef = state.app as AppActorRef;
+      const { gameConfig } = appActorRef.getSnapshot().context;
+      const potRim = gameConfig?.chef.potRim;
+      const potRimWidth = potRim.width ?? 150;
+      const potRimOffsetX = potRim.offsetX ?? 0;
+
+      const chefActorRef = appActorRef.system.get(
+        CHEF_ACTOR_ID
+      ) as ChefActorRef;
+      const chefXPos = chefActorRef.getSnapshot().context.position.x ?? 0;
 
       if (moveDirection === 'right') {
-        return (
-          chefXPos +
-          potRimOffsetX +
-          0.5 * (gameConfig?.chef.potRim.width ?? 150)
-        );
+        return chefXPos + potRimOffsetX + 0.5 * potRimWidth;
       } else {
-        return (
-          chefXPos -
-          potRimOffsetX -
-          0.5 * (gameConfig?.chef.potRim.width ?? 150)
-        );
+        return chefXPos - potRimOffsetX - 0.5 * potRimWidth;
       }
     },
     getChefAndEggsData: () => {
