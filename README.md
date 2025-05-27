@@ -83,8 +83,14 @@ The game uses [Playwright](https://playwright.dev) for end-to-end testing. These
 ### Running Tests
 
 ```bash
-# Run tests in headless mode
+# Run regular tests in headless mode
 yarn test:e2e
+
+# Run automated tests
+yarn test:automated
+
+# Run all tests
+yarn test:all
 
 # Run tests with browser visible
 yarn test:e2e:headed
@@ -92,6 +98,23 @@ yarn test:e2e:headed
 # Run tests in debug mode
 yarn test:e2e:debug
 ```
+
+### Test Types
+
+The tests are organized into two categories:
+
+1. **Regular Tests** (`@regular` tag):
+
+   - Basic game functionality
+   - UI interactions
+   - State transitions
+   - Run on every PR and push
+
+2. **Automated Tests** (`@automated` tag):
+   - Complex gameplay scenarios
+   - Bot-driven gameplay
+   - Longer running tests (5-minute timeout)
+   - Run manually via GitHub Actions
 
 ### Test Architecture
 
@@ -150,7 +173,8 @@ The tests leverage the game's state machines through a special test API that's e
    - Keyboard input for chef movement
    - Game state transitions (start, pause, game over)
    - Score tracking and game progression
-   - Complex game scenarios that would be difficult to test visually
+   - Complex game scenarios using the chefBot machine
+   - Automated egg catching and scoring
 
 This architecture makes it possible to write reliable, deterministic tests for a Canvas-based game, something that would be much more challenging with traditional testing approaches. For more on state machine testing, see:
 
@@ -175,9 +199,11 @@ When tests run in GitHub Actions:
 1. Navigate to the Actions tab in your PR
 2. Click on the workflow run
 3. Scroll to the "Artifacts" section
-4. Download and open the `playwright-report` to view detailed test results
+4. Download and open either:
+   - `playwright-report` for regular tests
+   - `playwright-automated-report` for automated tests
 
-The report includes:
+The reports include:
 
 - Test execution videos
 - Screenshots at each step
