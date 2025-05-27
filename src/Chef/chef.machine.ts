@@ -3,7 +3,7 @@ import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
 import { CHEF_ACTOR_ID } from '../constants';
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 
 import type { EggColor } from '../Egg/egg.machine';
@@ -16,8 +16,8 @@ export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
 export const chefMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
-      chefConfig: ReturnType<typeof getGameConfig>['chef'];
+      gameConfig: GameConfig;
+      chefConfig: GameConfig['chef'];
       chefAssets: GameAssets['chef'];
       position: Position;
       speed: number;
@@ -29,8 +29,8 @@ export const chefMachine = setup({
       isTestMode: boolean;
     };
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
-      chefConfig: ReturnType<typeof getGameConfig>['chef'];
+      gameConfig: GameConfig;
+      chefConfig: GameConfig['chef'];
       chefRef: React.RefObject<Konva.Image> | { current: null };
       chefAssets: GameAssets['chef'];
       position: Position;

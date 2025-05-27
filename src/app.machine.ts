@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
 import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
-import { getGameConfig } from './GameLevel/gameConfig';
+import { type GameConfig } from './gameConfig';
 import {
   gameLevelMachine,
   type GameLevelActorRef,
@@ -31,14 +31,14 @@ export type AppActorRef = ActorRefFrom<typeof appMachine>;
 const appMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
     };
     context: {
       isMuted: boolean;
       generationNumber: number;
       levelResultsHistory: LevelResults[];
       population: Hendividual[];
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       gameAssets: GameAssets | null;
       gameScoreData: {
         gameScore: number;

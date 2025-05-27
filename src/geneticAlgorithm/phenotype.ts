@@ -1,4 +1,4 @@
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { getGameConfig } from '../gameConfig';
 import { mapValue } from '../utils';
 
 // This is the definitive list of all the possible phenotypes

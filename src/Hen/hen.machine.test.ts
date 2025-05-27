@@ -1,14 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, waitFor } from 'xstate';
 
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { getGameConfig } from '../gameConfig';
 import { createMockKonvaImage } from '../test/helpers';
 
 import { henMachine } from './hen.machine';
 
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import type { Position } from '../types';
-
 
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {

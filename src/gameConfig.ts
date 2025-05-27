@@ -16,7 +16,101 @@ export const STAGE_DIMENSIONS = {
   movementMargin: 25,
 } as const;
 
-const createGameConfig = (isTestMode: boolean = false) => {
+export interface GameConfig {
+  isTestMode: boolean;
+  isMuted: boolean;
+  populationSize: number;
+  levelDurationMS: number;
+  stageDimensions: {
+    width: number;
+    height: number;
+    midX: number;
+    midY: number;
+  };
+  ga: {
+    mutationRate: number;
+    mutationVariancePercentageRate: number;
+  };
+  colors: {
+    white: string;
+    primaryYellow: string;
+    primaryOrange: string;
+    secondaryOrange: string;
+    primaryBlue: string;
+    secondaryBlue: string;
+  };
+  chef: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    speedLimit: number;
+    acceleration: number;
+    deceleration: number;
+    minXPos: number;
+    maxXPos: number;
+    potRim: {
+      width: number;
+      height: number;
+      offsetX: number;
+      offsetY: number;
+    };
+  };
+  hen: {
+    width: number;
+    height: number;
+    offstageLeftX: number;
+    offstageRightX: number;
+    y: number;
+    entranceDelayMS: number;
+    animationEasingEggLayingBufferMS: number;
+    buttXOffset: number;
+    buttYOffset: number;
+    eggLayingXMin: number;
+    eggLayingXMax: number;
+  };
+  henBeam: {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  };
+  egg: {
+    fallingSpeed: number;
+    fallingDuration: number;
+    points: {
+      white: number;
+      gold: number;
+    };
+    fallingEgg: {
+      width: number;
+      height: number;
+    };
+    brokenEgg: {
+      width: number;
+      height: number;
+    };
+    chick: {
+      width: number;
+      height: number;
+    };
+  };
+  eggCaughtPoints: {
+    width: number;
+    height: number;
+    yStartOffset: number;
+  };
+  countdownTimer: {
+    width: number;
+    height: number;
+  };
+  hensCountdown: {
+    width: number;
+    height: number;
+  };
+}
+
+const createGameConfig = (isTestMode: boolean = false): GameConfig => {
   const stageDimensions = STAGE_DIMENSIONS;
 
   // The position and dimensions of the chef
@@ -31,7 +125,7 @@ const createGameConfig = (isTestMode: boolean = false) => {
 
   const henSize = 120;
 
-  return {
+  const gameConfig: GameConfig = {
     isTestMode,
     isMuted: false,
     // The number of hens in the game
@@ -137,14 +231,20 @@ const createGameConfig = (isTestMode: boolean = false) => {
       width: 90,
       height: 50,
     },
-  } as const;
+  };
+
+  if (isTestMode) {
+    gameConfig.populationSize = 10;
+    gameConfig.levelDurationMS = 60_000;
+  }
+  return gameConfig;
 };
 
 // Create a single instance
-let gameConfigInstance: ReturnType<typeof createGameConfig> | null = null;
+let gameConfigInstance: GameConfig | null = null;
 
 // Export a function that returns the singleton instance
-export function getGameConfig(): ReturnType<typeof createGameConfig> {
+export function getGameConfig(): GameConfig {
   let isTestMode = false;
 
   // Prefer env var if present (for Playwright/Node tests)
@@ -167,6 +267,3 @@ export function getGameConfig(): ReturnType<typeof createGameConfig> {
 export function resetGameConfig() {
   gameConfigInstance = null;
 }
-
-// Export the type for use in other files
-export type GameConfig = ReturnType<typeof createGameConfig>;

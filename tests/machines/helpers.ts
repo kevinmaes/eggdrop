@@ -1,6 +1,6 @@
 import type { ChefData, EggData } from '../../src/test-api';
 import type { Direction } from '../../src/types';
-import type { GameConfig } from '../../src/GameLevel/gameConfig';
+import type { GameConfig } from '../../src/gameConfig';
 
 /**
  * EggData pulls context values from the egg actor.

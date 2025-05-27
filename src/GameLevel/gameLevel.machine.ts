@@ -22,6 +22,7 @@ import {
   eggCaughtPointsMachine,
   type EggCaughtPointsDoneEvent,
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
+import { type GameConfig } from '../gameConfig';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
 import { addEggToHistory } from '../test-api';
@@ -31,7 +32,6 @@ import {
   countdownTimer,
   type CountdownTimerTickEvent,
 } from './countdownTimer.actor';
-import { getGameConfig } from './gameConfig';
 
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
@@ -41,7 +41,7 @@ export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
 export const gameLevelMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       gameAssets: GameAssets;
       generationNumber: number;
       levelDuration: number;
@@ -53,7 +53,7 @@ export const gameLevelMachine = setup({
       eggColor: EggColor;
     };
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       gameAssets: GameAssets;
       remainingMS: number;
       generationNumber: number;

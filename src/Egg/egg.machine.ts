@@ -8,7 +8,7 @@ import {
   type ActorRefFrom,
 } from 'xstate';
 
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Direction, type Position } from '../types';
@@ -30,7 +30,7 @@ export type EggActorRef = ActorRefFrom<typeof eggMachine>;
 export const eggMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       id: string;
       eggAssets: GameAssets['egg'];
       chickAssets: GameAssets['chick'];
@@ -49,7 +49,7 @@ export const eggMachine = setup({
       resultStatus: EggResultStatus;
     };
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       henId: string;

@@ -18,7 +18,7 @@ declare global {
 }
 
 test.describe('@automated Game', () => {
-  // let gameConfig: ReturnType<typeof getGameConfig> | undefined;
+  // let gameConfig: GameConfig | undefined;
 
   // Shared setup for all tests
   test.beforeEach(async ({ page }) => {

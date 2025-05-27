@@ -3,7 +3,7 @@ import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
 import type { AppActorRef } from './app.machine';
 import type { ChefActorRef } from './Chef/chef.machine';
 import type { EggActorRef, EggColor, EggResultStatus } from './Egg/egg.machine';
-import type { GameConfig } from './GameLevel/gameConfig';
+import type { GameConfig } from './gameConfig';
 import type { GameLevelActorRef } from './GameLevel/gameLevel.machine';
 import type { Direction, Position } from './types';
 

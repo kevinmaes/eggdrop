@@ -17,7 +17,7 @@ import {
   EggHistoryEntry,
 } from '../../src/test-api';
 import { Page } from '@playwright/test';
-import { GameConfig } from '../../src/GameLevel/gameConfig';
+import { GameConfig } from '../../src/gameConfig';
 import { findBestEgg } from './helpers';
 
 // Add new interface for enhanced egg data
