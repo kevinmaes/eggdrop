@@ -3,6 +3,7 @@ import { Stage, Layer } from 'react-konva';
 import { Hen } from './Hen/Hen';
 // import { Egg } from './Egg/Egg';
 import { Chef } from './Chef/Chef';
+import { STAGE_HEIGHT, STAGE_WIDTH } from './constants';
 
 const App = () => {
 	const layerRef = useRef<any>(null);
@@ -42,10 +43,10 @@ const App = () => {
 
 	return (
 		<Stage
-			width={window.innerWidth}
-			height={window.innerHeight}
+			width={STAGE_WIDTH}
+			height={STAGE_HEIGHT}
 			style={{
-				backgroundColor: 'blue',
+				backgroundColor: '#1DB100',
 				border: '10px solid black',
 			}}
 		>

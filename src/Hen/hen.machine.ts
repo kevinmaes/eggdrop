@@ -1,11 +1,12 @@
 import { createMachine, assign } from 'xstate';
+import { STAGE_HEIGHT } from '../constants';
 
 export const henMachine = createMachine(
 	{
 		id: 'hen',
 		initial: 'moving',
 		context: {
-			position: { x: 0, y: 0 },
+			position: { x: 0, y: 0.5 * STAGE_HEIGHT },
 			direction: 1, // 1 for right, -1 for left
 			speed: 0.4,
 		},
@@ -37,7 +38,7 @@ export const henMachine = createMachine(
 					context.direction * event.output.timeDiff * context.speed;
 				let newDirection = context.direction;
 
-				if (newX > window.innerWidth - 50 || newX < 0) {
+				if (newX > 1000 - 50 || newX < 0) {
 					newDirection = -context.direction;
 				}
 
