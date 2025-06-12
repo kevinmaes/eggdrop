@@ -6,6 +6,7 @@ import { henMachine } from './hen.machine';
 import { Animation } from 'konva/lib/Animation';
 import { fromPromise } from 'xstate';
 import henImageFile from '../assets/hen1.png';
+import { createBrowserInspector } from '@statelyai/inspect';
 
 const { inspect } = createBrowserInspector();
 console.log(inspect);
