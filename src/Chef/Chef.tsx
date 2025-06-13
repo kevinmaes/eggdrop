@@ -5,6 +5,7 @@ import { assign, fromPromise } from 'xstate';
 import { chefMachine } from './chef.machine';
 import { Animation } from 'konva/lib/Animation';
 import { Rect } from 'react-konva';
+import { STAGE_WIDTH } from '../constants';
 // import useImage from 'use-image';
 
 export function Chef({
@@ -21,7 +22,7 @@ export function Chef({
 	// const [chefImage] = useImage('path-to-your-chef-image.png');
 
 	const leftXLimit = 0;
-	const rightXLimit = window.innerWidth - 75;
+	const rightXLimit = STAGE_WIDTH - 75;
 
 	const [state, send] = useActor(
 		chefMachine.provide({

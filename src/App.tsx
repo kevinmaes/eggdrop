@@ -6,6 +6,11 @@ import { getStartXPosition } from './Hen/hen.machine';
 import Konva from 'konva';
 import { Egg } from './Egg/Egg';
 import { nanoid } from 'nanoid';
+import {
+	BACKGROUND_GREENSCREEN_COLOR,
+	STAGE_HEIGHT,
+	STAGE_WIDTH,
+} from './constants';
 
 interface EggConfig {
 	id: string;
@@ -16,15 +21,15 @@ interface EggConfig {
 
 const App = () => {
 	const chefInitialPosition = {
-		x: window.innerWidth / 2,
-		y: window.innerHeight - 120,
+		x: STAGE_WIDTH / 2,
+		y: STAGE_HEIGHT - 120,
 	};
 	const chefPositionRef = useRef<{ x: number; y: number }>(chefInitialPosition);
 	const layerRef = useRef<Konva.Layer>(null);
 
 	const henConfigs = new Array(20).fill(null).map(() => ({
 		id: nanoid(),
-		initialX: getStartXPosition(window.innerWidth),
+		initialX: getStartXPosition(STAGE_WIDTH),
 		initialY: 10,
 	}));
 	const [hens] = useState(henConfigs);
@@ -78,9 +83,9 @@ const App = () => {
 
 	return (
 		<Stage
-			width={window.innerWidth}
-			height={window.innerHeight}
-			style={{ background: 'blue' }}
+			width={STAGE_WIDTH}
+			height={STAGE_HEIGHT}
+			style={{ background: BACKGROUND_GREENSCREEN_COLOR }}
 		>
 			<Layer ref={layerRef}>
 				{hens.map((hen) => (

@@ -1,4 +1,5 @@
 import { setup, assign, fromPromise, log } from 'xstate';
+import { STAGE_HEIGHT, STAGE_WIDTH } from '../constants';
 
 export const eggMachine = setup({
 	types: {} as {
@@ -48,7 +49,7 @@ export const eggMachine = setup({
 		exitChick: fromPromise(() => Promise.resolve({ timeDiff: 0 })),
 	},
 	guards: {
-		hitFloor: ({ context }) => context.position.y >= window.innerHeight - 50,
+		hitFloor: ({ context }) => context.position.y >= STAGE_HEIGHT - 50,
 		// caughtByChef: ({ context, event }) => {
 		// 	return false;
 		// 	const chefX = event.chefPosition.x;
@@ -70,8 +71,8 @@ export const eggMachine = setup({
 		fallingSpeed: input.fallingSpeed,
 		exitingSpeed: 5,
 		exitPosition: {
-			x: Math.random() > 0.5 ? window.innerWidth + 50 : -50,
-			y: window.innerHeight - 50,
+			x: Math.random() > 0.5 ? STAGE_WIDTH + 50 : -50,
+			y: STAGE_HEIGHT - 50,
 		},
 	}),
 	states: {
