@@ -1,12 +1,13 @@
 // chefMachine.js
 import { createMachine, assign } from 'xstate';
+import { STAGE_HEIGHT, STAGE_WIDTH } from '../constants';
 
 export const chefMachine = createMachine(
 	{
 		id: 'chef',
 		initial: 'idle',
 		context: {
-			position: { x: window.innerWidth / 2, y: window.innerHeight - 50 },
+			position: { x: STAGE_WIDTH / 2, y: STAGE_HEIGHT - 50 },
 		},
 		states: {
 			idle: {
@@ -32,7 +33,7 @@ export const chefMachine = createMachine(
 			moveRight: assign({
 				position: ({ context }) => ({
 					...context.position,
-					x: Math.min(context.position.x + 10, window.innerWidth - 50),
+					x: Math.min(context.position.x + 10, STAGE_WIDTH - 50),
 				}),
 			}),
 		},

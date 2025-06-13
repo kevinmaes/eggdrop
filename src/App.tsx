@@ -5,7 +5,11 @@ import { Chef } from './Chef/Chef';
 import { getStartXPosition } from './Hen/hen.machine';
 import Konva from 'konva';
 import { Egg } from './Egg/Egg';
-import { BACKGROUND_GREENSCREEN_COLOR } from './constants';
+import {
+	BACKGROUND_GREENSCREEN_COLOR,
+	STAGE_HEIGHT,
+	STAGE_WIDTH,
+} from './constants';
 
 interface EggConfig {
 	id: number;
@@ -19,7 +23,7 @@ const App = () => {
 
 	const henConfigs = new Array(1).fill(null).map((_, index) => ({
 		id: index + 1,
-		initialX: getStartXPosition(window.innerWidth),
+		initialX: getStartXPosition(STAGE_WIDTH),
 		initialY: 10,
 	}));
 	const [hens] = useState(henConfigs);
@@ -55,8 +59,8 @@ const App = () => {
 
 	return (
 		<Stage
-			width={window.innerWidth}
-			height={window.innerHeight}
+			width={STAGE_WIDTH}
+			height={STAGE_HEIGHT}
 			style={{ background: BACKGROUND_GREENSCREEN_COLOR }}
 		>
 			<Layer ref={layerRef}>

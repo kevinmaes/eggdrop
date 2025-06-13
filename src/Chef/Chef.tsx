@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Image as KonvaImage, Rect } from 'react-konva';
+import { STAGE_HEIGHT, STAGE_WIDTH } from '../constants';
 // import useImage from 'use-image';
 
 export function Chef() {
@@ -27,13 +28,13 @@ export function Chef() {
 	}, []);
 
 	const leftXLimit = 0;
-	const rightXLimit = window.innerWidth - 75;
+	const rightXLimit = STAGE_WIDTH - 75;
 	const speedLimit = 20;
 	const accel = 0.1 * speedLimit;
 	const decel = 1;
 
-	const [xPos, setXPos] = useState(window.innerWidth / 2);
-	const [yPos] = useState(window.innerHeight - 120);
+	const [xPos, setXPos] = useState(STAGE_WIDTH / 2);
+	const [yPos] = useState(STAGE_HEIGHT - 120);
 	const [xDirection, setXDirection] = useState(0);
 	const [speed, setSpeed] = useState(0);
 

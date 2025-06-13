@@ -8,6 +8,7 @@ import { assign, fromPromise } from 'xstate';
 import henImageFile from '../assets/hen1.png';
 import { Ref } from 'react';
 import Konva from 'konva';
+import { STAGE_WIDTH } from '../constants';
 
 interface HenProps {
 	layerRef: Ref<Konva.Layer>;
@@ -64,7 +65,7 @@ export function Hen({ layerRef, id, initialX, initialY, onLayEgg }: HenProps) {
 		{
 			input: {
 				position: { x: initialX, y: initialY },
-				stageWidth: window.innerWidth,
+				stageWidth: STAGE_WIDTH,
 			},
 		}
 	);
