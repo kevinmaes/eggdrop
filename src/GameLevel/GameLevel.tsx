@@ -6,6 +6,7 @@ import Konva from 'konva';
 import { GameLevelActorContext } from './gameLevel.machine';
 import { Egg } from '../Egg/Egg';
 import { CHEF_DIMENSIONS } from './gameConfig';
+import { BACKGROUND_GREENSCREEN_COLOR } from '../constants';
 
 interface GameLevelProps {
 	stageDimensions: {
@@ -33,7 +34,7 @@ export function GameLevel({ stageDimensions }: GameLevelProps) {
 		<Stage
 			width={stageDimensions.width}
 			height={stageDimensions.height}
-			style={{ background: 'blue' }}
+			style={{ background: BACKGROUND_GREENSCREEN_COLOR }}
 		>
 			<Layer ref={layerRef}>
 				{henActorRefs.map((henActorRef) => (

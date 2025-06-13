@@ -6,11 +6,12 @@ import { chefMachine } from '../Chef/chef.machine';
 import { getStartXPosition, henMachine } from '../Hen/hen.machine';
 import { eggMachine } from '../Egg/egg.machine';
 import { CHEF_DIMENSIONS, STAGE_DIMENSIONS } from './gameConfig';
+import { STAGE_WIDTH } from '../constants';
 
 const henConfigs = new Array(1).fill(null).map(() => ({
 	id: nanoid(),
-	initialX: getStartXPosition(1920),
-	initialY: 10,
+	initialX: getStartXPosition(STAGE_WIDTH),
+	initialY: 20,
 }));
 
 const gameLevelMachine = setup({
