@@ -5,6 +5,7 @@ import { Chef } from './Chef/Chef';
 import { getStartXPosition } from './Hen/hen.machine';
 import Konva from 'konva';
 import { Egg } from './Egg/Egg';
+import { BACKGROUND_GREENSCREEN_COLOR } from './constants';
 
 interface EggConfig {
 	id: number;
@@ -56,7 +57,7 @@ const App = () => {
 		<Stage
 			width={window.innerWidth}
 			height={window.innerHeight}
-			style={{ background: 'blue' }}
+			style={{ background: BACKGROUND_GREENSCREEN_COLOR }}
 		>
 			<Layer ref={layerRef}>
 				{hens.map((hen) => (
