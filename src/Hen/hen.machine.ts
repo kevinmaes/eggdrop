@@ -141,23 +141,12 @@ export const henMachine = setup({
 
       if (context.destination === 'offscreen-right') {
         targetPosition.x =
-          getRandomNumber(
-            context.phenotype.minXMovement,
-            context.phenotype.maxXMovement,
-            true
-          ) + context.position.x;
+          getRandomNumber(minDistance, movementRange, true) +
+          context.position.x;
       } else if (context.destination === 'offscreen-left') {
         targetPosition.x =
-          -Math.round(Math.random() * movementRange) +
           context.position.x -
-          minDistance;
-        targetPosition.x =
-          context.position.x -
-          getRandomNumber(
-            context.phenotype.minXMovement,
-            context.phenotype.maxXMovement,
-            true
-          );
+          getRandomNumber(minDistance, movementRange, true);
       }
 
       return {
