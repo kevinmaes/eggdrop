@@ -44,6 +44,12 @@ export const chefMachine = setup({
       | { type: 'Set direction'; direction: Direction['value'] }
       | { type: 'Reset isCatchingEgg' };
   },
+  guards: {
+    isDirectionChanging: (
+      { context },
+      params: { direction: Direction['value'] }
+    ) => context.direction !== params.direction,
+  },
   actions: {
     setChefRef: assign({
       chefRef: (_, params: React.RefObject<Konva.Image>) => params,
@@ -197,7 +203,10 @@ export const chefMachine = setup({
       actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
     },
     'Set direction': {
-      guard: ({ context, event }) => context.direction !== event.direction,
+      guard: {
+        type: 'isDirectionChanging',
+        params: ({ event }) => ({ direction: event.direction }),
+      },
       actions: {
         type: 'setDirectionProps',
         params: ({ event }) => ({ direction: event.direction }),
