@@ -2,7 +2,6 @@ import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
-
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { sounds } from '../sounds';
 
@@ -124,24 +123,29 @@ export const chefMachine = setup({
         position: { x: newXPos, y: position.y },
       };
     }),
-    setDirectionProps: assign(({ context }, params: Direction['value']) => {
-      const direction = params;
-      const movingDirection: Direction['label'] =
-        direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
+    setDirectionProps: assign(
+      ({ context }, params: { direction: Direction['value'] }) => {
+        const { direction } = params;
+        if (direction === context.direction) {
+          return context;
+        }
+        const movingDirection: Direction['label'] =
+          direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
 
-      // When actually moving in a direction (left or right) set the lastMovingDirection
-      // to the same value as the movingDirection
-      // Otherwise, do not change the value so we can keep track of the last moving direction
-      const newLastMovingDirection =
-        movingDirection !== 'none'
-          ? movingDirection
-          : context.lastMovingDirection;
-      return {
-        direction,
-        movingDirection,
-        lastMovingDirection: newLastMovingDirection,
-      };
-    }),
+        // When actually moving in a direction (left or right) set the lastMovingDirection
+        // to the same value as the movingDirection
+        // Otherwise, do not change the value so we can keep track of the last moving direction
+        const newLastMovingDirection =
+          movingDirection !== 'none'
+            ? movingDirection
+            : context.lastMovingDirection;
+        return {
+          direction,
+          movingDirection,
+          lastMovingDirection: newLastMovingDirection,
+        };
+      }
+    ),
     setIsCatchingEgg: assign({
       isCatchingEgg: true,
     }),
@@ -194,9 +198,10 @@ export const chefMachine = setup({
       actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
     },
     'Set direction': {
+      guard: ({ context, event }) => context.direction !== event.direction,
       actions: {
         type: 'setDirectionProps',
-        params: ({ event }) => event.direction,
+        params: ({ event }) => ({ direction: event.direction }),
       },
     },
   },

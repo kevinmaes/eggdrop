@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { Group, Rect , Image } from 'react-konva';
+import { Group, Rect, Image } from 'react-konva';
 import useImage from 'use-image';
 
 import { AppActorContext } from '../app.machine';
@@ -13,9 +13,6 @@ import { chefMachine } from './chef.machine';
 
 import type { SpriteData } from '../types/assets';
 import type { ActorRefFrom } from 'xstate';
-
-
-
 
 type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 type ChefFrames = Record<ChefFrameName, SpriteData['frames'][string]>;
