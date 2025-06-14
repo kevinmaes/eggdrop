@@ -132,17 +132,16 @@ export const chefMachine = setup({
         const movingDirection: Direction['label'] =
           direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
 
-        // When actually moving in a direction (left or right) set the lastMovingDirection
-        // to the same value as the movingDirection
-        // Otherwise, do not change the value so we can keep track of the last moving direction
-        const newLastMovingDirection =
+        // Update the lastMovingDirection only When actually moving in a direction
+        const lastMovingDirection =
           movingDirection !== 'none'
             ? movingDirection
             : context.lastMovingDirection;
+
         return {
           direction,
           movingDirection,
-          lastMovingDirection: newLastMovingDirection,
+          lastMovingDirection,
         };
       }
     ),
