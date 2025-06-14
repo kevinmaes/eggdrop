@@ -184,8 +184,8 @@ export function Chef() {
         offsetY={chefPotRimConfig.offsetY}
         width={chefPotRimConfig.width}
         height={chefPotRimConfig.height + 10}
-        // fill={isCatchingEgg ? 'yellow' : 'white'}
-        fill="transparent"
+        fill={isCatchingEgg ? 'lightblue' : 'blue'}
+        // fill="transparent"
       />
     </Group>
   );
