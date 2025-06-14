@@ -31,8 +31,8 @@ export type PhenotypeValuesForIndividual = Record<PhenotypeKey, number>;
 export const phenotypeConfig: PhenotypeConfig = {
   // The x speed of the hen
   speed: {
-    min: 0,
-    max: 1,
+    min: 1,
+    max: 2,
   },
   // The base duration for the hen's tween
   baseTweenDurationSeconds: {
@@ -42,13 +42,13 @@ export const phenotypeConfig: PhenotypeConfig = {
   },
   // The maximum number of eggs the hen can lay while stopped
   stationaryEggLayingRate: {
-    min: 0,
-    max: 0.7,
+    min: 1,
+    max: 1,
   },
   // The maximum number of eggs the hen can lay while moving
   movingEggLayingRate: {
-    min: 0,
-    max: 0.7,
+    min: 1,
+    max: 1,
   },
   // The rate at which the eggs will hatch when they land on the ground
   // TODO: Not sure this is needed here.
@@ -58,32 +58,32 @@ export const phenotypeConfig: PhenotypeConfig = {
   },
   // The min x amount a hen can move during its animation
   minXMovement: {
-    min: 50,
-    max: 200,
+    min: 300,
+    max: 350,
     round: true,
   },
   // The max x amount a hen can move during its animation
   maxXMovement: {
-    min: 250,
+    min: 400,
     max: 0.5 * getGameConfig().stageDimensions.width,
     round: true,
   },
   // The min time the hen will stop at a location
   minStopMS: {
-    min: 0,
-    max: 1000,
+    min: 100,
+    max: 1500,
     round: true,
   },
   // The max time the hen will stop at a location
   maxStopMS: {
-    min: 0,
-    max: 5000,
+    min: 2500,
+    max: 3000,
     round: true,
   },
   // The maximum number of eggs the hen can lay
   maxEggs: {
     min: 1,
-    max: 10,
+    max: 100,
     round: true,
   },
 
@@ -101,7 +101,7 @@ export const phenotypeConfig: PhenotypeConfig = {
   // The time the hen will rest after laying an egg (while stationary)
   restAfterLayingEggMS: {
     min: 0,
-    max: 2000,
+    max: 200,
     round: true,
   },
 };

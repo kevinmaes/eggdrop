@@ -11,9 +11,7 @@ import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 
 import { gameLevelMachine } from './gameLevel.machine';
 
-
 import type { ActorRefFrom } from 'xstate';
-
 
 export function GameLevel() {
   const appActorRef = AppActorContext.useActorRef();
@@ -72,8 +70,7 @@ export function GameLevel() {
       </Layer>
 
       {/* Game UI: Level Score, Timer */}
-      <Layer>
-        {/* Level number */}
+      {/* <Layer>
         <Text
           x={gameConfig.stageDimensions.margin}
           y={gameConfig.henBeam.y + 5}
@@ -100,7 +97,7 @@ export function GameLevel() {
           width={120}
           height={320}
         />
-      </Layer>
+      </Layer> */}
     </>
   );
 }

@@ -9,7 +9,6 @@ import { henMachine } from './hen.machine';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import type { Position } from '../types';
 
-
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {
   speed: 100,

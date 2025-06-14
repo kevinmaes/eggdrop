@@ -16,19 +16,22 @@ function getDestinationAndPositions(
 ) {
   const destination: Destination =
     Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left';
-  const initialPosition =
-    destination === 'offscreen-right'
-      ? {
-          x: -1 * gameConfig.hen.width - gameConfig.stageDimensions.margin,
-          y: gameConfig.hen.y,
-        }
-      : {
-          x:
-            gameConfig.stageDimensions.width +
-            gameConfig.stageDimensions.margin,
-          y: gameConfig.hen.y,
-        };
-
+  // const initialPosition =
+  //   destination === 'offscreen-right'
+  //     ? {
+  //         x: -1 * gameConfig.hen.width - gameConfig.stageDimensions.margin,
+  //         y: gameConfig.hen.y,
+  //       }
+  //     : {
+  //         x:
+  //           gameConfig.stageDimensions.width +
+  //           gameConfig.stageDimensions.margin,
+  //         y: gameConfig.hen.y,
+  //       };
+  const initialPosition = {
+    x: gameConfig.stageDimensions.width / 2,
+    y: 0,
+  };
   return {
     destination,
     position: initialPosition,
@@ -136,29 +139,31 @@ export const henMachine = setup({
       // Pick a new x target position within the hen motion range
       // and with a minimum distance from the current position
       // TODO a range could be a gene value.
-      const minDistance = context.phenotype.minXMovement;
-      const movementRange = context.phenotype.maxXMovement;
+      // const minDistance = context.phenotype.minXMovement;
+      // const movementRange = context.phenotype.maxXMovement;
 
-      if (context.destination === 'offscreen-right') {
-        targetPosition.x =
-          getRandomNumber(
-            context.phenotype.minXMovement,
-            context.phenotype.maxXMovement,
-            true
-          ) + context.position.x;
-      } else if (context.destination === 'offscreen-left') {
-        targetPosition.x =
-          -Math.round(Math.random() * movementRange) +
-          context.position.x -
-          minDistance;
-        targetPosition.x =
-          context.position.x -
-          getRandomNumber(
-            context.phenotype.minXMovement,
-            context.phenotype.maxXMovement,
-            true
-          );
+      // if (context.destination === 'offscreen-right') {
+      //   targetPosition.x =
+      //     getRandomNumber(minDistance, movementRange, true) +
+      //     context.position.x;
+      // } else if (context.destination === 'offscreen-left') {
+      //   targetPosition.x =
+      //     context.position.x -
+      //     getRandomNumber(minDistance, movementRange, true);
+      // }
+      const { stageDimensions, hen } = context.gameConfig;
+      const { margin, width } = stageDimensions;
+      const minXDistance = 200;
+      let targetXPos: number = getRandomNumber(
+        margin,
+        width - margin - hen.width,
+        true
+      );
+      // If targetXPos is closer than the minXDistance from the current position, select a new targetXPos
+      while (Math.abs(targetXPos - context.position.x) < minXDistance) {
+        targetXPos = getRandomNumber(margin, width - margin - hen.width, true);
       }
+      targetPosition.x = targetXPos;
 
       return {
         position: newPosition,
