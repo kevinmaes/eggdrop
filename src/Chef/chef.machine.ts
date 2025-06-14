@@ -2,7 +2,6 @@ import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
-
 import { getGameConfig } from '../GameLevel/gameConfig';
 import { sounds } from '../sounds';
 
@@ -171,6 +170,7 @@ export const chefMachine = setup({
     }),
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYBmBiAymALgAQDG6GASpgNoAMAuoqAA4D2sAlvuywHaMgAPRAFoATADYA7ADpxUgJziALOJoBGUQGZJapQBoQATxFTpazfM2iAHJfHmaNcQF9nBtJlwFCEdgCcwYi5eWgYkEFYOYL5woQQlGgBWaRpbNXS1RNSVawNjBEyZUSVJJTVbRNUaUXlJV3cyaQBZFgA3dh4oLAheMGkO1pYAaz6PDGa2jqgEAZZiAENo0ND+SM5uGNA4zWtpTSlRLXkneWtrRPO8xC1NWTVayUdbZRpJUXqQMYn2zqxkRdIK3Ca2i-DiYkSSlkkkU1nUThqiUkVwQEjUKW0TkSEgSZ0hHy+LR+XUosG87Fg-3wpCmAFEoFAgcw2OteGCTOJpNZxDtrCUkeJrKUUaJ0fY+ZJxMdqpIhdZXG4QDwWBA4PwxqsWaDYiJNFlpEpEpp0nZ7PdkUYTMlHkolPtEqctIkjQTGkSppqoht2QhhJpqgajSb9mbaijzKJpFo1KlKnJjlk6gqgA */
   id: 'Chef',
   initial: 'Moving',
   context: ({ input }) => ({
