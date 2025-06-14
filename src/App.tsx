@@ -3,7 +3,7 @@ import { Layer, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
-import { LOADING_MSG } from './constants';
+import { BACKGROUND_GREENSCREEN_COLOR, LOADING_MSG } from './constants';
 import { DevPanel } from './DevPanel/DevPanel';
 import { GameLevel } from './GameLevel/GameLevel';
 import './App.css';
@@ -49,12 +49,11 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
       <Stage
         width={gameConfig.stageDimensions.width}
         height={gameConfig.stageDimensions.height}
-        style={
-          {
-            // border: '5px solid',
-            // borderColor: '#98aace',
-          }
-        }
+        style={{
+          // border: '5px solid',
+          // borderColor: '#98aace',
+          backgroundColor: BACKGROUND_GREENSCREEN_COLOR,
+        }}
       >
         {/* Background graphics layer - static (no events) */}
         {/* <BackgroundLayer /> */}
