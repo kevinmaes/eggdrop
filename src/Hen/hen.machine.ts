@@ -137,16 +137,14 @@ export const henMachine = setup({
       // and with a minimum distance from the current position
       // TODO a range could be a gene value.
       const minDistance = context.phenotype.minXMovement;
-      const movementRange = context.phenotype.maxXMovement;
+      const maxDistance = context.phenotype.maxXMovement;
 
       if (context.destination === 'offscreen-right') {
         targetPosition.x =
-          getRandomNumber(minDistance, movementRange, true) +
-          context.position.x;
+          context.position.x + getRandomNumber(minDistance, maxDistance, true);
       } else if (context.destination === 'offscreen-left') {
         targetPosition.x =
-          context.position.x -
-          getRandomNumber(minDistance, movementRange, true);
+          context.position.x - getRandomNumber(minDistance, maxDistance, true);
       }
 
       return {
