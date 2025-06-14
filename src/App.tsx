@@ -1,7 +1,7 @@
 import { Layer, Stage } from 'react-konva';
 
 import { AppActorContext } from './app.machine';
-import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
+
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
 import { BACKGROUND_GREENSCREEN_COLOR, LOADING_MSG } from './constants';
 import { DevPanel } from './DevPanel/DevPanel';
