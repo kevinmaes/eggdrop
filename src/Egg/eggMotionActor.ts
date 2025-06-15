@@ -23,7 +23,11 @@ export const eggMotionActor = fromPromise<
       if (!input.node) {
         animation.stop();
         return reject('No eggRef');
-      } else if (input.testForDestination(input.node.y())) {
+      }
+
+      // Check if the egg has reached the destination
+      const eggReachedDestination = input.testForDestination(input.node.y());
+      if (eggReachedDestination) {
         animation.stop();
         resolve({
           x: input.node.x(),
@@ -32,7 +36,7 @@ export const eggMotionActor = fromPromise<
       }
 
       if (frame) {
-        // Calculate new x and y positions
+        // Calculate and set a new X position
         const newXPos = input.node.x() + input.xSpeed;
         input.node.x(newXPos);
 
@@ -46,9 +50,10 @@ export const eggMotionActor = fromPromise<
           (Math.abs(deltaY) > minYChange
             ? deltaY
             : minYChange * Math.sign(input.ySpeed));
+        // Set the new Y position
         input.node.y(newYPos);
 
-        // Rotate the egg
+        // Rotate the egg a bit more in whatever direction it's already rotating
         const currentRotation = input.node.rotation();
         const newRotation = currentRotation + input.rotationDirection * 5;
         input.node.rotation(newRotation);
