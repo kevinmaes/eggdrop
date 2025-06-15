@@ -337,13 +337,13 @@ export const eggMachine = setup({
                   context.gameConfig.stageDimensions.height -
                     context.gameConfig.egg.brokenEgg.height -
                     context.gameConfig.stageDimensions.margin,
-                isParentStillActive: () =>
-                  self.getSnapshot().status === 'active',
                 notifyParentOfPosition: (position: Position) => {
-                  self.send({
-                    type: 'Notify of animation position',
-                    position,
-                  });
+                  if (self.getSnapshot().status === 'active') {
+                    self.send({
+                      type: 'Notify of animation position',
+                      position,
+                    });
+                  }
                 },
               };
             },

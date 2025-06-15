@@ -15,7 +15,6 @@ export const eggMotionActor = fromPromise<
     ySpeed: number;
     rotationDirection: Direction['value'];
     testForDestination: (yPos: number) => boolean;
-    isParentStillActive: () => boolean;
     notifyParentOfPosition: (position: Position) => void;
   }
 >(({ input }) => {
@@ -64,11 +63,8 @@ export const eggMotionActor = fromPromise<
         const newRotation = currentRotation + input.rotationDirection * 5;
         input.node.rotation(newRotation);
 
-        // Send a message to the parent to update the egg position
-        // Make sure the egg actor ref is still active
-        if (input.isParentStillActive()) {
-          input.notifyParentOfPosition({ x: newXPos, y: newYPos });
-        }
+        // Send a message to the parent to update it of the lastest position
+        input.notifyParentOfPosition({ x: newXPos, y: newYPos });
       }
     });
 
