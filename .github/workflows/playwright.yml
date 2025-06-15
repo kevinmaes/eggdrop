@@ -18,7 +18,7 @@ jobs:
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps
       - name: Run Playwright tests
-        run: yarn playwright test --config=playwright.config.ts --ignore=tests/game-automated.spec.ts
+        run: yarn playwright test --config=playwright.config.ts "tests/**/*.spec.ts" "!tests/game-automated.spec.ts"
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
