@@ -52,6 +52,12 @@ export const chefMachine = setup({
       | { type: 'Set direction'; direction: Direction['value'] }
       | { type: 'Reset isCatchingEgg' };
   },
+  guards: {
+    isDirectionChanging: (
+      { context },
+      params: { direction: Direction['value'] }
+    ) => context.direction !== params.direction,
+  },
   actions: {
     setChefRef: assign({
       chefRef: (_, params: React.RefObject<Konva.Image>) => params,
@@ -131,25 +137,28 @@ export const chefMachine = setup({
         position: { x: newXPos, y: position.y },
       };
     }),
+    setDirectionProps: assign(
+      ({ context }, params: { direction: Direction['value'] }) => {
+        const { direction } = params;
+        if (direction === context.direction) {
+          return context;
+        }
+        const movingDirection: Direction['label'] =
+          direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
 
-    setDirectionProps: assign(({ context }, params: Direction['value']) => {
-      const direction = params;
-      const movingDirection: Direction['label'] =
-        direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
+        // Update the lastMovingDirection only When actually moving in a direction
+        const lastMovingDirection =
+          movingDirection !== 'none'
+            ? movingDirection
+            : context.lastMovingDirection;
 
-      // When actually moving in a direction (left or right) set the lastMovingDirection
-      // to the same value as the movingDirection
-      // Otherwise, do not change the value so we can keep track of the last moving direction
-      const newLastMovingDirection =
-        movingDirection !== 'none'
-          ? movingDirection
-          : context.lastMovingDirection;
-      return {
-        direction,
-        movingDirection,
-        lastMovingDirection: newLastMovingDirection,
-      };
-    }),
+        return {
+          direction,
+          movingDirection,
+          lastMovingDirection,
+        };
+      }
+    ),
     setIsCatchingEgg: assign({
       isCatchingEgg: true,
     }),
@@ -204,9 +213,13 @@ export const chefMachine = setup({
       actions: { type: 'setChefRef', params: ({ event }) => event.chefRef },
     },
     'Set direction': {
+      guard: {
+        type: 'isDirectionChanging',
+        params: ({ event }) => ({ direction: event.direction }),
+      },
       actions: {
         type: 'setDirectionProps',
-        params: ({ event }) => event.direction,
+        params: ({ event }) => ({ direction: event.direction }),
       },
     },
   },

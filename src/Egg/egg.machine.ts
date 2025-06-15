@@ -187,6 +187,7 @@ export const eggMachine = setup({
     },
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QFEpQMQAUCGBXWYABFNgLZgDaADALqKgAOA9rAJYAurTAdvSAB6IAjFQBMAFgB04gGziho0QHYAHEoDMSmeoA0IAJ7DRAX2N7UUSQEkIAGzDoAymHaEwaAEpgAZtTpIQZjZOHj5BBABWGUkATi0qcSUomJkVdRUVCL1DBFEIqkkFcXyIjRU8oQihU3M0SQAxbFtbVm4MCB4wSVh2bHYuiwamlra-PiCOLl4A8KVRdUkZKKUtUVSZVKFsxCUxRYjxUSERCJUY0RiakEHG5taMADkmTm99QiZvQmxuVlI+qcIExC3DGASBUzCwg0klEVAUIg0GkOmW2CCU8liIiO800CXUMiuN2G93QTxebw+Xx+f2BgJYkx4FCE-kY9OBkNyVAikgicVUSzhEXUiiyBkQZwKQnkVA2EVOMQUSkJdVuIwwAGE+gBjAAWoNZwQhM0QAFpFJI0uoYipDuIVAjDkpUUJNFIYuIZVRdgoZDL1MrLKr7tYfq4g210PrAmyjaBwuJ1EJJFR8QmDuoqCnE6jNNElFLTnN8UsjgSzNcVcS2iGOIRwxgmSzo4bQsaEAmkym5Op05n1NmxZEqCpkxcZKohPmqhcA0M7tXHOwAE7YVhQHWuAAiTAA7tx0B1uF1WgA3JgAawGlfnlkXK7XG8I273CFPTC1-0ZtCj4NbcfF+aSMKMSuksMiKEoMSonaUhyomIgxIhGQqLO9aSAAgq43yEOhbT2AenSSG+l6SESN4YVh3A4XhYCvtwZ4fsCfg-jGf4CABSbAaBUQQVBg49gs8wqGImYCso-rloMAAy3wQJAka0OMrHTP+CCpDEQFLDa5QXHCMhbIOmQFAcywJnMQhxGWtSWDJ3ByRAkbMkpLYqexakxNyVSieIxTpLIuiDiIeypOI7r5im8gSdZkgABLajqJL8D0fRdNg3j9EuAAUGZUAAlOggxxewur3CxLkcscoWaaIaS7PkCQpKiGTcuU7rKAcIGlEqkl1EVJVtIQABSuCkAwBFHt0vT9KRvXxfcQ0jQwZUMq54RSgmQFxBcQrpokKjOh6UiwuBMpVKcQipLOfUJQNw2jZId0MPNACqY2Hse9EXleljXfNj0PYtL0MHRDGfiC36KWCykVekI4bNow7HDV-YGTkWKCWkmZwpmComD1P1zbdi2SAAQkwuDcFq83Pvu71EZ9JGFYTUALfdZMU1TA00yD75g8xkMGitMMZIsGwZvaCiWqjRiVBaGyhaczWK1d8XyUlU2pelYBZfV+VM8VOqQMt7JtlKwqSLs5zKOcchpOIzrgdyeJiCI6jyHas6OAwth9JwEbqylkhpRlmVBXlBV1F7PvsH7UDG7GblzAUazCmsWhzEcAVo2OsSISISweeOWizsg-CTBGdPEd9pFl7HPOMVM-NNr+q2IPDPKlDlKQpui+2BaUUg2pBHm+VUGimOW3BMHJ8ABBYzlC22Jr5zCQoxFQuMKBvTqBeBsSaIowrpDV2KzjY9gLybqkmqcq9Whv8KwnEqLKKIPKJB-GQyAqkHiKhVZQEvgncIeRB68nxHkfE3pRAvzkKOX+Lpt4QSihWQMACaxhgAUAti4QMxv0yCBR2UC4QwP4vaZMPkVDfy9BsTMcp-7kTvKudcW5dyuRbhyX0GleRaEqCkNQUQZDQSiDyN2FQEiTl5GkBhaoKJUmolAC+UNyptn0oJa0qgkiFzlDvHIPYkxHAiIfYSKRzguhkcGbcR46xYOUYvVSW8lCLAuMBTMNo1h9xyAmEcxREjgVTKWCIs5bL2Wwa3NEEhCggTUJOOECg+I5BWG-Ixmh16Tjdm7bq0VfptDCRyRCCx8y+kqLsC48x7aGRtMmbQdoNBShtirA2f1Fp5NNsKaIzVzjhS5HMCpiTv4WzSUkZQkFSjVHxrFZmrMGAA1GkDVpDjXQWgIUKSCsJhK6MQOvBYSx8yRQlG7Rp-UWb-XZpTambCFluRdOiZZvJlBBVKBIZ0G8FiZB7BIcyaQlhHJuic4muFfhgyfJ0K5a0rTchKRobQqhsTOhqiOfsitrRGPdFZVBkyDaQDBcIdI0RczlH0lOXkoo0aJG4VUCyjsMgKBQYMKOvt7g4rUhsRY+Iey+lhImRQzoSly0gis-sFwskYtLuXQBdir7XISAUM46xYYosav3KhsQPSjOErIKh6LBhWLAMyuY3J3SZC0BsCQ8hNkIBdCkQoUK1gpgsh5CexggA */
   id: 'Egg',
   initial: 'Idle',
   context: ({ input }) => {
@@ -325,19 +326,29 @@ export const eggMachine = setup({
         'At an Angle': {
           invoke: {
             src: 'movingFallingActor',
-            input: ({ context, self }) => ({
-              parent: self,
-              node: context.eggRef.current,
-              initialPosition: context.initialPosition,
-              xSpeed: context.henCurentTweenSpeed,
-              ySpeed: context.gameConfig.egg.fallingSpeed,
-              rotationDirection: context.rotationDirection,
-              testForDestination: yPos =>
-                yPos >=
-                context.gameConfig.stage.height -
-                  context.gameConfig.egg.brokenEgg.height -
-                  context.gameConfig.stage.margin,
-            }),
+            input: ({ context, self }) => {
+              const { stage, egg } = context.gameConfig;
+              // The lowest y position the egg can fall before it is considered off screen
+              const baseYPos =
+                stage.height - egg.brokenEgg.height - stage.margin;
+
+              return {
+                node: context.eggRef.current,
+                initialPosition: context.initialPosition,
+                xSpeed: context.henCurentTweenSpeed,
+                ySpeed: egg.fallingSpeed,
+                rotationDirection: context.rotationDirection,
+                testForDestination: yPos => yPos >= baseYPos,
+                notifyParentOfPosition: (position: Position) => {
+                  if (self.getSnapshot().status === 'active') {
+                    self.send({
+                      type: 'Notify of animation position',
+                      position,
+                    });
+                  }
+                },
+              };
+            },
             onDone: {
               target: 'Done Falling',
               actions: {

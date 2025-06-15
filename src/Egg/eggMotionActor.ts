@@ -1,8 +1,11 @@
 import Konva from 'konva';
-import { type AnyActorRef, fromPromise } from 'xstate';
+import { fromPromise } from 'xstate';
 
 import type { Direction, Position } from '../types';
 
+/**
+ * This actor is responsible for moving the egg down the screen.
+ */
 export const eggMotionActor = fromPromise<
   Position,
   {
@@ -10,20 +13,26 @@ export const eggMotionActor = fromPromise<
     initialPosition: Position;
     xSpeed: number;
     ySpeed: number;
-    testForDestination: (yPos: number) => boolean;
     rotationDirection: Direction['value'];
-    parent: AnyActorRef;
+    testForDestination: (yPos: number) => boolean;
+    notifyParentOfPosition: (position: Position) => void;
   }
 >(({ input }) => {
   return new Promise((resolve, reject) => {
     if (!input.node) {
-      throw new Error('No eggRef');
+      return reject('No eggRef');
     }
+
+    // Create new Animation instance
     const animation = new Konva.Animation(frame => {
       if (!input.node) {
         animation.stop();
         return reject('No eggRef');
-      } else if (input.testForDestination(input.node.y())) {
+      }
+
+      // Check if the egg has reached the destination
+      const eggReachedDestination = input.testForDestination(input.node.y());
+      if (eggReachedDestination) {
         animation.stop();
         resolve({
           x: input.node.x(),
@@ -32,7 +41,7 @@ export const eggMotionActor = fromPromise<
       }
 
       if (frame) {
-        // Calculate new x and y positions
+        // Calculate and set a new X position
         const newXPos = input.node.x() + input.xSpeed;
         input.node.x(newXPos);
 
@@ -46,23 +55,20 @@ export const eggMotionActor = fromPromise<
           (Math.abs(deltaY) > minYChange
             ? deltaY
             : minYChange * Math.sign(input.ySpeed));
+        // Set the new Y position
         input.node.y(newYPos);
 
-        // Rotate the egg
+        // Rotate the egg a bit more in whatever direction it's already rotating
         const currentRotation = input.node.rotation();
         const newRotation = currentRotation + input.rotationDirection * 5;
         input.node.rotation(newRotation);
 
-        // Send a message to the parent to update the egg position
-        // Make sure the egg actor ref is still active
-        if (input.parent.getSnapshot().status === 'active') {
-          input.parent.send({
-            type: 'Notify of animation position',
-            position: { x: newXPos, y: newYPos },
-          });
-        }
+        // Send a message to the parent to update it of the lastest position
+        input.notifyParentOfPosition({ x: newXPos, y: newYPos });
       }
     });
+
+    // Start the animation immediately
     animation.start();
   });
 });
