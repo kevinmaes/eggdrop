@@ -13,6 +13,9 @@ interface EggMotionActorInput {
   parent: AnyActorRef;
 }
 
+/**
+ * This actor is responsible for moving the egg down the screen.
+ */
 export const eggMotionActor = fromPromise<Position, EggMotionActorInput>(
   ({ input }) => {
     return new Promise((resolve, reject) => {
