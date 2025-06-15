@@ -337,6 +337,7 @@ export const eggMachine = setup({
                 context.gameConfig.stageDimensions.height -
                   context.gameConfig.egg.brokenEgg.height -
                   context.gameConfig.stageDimensions.margin,
+              isParentStillActive: () => self.getSnapshot().status === 'active',
             }),
             onDone: {
               target: 'Done Falling',
