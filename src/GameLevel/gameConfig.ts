@@ -65,11 +65,13 @@ const createGameConfig = () => {
       // Right margin is reduced so that the pot can still catch eggs at the edge of the screen
       maxXPos: stageDimensions.width - 0.4 * chefWidth,
       potRim: {
-        width: 150,
-        height: 25,
+        width: 146,
+        height: 35,
         // x and y offset from the chef's position
-        offsetX: 30,
-        offsetY: -250,
+        offsetX: 45,
+        offsetY: -255,
+        radiusX: 146 / 2,
+        radiusY: 35 / 2,
       },
     },
     hen: {

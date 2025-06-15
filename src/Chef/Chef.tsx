@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
-import { Group, Rect, Image } from 'react-konva';
+import { Group, Image, Ellipse } from 'react-konva';
 import useImage from 'use-image';
 
 import { AppActorContext } from '../app.machine';
@@ -90,7 +90,7 @@ export function Chef() {
   }, [chefActorRef, chefRef]);
 
   // Set the chefPotRimHitRef in the gameLevel machine
-  const chefPotRimHitRef = useRef<Konva.Rect>(null);
+  const chefPotRimHitRef = useRef<Konva.Ellipse>(null);
   useEffect(() => {
     if (isImageRef(chefPotRimHitRef)) {
       gameLevelActorRef.send({
@@ -174,12 +174,12 @@ export function Chef() {
         }}
       />
       {/* Chef pot rim hit box (for catching eggs) */}
-      <Rect
+      <Ellipse
         ref={chefPotRimHitRef}
+        radiusX={chefPotRimConfig.radiusX}
+        radiusY={chefPotRimConfig.radiusY}
         offsetX={
-          shouldFaceRight
-            ? chefPotRimConfig.offsetX
-            : (0.5 * chefConfig.width) / 2 + chefPotRimConfig.offsetX
+          shouldFaceRight ? -chefPotRimConfig.offsetX : chefPotRimConfig.offsetX
         }
         offsetY={chefPotRimConfig.offsetY}
         width={chefPotRimConfig.width}
