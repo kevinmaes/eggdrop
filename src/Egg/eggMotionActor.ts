@@ -9,13 +9,13 @@ import type { Direction, Position } from '../types';
 export const eggMotionActor = fromPromise<
   Position,
   {
+    parent: AnyActorRef;
     node: React.RefObject<any>['current'];
     initialPosition: Position;
     xSpeed: number;
     ySpeed: number;
-    testForDestination: (yPos: number) => boolean;
     rotationDirection: Direction['value'];
-    parent: AnyActorRef;
+    testForDestination: (yPos: number) => boolean;
   }
 >(({ input }) => {
   return new Promise((resolve, reject) => {
