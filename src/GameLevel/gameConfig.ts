@@ -66,10 +66,12 @@ const createGameConfig = () => {
       maxXPos: stageDimensions.width - 0.4 * chefWidth,
       potRim: {
         width: 146,
-        height: 25,
+        height: 35,
         // x and y offset from the chef's position
         offsetX: 45,
         offsetY: -255,
+        radiusX: 146 / 2,
+        radiusY: 35 / 2,
       },
     },
     hen: {

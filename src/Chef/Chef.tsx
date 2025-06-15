@@ -176,14 +176,14 @@ export function Chef() {
       {/* Chef pot rim hit box (for catching eggs) */}
       <Ellipse
         ref={chefPotRimHitRef}
-        radiusX={chefPotRimConfig.width / 2}
-        radiusY={chefPotRimConfig.height / 1.5}
+        radiusX={chefPotRimConfig.radiusX}
+        radiusY={chefPotRimConfig.radiusY}
         offsetX={
           shouldFaceRight ? -chefPotRimConfig.offsetX : chefPotRimConfig.offsetX
         }
         offsetY={chefPotRimConfig.offsetY}
         width={chefPotRimConfig.width}
-        height={chefPotRimConfig.height + 10}
+        height={chefPotRimConfig.height}
         fill="transparent"
       />
     </Group>
