@@ -580,7 +580,7 @@
 
 "@total-typescript/tsconfig@^1.0.4":
   version "1.0.4"
-  resolved "https://registry.npmjs.org/@total-typescript/tsconfig/-/tsconfig-1.0.4.tgz"
+  resolved "https://registry.yarnpkg.com/@total-typescript/tsconfig/-/tsconfig-1.0.4.tgz#e9fc9b7be05e2be2f72a50494b7df7114279a5c8"
   integrity sha512-fO4ctMPGz1kOFOQ4RCPBRBfMy3gDn+pegUfrGyUFRMv/Rd0ZM3/SHH3hFCYG4u6bPLG8OlmOGcBLDexvyr3A5w==
 
 "@tybys/wasm-util@^0.9.0":
