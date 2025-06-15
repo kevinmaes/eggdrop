@@ -70,7 +70,7 @@ test.describe('@automated Game', () => {
       const testAPI = window.__TEST_API__;
       const appActorRef = testAPI?.app as AppActorRef;
       const gameLevelActorRef = appActorRef.system.get(
-        GAME_LEVEL_ACTOR_ID
+        'Game Level'
       ) as GameLevelActorRef;
       return gameLevelActorRef.getSnapshot().matches('Done');
     });
