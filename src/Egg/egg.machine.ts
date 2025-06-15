@@ -327,7 +327,6 @@ export const eggMachine = setup({
             src: 'movingFallingActor',
             input: ({ context, self }) => {
               return {
-                parent: self,
                 node: context.eggRef.current,
                 initialPosition: context.initialPosition,
                 xSpeed: context.henCurentTweenSpeed,

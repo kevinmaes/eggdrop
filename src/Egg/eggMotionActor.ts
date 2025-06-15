@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { type AnyActorRef, fromPromise } from 'xstate';
+import { fromPromise } from 'xstate';
 
 import type { Direction, Position } from '../types';
 
@@ -9,7 +9,6 @@ import type { Direction, Position } from '../types';
 export const eggMotionActor = fromPromise<
   Position,
   {
-    parent: AnyActorRef;
     node: React.RefObject<any>['current'];
     initialPosition: Position;
     xSpeed: number;
