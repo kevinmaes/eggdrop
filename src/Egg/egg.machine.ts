@@ -325,19 +325,28 @@ export const eggMachine = setup({
         'At an Angle': {
           invoke: {
             src: 'movingFallingActor',
-            input: ({ context, self }) => ({
-              parent: self,
-              node: context.eggRef.current,
-              initialPosition: context.initialPosition,
-              xSpeed: context.henCurentTweenSpeed,
-              ySpeed: context.gameConfig.egg.fallingSpeed,
-              rotationDirection: context.rotationDirection,
-              testForDestination: yPos =>
-                yPos >=
-                context.gameConfig.stageDimensions.height -
-                  context.gameConfig.egg.brokenEgg.height -
-                  context.gameConfig.stageDimensions.margin,
-            }),
+            input: ({ context, self }) => {
+              const { stageDimensions, egg } = context.gameConfig;
+
+              return {
+                node: context.eggRef.current,
+                initialPosition: context.initialPosition,
+                xSpeed: context.henCurentTweenSpeed,
+                ySpeed: context.gameConfig.egg.fallingSpeed,
+                rotationDirection: context.rotationDirection,
+                testForDestination: yPos =>
+                  yPos >=
+                  stageDimensions.height -
+                    egg.brokenEgg.height -
+                    stageDimensions.margin,
+                isParentStillActive: () =>
+                  self.getSnapshot().status === 'active',
+                notifyParentOfPosition: (latestPosition: Position) => ({
+                  type: 'Notify of animation position',
+                  position: latestPosition,
+                }),
+              };
+            },
             onDone: {
               target: 'Done Falling',
               actions: {

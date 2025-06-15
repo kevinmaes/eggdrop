@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { type AnyActorRef, fromPromise } from 'xstate';
+import { fromPromise } from 'xstate';
 
 import type { Direction, Position } from '../types';
 
@@ -9,13 +9,14 @@ import type { Direction, Position } from '../types';
 export const eggMotionActor = fromPromise<
   Position,
   {
-    parent: AnyActorRef;
     node: React.RefObject<any>['current'];
     initialPosition: Position;
     xSpeed: number;
     ySpeed: number;
     rotationDirection: Direction['value'];
     testForDestination: (yPos: number) => boolean;
+    isParentStillActive: () => boolean;
+    notifyParentOfPosition: (latestPosition: Position) => void;
   }
 >(({ input }) => {
   return new Promise((resolve, reject) => {
@@ -65,11 +66,8 @@ export const eggMotionActor = fromPromise<
 
         // Send a message to the parent to update the egg position
         // Make sure the egg actor ref is still active
-        if (input.parent.getSnapshot().status === 'active') {
-          input.parent.send({
-            type: 'Notify of animation position',
-            position: { x: newXPos, y: newYPos },
-          });
+        if (input.isParentStillActive()) {
+          input.notifyParentOfPosition({ x: newXPos, y: newYPos });
         }
       }
     });
