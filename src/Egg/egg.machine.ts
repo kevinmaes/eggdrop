@@ -326,17 +326,20 @@ export const eggMachine = setup({
           invoke: {
             src: 'movingFallingActor',
             input: ({ context, self }) => {
+              const { stageDimensions, egg } = context.gameConfig;
+              // The lowest y position the egg can fall before it is considered off screen
+              const baseYPos =
+                stageDimensions.height -
+                egg.brokenEgg.height -
+                stageDimensions.margin;
+
               return {
                 node: context.eggRef.current,
                 initialPosition: context.initialPosition,
                 xSpeed: context.henCurentTweenSpeed,
-                ySpeed: context.gameConfig.egg.fallingSpeed,
+                ySpeed: egg.fallingSpeed,
                 rotationDirection: context.rotationDirection,
-                testForDestination: yPos =>
-                  yPos >=
-                  context.gameConfig.stageDimensions.height -
-                    context.gameConfig.egg.brokenEgg.height -
-                    context.gameConfig.stageDimensions.margin,
+                testForDestination: yPos => yPos >= baseYPos,
                 notifyParentOfPosition: (position: Position) => {
                   if (self.getSnapshot().status === 'active') {
                     self.send({
