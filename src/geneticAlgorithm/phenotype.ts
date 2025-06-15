@@ -1,4 +1,4 @@
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { getGameConfig } from '../gameConfig';
 import { mapValue } from '../utils';
 
 // This is the definitive list of all the possible phenotypes
@@ -48,7 +48,7 @@ export const phenotypeConfig: PhenotypeConfig = {
   // The maximum number of eggs the hen can lay while moving
   movingEggLayingRate: {
     min: 0,
-    max: 0.7,
+    max: 0,
   },
   // The rate at which the eggs will hatch when they land on the ground
   // TODO: Not sure this is needed here.
@@ -65,7 +65,7 @@ export const phenotypeConfig: PhenotypeConfig = {
   // The max x amount a hen can move during its animation
   maxXMovement: {
     min: 250,
-    max: 0.5 * getGameConfig().stageDimensions.width,
+    max: 0.5 * getGameConfig().stage.width,
     round: true,
   },
   // The min time the hen will stop at a location

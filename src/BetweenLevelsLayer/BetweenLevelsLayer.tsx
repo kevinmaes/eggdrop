@@ -16,8 +16,8 @@ export function BetweenLevelsLayer() {
   }
   const gameScoreBoxWidth = 300;
   const gameScoreBoxHeight = 380;
-  const xPos = gameConfig.stageDimensions.midX - 0.5 * gameScoreBoxWidth;
-  const yPos = gameConfig.stageDimensions.midY - 0.5 * gameScoreBoxHeight;
+  const xPos = gameConfig.stage.midX - 0.5 * gameScoreBoxWidth;
+  const yPos = gameConfig.stage.midY - 0.5 * gameScoreBoxHeight;
 
   return (
     <Layer>

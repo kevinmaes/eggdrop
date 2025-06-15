@@ -47,8 +47,8 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Stage
-        width={gameConfig.stageDimensions.width}
-        height={gameConfig.stageDimensions.height}
+        width={gameConfig.stage.width}
+        height={gameConfig.stage.height}
         style={{
           border: '5px solid',
           borderColor: '#98aace',
@@ -63,8 +63,8 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
           {showGameIntro && (
             // Play button
             <TransparentButton
-              x={0.5 * gameConfig.stageDimensions.width - 500}
-              y={0.5 * gameConfig.stageDimensions.height - 250}
+              x={0.5 * gameConfig.stage.width - 500}
+              y={0.5 * gameConfig.stage.height - 250}
               width={1000}
               height={500}
               onClick={() => appActorRef.send({ type: 'Play' })}

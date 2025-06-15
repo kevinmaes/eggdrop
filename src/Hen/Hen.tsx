@@ -9,9 +9,6 @@ import { henMachine } from './hen.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
-
-
-
 type HenFrameName =
   | 'angle-left.png'
   | 'angle-right.png'

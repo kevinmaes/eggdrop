@@ -2,17 +2,22 @@ import Konva from 'konva';
 import { Animation } from 'konva/lib/Animation';
 import { assign, fromPromise, raise, setup } from 'xstate';
 
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { CHEF_ACTOR_ID } from '../constants';
+import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 
 import type { EggColor } from '../Egg/egg.machine';
 import type { Position, Direction } from '../types';
 import type { GameAssets } from '../types/assets';
+import type { ActorRefFrom } from 'xstate';
+
+export type ChefActorRef = ActorRefFrom<typeof chefMachine>;
 
 export const chefMachine = setup({
   types: {} as {
     input: {
-      chefConfig: ReturnType<typeof getGameConfig>['chef'];
+      gameConfig: GameConfig;
+      chefConfig: GameConfig['chef'];
       chefAssets: GameAssets['chef'];
       position: Position;
       speed: number;
@@ -21,9 +26,11 @@ export const chefMachine = setup({
       deceleration: number;
       minXPos: number;
       maxXPos: number;
+      isTestMode: boolean;
     };
     context: {
-      chefConfig: ReturnType<typeof getGameConfig>['chef'];
+      gameConfig: GameConfig;
+      chefConfig: GameConfig['chef'];
       chefRef: React.RefObject<Konva.Image> | { current: null };
       chefAssets: GameAssets['chef'];
       position: Position;
@@ -37,6 +44,7 @@ export const chefMachine = setup({
       minXPos: number;
       maxXPos: number;
       isCatchingEgg: boolean;
+      isTestMode: boolean;
     };
     events:
       | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
@@ -60,7 +68,6 @@ export const chefMachine = setup({
         eggColor: EggColor;
       }
     ) => {
-      console.log('playCatchReaction', params.eggColor);
       switch (params.eggColor) {
         case 'black':
           if (Math.random() > 0.5) {
@@ -124,6 +131,7 @@ export const chefMachine = setup({
         newXPos = maxXPos;
         newSpeed = 0;
       }
+
       return {
         speed: newSpeed,
         position: { x: newXPos, y: position.y },
@@ -180,10 +188,10 @@ export const chefMachine = setup({
     }),
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYBmBiAymALgAQDG6GASpgNoAMAuoqAA4D2sAlvuywHaMgAPRAFoATADYA7ADpxUgJziALOJoBGUQGZJapQBoQATxFTpazfM2iAHJfHmaNcQF9nBtJlwFCEdgCcwYi5eWgYkEFYOYL5woQQlGgBWaRpbNXS1RNSVawNjBEyZUSVJJTVbRNUaUXlJV3cyaQBZFgA3dh4oLAheMGkO1pYAaz6PDGa2jqgEAZZiAENo0ND+SM5uGNA4zWtpTSlRLXkneWtrRPO8xC1NWTVayUdbZRpJUXqQMYn2zqxkRdIK3Ca2i-DiYkSSlkkkU1nUThqiUkVwQEjUKW0TkSEgSZ0hHy+LR+XUosG87Fg-3wpCmAFEoFAgcw2OteGCTOJpNZxDtrCUkeJrKUUaJ0fY+ZJxMdqpIhdZXG4QDwWBA4PwxqsWaDYiJNFlpEpEpp0nZ7PdkUYTMlHkolPtEqctIkjQTGkSppqoht2QhhJpqgajSb9mbaijzKJpFo1KlKnJjlk6gqgA */
-  id: 'Chef',
+  id: CHEF_ACTOR_ID,
   initial: 'Moving',
   context: ({ input }) => ({
+    gameConfig: input.gameConfig,
     chefConfig: input.chefConfig,
     chefRef: { current: null },
     chefAssets: input.chefAssets,
@@ -198,6 +206,7 @@ export const chefMachine = setup({
     minXPos: input.minXPos,
     maxXPos: input.maxXPos,
     isCatchingEgg: false,
+    isTestMode: input.isTestMode,
   }),
   on: {
     'Set chefRef': {
