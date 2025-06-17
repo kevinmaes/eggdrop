@@ -11,14 +11,12 @@ import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 
 import { gameLevelMachine } from './gameLevel.machine';
 
-
 import type { ActorRefFrom } from 'xstate';
-
 
 export function GameLevel() {
   const appActorRef = AppActorContext.useActorRef();
   const { gameConfig, generationNumber } = AppActorContext.useSelector(
-    state => ({
+    (state) => ({
       gameConfig: state.context.gameConfig,
       generationNumber: state.context.generationNumber,
     })
@@ -30,7 +28,7 @@ export function GameLevel() {
 
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
     gameLevelActorRef,
-    state => {
+    (state) => {
       if (!state) {
         return {
           remainingMS: 0,
@@ -52,7 +50,7 @@ export function GameLevel() {
     <>
       {/* Hen layer */}
       <Layer>
-        {henActorRefs.map(henActorRef => (
+        {henActorRefs.map((henActorRef) => (
           <Hen key={henActorRef.id} henActorRef={henActorRef} />
         ))}
       </Layer>
@@ -60,10 +58,10 @@ export function GameLevel() {
       {/* Chef and Egg layers (they interact) */}
       <Layer>
         <Chef />
-        {eggActorRefs.map(eggActorRef => (
+        {eggActorRefs.map((eggActorRef) => (
           <Egg key={eggActorRef.id} eggActorRef={eggActorRef} />
         ))}
-        {eggCaughtPointsActorRefs.map(eggCaughtPointsActorRef => (
+        {eggCaughtPointsActorRefs.map((eggCaughtPointsActorRef) => (
           <EggCaughtPoints
             key={eggCaughtPointsActorRef.id}
             eggCaughtPointsActorRefs={eggCaughtPointsActorRef}

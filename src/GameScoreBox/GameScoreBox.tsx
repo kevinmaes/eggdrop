@@ -19,7 +19,7 @@ export function GameScoreBox({
 }) {
   const appActorRef = AppActorContext.useActorRef();
   const { gameConfig, gameScoreData, lastLevelResults } =
-    AppActorContext.useSelector(state => ({
+    AppActorContext.useSelector((state) => ({
       gameConfig: state.context.gameConfig,
       gameScoreData: state.context.gameScoreData,
       lastLevelResults: state.context.levelResultsHistory.slice(

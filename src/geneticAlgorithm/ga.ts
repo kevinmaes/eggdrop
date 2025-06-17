@@ -97,7 +97,7 @@ export function mutateIndividual<T extends Individual>(
 
   const possiblyMutatedPhenotype = { ...individual.phenotype };
   // Loop over properties and mutate those values
-  phenotypeKeys.forEach(key => {
+  phenotypeKeys.forEach((key) => {
     possiblyMutatedPhenotype[key] = mutateValue(key, individual.phenotype[key]);
   });
 

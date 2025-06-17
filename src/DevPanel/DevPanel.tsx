@@ -58,7 +58,7 @@ function formatGenerationStats(generationStats: GenerationStats) {
 }
 
 export function DevPanel() {
-  const { levelResultsHistory } = AppActorContext.useSelector(state => ({
+  const { levelResultsHistory } = AppActorContext.useSelector((state) => ({
     levelResultsHistory: state.context.levelResultsHistory,
   }));
 
@@ -69,7 +69,7 @@ export function DevPanel() {
       // Identify if the command and 'd' keys are pressed
       if (e.key === 'd' && e.metaKey) {
         e.preventDefault();
-        setShowDevPanel(prev => !prev);
+        setShowDevPanel((prev) => !prev);
       }
     };
 
@@ -141,7 +141,7 @@ export function DevPanel() {
       >
         {/* Insert the first row for headers */}
         <div className="grid-item header generation-label">Generation</div>{' '}
-        {levelResultsHistory.map(levelResults => (
+        {levelResultsHistory.map((levelResults) => (
           <div
             key={`header-${levelResults.generationNumber}`}
             className="grid-item header"

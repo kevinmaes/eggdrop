@@ -9,7 +9,6 @@ import { henMachine } from './hen.machine';
 import type { PhenotypeValuesForIndividual } from '../geneticAlgorithm/phenotype';
 import type { Position } from '../types';
 
-
 // Create a complete mock phenotype with all required properties
 const mockPhenotype: PhenotypeValuesForIndividual = {
   speed: 100,
@@ -82,7 +81,9 @@ describe('henMachine', () => {
       henRef: mockRef,
     });
     const state = actor.getSnapshot();
-    await waitFor(actor, state => state.matches({ Moving: 'Not laying egg' }));
+    await waitFor(actor, (state) =>
+      state.matches({ Moving: 'Not laying egg' })
+    );
 
     // Assert
     expect(state.matches('Offscreen')).toBe(true);

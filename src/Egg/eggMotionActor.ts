@@ -24,7 +24,7 @@ export const eggMotionActor = fromPromise<
     }
 
     // Create new Animation instance
-    const animation = new Konva.Animation(frame => {
+    const animation = new Konva.Animation((frame) => {
       if (!input.node) {
         animation.stop();
         return reject('No eggRef');

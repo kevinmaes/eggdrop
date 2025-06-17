@@ -167,8 +167,8 @@ export const chefMachine = setup({
   actors: {
     movingChefBackAndForthActor: fromPromise<{ timeDiff: number }>(() => {
       let anim: Animation | null;
-      return new Promise(resolve => {
-        anim = new Animation(frame => {
+      return new Promise((resolve) => {
+        anim = new Animation((frame) => {
           if (frame?.timeDiff) {
             resolve({ timeDiff: frame?.timeDiff });
             anim?.stop();

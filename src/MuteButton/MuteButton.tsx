@@ -6,7 +6,7 @@ import { AppActorContext } from '../app.machine';
 export function MuteButton() {
   const appActorRef = AppActorContext.useActorRef();
   const { gameConfig, uiFrames, isMuted } = AppActorContext.useSelector(
-    state => ({
+    (state) => ({
       gameConfig: state.context.gameConfig,
       uiFrames: state.context.gameAssets?.ui.frames ?? {},
       isMuted: state.context.isMuted,
