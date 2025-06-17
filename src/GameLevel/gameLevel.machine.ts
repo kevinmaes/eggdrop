@@ -33,8 +33,6 @@ import { getGameConfig } from './gameConfig';
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
 
-
-
 export const gameLevelMachine = setup({
   types: {} as {
     input: {
@@ -109,13 +107,13 @@ export const gameLevelMachine = setup({
     removeHenActorRef: assign({
       henActorRefs: ({ context }) =>
         context.henActorRefs.filter(
-          henActorRef => henActorRef.getSnapshot().status !== 'done'
+          (henActorRef) => henActorRef.getSnapshot().status !== 'done'
         ),
     }),
     removeEggActorRef: assign({
       eggActorRefs: ({ context }) =>
         context.eggActorRefs.filter(
-          eggActorRef => eggActorRef.getSnapshot().status !== 'done'
+          (eggActorRef) => eggActorRef.getSnapshot().status !== 'done'
         ),
     }),
     spawnNewHen: assign(({ context, spawn }) => {
@@ -228,7 +226,7 @@ export const gameLevelMachine = setup({
     removeEggCaughtPoints: assign({
       eggCaughtPointsActorRefs: ({ context }) =>
         context.eggCaughtPointsActorRefs.filter(
-          eggCaughtPointsActorRef =>
+          (eggCaughtPointsActorRef) =>
             eggCaughtPointsActorRef.getSnapshot().status !== 'done'
         ),
     }),

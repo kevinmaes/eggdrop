@@ -38,13 +38,13 @@ export function LevelScoreBox({
 }) {
   const appActorRef = AppActorContext.useActorRef();
   const gameScoreData = AppActorContext.useSelector(
-    state => state.context.gameScoreData
+    (state) => state.context.gameScoreData
   );
   const gameLevelActorRef = appActorRef.system.get(
     'gameLevelMachine'
   ) as ActorRefFrom<typeof gameLevelMachine>;
 
-  const { gameConfig, scoreData } = useSelector(gameLevelActorRef, state => {
+  const { gameConfig, scoreData } = useSelector(gameLevelActorRef, (state) => {
     if (!state) {
       return {};
     }
@@ -57,7 +57,7 @@ export function LevelScoreBox({
   const [animateForBlackEggCaught, setAnimateForBlackEggCaught] =
     useState(false);
   useEffect(() => {
-    gameLevelActorRef.on('Egg caught', event => {
+    gameLevelActorRef.on('Egg caught', (event) => {
       if (event.eggColor === 'black') {
         setAnimateForBlackEggCaught(true);
       }

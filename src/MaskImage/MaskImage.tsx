@@ -8,7 +8,6 @@ import { isImageRef } from '../types';
 
 import type { SpriteData } from '../types/assets';
 
-
 export function MaskImage({
   maskImageFrame,
   maskImageURL,
@@ -70,7 +69,7 @@ export function MaskedRect({ maskImageURL }: { maskImageURL: string }) {
   useEffect(() => {
     if (groupRef.current && maskImage) {
       const group = groupRef.current;
-      group.clipFunc(ctx => {
+      group.clipFunc((ctx) => {
         ctx.drawImage(maskImage, 0, 0, maskImage.width, maskImage.height);
       });
     }

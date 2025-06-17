@@ -27,7 +27,7 @@ export function Egg({
 }: {
   eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
-  const eggState = useSelector(eggActorRef, state => state);
+  const eggState = useSelector(eggActorRef, (state) => state);
 
   const {
     gameConfig,
@@ -41,7 +41,7 @@ export function Egg({
     eggFrames,
     chickFrames,
     color,
-  } = useSelector(eggActorRef, state => {
+  } = useSelector(eggActorRef, (state) => {
     const isExiting = state.matches('Exiting');
     let exitingDirection: 'none' | 'left' | 'right' = 'none';
     if (isExiting) {
@@ -104,7 +104,7 @@ export function Egg({
         ];
         setCurrentChickFrameName(chikRunFrame[0] as ChickFrameName);
         interval = setInterval(() => {
-          setCurrentChickFrameName(prevFrameName => {
+          setCurrentChickFrameName((prevFrameName) => {
             const index = chikRunFrame.indexOf(prevFrameName);
             if (index === -1 || index === chikRunFrame.length - 1) {
               return chikRunFrame[0] as ChickFrameName;

@@ -28,7 +28,7 @@ export function Chef() {
   >;
   const { movingDirection, lastMovingDirection } = useSelector(
     chefActorRef,
-    state => {
+    (state) => {
       if (!state) {
         return { movingDirection: 'none', lastMovingDirection: 'none' };
       }
@@ -38,7 +38,7 @@ export function Chef() {
       };
     }
   );
-  const { chefPotRimConfig } = AppActorContext.useSelector(state => ({
+  const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
     chefPotRimConfig: state.context.gameConfig.chef.potRim,
   }));
 
@@ -49,7 +49,7 @@ export function Chef() {
     position,
     isAnimateAsMoving,
     isCatchingEgg,
-  } = useSelector(chefActorRef, state => {
+  } = useSelector(chefActorRef, (state) => {
     if (typeof state === 'undefined') {
       return {
         chefConfig: {
@@ -107,10 +107,10 @@ export function Chef() {
     if (isAnimateAsMoving && !isCatchingEgg) {
       // Change frameIndex immediately so if the chef only moves
       // a tiny bit so we still see leg movement
-      setFrameIndex(prevIndex => (prevIndex === 1 ? 2 : 1));
+      setFrameIndex((prevIndex) => (prevIndex === 1 ? 2 : 1));
 
       interval = setInterval(() => {
-        setFrameIndex(prevIndex => (prevIndex === 1 ? 2 : 1));
+        setFrameIndex((prevIndex) => (prevIndex === 1 ? 2 : 1));
       }, 150);
     } else {
       setFrameIndex(1);
