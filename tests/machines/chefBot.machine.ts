@@ -184,15 +184,21 @@ const chefBotMachine = setup({
         }) => {
           const testAPI = window.__TEST_API__;
           const appActorRef = testAPI?.app;
-          const gameLevelActorRef = appActorRef?.system.get(gameLevelActorId);
+          const gameLevelActorRef = appActorRef?.system.get(
+            gameLevelActorId
+          ) as GameLevelActorRef;
           const gameLevelContext = gameLevelActorRef?.getSnapshot().context;
-          const eggActorRefs = gameLevelContext.eggActorRefs;
 
-          const targetEgg = eggActorRefs.find(egg => {
+          const targetEggActorRef = gameLevelContext.eggActorRefs.find(egg => {
             return egg.id === targetEggId;
           });
 
-          const targetEggXPosition = targetEgg.getSnapshot().context.position.x;
+          if (!targetEggActorRef) {
+            throw new Error('Target egg actor ref not found');
+          }
+
+          const targetEggXPosition =
+            targetEggActorRef.getSnapshot().context.position.x;
 
           const chefData = testAPI?.getChefPosition();
           if (!chefData) {
@@ -204,11 +210,20 @@ const chefBotMachine = setup({
             chefData.movingDirection === 'right' &&
             chefPotRimCenterHitX >= targetEggXPosition
           ) {
+            console.log('right eggX', targetEggXPosition);
+            console.log('right cheffPotCenterX', chefPotRimCenterHitX);
+            console.log('right chef positionX', chefData.position.x);
             return chefData;
           } else if (
             chefData.movingDirection === 'left' &&
             chefPotRimCenterHitX <= targetEggXPosition
           ) {
+            console.log('left eggX', targetEggXPosition);
+            console.log(
+              'left cheffPotCenterX',
+              Math.round(chefPotRimCenterHitX)
+            );
+            console.log('left chef positionX', Math.round(chefData.position.x));
             return chefData;
           }
           return null;
