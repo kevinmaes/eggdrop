@@ -76,6 +76,140 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 | `yarn ci`      | Run CI checks locally (lint, type check, test)           |
 | `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
 
+## 🎭 End-to-End Testing with Playwright
+
+The game uses [Playwright](https://playwright.dev) for end-to-end testing. These tests verify the game's functionality by simulating real user interactions and checking the game state.
+
+### Running Tests
+
+```bash
+# Run regular tests in headless mode
+yarn test:e2e
+
+# Run automated tests
+yarn test:automated
+
+# Run all tests
+yarn test:all
+
+# Run tests with browser visible
+yarn test:e2e:headed
+
+# Run tests in debug mode
+yarn test:e2e:debug
+```
+
+### Test Types
+
+The tests are organized into two categories:
+
+1. **Regular Tests** (`@regular` tag):
+
+   - Basic game functionality
+   - UI interactions
+   - State transitions
+   - Run on every PR and push
+
+2. **Automated Tests** (`@automated` tag):
+   - Complex gameplay scenarios
+   - Bot-driven gameplay
+   - Longer running tests (5-minute timeout)
+   - Run manually via GitHub Actions
+
+### Test Architecture
+
+The tests leverage the game's state machines through a special test API that's enabled when running in test mode. This approach overcomes several challenges typically associated with testing Canvas-based games:
+
+1. **Canvas Testing Challenges**: Traditional Canvas applications are notoriously difficult to test because:
+
+   - Canvas elements don't have a DOM representation to query
+   - Visual state is not directly accessible through standard DOM APIs
+   - Game state is often scattered across multiple components and render cycles
+   - Animation frames make it hard to assert on exact positions and states
+   - **Fake DOM elements:** Some projects add hidden or offscreen DOM elements to mirror canvas state for testing. While this allows DOM-based assertions, it introduces extra maintenance, risks test drift from real rendering, and pollutes the codebase with test-only logic. Ultimately, it doesn't guarantee the canvas output matches the tested state.
+
+   While these traditional approaches are valid, they have significant drawbacks:
+
+   - Visual testing is brittle and breaks with any UI change
+   - Screenshot comparisons are slow and computationally expensive
+   - Performance testing doesn't verify game logic
+   - Visual tests can't easily verify internal state
+   - Creating fake DOM elements adds overhead and extra code througout the application
+
+   For more on these challenges, see:
+
+   - [MDN Web Docs: Testing Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#testing_performance) - Focuses on performance testing and optimization
+   - [Playwright's Canvas Testing Guide](https://playwright.dev/docs/test-assertions#screenshot-comparisons) - Covers visual testing approaches
+
+2. **State Machine Solution**: By using XState state machines, we can:
+
+   - Access game state directly through the state machine's context
+   - Query exact positions and velocities of game elements
+   - Monitor state transitions and side effects
+   - Make assertions about game state without relying on visual inspection
+
+   This approach to testing Eggdrop is preferable because:
+
+   - Tests are deterministic and reliable
+   - Execution is faster than visual testing
+   - Tests only break when game logic changes, not UI
+   - We can test internal state that isn't visible
+   - Complex game scenarios are easier to verify
+
+3. **Test API**: When the game runs with `?testMode=true`, it exposes a `window.__TEST_API__` object that provides access to:
+
+   - State machine actor references (app, chef, gameLevel)
+   - Convenience getters for game state (score, chef position, etc.)
+   - Direct event sending to state machines
+
+4. **State Machine Integration**: Tests can:
+
+   - Query the current state of any machine using `getSnapshot()`
+   - Send events to machines using `send()`
+   - Monitor state transitions and side effects
+   - Assert on exact positions, velocities, and game state
+
+5. **Game Automation**: Tests can simulate:
+   - Keyboard input for chef movement
+   - Game state transitions (start, pause, game over)
+   - Score tracking and game progression
+   - Complex game scenarios using the chefBot machine
+   - Automated egg catching and scoring
+
+This architecture makes it possible to write reliable, deterministic tests for a Canvas-based game, something that would be much more challenging with traditional testing approaches. For more on state machine testing, see:
+
+- [XState Testing Documentation](https://stately.ai/docs/testing)
+- [Testing State Machines - A Practical Guide](https://stately.ai/blog/testing-state-machines)
+
+### Viewing Test Results
+
+#### Local Results
+
+After running tests, you can view the HTML report:
+
+```bash
+# Open the last test report
+yarn test:e2e:report
+```
+
+#### GitHub Actions Results
+
+When tests run in GitHub Actions:
+
+1. Navigate to the Actions tab in your PR
+2. Click on the workflow run
+3. Scroll to the "Artifacts" section
+4. Download and open either:
+   - `playwright-report` for regular tests
+   - `playwright-automated-report` for automated tests
+
+The reports include:
+
+- Test execution videos
+- Screenshots at each step
+- Detailed error messages and stack traces
+- Test duration and performance metrics
+
 ## 🧪 CI/CD Pipeline
 
 This project uses GitHub Actions for Continuous Integration. The CI workflow:

@@ -3,6 +3,7 @@ import { Layer, Text } from 'react-konva';
 
 import { AppActorContext } from '../app.machine';
 import { Chef } from '../Chef/Chef';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { Egg } from '../Egg/Egg';
 import { EggCaughtPoints } from '../EggCaughtPoints/EggCaughtPoints';
 import { Hen } from '../Hen/Hen';
@@ -23,7 +24,7 @@ export function GameLevel() {
   );
 
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
 
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
@@ -73,7 +74,7 @@ export function GameLevel() {
       <Layer>
         {/* Level number */}
         <Text
-          x={gameConfig.stageDimensions.margin}
+          x={gameConfig.stage.margin}
           y={gameConfig.henBeam.y + 5}
           text={`LEVEL ${generationNumber}`}
           fontSize={18}
@@ -89,11 +90,7 @@ export function GameLevel() {
           height={gameConfig.hensCountdown.height}
         />
         <LevelScoreBox
-          x={
-            gameConfig.stageDimensions.width -
-            120 -
-            gameConfig.stageDimensions.margin
-          }
+          x={gameConfig.stage.width - 120 - gameConfig.stage.margin}
           y={gameConfig.henBeam.y + gameConfig.henBeam.height + 10}
           width={120}
           height={320}

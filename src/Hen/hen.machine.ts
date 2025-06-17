@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { and, assign, sendParent, setup } from 'xstate';
 
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { type GameConfig } from '../gameConfig';
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Direction, type Position } from '../types';
 import { getRandomNumber } from '../utils';
@@ -11,21 +11,17 @@ import type { GameAssets } from '../types/assets';
 import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 type Destination = 'offscreen-right' | 'offscreen-left';
-function getDestinationAndPositions(
-  gameConfig: ReturnType<typeof getGameConfig>
-) {
+function getDestinationAndPositions(gameConfig: GameConfig) {
   const destination: Destination =
     Math.random() > 0.5 ? 'offscreen-right' : 'offscreen-left';
   const initialPosition =
     destination === 'offscreen-right'
       ? {
-          x: -1 * gameConfig.hen.width - gameConfig.stageDimensions.margin,
+          x: -1 * gameConfig.hen.width - gameConfig.stage.margin,
           y: gameConfig.hen.y,
         }
       : {
-          x:
-            gameConfig.stageDimensions.width +
-            gameConfig.stageDimensions.margin,
+          x: gameConfig.stage.width + gameConfig.stage.margin,
           y: gameConfig.hen.y,
         };
 
@@ -41,7 +37,7 @@ export type HenDoneEvent = DoneActorEvent<OutputFrom<typeof henMachine>>;
 export const henMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       id: string;
       index: number;
       henAssets: GameAssets['hen'];
@@ -52,7 +48,7 @@ export const henMachine = setup({
       henId: string;
     };
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       henRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       index: number;
@@ -112,7 +108,7 @@ export const henMachine = setup({
     ]),
     'has reached destination': ({ context }) => {
       if (context.destination === 'offscreen-right') {
-        return context.position.x >= context.gameConfig.stageDimensions.width;
+        return context.position.x >= context.gameConfig.stage.width;
       } else if (context.destination === 'offscreen-left') {
         return context.position.x <= -1 * context.gameConfig.hen.width;
       }
@@ -167,7 +163,7 @@ export const henMachine = setup({
     }),
     createTweenToTargetPosition: assign(({ context }) => {
       const { targetPosition } = context;
-      const totalDistance = context.gameConfig.stageDimensions.width;
+      const totalDistance = context.gameConfig.stage.width;
       const xDistance = targetPosition.x - context.position.x;
       const direction: Direction['value'] = xDistance > 0 ? 1 : -1;
       const movingDirection: Direction['label'] =
@@ -265,12 +261,10 @@ export const henMachine = setup({
   id: 'Hen',
   context: (({ input }: any) => {
     const { destination, position, targetPosition } =
-      getDestinationAndPositions(
-        input.gameConfig as ReturnType<typeof getGameConfig>
-      );
+      getDestinationAndPositions(input.gameConfig as GameConfig);
 
     return {
-      gameConfig: input.gameConfig as ReturnType<typeof getGameConfig>,
+      gameConfig: input.gameConfig as GameConfig,
       henRef: { current: null },
       id: input.id,
       index: input.index,
