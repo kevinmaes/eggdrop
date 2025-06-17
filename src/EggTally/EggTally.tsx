@@ -23,7 +23,7 @@ export function EggTally({
   height?: number;
 }) {
   const eggFrames = AppActorContext.useSelector(
-    state => state?.context?.gameAssets?.egg?.frames ?? null
+    (state) => state?.context?.gameAssets?.egg?.frames ?? null
   );
 
   const [eggImage] = useImage('images/egg.sprite.png');

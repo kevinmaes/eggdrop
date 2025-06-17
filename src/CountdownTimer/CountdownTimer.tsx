@@ -24,7 +24,7 @@ export function CountdownTimer({
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { totalLevelMS, remainingMS, gameConfig } = useSelector(
     gameLevelActorRef,
-    state => {
+    (state) => {
       if (!state) {
         return {
           gameConfig: null,

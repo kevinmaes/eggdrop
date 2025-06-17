@@ -338,7 +338,7 @@ export const eggMachine = setup({
                 xSpeed: context.henCurentTweenSpeed,
                 ySpeed: egg.fallingSpeed,
                 rotationDirection: context.rotationDirection,
-                testForDestination: yPos => yPos >= baseYPos,
+                testForDestination: (yPos) => yPos >= baseYPos,
                 notifyParentOfPosition: (position: Position) => {
                   if (self.getSnapshot().status === 'active') {
                     self.send({

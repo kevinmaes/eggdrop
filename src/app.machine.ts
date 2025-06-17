@@ -101,7 +101,7 @@ const appMachine = setup({
       // Calculate the fitness of each individual in the population
       // while also calculating the average fitness of the population.
       let aggregateFitness = 0;
-      const evaluatedPopulation = context.population.map(individual => {
+      const evaluatedPopulation = context.population.map((individual) => {
         individual.fitness = calculateFitness(
           latestLevelResults,
           individual.id
@@ -175,7 +175,7 @@ const appMachine = setup({
 
         // GA Mutation
         const mutatedNextGenerationPopulation = nextGeneration.map(
-          individual => {
+          (individual) => {
             return mutateIndividual(
               individual,
               phenotypeConfig,

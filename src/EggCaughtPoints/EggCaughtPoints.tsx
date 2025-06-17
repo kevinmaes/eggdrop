@@ -19,7 +19,7 @@ export function EggCaughtPoints({
   eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsMachine>;
 }) {
   const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig } = AppActorContext.useSelector(state => {
+  const { gameConfig } = AppActorContext.useSelector((state) => {
     return {
       gameConfig: state.context.gameConfig,
     };
@@ -27,7 +27,7 @@ export function EggCaughtPoints({
   const gameLevelActorRef = appActorRef.system.get(
     GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
-  const { uiFrames } = useSelector(gameLevelActorRef, state => {
+  const { uiFrames } = useSelector(gameLevelActorRef, (state) => {
     return {
       uiFrames: state.context.gameAssets.ui.frames,
     };
@@ -35,7 +35,7 @@ export function EggCaughtPoints({
 
   const { position, eggColor } = useSelector(
     eggCaughtPointsActorRefs,
-    state => {
+    (state) => {
       if (!state) {
         return { position: { x: 0, y: 0 } };
       }

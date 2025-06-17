@@ -25,7 +25,7 @@ export function HensCountdown({
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { henFrames, gameConfig, totalHens, hensLeft } = useSelector(
     gameLevelActorRef,
-    state => {
+    (state) => {
       if (!state) {
         return {};
       }

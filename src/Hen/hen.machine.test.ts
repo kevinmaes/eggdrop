@@ -81,7 +81,9 @@ describe('henMachine', () => {
       henRef: mockRef,
     });
     const state = actor.getSnapshot();
-    await waitFor(actor, state => state.matches({ Moving: 'Not laying egg' }));
+    await waitFor(actor, (state) =>
+      state.matches({ Moving: 'Not laying egg' })
+    );
 
     // Assert
     expect(state.matches('Offscreen')).toBe(true);

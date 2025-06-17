@@ -112,7 +112,7 @@ export const gameLevelMachine = setup({
     removeHenActorRef: assign({
       henActorRefs: ({ context }) =>
         context.henActorRefs.filter(
-          henActorRef => henActorRef.getSnapshot().status !== 'done'
+          (henActorRef) => henActorRef.getSnapshot().status !== 'done'
         ),
     }),
     removeEggActorRef: assign({
@@ -247,7 +247,7 @@ export const gameLevelMachine = setup({
     removeEggCaughtPoints: assign({
       eggCaughtPointsActorRefs: ({ context }) =>
         context.eggCaughtPointsActorRefs.filter(
-          eggCaughtPointsActorRef =>
+          (eggCaughtPointsActorRef) =>
             eggCaughtPointsActorRef.getSnapshot().status !== 'done'
         ),
     }),

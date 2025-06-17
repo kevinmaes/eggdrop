@@ -12,7 +12,7 @@ import { TransparentButton } from './TransparentButton/TransparentButton';
 
 function App() {
   const { isLoading, showError, showGamePlayLevel } =
-    AppActorContext.useSelector(state => ({
+    AppActorContext.useSelector((state) => ({
       stateValue: state.value,
       showError: state.matches('Show Error'),
       isLoading: state.matches('Loading'),
@@ -39,10 +39,12 @@ function App() {
 
 function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
   const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig, showGameIntro } = AppActorContext.useSelector(state => ({
-    gameConfig: state.context.gameConfig,
-    showGameIntro: state.matches('Intro'),
-  }));
+  const { gameConfig, showGameIntro } = AppActorContext.useSelector(
+    (state) => ({
+      gameConfig: state.context.gameConfig,
+      showGameIntro: state.matches('Intro'),
+    })
+  );
 
   return (
     <>

@@ -46,7 +46,7 @@ export function Hen({
     isMoving,
     movingDirection,
     absoluteTweenSpeed,
-  } = useSelector(henActorRef, state => ({
+  } = useSelector(henActorRef, (state) => ({
     henSize: {
       width: state.context.gameConfig.hen.width,
       height: state.context.gameConfig.hen.height,
@@ -113,7 +113,7 @@ export function Hen({
           animationIntervalMaxMS - absoluteTweenSpeed * 100
         );
         interval = setInterval(() => {
-          setFrameName(prevFrameName => {
+          setFrameName((prevFrameName) => {
             const index = walkFrameNames.indexOf(prevFrameName);
             if (index === -1 || index === walkFrameNames.length - 1) {
               return walkFrameNames[0] as HenFrameName;

@@ -77,7 +77,7 @@ describe('eggCaughtPointsMachine', () => {
 
     // Our mock Konva.Tween implementation will immediately call onFinish
     // so we should transition to Done state right away
-    await waitFor(actor, state => state.matches('Done'));
+    await waitFor(actor, (state) => state.matches('Done'));
     expect(actor.getSnapshot().value).toBe('Done');
   });
 
@@ -96,7 +96,7 @@ describe('eggCaughtPointsMachine', () => {
       eggCaughtPointsRef: mockRef,
     });
 
-    await waitFor(actor, state => state.matches('Done'));
+    await waitFor(actor, (state) => state.matches('Done'));
 
     // Check the output
     expect(actor.getSnapshot().output).toEqual({

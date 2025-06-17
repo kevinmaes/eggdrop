@@ -23,14 +23,14 @@ export function TransparentButton({
       height={height}
       fill="transparent"
       onClick={onClick} // Handle button clicks
-      onMouseEnter={e => {
+      onMouseEnter={(e) => {
         // Change cursor to pointer on hover
         const container = e.target.getStage()?.container();
         if (container) {
           container.style.cursor = 'pointer';
         }
       }}
-      onMouseLeave={e => {
+      onMouseLeave={(e) => {
         // Change cursor back to default when not hovering
         const container = e.target.getStage()?.container();
         if (container) {
