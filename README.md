@@ -3,7 +3,7 @@
 [![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-6.3.5-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
-[![XState](https://img.shields.io/badge/XState-5.19.3-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
+[![XState](https://img.shields.io/badge/XState-5.20.0-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
 [![Konva](https://img.shields.io/badge/Konva-9.3.20-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
 [![Howler](https://img.shields.io/badge/Howler-2.2.4-FF6600?style=flat-square)](https://howlerjs.com)
 
