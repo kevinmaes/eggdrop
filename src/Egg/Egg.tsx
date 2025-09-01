@@ -144,7 +144,7 @@ export function Egg({
         height={60}
         rotation={0}
         x={eggState.context.position.x}
-        y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
+        y={gameConfig.stage.height - gameConfig.egg.chick.height}
         offsetX={0.5 * gameConfig.egg.chick.width}
         crop={{
           x: currentChickFrame.x,
@@ -171,7 +171,7 @@ export function Egg({
         height={60}
         rotation={0}
         x={eggState.context.position.x}
-        y={gameConfig.stageDimensions.height - gameConfig.egg.chick.height}
+        y={gameConfig.stage.height - gameConfig.egg.chick.height}
         crop={{
           x: chickFrame.x,
           y: chickFrame.y,
@@ -194,7 +194,7 @@ export function Egg({
         width={gameConfig.egg.brokenEgg.width}
         height={gameConfig.egg.brokenEgg.height}
         x={eggState.context.position.x}
-        y={gameConfig.stageDimensions.height - gameConfig.egg.brokenEgg.height}
+        y={gameConfig.stage.height - gameConfig.egg.brokenEgg.height}
         offsetY={0}
         // Always set rotation to 0 in case egg was rotating
         rotation={0}

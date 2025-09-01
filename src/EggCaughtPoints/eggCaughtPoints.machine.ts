@@ -1,5 +1,5 @@
 import Konva from 'konva';
-import { assign, log, setup, type OutputFrom } from 'xstate';
+import { assign, setup, type OutputFrom } from 'xstate';
 
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Position } from '../types';
@@ -53,7 +53,6 @@ export const eggCaughtPointsMachine = setup({
   initial: 'Idle',
   states: {
     Idle: {
-      entry: log('Entry: Idle'),
       on: {
         'Set eggCaughtPointsRef': {
           target: 'Animating',
@@ -65,7 +64,6 @@ export const eggCaughtPointsMachine = setup({
       },
     },
     Animating: {
-      entry: log('Entry: Animating'),
       invoke: {
         src: 'tweenActor',
         input: ({ context }) => {
@@ -85,10 +83,7 @@ export const eggCaughtPointsMachine = setup({
             tween,
           };
         },
-        onDone: {
-          target: 'Done',
-          actions: log('Tween done'),
-        },
+        onDone: 'Done',
       },
     },
     Done: {

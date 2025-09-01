@@ -5,9 +5,10 @@ import {
   sendParent,
   type OutputFrom,
   type DoneActorEvent,
+  type ActorRefFrom,
 } from 'xstate';
 
-import { getGameConfig } from '../GameLevel/gameConfig';
+import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
 import { isImageRef, type Direction, type Position } from '../types';
@@ -25,11 +26,11 @@ export type EggResultStatus =
   | 'Offscreen';
 
 export type EggDoneEvent = DoneActorEvent<OutputFrom<typeof eggMachine>>;
-
+export type EggActorRef = ActorRefFrom<typeof eggMachine>;
 export const eggMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       id: string;
       eggAssets: GameAssets['egg'];
       chickAssets: GameAssets['chick'];
@@ -48,7 +49,7 @@ export const eggMachine = setup({
       resultStatus: EggResultStatus;
     };
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       henId: string;
@@ -105,7 +106,7 @@ export const eggMachine = setup({
       if (!isImageRef(context.eggRef)) return false;
       return (
         context.eggRef.current.x() < 0 ||
-        context.eggRef.current.x() > context.gameConfig.stageDimensions.width
+        context.eggRef.current.x() > context.gameConfig.stage.width
       );
     },
   },
@@ -120,16 +121,16 @@ export const eggMachine = setup({
       targetPosition: ({ context }) => ({
         x: context.position.x,
         y:
-          context.gameConfig.stageDimensions.height -
+          context.gameConfig.stage.height -
           context.gameConfig.egg.brokenEgg.height -
-          context.gameConfig.stageDimensions.margin,
+          context.gameConfig.stage.margin,
       }),
     }),
     setTargetPositionToExit: assign({
       targetPosition: ({ context }) => ({
         x:
-          context.position.x > context.gameConfig.stageDimensions.midX
-            ? context.gameConfig.stageDimensions.width + 50
+          context.position.x > context.gameConfig.stage.midX
+            ? context.gameConfig.stage.width + 50
             : -50,
         y: context.position.y,
       }),
@@ -149,7 +150,7 @@ export const eggMachine = setup({
       position: ({ context }) => ({
         x: context.position.x - 0.5 * context.gameConfig.egg.brokenEgg.width,
         y:
-          context.gameConfig.stageDimensions.height -
+          context.gameConfig.stage.height -
           context.gameConfig.egg.brokenEgg.height,
       }),
     }),
@@ -157,9 +158,9 @@ export const eggMachine = setup({
       position: ({ context }) => ({
         x: context.position.x,
         y:
-          context.gameConfig.stageDimensions.height -
+          context.gameConfig.stage.height -
           context.gameConfig.egg.chick.height -
-          context.gameConfig.stageDimensions.margin,
+          context.gameConfig.stage.margin,
       }),
     }),
     setResultStatus: assign({
@@ -326,12 +327,10 @@ export const eggMachine = setup({
           invoke: {
             src: 'movingFallingActor',
             input: ({ context, self }) => {
-              const { stageDimensions, egg } = context.gameConfig;
+              const { stage, egg } = context.gameConfig;
               // The lowest y position the egg can fall before it is considered off screen
               const baseYPos =
-                stageDimensions.height -
-                egg.brokenEgg.height -
-                stageDimensions.margin;
+                stage.height - egg.brokenEgg.height - stage.margin;
 
               return {
                 node: context.eggRef.current,

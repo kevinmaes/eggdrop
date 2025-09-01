@@ -3,6 +3,7 @@ import { Group, Image, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 
 import { AppActorContext } from '../app.machine';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
 import type { ActorRefFrom } from 'xstate';
@@ -20,7 +21,7 @@ export function HensCountdown({
 }) {
   const appActorRef = AppActorContext.useActorRef();
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { henFrames, gameConfig, totalHens, hensLeft } = useSelector(
     gameLevelActorRef,

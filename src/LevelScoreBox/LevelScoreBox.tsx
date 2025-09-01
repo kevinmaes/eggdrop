@@ -5,6 +5,7 @@ import Konva from 'konva';
 import { Group, Rect, Text, type KonvaNodeEvents } from 'react-konva';
 
 import { AppActorContext } from '../app.machine';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { EggTally } from '../EggTally/EggTally';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
@@ -41,7 +42,7 @@ export function LevelScoreBox({
     (state) => state.context.gameScoreData
   );
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
 
   const { gameConfig, scoreData } = useSelector(gameLevelActorRef, (state) => {
