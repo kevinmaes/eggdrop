@@ -35,7 +35,7 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [Yarn](https://yarnpkg.com/) package manager
+- [pnpm](https://pnpm.io/) package manager
 
 ### Installation
 
@@ -49,13 +49,13 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 2. Install dependencies:
 
    ```bash
-   yarn install
+   pnpm install
    ```
 
 3. Start the development server:
 
    ```bash
-   yarn dev
+   pnpm dev
    ```
 
 4. Open your browser and navigate to:
@@ -67,14 +67,14 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 
 | Command        | Description                                              |
 | -------------- | -------------------------------------------------------- |
-| `yarn dev`     | Start the development server                             |
-| `yarn build`   | Build the production-ready app                           |
-| `yarn preview` | Preview the production build locally                     |
-| `yarn tsc`     | Run TypeScript type checking                             |
-| `yarn lint`    | Run ESLint to check for code issues                      |
-| `yarn test`    | Run unit tests                                           |
-| `yarn ci`      | Run CI checks locally (lint, type check, test)           |
-| `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
+| `pnpm dev`     | Start the development server                             |
+| `pnpm build`   | Build the production-ready app                           |
+| `pnpm preview` | Preview the production build locally                     |
+| `pnpm tsc`     | Run TypeScript type checking                             |
+| `pnpm lint`    | Run ESLint to check for code issues                      |
+| `pnpm test`    | Run unit tests                                           |
+| `pnpm ci`      | Run CI checks locally (lint, type check, test)           |
+| `pnpm check`   | Run comprehensive checks (lint, type check, test, build) |
 
 ## 🧪 CI/CD Pipeline
 
@@ -88,7 +88,7 @@ This project uses GitHub Actions for Continuous Integration. The CI workflow:
 You can run these checks locally before pushing with:
 
 ```bash
-yarn ci
+pnpm ci
 ```
 
 ## 🧰 Technology Stack
