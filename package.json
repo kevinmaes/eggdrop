@@ -28,7 +28,7 @@
 		"react-dom": "^19.1.0",
 		"react-konva": "^19.0.6",
 		"use-image": "^1.1.4",
-		"xstate": "^5.20.0"
+		"xstate": "^5.22.1"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.51.1",
