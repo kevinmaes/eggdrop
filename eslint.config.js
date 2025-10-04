@@ -4,6 +4,11 @@ import tsParser from '@typescript-eslint/parser';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import importPlugin from 'eslint-plugin-import';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default [
   {
@@ -27,7 +32,7 @@ export default [
         ecmaVersion: 'latest',
         sourceType: 'module',
         project: ['./tsconfig.app.json', './tsconfig.node.json'],
-        tsconfigRootDir: '.',
+        tsconfigRootDir: __dirname,
       },
       globals: {
         document: 'readonly',
