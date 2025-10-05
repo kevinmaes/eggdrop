@@ -12,26 +12,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'yarn'
+          node-version: '22'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: TypeScript Check
-        run: yarn tsc
+        run: pnpm tsc
 
       - name: Lint Check
-        run: yarn lint
+        run: pnpm lint
 
       - name: Run Tests
-        run: yarn test
+        run: pnpm test
 
       - name: Build Check
-        run: yarn build
+        run: pnpm build
 
       - name: Ready for Preview
         if: success()
