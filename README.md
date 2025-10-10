@@ -1,19 +1,26 @@
 # Egg Drop Game 🥚
 
-[![React](https://img.shields.io/badge/React-19.0.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-6.0.7-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
-[![XState](https://img.shields.io/badge/XState-5.19.2-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
-[![Konva](https://img.shields.io/badge/Konva-9.3.18-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
+[![React](https://img.shields.io/badge/React-19.2.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-7.1.9-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
+[![XState](https://img.shields.io/badge/XState-5.22.1-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
+[![Konva](https://img.shields.io/badge/Konva-10.0.2-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
 [![Howler](https://img.shields.io/badge/Howler-2.2.4-FF6600?style=flat-square)](https://howlerjs.com)
 
-![Egg Drop Title](public/images/egg-drop-title.png)
+[![Egg Drop Title](public/images/egg-drop-title.png)](http://eggdrop.kevinmaes.com)
 
 🎮 [Play the Egg Drop game](http://eggdrop.kevinmaes.com)
 
 ## 📖 About the Game
 
-Egg Drop is a fun web-based game where you control Chef Rafi who tries to catch eggs dropped by hens to make his egg drop soup. It was inspired by the old [Atari 2600 game, Kaboom](https://www.atarimania.com/pgesoft.awp?soft=7179). The game features a genetic algorithm that evolves the characteristics of the hens over time, making each playthrough unique and progressively challenging.
+Egg Drop is a fun web-based game where you control Chef Rafi who tries to catch eggs dropped by hens to make his egg drop soup. It was inspired by the old [Atari 2600 game, Kaboom](https://www.atarimania.com/pgesoft.awp?soft=7179). Additionally, this version of game features a genetic algorithm that evolves the characteristics of the hens over time, making each playthrough unique and progressively challenging.
+
+## ✨ Features
+
+| 🎮 Gameplay               | 🧬 Evolution          | 🎯 Challenge            |
+| ------------------------- | --------------------- | ----------------------- |
+| Catch eggs with Chef Rafi | Hens evolve over time | Increasing difficulty   |
+| Dynamic movement patterns | Genetic algorithm     | Unique each playthrough |
 
 ### 🎤 Conference Presentations
 
@@ -28,7 +35,7 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [Yarn](https://yarnpkg.com/) package manager
+- [pnpm](https://pnpm.io/) package manager
 
 ### Installation
 
@@ -42,13 +49,13 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 2. Install dependencies:
 
    ```bash
-   yarn install
+   pnpm install
    ```
 
 3. Start the development server:
 
    ```bash
-   yarn dev
+   pnpm dev
    ```
 
 4. Open your browser and navigate to:
@@ -60,14 +67,14 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 
 | Command        | Description                                              |
 | -------------- | -------------------------------------------------------- |
-| `yarn dev`     | Start the development server                             |
-| `yarn build`   | Build the production-ready app                           |
-| `yarn preview` | Preview the production build locally                     |
-| `yarn tsc`     | Run TypeScript type checking                             |
-| `yarn lint`    | Run ESLint to check for code issues                      |
-| `yarn test`    | Run unit tests                                           |
-| `yarn ci`      | Run CI checks locally (lint, type check, test)           |
-| `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
+| `pnpm dev`     | Start the development server                             |
+| `pnpm build`   | Build the production-ready app                           |
+| `pnpm preview` | Preview the production build locally                     |
+| `pnpm tsc`     | Run TypeScript type checking                             |
+| `pnpm lint`    | Run ESLint to check for code issues                      |
+| `pnpm test`    | Run unit tests                                           |
+| `pnpm ci`      | Run CI checks locally (lint, type check, test)           |
+| `pnpm check`   | Run comprehensive checks (lint, type check, test, build) |
 
 ## 🧪 CI/CD Pipeline
 
@@ -81,7 +88,7 @@ This project uses GitHub Actions for Continuous Integration. The CI workflow:
 You can run these checks locally before pushing with:
 
 ```bash
-yarn ci
+pnpm ci
 ```
 
 ## 🧰 Technology Stack
@@ -99,6 +106,26 @@ yarn ci
 - **[XState](https://xstate.js.org)** - State management using state machines and the actor model
 - **[Howler](https://howlerjs.com)** - Audio library for game sounds
 
+## State Machines
+
+Several XState state machines are used throughout the game:
+
+- Application (loading and overall coordination)
+- Game Play (levels)
+- [Chef](#chef-machine) - Player character controlled by the user
+- Hen
+- Egg (hatching into chicks)
+- [Egg Points](#egg-caught-points-machine) - Points won when catching an egg
+- Sounds
+
+### Chef machine
+
+[![Game State Machine](docs/images/statecharts/chef.machine.png)](https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=6e326602-d929-4a40-b57a-d4cf067b6442)
+
+### Egg Caught Points machine
+
+[![Game State Machine](docs/images/statecharts/eggCaughtPoints.machine.png)](https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=67ee088f-7005-4919-a155-673965bfef40)
+
 ## 🧬 Genetic Algorithm
 
 The game features a genetic algorithm that evolves the characteristics of the hens who drop eggs. Each hen (referred to as a "Hendividual") has DNA composed of traits related to:
@@ -115,7 +142,7 @@ As the game progresses, hens evolve based on their performance, creating a dynam
 
 The game includes a developer panel to track statistics related to the genetic algorithm:
 
-- Press `cmd-d` (or `ctrl-d` on Windows/Linux) to toggle the Dev Panel visibility
+- Press `cmd-d` (Mac) or `ctrl-d` (Windows/Linux) to toggle the Dev Panel visibility
 - Monitor hen population statistics and evolution metrics
 - Track game performance and state
 
@@ -176,5 +203,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📬 Contact
 
 Kevin Maes - [@kvmaes](https://twitter.com/kvmaes)
-
-Project Link: [https://github.com/kevinmaes/eggdrop](https://github.com/kevinmaes/eggdrop)
