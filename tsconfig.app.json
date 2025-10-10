@@ -12,6 +12,7 @@
 		"strict": true,
 		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
+		"noPropertyAccessFromIndexSignature": true,
 
 		"module": "preserve",
 		"noEmit": true,
