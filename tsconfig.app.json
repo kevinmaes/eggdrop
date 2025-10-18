@@ -1,25 +1,25 @@
 {
 	"extends": "@total-typescript/tsconfig/bundler/dom/app",
 	"compilerOptions": {
-		"composite": true,
-		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-		"target": "ES2020",
-		"useDefineForClassFields": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
+		"esModuleInterop": true,
 		"skipLibCheck": true,
-
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
+		"target": "ES2022",
+		"allowJs": true,
 		"resolveJsonModule": true,
-		"isolatedModules": true,
 		"moduleDetection": "force",
-		"noEmit": true,
-		"jsx": "react-jsx",
+		"isolatedModules": true,
 
-		/* Linting */
 		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"noPropertyAccessFromIndexSignature": true,
+
+		"module": "preserve",
+		"noEmit": true,
+
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"jsx": "react-jsx",
+		"allowImportingTsExtensions": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,

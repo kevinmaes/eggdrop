@@ -1,10 +1,10 @@
 # Egg Drop Game 🥚
 
-[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-6.3.5-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
-[![XState](https://img.shields.io/badge/XState-5.19.3-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
-[![Konva](https://img.shields.io/badge/Konva-9.3.20-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
+[![React](https://img.shields.io/badge/React-19.2.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-7.1.9-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
+[![XState](https://img.shields.io/badge/XState-5.22.1-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
+[![Konva](https://img.shields.io/badge/Konva-10.0.2-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
 [![Howler](https://img.shields.io/badge/Howler-2.2.4-FF6600?style=flat-square)](https://howlerjs.com)
 
 [![Egg Drop Title](public/images/egg-drop-title.png)](http://eggdrop.kevinmaes.com)
@@ -35,7 +35,7 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [Yarn](https://yarnpkg.com/) package manager
+- [pnpm](https://pnpm.io/) package manager
 
 ### Installation
 
@@ -49,13 +49,13 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 2. Install dependencies:
 
    ```bash
-   yarn install
+   pnpm install
    ```
 
 3. Start the development server:
 
    ```bash
-   yarn dev
+   pnpm dev
    ```
 
 4. Open your browser and navigate to:
@@ -67,14 +67,14 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 
 | Command        | Description                                              |
 | -------------- | -------------------------------------------------------- |
-| `yarn dev`     | Start the development server                             |
-| `yarn build`   | Build the production-ready app                           |
-| `yarn preview` | Preview the production build locally                     |
-| `yarn tsc`     | Run TypeScript type checking                             |
-| `yarn lint`    | Run ESLint to check for code issues                      |
-| `yarn test`    | Run unit tests                                           |
-| `yarn ci`      | Run CI checks locally (lint, type check, test)           |
-| `yarn check`   | Run comprehensive checks (lint, type check, test, build) |
+| `pnpm dev`     | Start the development server                             |
+| `pnpm build`   | Build the production-ready app                           |
+| `pnpm preview` | Preview the production build locally                     |
+| `pnpm tsc`     | Run TypeScript type checking                             |
+| `pnpm lint`    | Run ESLint to check for code issues                      |
+| `pnpm test`    | Run unit tests                                           |
+| `pnpm ci`      | Run CI checks locally (lint, type check, test)           |
+| `pnpm check`   | Run comprehensive checks (lint, type check, test, build) |
 
 ## 🎭 End-to-End Testing with Playwright
 
@@ -222,7 +222,7 @@ This project uses GitHub Actions for Continuous Integration. The CI workflow:
 You can run these checks locally before pushing with:
 
 ```bash
-yarn ci
+pnpm ci
 ```
 
 ## 🧰 Technology Stack
