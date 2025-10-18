@@ -1,0 +1,25 @@
+name: Playwright Automated Tests
+on:
+  workflow_dispatch: # This makes the workflow only run manually
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm install -g yarn && yarn
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps
+      - name: Run Playwright automated tests
+        run: yarn playwright test tests/game-automated.spec.ts --timeout=300000
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-automated-report
+          path: playwright-report/
+          retention-days: 30

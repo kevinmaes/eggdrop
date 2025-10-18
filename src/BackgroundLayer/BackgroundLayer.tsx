@@ -18,13 +18,13 @@ export function BackgroundLayer() {
       <Group>
         <Image
           image={kitchenBgImage}
-          width={gameConfig.stageDimensions.width}
-          height={gameConfig.stageDimensions.height}
+          width={gameConfig.stage.width}
+          height={gameConfig.stage.height}
         />
         {/* Translucent overlay to mute the background image */}
         <Rect
-          width={gameConfig.stageDimensions.width}
-          height={gameConfig.stageDimensions.height}
+          width={gameConfig.stage.width}
+          height={gameConfig.stage.height}
           opacity={0.5}
           fill="black"
           y={0}

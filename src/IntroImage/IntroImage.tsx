@@ -18,8 +18,8 @@ export function IntroImage() {
   }
   return (
     <Group
-      x={0.5 * gameConfig.stageDimensions.width - 500}
-      y={0.5 * gameConfig.stageDimensions.height - 250}
+      x={0.5 * gameConfig.stage.width - 500}
+      y={0.5 * gameConfig.stage.height - 250}
     >
       {/* Border stroke */}
       <Rect

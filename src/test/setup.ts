@@ -45,6 +45,21 @@ vi.mock('konva', () => {
   };
 });
 
+// Add mock for konva/lib/Animation
+vi.mock('konva/lib/Animation', () => {
+  return {
+    Animation: class MockAnimation {
+      constructor() {}
+      start() {
+        return this;
+      }
+      stop() {
+        return this;
+      }
+    },
+  };
+});
+
 // Create a simple mock for React refs that can be used in tests
 class MockRef<T> {
   current: T | null = null;

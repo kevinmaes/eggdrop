@@ -5,11 +5,13 @@ import {
   assertEvent,
   assign,
   emit,
+  log,
   sendTo,
   setup,
 } from 'xstate';
 
 import { chefMachine } from '../Chef/chef.machine';
+import { CHEF_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from '../constants';
 import {
   type EggColor,
   type EggDoneEvent,
@@ -20,23 +22,26 @@ import {
   eggCaughtPointsMachine,
   type EggCaughtPointsDoneEvent,
 } from '../EggCaughtPoints/eggCaughtPoints.machine';
+import { type GameConfig } from '../gameConfig';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
+import { addEggToHistory } from '../test-api';
 import { isImageRef, type Direction, type Position } from '../types';
 
 import {
   countdownTimer,
   type CountdownTimerTickEvent,
 } from './countdownTimer.actor';
-import { getGameConfig } from './gameConfig';
 
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
 
+export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
+
 export const gameLevelMachine = setup({
   types: {} as {
     input: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       gameAssets: GameAssets;
       generationNumber: number;
       levelDuration: number;
@@ -48,7 +53,7 @@ export const gameLevelMachine = setup({
       eggColor: EggColor;
     };
     context: {
-      gameConfig: ReturnType<typeof getGameConfig>;
+      gameConfig: GameConfig;
       gameAssets: GameAssets;
       remainingMS: number;
       generationNumber: number;
@@ -111,10 +116,26 @@ export const gameLevelMachine = setup({
         ),
     }),
     removeEggActorRef: assign({
-      eggActorRefs: ({ context }) =>
-        context.eggActorRefs.filter(
-          (eggActorRef) => eggActorRef.getSnapshot().status !== 'done'
-        ),
+      eggActorRefs: ({ context }) => {
+        console.log('removeEggActorRef called', context.eggActorRefs);
+        const remainingEggs = [];
+        for (const eggActorRef of context.eggActorRefs) {
+          if (eggActorRef.getSnapshot().status === 'done') {
+            if (context.gameConfig.isTestMode) {
+              addEggToHistory({
+                // TODO: Consider always using the context.id which is the nanoid or "eggId"
+                id: eggActorRef.id,
+                position: eggActorRef.getSnapshot().context.position,
+                color: eggActorRef.getSnapshot().context.color,
+                resultStatus: 'Caught',
+              });
+            }
+          } else {
+            remainingEggs.push(eggActorRef);
+          }
+        }
+        return remainingEggs;
+      },
     }),
     spawnNewHen: assign(({ context, spawn }) => {
       const index = context.nextHenIndex;
@@ -508,7 +529,7 @@ export const gameLevelMachine = setup({
     },
   },
 }).createMachine({
-  id: 'GameLevel',
+  id: GAME_LEVEL_ACTOR_ID,
   context: ({ input }) => ({
     gameConfig: input.gameConfig,
     gameAssets: input.gameAssets,
@@ -658,7 +679,7 @@ export const gameLevelMachine = setup({
   },
   states: {
     Playing: {
-      entry: 'startBackgroundMusic',
+      entry: ['startBackgroundMusic', log('Game Level - Playing')],
       exit: 'stopBackgroundMusic',
       on: {
         Tick: [
@@ -742,8 +763,9 @@ export const gameLevelMachine = setup({
         {
           id: 'chefMachine',
           src: 'chefMachine',
-          systemId: 'chefMachine',
+          systemId: CHEF_ACTOR_ID,
           input: ({ context }) => ({
+            gameConfig: context.gameConfig,
             chefConfig: context.gameConfig.chef,
             chefAssets: context.gameAssets.chef,
             position: {
@@ -756,6 +778,7 @@ export const gameLevelMachine = setup({
             deceleration: context.gameConfig.chef.acceleration,
             minXPos: context.gameConfig.chef.minXPos,
             maxXPos: context.gameConfig.chef.maxXPos,
+            isTestMode: context.gameConfig.isTestMode,
           }),
         },
       ],
