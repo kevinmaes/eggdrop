@@ -252,8 +252,8 @@ export function getGameConfig(): GameConfig {
   let isTestMode = false;
 
   // Prefer env var if present (for Playwright/Node tests)
-  if (typeof process !== 'undefined' && process.env.TEST_MODE) {
-    isTestMode = process.env.TEST_MODE === 'true';
+  if (typeof process !== 'undefined' && process.env['TEST_MODE']) {
+    isTestMode = process.env['TEST_MODE'] === 'true';
   } else if (typeof window !== 'undefined') {
     // Fallback to query string in browser
     const urlParams = new URLSearchParams(window.location.search as string);
