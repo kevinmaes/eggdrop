@@ -189,9 +189,11 @@ const chefBotMachine = setup({
           ) as GameLevelActorRef;
           const gameLevelContext = gameLevelActorRef?.getSnapshot().context;
 
-          const targetEggActorRef = gameLevelContext.eggActorRefs.find(egg => {
-            return egg.id === targetEggId;
-          });
+          const targetEggActorRef = gameLevelContext.eggActorRefs.find(
+            (egg) => {
+              return egg.id === targetEggId;
+            }
+          );
 
           if (!targetEggActorRef) {
             throw new Error('Target egg actor ref not found');

@@ -238,7 +238,7 @@ export function calculateBlackEggDanger(
   safeDistance: number = 100
 ): number {
   let dangerScore = 0;
-  const eggIndex = sortedEggs.findIndex(e => e.id === egg.id);
+  const eggIndex = sortedEggs.findIndex((e) => e.id === egg.id);
 
   // Calculate the effective danger zone based on pot rim width
   const potRimHalfWidth = chef.potRimWidth / 2;
@@ -297,7 +297,7 @@ export function calculateClusterBonus(
   clusterDistance: number = 150
 ): number {
   let clusterScore = 0;
-  const eggIndex = sortedEggs.findIndex(e => e.id === egg.id);
+  const eggIndex = sortedEggs.findIndex((e) => e.id === egg.id);
 
   // Calculate time-to-catch for the current egg
   // This is crucial for determining if eggs will fall in sequence
@@ -406,7 +406,7 @@ export function findBestEgg(
   const sortedEggs = [...eggs].sort((a, b) => a.position.x - b.position.x);
 
   // Enhance all eggs with additional properties and scoring
-  const enhancedEggs = sortedEggs.map(egg => {
+  const enhancedEggs = sortedEggs.map((egg) => {
     const enhancedEgg = enhanceEgg(egg, chef);
 
     // Add black egg danger score and cluster bonus
@@ -427,7 +427,7 @@ export function findBestEgg(
 
   // Filter out unreachable eggs and black eggs
   const validEggs = enhancedEggs.filter(
-    egg => egg.isReachable && egg.color !== 'black'
+    (egg) => egg.isReachable && egg.color !== 'black'
   );
 
   if (validEggs.length === 0) {

@@ -65,54 +65,44 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 
 ## 🛠️ Development Commands
 
-| Command        | Description                                              |
-| -------------- | -------------------------------------------------------- |
-| `pnpm dev`     | Start the development server                             |
-| `pnpm build`   | Build the production-ready app                           |
-| `pnpm preview` | Preview the production build locally                     |
-| `pnpm tsc`     | Run TypeScript type checking                             |
-| `pnpm lint`    | Run ESLint to check for code issues                      |
-| `pnpm test`    | Run unit tests                                           |
-| `pnpm ci`      | Run CI checks locally (lint, type check, test)           |
-| `pnpm check`   | Run comprehensive checks (lint, type check, test, build) |
+| Command               | Description                                              |
+| --------------------- | -------------------------------------------------------- |
+| `pnpm dev`            | Start the development server                             |
+| `pnpm build`          | Build the production-ready app                           |
+| `pnpm preview`        | Preview the production build locally                     |
+| `pnpm tsc`            | Run TypeScript type checking                             |
+| `pnpm lint`           | Run ESLint to check for code issues                      |
+| `pnpm format`         | Format code with Prettier                                |
+| `pnpm test`           | Run unit tests (Vitest)                                  |
+| `pnpm test:watch`     | Run unit tests in watch mode                             |
+| `pnpm test:e2e`       | Run E2E tests (regular, headless)                        |
+| `pnpm test:automated` | Run automated E2E tests (ChefBot)                        |
+| `pnpm test:all`       | Run all Playwright tests                                 |
+| `pnpm ci`             | Run CI checks locally (lint, type check, test)           |
+| `pnpm check`          | Run comprehensive checks (lint, type check, test, build) |
+
+For more testing commands and details, see [TESTING.md](TESTING.md).
 
 ## 🎭 End-to-End Testing with Playwright
 
+> **Quick Start:** See [TESTING.md](TESTING.md) for a complete guide to running tests.
+
 The game uses [Playwright](https://playwright.dev) for end-to-end testing. These tests verify the game's functionality by simulating real user interactions and checking the game state.
-
-### Running Tests
-
-```bash
-# Run regular tests in headless mode
-yarn test:e2e
-
-# Run automated tests
-yarn test:automated
-
-# Run all tests
-yarn test:all
-
-# Run tests with browser visible
-yarn test:e2e:headed
-
-# Run tests in debug mode
-yarn test:e2e:debug
-```
 
 ### Test Types
 
 The tests are organized into two categories:
 
-1. **Regular Tests** (`@regular` tag):
+1. **Regular Tests** (`@regular` tag) - Run with `pnpm test:e2e`:
 
    - Basic game functionality
    - UI interactions
    - State transitions
    - Run on every PR and push
 
-2. **Automated Tests** (`@automated` tag):
+2. **Automated Tests** (`@automated` tag) - Run with `pnpm test:automated`:
    - Complex gameplay scenarios
-   - Bot-driven gameplay
+   - Bot-driven gameplay (ChefBot AI)
    - Longer running tests (5-minute timeout)
    - Run manually via GitHub Actions
 
@@ -183,32 +173,7 @@ This architecture makes it possible to write reliable, deterministic tests for a
 
 ### Viewing Test Results
 
-#### Local Results
-
-After running tests, you can view the HTML report:
-
-```bash
-# Open the last test report
-yarn test:e2e:report
-```
-
-#### GitHub Actions Results
-
-When tests run in GitHub Actions:
-
-1. Navigate to the Actions tab in your PR
-2. Click on the workflow run
-3. Scroll to the "Artifacts" section
-4. Download and open either:
-   - `playwright-report` for regular tests
-   - `playwright-automated-report` for automated tests
-
-The reports include:
-
-- Test execution videos
-- Screenshots at each step
-- Detailed error messages and stack traces
-- Test duration and performance metrics
+See [TESTING.md - Viewing Test Results](TESTING.md#viewing-test-results) for details on viewing local and CI test reports.
 
 ## 🧪 CI/CD Pipeline
 

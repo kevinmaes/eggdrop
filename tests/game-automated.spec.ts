@@ -23,7 +23,7 @@ test.describe('@automated Game', () => {
   // Shared setup for all tests
   test.beforeEach(async ({ page }) => {
     // Listen for console messages from the browser
-    page.on('console', msg => console.log(`Browser console: ${msg.text()}`));
+    page.on('console', (msg) => console.log(`Browser console: ${msg.text()}`));
 
     // Navigate to the game page with test mode enabled
     await page.goto('/?testMode=true');
@@ -85,7 +85,7 @@ test.describe('@automated Game', () => {
 
     expect(isGameLevelDone).toBe(true);
 
-    await waitFor(chefBot, state => state.matches('Done'));
+    await waitFor(chefBot, (state) => state.matches('Done'));
     console.log('chefBot snapshot value', chefBot.getSnapshot().value);
     expect(chefBot.getSnapshot().matches('Done')).toBe(true);
 
