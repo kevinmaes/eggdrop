@@ -54,3 +54,9 @@ The automated "Version Packages" PR will:
 - Be ready to merge when you want to deploy to production
 
 Simply merge the "Version Packages" PR to `main` when you're ready to release!
+
+## Complete Setup Guide
+
+For complete setup instructions and to use this workflow in other projects:
+
+👉 **[Changesets Workflow Setup Guide](https://gist.github.com/kevinmaes/333b6e0c9e873872e543f742b2e54a7f)**
