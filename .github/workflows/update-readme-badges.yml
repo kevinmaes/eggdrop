@@ -5,7 +5,7 @@ on:
     paths:
       - 'package.json'
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -44,5 +44,5 @@ jobs:
           title: 'docs: update readme badges'
           body: |
             This PR updates the badges (technology shields) in the README to match the latest versions in package.json.
-          base: main
+          base: dev
           add-paths: README.md
