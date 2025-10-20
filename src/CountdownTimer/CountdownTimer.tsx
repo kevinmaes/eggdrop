@@ -2,6 +2,7 @@ import { useSelector } from '@xstate/react';
 import { Group, Rect, Text } from 'react-konva';
 
 import { AppActorContext } from '../app.machine';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 
 import type { ActorRefFrom } from 'xstate';
@@ -19,7 +20,7 @@ export function CountdownTimer({
 }) {
   const appActorRef = AppActorContext.useActorRef();
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { totalLevelMS, remainingMS, gameConfig } = useSelector(
     gameLevelActorRef,

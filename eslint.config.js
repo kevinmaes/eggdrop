@@ -46,6 +46,7 @@ export default [
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         global: 'readonly',
+        URLSearchParams: 'readonly',
       },
     },
     settings: {
