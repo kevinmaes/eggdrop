@@ -5,8 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc -b && vite build",
-		"check": "yarn lint && yarn tsc && yarn test && yarn build",
-		"ci": "yarn lint && yarn tsc && yarn test",
+		"changeset": "changeset",
+		"check": "pnpm lint && pnpm tsc && pnpm test && pnpm build",
+		"ci": "pnpm lint && pnpm tsc && pnpm test",
 		"dev": "vite",
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
@@ -21,7 +22,8 @@
 		"test:watch": "vitest",
 		"test": "vitest run",
 		"tsc": "tsc --noEmit",
-		"update:badges": "node scripts/update-badge-versions.js"
+		"update:badges": "node scripts/update-badge-versions.js",
+		"version": "changeset version"
 	},
 	"dependencies": {
 		"@xstate/react": "^6.0.0",
@@ -36,6 +38,7 @@
 		"xstate": "^5.22.1"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.29.7",
 		"@playwright/test": "^1.55.1",
 		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/fontfaceobserver": "^2.1.3",
