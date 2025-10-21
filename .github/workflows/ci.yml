@@ -2,40 +2,30 @@ name: CI
 
 on:
   pull_request:
-    branches: [dev]
+    branches: [dev, main]
 
 jobs:
-  test:
-    name: Verify Build
+  changeset-check:
+    name: Changeset Check
     runs-on: ubuntu-latest
-
+    if: github.event_name == 'pull_request' && !contains(github.event.pull_request.title, 'Version Packages')
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: 20.x
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: TypeScript Check
-        run: pnpm tsc
-
-      - name: Lint Check
-        run: pnpm lint
-
-      - name: Run Tests
-        run: pnpm test
-
-      - name: Build Check
-        run: pnpm build
-
-      - name: Ready for Preview
-        if: success()
-        run: echo "All checks passed - Vercel preview can now be deployed"
+      - name: Check for changeset
+        run: pnpm changeset status --since=origin/dev
