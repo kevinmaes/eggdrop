@@ -185,19 +185,7 @@ export function Chef() {
         offsetY={chefPotRimConfig.offsetY}
         width={chefPotRimConfig.width}
         height={chefPotRimConfig.height}
-        fill="yellow"
-      />
-      <Ellipse
-        // ref={chefPotRimHitRef}
-        radiusX={10}
-        radiusY={10}
-        offsetX={
-          shouldFaceRight ? -chefPotRimConfig.offsetX : chefPotRimConfig.offsetX
-        }
-        offsetY={chefPotRimConfig.offsetY}
-        width={20}
-        height={20}
-        fill="black"
+        fill="transparent"
       />
     </Group>
   );
