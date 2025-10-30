@@ -15,7 +15,7 @@
 			"src": "package.json",
 			"use": "@vercel/static-build",
 			"config": {
-				"buildCommand": "yarn build",
+				"buildCommand": "pnpm build",
 				"outputDirectory": "dist"
 			}
 		}
