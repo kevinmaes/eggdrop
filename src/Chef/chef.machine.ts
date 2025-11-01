@@ -140,13 +140,10 @@ export const chefMachine = setup({
     setDirectionProps: assign(
       ({ context }, params: { direction: Direction['value'] }) => {
         const { direction } = params;
-        if (direction === context.direction) {
-          return context;
-        }
         const movingDirection: Direction['label'] =
           direction === 1 ? 'right' : direction === -1 ? 'left' : 'none';
 
-        // Update the lastMovingDirection only When actually moving in a direction
+        // Update the lastMovingDirection only when actually moving in a direction
         const lastMovingDirection =
           movingDirection !== 'none'
             ? movingDirection

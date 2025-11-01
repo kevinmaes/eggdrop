@@ -53,7 +53,6 @@ const appMachine = setup({
   },
   actions: {
     setActorRefForTests: ({ context, self }) => {
-      console.log('setActorRefForTests', context.gameConfig.isTestMode);
       // Set the app ref on the test API only on creation
       if (context.gameConfig.isTestMode) {
         setAppActorRef(self as AppActorRef);
@@ -70,7 +69,6 @@ const appMachine = setup({
       },
     }),
     gatherLastLevelResults: assign(({ context }, params: LevelResults) => {
-      console.log('gatherLastLevelResults', params);
       return {
         gameScoreData: {
           gameScore:
@@ -322,7 +320,9 @@ const appMachine = setup({
         },
       },
     },
-    'Show Error': {},
+    'Show Error': {
+      type: 'final',
+    },
     'Game Play': {
       initial: 'Init Level',
       on: {
