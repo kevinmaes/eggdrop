@@ -19,31 +19,22 @@ export function EggCaughtPoints({
   eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsMachine>;
 }) {
   const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig } = AppActorContext.useSelector((state) => {
-    return {
-      gameConfig: state.context.gameConfig,
-    };
-  });
+  const { gameConfig } = AppActorContext.useSelector((state) => ({
+    gameConfig: state.context.gameConfig,
+  }));
   const gameLevelActorRef = appActorRef.system.get(
     GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
-  const { uiFrames } = useSelector(gameLevelActorRef, (state) => {
-    return {
-      uiFrames: state.context.gameAssets.ui.frames,
-    };
-  });
+  const { uiFrames } = useSelector(gameLevelActorRef, (state) => ({
+    uiFrames: state?.context.gameAssets?.ui?.frames ?? {},
+  }));
 
   const { position, eggColor } = useSelector(
     eggCaughtPointsActorRefs,
-    (state) => {
-      if (!state) {
-        return { position: { x: 0, y: 0 } };
-      }
-      return {
-        position: state.context.position,
-        eggColor: state.context.eggColor,
-      };
-    }
+    (state) => ({
+      position: state?.context.position ?? { x: 0, y: 0 },
+      eggColor: (state?.context.eggColor ?? 'white') as 'white' | 'gold' | 'black',
+    })
   );
 
   const eggCaughtPointsRef = useRef<Konva.Image>(null);

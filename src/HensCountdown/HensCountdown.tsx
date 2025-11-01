@@ -25,19 +25,12 @@ export function HensCountdown({
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { henFrames, gameConfig, totalHens, hensLeft } = useSelector(
     gameLevelActorRef,
-    (state) => {
-      if (!state) {
-        return {};
-      }
-      return {
-        gameConfig: state.context.gameConfig,
-        henFrames: state.context.gameAssets.hen.frames,
-        totalLevelMS: state.context.gameConfig.levelDurationMS,
-        remainingMS: state.context.remainingMS,
-        totalHens: state.context.gameConfig.populationSize,
-        hensLeft: state.context.hensLeft,
-      };
-    }
+    (state) => ({
+      gameConfig: state?.context.gameConfig ?? null,
+      henFrames: state?.context.gameAssets?.hen?.frames ?? {},
+      totalHens: state?.context.gameConfig?.populationSize ?? 0,
+      hensLeft: state?.context.hensLeft ?? 0,
+    })
   );
   const [image] = useImage('images/hen.sprite.png');
 

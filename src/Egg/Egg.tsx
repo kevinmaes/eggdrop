@@ -27,7 +27,7 @@ export function Egg({
 }: {
   eggActorRef: ActorRefFrom<typeof eggMachine>;
 }) {
-  const eggState = useSelector(eggActorRef, (state) => state);
+  const eggState = useSelector(eggActorRef, (state) => state ?? null);
 
   const {
     gameConfig,
@@ -42,9 +42,9 @@ export function Egg({
     chickFrames,
     color,
   } = useSelector(eggActorRef, (state) => {
-    const isExiting = state.matches('Exiting');
+    const isExiting = state?.matches('Exiting') ?? false;
     let exitingDirection: 'none' | 'left' | 'right' = 'none';
-    if (isExiting) {
+    if (isExiting && state?.context.targetPosition && state?.context.position) {
       if (state.context.targetPosition.x < state.context.position.x) {
         exitingDirection = 'left';
       } else {
@@ -52,19 +52,17 @@ export function Egg({
       }
     }
     return {
-      gameConfig: state.context.gameConfig,
+      gameConfig: state?.context.gameConfig ?? null,
       isExiting,
       exitingDirection,
-      isHatching: state.matches('Hatching'),
-      isHatchingJump: state.matches('Hatching Jump'),
-      isHatched: state.matches('Hatched'),
-      isBroken: state.matches('Splatting'),
-      isDone: state.matches('Done'),
-      eggFrames: state.context.eggAssets.frames,
-      eggFrameNames: Object.keys(state.context.eggAssets.frames),
-      chickFrames: state.context.chickAssets.frames,
-      chickFrameNames: Object.keys(state.context.chickAssets.frames),
-      color: state.context.color,
+      isHatching: state?.matches('Hatching') ?? false,
+      isHatchingJump: state?.matches('Hatching Jump') ?? false,
+      isHatched: state?.matches('Hatched') ?? false,
+      isBroken: state?.matches('Splatting') ?? false,
+      isDone: state?.matches('Done') ?? false,
+      eggFrames: state?.context.eggAssets?.frames ?? {},
+      chickFrames: state?.context.chickAssets?.frames ?? {},
+      color: (state?.context.color ?? 'white') as 'white' | 'gold' | 'black',
     };
   });
   const eggRef = useRef<Konva.Image>(null);
