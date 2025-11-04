@@ -2,9 +2,9 @@
 
 [![React](https://img.shields.io/badge/React-19.2.0-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
-[![Vite](https://img.shields.io/badge/Vite-7.1.9-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
-[![XState](https://img.shields.io/badge/XState-5.22.1-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
-[![Konva](https://img.shields.io/badge/Konva-10.0.2-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
+[![Vite](https://img.shields.io/badge/Vite-7.1.12-646CFF?style=flat-square&logo=vite)](https://vitejs.dev)
+[![XState](https://img.shields.io/badge/XState-5.23.0-121212?style=flat-square&logo=xstate)](https://xstate.js.org)
+[![Konva](https://img.shields.io/badge/Konva-10.0.8-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
 [![Howler](https://img.shields.io/badge/Howler-2.2.4-FF6600?style=flat-square)](https://howlerjs.com)
 
 [![Egg Drop Title](public/images/egg-drop-title.png)](http://eggdrop.kevinmaes.com)
@@ -65,16 +65,52 @@ This project was originally created as a demo for my talk, "Evolving Game Develo
 
 ## 🛠️ Development Commands
 
-| Command        | Description                                              |
-| -------------- | -------------------------------------------------------- |
-| `pnpm dev`     | Start the development server                             |
-| `pnpm build`   | Build the production-ready app                           |
-| `pnpm preview` | Preview the production build locally                     |
-| `pnpm tsc`     | Run TypeScript type checking                             |
-| `pnpm lint`    | Run ESLint to check for code issues                      |
-| `pnpm test`    | Run unit tests                                           |
-| `pnpm ci`      | Run CI checks locally (lint, type check, test)           |
-| `pnpm check`   | Run comprehensive checks (lint, type check, test, build) |
+| Command               | Description                                              |
+| --------------------- | -------------------------------------------------------- |
+| `pnpm dev`            | Start the development server                             |
+| `pnpm build`          | Build the production-ready app                           |
+| `pnpm preview`        | Preview the production build locally                     |
+| `pnpm tsc`            | Run TypeScript type checking                             |
+| `pnpm lint`           | Run ESLint to check for code issues                      |
+| `pnpm format`         | Format code with Prettier                                |
+| `pnpm test`           | Run unit tests (Vitest)                                  |
+| `pnpm test:watch`     | Run unit tests in watch mode                             |
+| `pnpm test:e2e`       | Run E2E tests (regular, headless)                        |
+| `pnpm test:automated` | Run automated E2E tests (ChefBot)                        |
+| `pnpm test:all`       | Run all Playwright tests                                 |
+| `pnpm ci`             | Run CI checks locally (lint, type check, test)           |
+| `pnpm check`          | Run comprehensive checks (lint, type check, test, build) |
+
+For more testing commands and details, see [TESTING.md](TESTING.md).
+
+## 🎭 End-to-End Testing with Playwright
+
+See [TESTING.md](TESTING.md) for a complete guide to running tests.
+
+### Why State Machine Testing?
+
+Canvas games are notoriously hard to test. Traditional approaches have significant limitations:
+
+- **Visual/screenshot testing** - Brittle, slow, breaks on any UI change
+- **Fake DOM elements** - Extra maintenance, test drift, doesn't guarantee canvas output matches tested state
+- **No DOM representation** - Can't query or assert on canvas state directly
+
+**Our solution:** Test the state machines directly instead of the canvas rendering.
+
+Using XState, we expose a test API (`window.__TEST_API__`) that provides:
+
+- Direct access to state machine contexts (positions, velocities, game state)
+- Event sending to trigger state transitions
+- Snapshot queries for assertions
+
+Benefits:
+
+- Tests are deterministic and fast
+- Only break when game logic changes, not UI
+- Can test internal state that isn't visible
+- Enable complex scenarios like the ChefBot AI playing full games
+
+Further reading: [XState Testing Docs](https://stately.ai/docs/testing) • [MDN Canvas Testing](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas#testing_performance)
 
 ## 🧪 CI/CD Pipeline
 

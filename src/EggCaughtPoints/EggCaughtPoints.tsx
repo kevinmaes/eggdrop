@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import { AppActorContext } from '../app.machine';
+import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { isImageRef } from '../types';
 
 import type { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
@@ -24,7 +25,7 @@ export function EggCaughtPoints({
     };
   });
   const gameLevelActorRef = appActorRef.system.get(
-    'gameLevelMachine'
+    GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { uiFrames } = useSelector(gameLevelActorRef, (state) => {
     return {

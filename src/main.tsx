@@ -7,7 +7,7 @@ import { Howler } from 'howler';
 import { AppActorContext } from './app.machine';
 import './index.css';
 import App from './App.tsx';
-import { getGameConfig } from './GameLevel/gameConfig.ts';
+import { getGameConfig } from './gameConfig.ts';
 
 // Get the game config which will be passed down to the app
 const gameConfig = getGameConfig();

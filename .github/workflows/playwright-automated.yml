@@ -1,12 +1,10 @@
-name: Playwright Tests
+name: Playwright Automated Tests
 on:
-  push:
-    branches: [dev]
-  pull_request:
-    branches: [dev]
+  workflow_dispatch: # This makes the workflow only run manually
+
 jobs:
   test:
-    timeout-minutes: 10
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,11 +18,11 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: pnpm playwright install --with-deps
-      - name: Run Playwright tests
-        run: pnpm test:e2e
+      - name: Run Playwright automated tests
+        run: pnpm playwright test tests/game-automated.spec.ts --timeout=300000
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: playwright-automated-report
           path: playwright-report/
           retention-days: 30
