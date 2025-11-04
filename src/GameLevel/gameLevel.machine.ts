@@ -117,7 +117,6 @@ export const gameLevelMachine = setup({
     }),
     removeEggActorRef: assign({
       eggActorRefs: ({ context }) => {
-        console.log('removeEggActorRef called', context.eggActorRefs);
         const remainingEggs = [];
         for (const eggActorRef of context.eggActorRefs) {
           if (eggActorRef.getSnapshot().status === 'done') {

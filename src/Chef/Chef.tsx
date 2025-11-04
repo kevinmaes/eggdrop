@@ -29,15 +29,10 @@ export function Chef() {
   >;
   const { movingDirection, lastMovingDirection } = useSelector(
     chefActorRef,
-    (state) => {
-      if (!state) {
-        return { movingDirection: 'none', lastMovingDirection: 'none' };
-      }
-      return {
-        movingDirection: state.context.movingDirection,
-        lastMovingDirection: state.context.lastMovingDirection,
-      };
-    }
+    (state) => ({
+      movingDirection: state?.context.movingDirection ?? 'none',
+      lastMovingDirection: state?.context.lastMovingDirection ?? 'none',
+    })
   );
   const { chefPotRimConfig } = AppActorContext.useSelector((state) => ({
     chefPotRimConfig: state.context.gameConfig.chef.potRim,
@@ -50,35 +45,22 @@ export function Chef() {
     position,
     isAnimateAsMoving,
     isCatchingEgg,
-  } = useSelector(chefActorRef, (state) => {
-    if (typeof state === 'undefined') {
-      return {
-        chefConfig: {
-          width: 0,
-          height: 0,
-          x: 0,
-          y: 0,
-        },
-        chefFrames: {} as ChefFrames,
-        chefFrameNames: [],
-        position: { x: 0, y: 0 },
-        isAnimateAsMoving: false,
-        isCatchingEgg: false,
-      };
-    }
-    return {
-      chefConfig: state.context.chefConfig,
-      chefFrames: state.context.chefAssets.frames as ChefFrames,
-      chefFrameNames: Object.keys(
-        state.context.chefAssets.frames
-      ) as ChefFrameName[],
-      position: state.context.position,
-      // Use direction here instead of speed so that the chef's leg movement
-      // stops as soon as the user releases the arrow key
-      isAnimateAsMoving: state.context.direction !== 0,
-      isCatchingEgg: state.context.isCatchingEgg,
-    };
-  });
+  } = useSelector(chefActorRef, (state) => ({
+    chefConfig: state?.context.chefConfig ?? {
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+    },
+    chefFrames: (state?.context.chefAssets?.frames ?? {}) as ChefFrames,
+    chefFrameNames: (Object.keys(state?.context.chefAssets?.frames ?? {}) ??
+      []) as ChefFrameName[],
+    position: state?.context.position ?? { x: 0, y: 0 },
+    // Use direction here instead of speed so that the chef's leg movement
+    // stops as soon as the user releases the arrow key
+    isAnimateAsMoving: (state?.context.direction ?? 0) !== 0,
+    isCatchingEgg: state?.context.isCatchingEgg ?? false,
+  }));
 
   const [frameIndex, setFrameIndex] = useState(1);
 

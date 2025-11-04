@@ -45,15 +45,17 @@ export function LevelScoreBox({
     GAME_LEVEL_ACTOR_ID
   ) as ActorRefFrom<typeof gameLevelMachine>;
 
-  const { gameConfig, scoreData } = useSelector(gameLevelActorRef, (state) => {
-    if (!state) {
-      return {};
-    }
-    return {
-      gameConfig: state.context?.gameConfig,
-      scoreData: state.context.scoreData,
-    };
-  });
+  const { gameConfig, scoreData } = useSelector(gameLevelActorRef, (state) => ({
+    gameConfig: state?.context.gameConfig ?? null,
+    scoreData: state?.context.scoreData ?? {
+      levelScore: 0,
+      eggsCaught: {
+        white: 0,
+        gold: 0,
+        black: 0,
+      },
+    },
+  }));
 
   const [animateForBlackEggCaught, setAnimateForBlackEggCaught] =
     useState(false);

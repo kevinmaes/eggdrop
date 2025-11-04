@@ -1,15 +1,15 @@
-import { useSelector } from '@xstate/react';
 import { Layer } from 'react-konva';
 
 import { AppActorContext } from '../app.machine';
 import { GameScoreBox } from '../GameScoreBox/GameScoreBox';
 
 export function BetweenLevelsLayer() {
-  const appActorRef = AppActorContext.useActorRef();
-  const { gameConfig, isBetweenLevels } = useSelector(appActorRef, (state) => ({
-    gameConfig: state.context.gameConfig,
-    isBetweenLevels: state.hasTag('between levels'),
-  }));
+  const { gameConfig, isBetweenLevels } = AppActorContext.useSelector(
+    (state) => ({
+      gameConfig: state.context.gameConfig,
+      isBetweenLevels: state.hasTag('between levels'),
+    })
+  );
 
   if (!isBetweenLevels) {
     return null;

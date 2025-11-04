@@ -24,20 +24,11 @@ export function CountdownTimer({
   ) as ActorRefFrom<typeof gameLevelMachine>;
   const { totalLevelMS, remainingMS, gameConfig } = useSelector(
     gameLevelActorRef,
-    (state) => {
-      if (!state) {
-        return {
-          gameConfig: null,
-          totalLevelMS: 0,
-          remainingMS: 0,
-        };
-      }
-      return {
-        gameConfig: state.context.gameConfig,
-        totalLevelMS: state.context.gameConfig.levelDurationMS,
-        remainingMS: state.context.remainingMS,
-      };
-    }
+    (state) => ({
+      gameConfig: state?.context.gameConfig ?? null,
+      totalLevelMS: state?.context.gameConfig?.levelDurationMS ?? 0,
+      remainingMS: state?.context.remainingMS ?? 0,
+    })
   );
 
   if (!gameConfig) {

@@ -29,22 +29,11 @@ export function GameLevel() {
 
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
     gameLevelActorRef,
-    (state) => {
-      if (!state) {
-        return {
-          remainingMS: 0,
-          henActorRefs: [],
-          eggActorRefs: [],
-          eggCaughtPointsActorRefs: [],
-        };
-      }
-      return {
-        remainingMS: state.context.remainingMS,
-        henActorRefs: state.context.henActorRefs,
-        eggActorRefs: state.context.eggActorRefs,
-        eggCaughtPointsActorRefs: state.context.eggCaughtPointsActorRefs,
-      };
-    }
+    (state) => ({
+      henActorRefs: state?.context.henActorRefs ?? [],
+      eggActorRefs: state?.context.eggActorRefs ?? [],
+      eggCaughtPointsActorRefs: state?.context.eggCaughtPointsActorRefs ?? [],
+    })
   );
 
   return (

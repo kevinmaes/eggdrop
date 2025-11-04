@@ -48,20 +48,21 @@ export function Hen({
     absoluteTweenSpeed,
   } = useSelector(henActorRef, (state) => ({
     henSize: {
-      width: state.context.gameConfig.hen.width,
-      height: state.context.gameConfig.hen.height,
+      width: state?.context.gameConfig?.hen?.width ?? 0,
+      height: state?.context.gameConfig?.hen?.height ?? 0,
     },
-    henFrames: state.context.henAssets.frames,
-    position: state.context.position,
+    henFrames: state?.context.henAssets?.frames ?? {},
+    position: state?.context.position ?? { x: 0, y: 0 },
     // TODO: Getting TS errors matching on 'Moving' and need to find a fix.
     isMoving:
-      state.matches({ Moving: 'Laying egg' }) ||
-      state.matches({ Moving: 'Done laying egg' }) ||
-      state.matches({ Moving: 'Not laying egg' }) ||
-      state.matches({ Moving: 'Preparing to lay egg' }),
-    isLaying: state.matches('Laying Egg'),
-    movingDirection: state.context.movingDirection,
-    absoluteTweenSpeed: Math.abs(state.context.currentTweenSpeed),
+      (state?.matches({ Moving: 'Laying egg' }) ||
+        state?.matches({ Moving: 'Done laying egg' }) ||
+        state?.matches({ Moving: 'Not laying egg' }) ||
+        state?.matches({ Moving: 'Preparing to lay egg' })) ??
+      false,
+    isLaying: state?.matches('Laying Egg') ?? false,
+    movingDirection: state?.context.movingDirection ?? 'none',
+    absoluteTweenSpeed: Math.abs(state?.context.currentTweenSpeed ?? 0),
   }));
   const [image] = useImage('images/hen.sprite.png');
 
