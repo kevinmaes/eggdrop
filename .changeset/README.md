@@ -2,8 +2,6 @@
 
 This directory contains changeset files that describe changes for each PR.
 
-
-
 ## Creating a changeset
 
 Run `pnpm changeset` and follow the prompts, then commit the generated file with your PR.
@@ -16,7 +14,6 @@ Run `pnpm changeset` and follow the prompts, then commit the generated file with
 
 ## Workflow
 
-
 ### Dual Branch Workflow
 
 1. Create feature branch from `dev`
@@ -26,6 +23,5 @@ Run `pnpm changeset` and follow the prompts, then commit the generated file with
 5. Multiple PRs can be merged to `dev`, batching changes
 6. When ready, merge "Version Packages" PR to `dev`
 7. Manually trigger "Release to Main" workflow → Pushes `dev` to `main` → Deploys to production
-
 
 For more information, see the [changesets documentation](https://github.com/changesets/changesets).
