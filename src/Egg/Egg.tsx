@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import { isImageRef } from '../types';
 
-import { eggMachine } from './egg.machine';
+import { eggMachine, type EggColor } from './egg.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -62,7 +62,7 @@ export function Egg({
       isDone: state?.matches('Done') ?? false,
       eggFrames: state?.context.eggAssets?.frames ?? {},
       chickFrames: state?.context.chickAssets?.frames ?? {},
-      color: (state?.context.color ?? 'white') as 'white' | 'gold' | 'black',
+      color: (state?.context.color ?? 'white') as EggColor,
     };
   });
   const eggRef = useRef<Konva.Image>(null);

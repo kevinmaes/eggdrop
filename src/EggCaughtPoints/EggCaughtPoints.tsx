@@ -10,6 +10,7 @@ import { GAME_LEVEL_ACTOR_ID } from '../constants';
 import { isImageRef } from '../types';
 
 import type { eggCaughtPointsMachine } from './eggCaughtPoints.machine';
+import type { EggColor } from '../Egg/egg.machine';
 import type { gameLevelMachine } from '../GameLevel/gameLevel.machine';
 import type { ActorRefFrom } from 'xstate';
 
@@ -33,7 +34,7 @@ export function EggCaughtPoints({
     eggCaughtPointsActorRefs,
     (state) => ({
       position: state?.context.position ?? { x: 0, y: 0 },
-      eggColor: (state?.context.eggColor ?? 'white') as 'white' | 'gold' | 'black',
+      eggColor: (state?.context.eggColor ?? 'white') as EggColor,
     })
   );
 
