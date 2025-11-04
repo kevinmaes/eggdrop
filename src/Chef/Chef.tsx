@@ -53,9 +53,8 @@ export function Chef() {
       y: 0,
     },
     chefFrames: (state?.context.chefAssets?.frames ?? {}) as ChefFrames,
-    chefFrameNames: (Object.keys(
-      state?.context.chefAssets?.frames ?? {}
-    ) ?? []) as ChefFrameName[],
+    chefFrameNames: (Object.keys(state?.context.chefAssets?.frames ?? {}) ??
+      []) as ChefFrameName[],
     position: state?.context.position ?? { x: 0, y: 0 },
     // Use direction here instead of speed so that the chef's leg movement
     // stops as soon as the user releases the arrow key

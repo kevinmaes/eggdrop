@@ -4,10 +4,12 @@ import { AppActorContext } from '../app.machine';
 import { GameScoreBox } from '../GameScoreBox/GameScoreBox';
 
 export function BetweenLevelsLayer() {
-  const { gameConfig, isBetweenLevels } = AppActorContext.useSelector((state) => ({
-    gameConfig: state.context.gameConfig,
-    isBetweenLevels: state.hasTag('between levels'),
-  }));
+  const { gameConfig, isBetweenLevels } = AppActorContext.useSelector(
+    (state) => ({
+      gameConfig: state.context.gameConfig,
+      isBetweenLevels: state.hasTag('between levels'),
+    })
+  );
 
   if (!isBetweenLevels) {
     return null;
