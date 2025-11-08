@@ -5,10 +5,10 @@ import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
 import { DevPanel } from './DevPanel/DevPanel';
 import { GameLevel } from './GameLevel/GameLevel';
-import './App.css';
 import { LoadingOverlay } from './LoadingOverlay/LoadingOverlay';
 import { MuteButton } from './MuteButton/MuteButton';
 import { TransparentButton } from './TransparentButton/TransparentButton';
+import './App.css';
 
 function App() {
   const { isLoading, showError, showGamePlayLevel, loadingStatus } =
@@ -31,10 +31,12 @@ function App() {
   }
 
   return (
-    <KonvaStageAndBackground>
-      <BetweenLevelsLayer />
-      {showGamePlayLevel && <GameLevel />}
-    </KonvaStageAndBackground>
+    <div className="app-page">
+      <KonvaStageAndBackground>
+        <BetweenLevelsLayer />
+        {showGamePlayLevel && <GameLevel />}
+      </KonvaStageAndBackground>
+    </div>
   );
 }
 
@@ -48,7 +50,8 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <>
+    <div className="app-stage-wrapper">
+      <div className="app-stage-container">
       <Stage
         width={gameConfig.stage.width}
         height={gameConfig.stage.height}
@@ -75,8 +78,9 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
           )}
         </Layer>
       </Stage>
+      </div>
       <DevPanel />
-    </>
+    </div>
   );
 }
 
