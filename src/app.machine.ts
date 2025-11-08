@@ -5,7 +5,7 @@ import FontFaceObserver from 'fontfaceobserver';
 import { nanoid } from 'nanoid';
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
-import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
+import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID, LOADING_MSG } from './constants';
 import { type GameConfig } from './gameConfig';
 import {
   gameLevelMachine,
@@ -28,7 +28,7 @@ import type { GameAssets } from './types/assets';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
 
-const appMachine = setup({
+export const appMachine = setup({
   types: {} as {
     input: {
       gameConfig: GameConfig;
@@ -40,6 +40,10 @@ const appMachine = setup({
       population: Hendividual[];
       gameConfig: GameConfig;
       gameAssets: GameAssets | null;
+      loadingStatus: {
+        progress: number;
+        message: string;
+      };
       gameScoreData: {
         gameScore: number;
         eggsCaught: {
@@ -60,6 +64,10 @@ const appMachine = setup({
     },
     setLoadedGameAssets: assign({
       gameAssets: (_, params: GameAssets) => params,
+    }),
+    setLoadingStatus: assign({
+      loadingStatus: (_, params: { progress: number; message: string }) =>
+        params,
     }),
     toggleMute: assign({
       isMuted: ({ context }) => {
@@ -265,6 +273,10 @@ const appMachine = setup({
       levelResultsHistory: [],
       population: initialPopulation,
       gameAssets: null,
+      loadingStatus: {
+        progress: 0,
+        message: LOADING_MSG,
+      },
       gameScoreData: {
         gameScore: 0,
         eggsCaught: {
@@ -285,9 +297,23 @@ const appMachine = setup({
   entry: 'setActorRefForTests',
   states: {
     Loading: {
+      entry: {
+        type: 'setLoadingStatus',
+        params: {
+          progress: 0.1,
+          message: 'Initializing...',
+        },
+      },
       initial: 'Loading Fonts',
       states: {
         'Loading Fonts': {
+          entry: {
+            type: 'setLoadingStatus',
+            params: {
+              progress: 0.35,
+              message: 'Loading fonts...',
+            },
+          },
           invoke: {
             onDone: 'Loading Sprites',
             onError: `#${APP_ACTOR_ID}.Show Error`,
@@ -295,6 +321,13 @@ const appMachine = setup({
           },
         },
         'Loading Sprites': {
+          entry: {
+            type: 'setLoadingStatus',
+            params: {
+              progress: 0.75,
+              message: 'Loading sprites...',
+            },
+          },
           invoke: {
             onDone: {
               target: 'Done',
@@ -308,6 +341,13 @@ const appMachine = setup({
           },
         },
         Done: {
+          entry: {
+            type: 'setLoadingStatus',
+            params: {
+              progress: 1,
+              message: 'Ready!',
+            },
+          },
           type: 'final',
         },
       },
@@ -321,6 +361,13 @@ const appMachine = setup({
       },
     },
     'Show Error': {
+      entry: {
+        type: 'setLoadingStatus',
+        params: {
+          progress: 1,
+          message: 'Failed to load assets.',
+        },
+      },
       type: 'final',
     },
     'Game Play': {
