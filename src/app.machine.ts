@@ -330,7 +330,7 @@ export const appMachine = setup({
           },
           invoke: {
             onDone: {
-              target: 'Done',
+              target: 'Loaded',
               actions: {
                 type: 'setLoadedGameAssets',
                 params: ({ event }) => event.output,
@@ -338,6 +338,18 @@ export const appMachine = setup({
             },
             onError: `#${APP_ACTOR_ID}.Show Error`,
             src: 'loadSprites',
+          },
+        },
+        Loaded: {
+          entry: {
+            type: 'setLoadingStatus',
+            params: {
+              progress: 1,
+              message: 'Ready!',
+            },
+          },
+          after: {
+            1000: 'Done',
           },
         },
         Done: {

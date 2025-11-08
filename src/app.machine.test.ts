@@ -87,6 +87,12 @@ describe('appMachine loading status', () => {
     });
 
     spritesDeferred.resolve(createStubAssets());
+    await waitFor(actor, (state) => state.matches({ Loading: 'Loaded' }));
+    expect(actor.getSnapshot().context.loadingStatus).toEqual({
+      progress: 1,
+      message: 'Ready!',
+    });
+
     await waitFor(actor, (state) => state.matches('Intro'));
 
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
