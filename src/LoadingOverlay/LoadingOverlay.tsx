@@ -84,6 +84,7 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
     <div className="loading-overlay">
       <div className="loading-overlay__content">
         <EggProgressGraphic progress={progressDecimal} />
+        <div className="loading-overlay__status">{status.message}</div>
         <div className="loading-overlay__percentage">{percentage}%</div>
         <div className="loading-overlay__sr-message" aria-live="polite">
           {status.message}

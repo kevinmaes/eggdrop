@@ -325,7 +325,7 @@ export const appMachine = setup({
             type: 'setLoadingStatus',
             params: {
               progress: 0.75,
-              message: 'Loading sprites...',
+              message: 'Loading graphics...',
             },
           },
           invoke: {

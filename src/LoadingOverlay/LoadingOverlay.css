@@ -29,11 +29,22 @@
 }
 
 .loading-overlay__percentage {
-  font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+  font-family:
+    'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
   font-size: 1rem;
   color: rgba(248, 249, 255, 0.9);
   letter-spacing: 0.08em;
+}
+
+.loading-overlay__status {
+  font-family:
+    'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 0.875rem;
+  color: rgba(248, 249, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .loading-overlay__sr-message {

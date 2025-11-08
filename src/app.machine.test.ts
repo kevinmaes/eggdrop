@@ -3,6 +3,7 @@ import { createActor, fromPromise, waitFor } from 'xstate';
 
 import { appMachine } from './app.machine';
 import { getGameConfig } from './gameConfig';
+
 import type { GameAssets, SpriteData } from './types/assets';
 
 const createDeferred = <T>() => {
@@ -50,7 +51,7 @@ const createStubAssets = (): GameAssets => {
 
 describe('appMachine loading status', () => {
   it('updates loading status messages through the loading phases', async () => {
-    const fontsDeferred = createDeferred<void>();
+    const fontsDeferred = createDeferred<[void, void]>();
     const spritesDeferred = createDeferred<GameAssets>();
 
     const loadingTestMachine = appMachine.provide({
@@ -76,13 +77,13 @@ describe('appMachine loading status', () => {
       message: 'Loading fonts...',
     });
 
-    fontsDeferred.resolve();
+    fontsDeferred.resolve([undefined, undefined]);
     await waitFor(actor, (state) =>
       state.matches({ Loading: 'Loading Sprites' })
     );
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
       progress: 0.75,
-      message: 'Loading sprites...',
+      message: 'Loading graphics...',
     });
 
     spritesDeferred.resolve(createStubAssets());
@@ -96,4 +97,3 @@ describe('appMachine loading status', () => {
     actor.stop();
   });
 });
-
