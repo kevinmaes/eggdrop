@@ -74,8 +74,25 @@ export function getHenDemos(
       ],
       background: { type: 'solid', color: '#87CEEB' },
     },
+    {
+      id: 'hen-with-pauses',
+      title: 'Hen - With Pauses',
+      description:
+        'Back and forth movement with 1-2 second pauses at each destination',
+      actors: [
+        {
+          type: 'hen',
+          machineVersion: 'with-pauses',
+          componentVersion: 'with-pauses',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-1',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#87CEEB' },
+    },
     // Future demos:
-    // - hen-with-pauses: Add stopping/pausing at each edge
     // - hen-egg-laying: Add stationary egg-laying
     // - hen-moving-eggs: Add moving egg-laying
     // - hen-full: Production version with all features

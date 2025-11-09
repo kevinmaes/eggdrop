@@ -8,21 +8,16 @@ import { isImageRef, type Direction, type Position } from '../../../types';
 import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 /**
- * Simplified Hen Machine - Back and Forth Movement
+ * Simplified Hen Machine - Back and Forth with Pauses
  *
- * This is a stripped-down version of the production hen.machine.ts,
- * demonstrating only basic horizontal movement.
+ * This demo extends the back-and-forth movement by adding a pause
+ * state when the hen reaches each destination.
  *
- * REMOVED from production version:
- * - Egg-laying (all substates, guards, actions, sendParent events)
- * - Pause/resume functionality
- * - Stopped state
- * - Genetic algorithm phenotype (hardcoded values instead)
- * - GameConfig dependency (minimal hardcoded config)
- * - Egg counting
- * - Random stop durations
+ * NEW in this version:
+ * - Pausing state: 1-2 second pause when reaching destination
+ * - Random pause duration between 1000-2000ms
  *
- * KEPT from production version:
+ * SAME as back-and-forth version:
  * - State names: Offscreen, Moving, Done Moving, Reached Destination
  * - Action names: pickNewTargetPosition, createTweenToTargetPosition, etc.
  * - Tween actor invocation pattern
@@ -37,9 +32,12 @@ const DEMO_CONFIG = {
   henHeight: 120,
   henY: HEN_DEMO.centerY,
   entranceDelayMS: 500,
-  // Movement parameters (replaces phenotype)
+  // Movement parameters
   baseTweenDurationSeconds: 3,
   speed: 0.5,
+  // Pause parameters
+  minPauseDurationMS: 1000,
+  maxPauseDurationMS: 2000,
   // Movement range: 50% of canvas width, centered
   movementRangePercent: 0.5,
 };
@@ -66,7 +64,7 @@ function getInitialState(canvasWidth: number) {
   };
 }
 
-const henBackAndForthMachine = setup({
+const henWithPausesMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -192,9 +190,17 @@ const henBackAndForthMachine = setup({
   },
   delays: {
     entranceDelay: DEMO_CONFIG.entranceDelayMS,
+    pauseDuration: () => {
+      // Random pause between 1-2 seconds
+      return (
+        DEMO_CONFIG.minPauseDurationMS +
+        Math.random() *
+          (DEMO_CONFIG.maxPauseDurationMS - DEMO_CONFIG.minPauseDurationMS)
+      );
+    },
   },
 }).createMachine({
-  id: 'Hen-BackAndForth',
+  id: 'Hen-WithPauses',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth || DEMO_CONFIG.stageWidth;
     const canvasHeight = input.canvasHeight || DEMO_CONFIG.stageHeight;
@@ -272,12 +278,12 @@ const henBackAndForthMachine = setup({
       ],
     },
     'Reached Destination': {
-      // Instead of being final, loop back to Moving
+      // Pause at destination for 1-2 seconds before moving again
       after: {
-        100: 'Moving',
+        pauseDuration: 'Moving',
       },
     },
   },
 });
 
-export default henBackAndForthMachine;
+export default henWithPausesMachine;
