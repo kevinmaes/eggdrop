@@ -2,12 +2,9 @@ import { useEffect, useId, useMemo, useState } from 'react';
 
 import eggFillSrc from '../assets/svg/egg-gold-flat.svg';
 import eggShellSrc from '../assets/svg/egg-white-flat.svg';
-import './LoadingOverlay.css';
 
-export type LoadingStatus = {
-  progress: number;
-  message: string;
-};
+import type { LoadingStatus } from '../Loading/loading.machine';
+import './LoadingOverlay.css';
 
 type LoadingOverlayProps = {
   status: LoadingStatus;

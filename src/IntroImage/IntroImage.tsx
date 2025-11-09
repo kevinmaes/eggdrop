@@ -4,12 +4,9 @@ import useImage from 'use-image';
 import { AppActorContext } from '../app.machine';
 
 export function IntroImage() {
-  const { gameConfig, showGameIntro } = AppActorContext.useSelector(
-    (state) => ({
-      gameConfig: state.context.gameConfig,
-      showGameIntro: state.matches('Intro'),
-    })
-  );
+  const snapshot = AppActorContext.useSelector((state) => state);
+  const { gameConfig } = snapshot.context;
+  const showGameIntro = snapshot.matches('Intro');
 
   const [titleImage] = useImage('images/egg-drop-title.png');
 

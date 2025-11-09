@@ -1,8 +1,9 @@
-import { describe, expect, it, vi } from 'vitest';
-import { createActor, fromPromise, waitFor } from 'xstate';
+import { describe, expect, it } from 'vitest';
+import { createActor, fromPromise } from 'xstate';
 
 import { appMachine } from './app.machine';
 import { getGameConfig } from './gameConfig';
+import { loadingMachine } from './Loading/loading.machine';
 
 import type { GameAssets, SpriteData } from './types/assets';
 
@@ -50,18 +51,18 @@ const createStubAssets = (): GameAssets => {
 };
 
 describe('appMachine loading status', () => {
-  it('updates loading status messages through the loading phases', async () => {
-    vi.useFakeTimers();
-
-    const fontsDeferred = createDeferred<[void, void]>();
-    const spritesDeferred = createDeferred<GameAssets>();
-    const audioDeferred = createDeferred<boolean>();
+  it('responds to loading status updates and completes on loader success', async () => {
+    const completionDeferred = createDeferred<{
+      status: { progress: number; message: string };
+      gameAssets: GameAssets;
+      audioLoaded: boolean;
+    }>();
 
     const loadingTestMachine = appMachine.provide({
       actors: {
-        loadFonts: fromPromise(() => fontsDeferred.promise),
-        loadSprites: fromPromise(() => spritesDeferred.promise),
-        loadAudio: fromPromise(() => audioDeferred.promise),
+        loadingMachine: fromPromise(
+          () => completionDeferred.promise
+        ) as unknown as typeof loadingMachine,
       },
     });
 
@@ -73,56 +74,28 @@ describe('appMachine loading status', () => {
 
     actor.start();
 
-    expect(
-      actor.getSnapshot().matches({ Loading: 'Loading Fonts' })
-    ).toBeTruthy();
+    expect(actor.getSnapshot().value).toBe('Loading');
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 0.1,
-      message: 'Loading fonts...',
+      progress: 0,
+      message: 'Initializing...',
     });
 
-    fontsDeferred.resolve([undefined, undefined]);
+    const assets = createStubAssets();
+
+    completionDeferred.resolve({
+      status: { progress: 1, message: 'Ready!' },
+      gameAssets: assets,
+      audioLoaded: true,
+    });
+
     await Promise.resolve();
-    expect(actor.getSnapshot().matches({ Loading: 'Loading Fonts' })).toBe(true);
 
-    vi.advanceTimersByTime(500);
-    await waitFor(actor, (state) =>
-      state.matches({ Loading: 'Loading Graphics' })
-    );
-    expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 0.35,
-      message: 'Loading graphics...',
-    });
-
-    spritesDeferred.resolve(createStubAssets());
-    await Promise.resolve();
-    vi.advanceTimersByTime(500);
-    await waitFor(actor, (state) =>
-      state.matches({ Loading: 'Loading Audio' })
-    );
-    expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 0.65,
-      message: 'Loading audio...',
-    });
-
-    audioDeferred.resolve(true);
-    await Promise.resolve();
-    vi.advanceTimersByTime(500);
-    await waitFor(actor, (state) => state.matches({ Loading: 'Loaded' }));
-    expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 1,
-      message: 'Ready!',
-    });
-
-    vi.advanceTimersByTime(1000);
-    await waitFor(actor, (state) => state.matches('Intro'));
-
-    expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 1,
-      message: 'Ready!',
-    });
+    expect(actor.getSnapshot().value).toBe('Intro');
+    expect(actor.getSnapshot().context.gameAssets).toEqual(assets);
+    expect(actor.getSnapshot().context.loadedAudio).toBe(true);
+    expect(actor.getSnapshot().context.loadingStatus.progress).toBe(1);
+    expect(actor.getSnapshot().context.loadingStatus.message).toBe('Ready!');
 
     actor.stop();
-    vi.useRealTimers();
   });
 });

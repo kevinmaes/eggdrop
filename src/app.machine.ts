@@ -1,9 +1,8 @@
 import { Howler } from 'howler';
 
 import { createActorContext } from '@xstate/react';
-import FontFaceObserver from 'fontfaceobserver';
 import { nanoid } from 'nanoid';
-import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
+import { assign, setup, type ActorRefFrom } from 'xstate';
 
 import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID, LOADING_MSG } from './constants';
 import { type GameConfig } from './gameConfig';
@@ -19,6 +18,7 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
+import { loadingMachine, type LoadingStatus } from './Loading/loading.machine';
 import { setAppActorRef } from './test-api';
 
 import type { ChefActorRef } from './Chef/chef.machine';
@@ -41,24 +41,7 @@ export const appMachine = setup({
       gameConfig: GameConfig;
       gameAssets: GameAssets | null;
       loadedAudio: boolean;
-      loadingGate: {
-        fonts: {
-          ready: boolean;
-          delay: boolean;
-        };
-        graphics: {
-          ready: boolean;
-          delay: boolean;
-        };
-        audio: {
-          ready: boolean;
-          delay: boolean;
-        };
-      };
-      loadingStatus: {
-        progress: number;
-        message: string;
-      };
+      loadingStatus: LoadingStatus;
       gameScoreData: {
         gameScore: number;
         eggsCaught: {
@@ -77,15 +60,19 @@ export const appMachine = setup({
         setAppActorRef(self as AppActorRef);
       }
     },
-    setLoadedGameAssets: assign({
-      gameAssets: (_, params: GameAssets) => params,
-    }),
-    setLoadedAudio: assign({
-      loadedAudio: () => true,
-    }),
     setLoadingStatus: assign({
-      loadingStatus: (_, params: { progress: number; message: string }) =>
-        params,
+      loadingStatus: (_, params: LoadingStatus) => params,
+    }),
+    syncLoadingStatus: assign({
+      loadingStatus: ({ event, context }) => {
+        const next =
+          (
+            event as {
+              snapshot?: { context?: { status?: LoadingStatus } };
+            }
+          ).snapshot?.context?.status ?? context.loadingStatus;
+        return next;
+      },
     }),
     toggleMute: assign({
       isMuted: ({ context }) => {
@@ -217,82 +204,7 @@ export const appMachine = setup({
     }),
   },
   actors: {
-    loadSprites: fromPromise<GameAssets>(async () => {
-      const henResult = await fetch('images/hen.sprite.json');
-      const henSpriteData = await henResult.json();
-      const eggResult = await fetch('images/egg.sprite.json');
-      const eggSpriteData = await eggResult.json();
-      const chickResult = await fetch('images/chick.sprite.json');
-      const chickSpriteData = await chickResult.json();
-      const chefResult = await fetch('images/chef.sprite.json');
-      const chefSpriteData = await chefResult.json();
-      const uiResult = await fetch('images/ui.sprite.json');
-      const uiSpriteData = await uiResult.json();
-
-      return {
-        ui: uiSpriteData,
-        hen: henSpriteData,
-        egg: eggSpriteData,
-        chick: chickSpriteData,
-        chef: chefSpriteData,
-      };
-    }),
-    loadFonts: fromPromise(() => {
-      const arcoFont = new FontFaceObserver('Arco');
-      const jetBrainsMonoFont = new FontFaceObserver('JetBrains Mono');
-      return Promise.all([arcoFont.load(), jetBrainsMonoFont.load()]);
-    }),
-    loadAudio: fromPromise(async () => {
-      const { sounds } = await import('./sounds');
-      const soundEntries = Object.values(sounds ?? {});
-
-      await Promise.all(
-        soundEntries.map((sound) => {
-          if (!sound || typeof sound.load !== 'function') {
-            return Promise.resolve();
-          }
-
-          return new Promise<void>((resolve, reject) => {
-            const handleLoad = () => {
-              cleanup();
-              resolve();
-            };
-            const handleError = (_id: number, err: unknown) => {
-              cleanup();
-              reject(
-                err instanceof Error
-                  ? err
-                  : new Error('Failed to load audio asset')
-              );
-            };
-            const cleanup = () => {
-              if (typeof sound.off === 'function') {
-                sound.off('load', handleLoad);
-                sound.off('loaderror', handleError);
-              }
-            };
-
-            if (typeof sound.on === 'function') {
-              sound.on('load', handleLoad);
-              sound.on('loaderror', handleError);
-            }
-
-            try {
-              sound.load();
-            } catch (error) {
-              cleanup();
-              reject(
-                error instanceof Error
-                  ? error
-                  : new Error('Failed to trigger audio load')
-              );
-            }
-          });
-        })
-      );
-
-      return true;
-    }),
+    loadingMachine,
     gameLevelMachine,
   },
 }).createMachine({
@@ -343,11 +255,6 @@ export const appMachine = setup({
       population: initialPopulation,
       gameAssets: null,
       loadedAudio: false,
-      loadingGate: {
-        fonts: { ready: false, delay: false },
-        graphics: { ready: false, delay: false },
-        audio: { ready: false, delay: false },
-      },
       loadingStatus: {
         progress: 0,
         message: LOADING_MSG,
@@ -372,172 +279,37 @@ export const appMachine = setup({
   entry: 'setActorRefForTests',
   states: {
     Loading: {
-      entry: {
-        type: 'setLoadingStatus',
-        params: {
+      entry: assign({
+        loadingStatus: () => ({
           progress: 0,
           message: 'Initializing...',
+        }),
+      }),
+      invoke: {
+        src: 'loadingMachine',
+        id: 'Loading machine',
+        input: () => ({}),
+        onSnapshot: [
+          {
+            actions: 'syncLoadingStatus',
+          },
+        ],
+        onDone: {
+          target: 'Intro',
+          actions: assign({
+            gameAssets: ({ event }) =>
+              (event as unknown as { output?: { gameAssets?: GameAssets } })
+                .output?.gameAssets ?? null,
+            loadedAudio: ({ event }) =>
+              (event as unknown as { output?: { audioLoaded?: boolean } })
+                .output?.audioLoaded ?? false,
+            loadingStatus: ({ event }) =>
+              (event as unknown as { output?: { status?: LoadingStatus } })
+                .output?.status ?? { progress: 1, message: 'Ready!' },
+          }),
         },
+        onError: 'Show Error',
       },
-      initial: 'Loading Fonts',
-      states: {
-        'Loading Fonts': {
-          entry: assign({
-            loadingStatus: () => ({
-              progress: 0.1,
-              message: 'Loading fonts...',
-            }),
-            loadingGate: ({ context }) => ({
-              ...context.loadingGate,
-              fonts: { ready: false, delay: false },
-            }),
-          }),
-          invoke: {
-            src: 'loadFonts',
-            onDone: {
-              actions: assign({
-                loadingGate: ({ context }) => ({
-                  ...context.loadingGate,
-                  fonts: { ...context.loadingGate.fonts, ready: true },
-                }),
-              }),
-            },
-            onError: `#${APP_ACTOR_ID}.Show Error`,
-          },
-          after: {
-            500: {
-              actions: assign({
-                loadingGate: ({ context }) => ({
-                  ...context.loadingGate,
-                  fonts: { ...context.loadingGate.fonts, delay: true },
-                }),
-              }),
-            },
-          },
-          always: [
-            {
-              target: 'Loading Graphics',
-              guard: ({ context }) =>
-                context.loadingGate.fonts.ready &&
-                context.loadingGate.fonts.delay,
-            },
-          ],
-        },
-        'Loading Graphics': {
-          entry: assign({
-            loadingStatus: ({ context }) => ({
-              progress: Math.max(context.loadingStatus.progress, 0.35),
-              message: 'Loading graphics...',
-            }),
-            loadingGate: ({ context }) => ({
-              ...context.loadingGate,
-              graphics: { ready: false, delay: false },
-            }),
-          }),
-          invoke: {
-            src: 'loadSprites',
-            onDone: {
-              actions: [
-                {
-                  type: 'setLoadedGameAssets',
-                  params: ({ event }) => event.output,
-                },
-                assign({
-                  loadingGate: ({ context }) => ({
-                    ...context.loadingGate,
-                    graphics: {
-                      ...context.loadingGate.graphics,
-                      ready: true,
-                    },
-                  }),
-                }),
-              ],
-            },
-            onError: `#${APP_ACTOR_ID}.Show Error`,
-          },
-          after: {
-            500: {
-              actions: assign({
-                loadingGate: ({ context }) => ({
-                  ...context.loadingGate,
-                  graphics: {
-                    ...context.loadingGate.graphics,
-                    delay: true,
-                  },
-                }),
-              }),
-            },
-          },
-          always: [
-            {
-              target: 'Loading Audio',
-              guard: ({ context }) =>
-                context.loadingGate.graphics.ready &&
-                context.loadingGate.graphics.delay,
-            },
-          ],
-        },
-        'Loading Audio': {
-          entry: assign({
-            loadingStatus: ({ context }) => ({
-              progress: Math.max(context.loadingStatus.progress, 0.65),
-              message: 'Loading audio...',
-            }),
-            loadingGate: ({ context }) => ({
-              ...context.loadingGate,
-              audio: { ready: false, delay: false },
-            }),
-          }),
-          invoke: {
-            src: 'loadAudio',
-            onDone: {
-              actions: [
-                { type: 'setLoadedAudio' },
-                assign({
-                  loadingGate: ({ context }) => ({
-                    ...context.loadingGate,
-                    audio: { ...context.loadingGate.audio, ready: true },
-                  }),
-                }),
-              ],
-            },
-            onError: `#${APP_ACTOR_ID}.Show Error`,
-          },
-          after: {
-            500: {
-              actions: assign({
-                loadingGate: ({ context }) => ({
-                  ...context.loadingGate,
-                  audio: { ...context.loadingGate.audio, delay: true },
-                }),
-              }),
-            },
-          },
-          always: [
-            {
-              target: 'Loaded',
-              guard: ({ context }) =>
-                context.loadingGate.audio.ready &&
-                context.loadingGate.audio.delay,
-            },
-          ],
-        },
-        Loaded: {
-          entry: assign({
-            loadingStatus: () => ({
-              progress: 1,
-              message: 'Ready!',
-            }),
-          }),
-          after: {
-            1000: 'Done',
-          },
-        },
-        Done: {
-          type: 'final',
-        },
-      },
-      onDone: 'Intro',
     },
     Intro: {
       on: {
