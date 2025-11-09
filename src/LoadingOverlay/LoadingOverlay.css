@@ -27,10 +27,12 @@
   position: relative;
   width: clamp(160px, 22vw, 240px);
   aspect-ratio: 3 / 4;
+  animation: loading-overlay-rock 3s ease-in-out infinite;
+  transform-origin: 50% 100%;
 }
 
-.loading-overlay__egg-shell,
-.loading-overlay__egg-fill {
+.loading-overlay__egg-fill-wrapper,
+.loading-overlay__egg-shell {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -39,8 +41,35 @@
   pointer-events: none;
 }
 
+.loading-overlay__egg-fill-wrapper {
+  transform-origin: 50% 100%;
+}
+
 .loading-overlay__egg-fill {
-  transition: clip-path 0.4s ease;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-overlay__egg-shell {
+  z-index: 1;
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-overlay__egg-container {
+    animation: none;
+  }
+}
+
+@keyframes loading-overlay-rock {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
 }
 
 .loading-overlay__percentage {
