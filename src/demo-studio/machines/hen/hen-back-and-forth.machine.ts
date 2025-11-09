@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { HEN_DEMO, STAGE } from '../../demo-constants';
+import { HEN_DEMO, DEMO_CANVAS } from '../../demo-constants';
 import { tweenActor } from '../../../tweenActor';
 import { isImageRef, type Direction, type Position } from '../../../types';
 
@@ -31,8 +31,8 @@ import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 // Configuration using shared constants
 const DEMO_CONFIG = {
-  stageWidth: STAGE.width,
-  stageHeight: STAGE.height,
+  stageWidth: DEMO_CANVAS.width,
+  stageHeight: DEMO_CANVAS.height,
   henWidth: 120,
   henHeight: 120,
   henY: HEN_DEMO.centerY,
@@ -67,6 +67,8 @@ const henBackAndForthMachine = setup({
     input: {
       id: string;
       startPosition: Position;
+      canvasWidth?: number;
+      canvasHeight?: number;
     };
     output: {
       henId: string;
@@ -83,6 +85,10 @@ const henBackAndForthMachine = setup({
       currentTweenDurationMS: number;
       currentTweenSpeed: number;
       currentTweenStartTime: number;
+      canvasWidth: number;
+      canvasHeight: number;
+      leftEdge: number;
+      rightEdge: number;
     };
     events: { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> };
   },
@@ -90,9 +96,9 @@ const henBackAndForthMachine = setup({
     'has reached destination': ({ context }) => {
       // Check if we've reached the target edge
       if (context.destination === 'right-edge') {
-        return context.position.x >= DEMO_CONFIG.rightEdge;
+        return context.position.x >= context.rightEdge;
       } else {
-        return context.position.x <= DEMO_CONFIG.leftEdge;
+        return context.position.x <= context.leftEdge;
       }
     },
   },
@@ -107,10 +113,10 @@ const henBackAndForthMachine = setup({
       // Alternate between left and right edges
       if (context.destination === 'right-edge') {
         // We're moving right, so target is the right edge
-        targetPosition.x = DEMO_CONFIG.rightEdge;
+        targetPosition.x = context.rightEdge;
       } else {
         // We're moving left, so target is the left edge
-        targetPosition.x = DEMO_CONFIG.leftEdge;
+        targetPosition.x = context.leftEdge;
       }
 
       return {
@@ -127,7 +133,7 @@ const henBackAndForthMachine = setup({
 
       // Calculate tween duration
       const absoluteXDistance = Math.abs(xDistance);
-      const totalDistance = DEMO_CONFIG.stageWidth;
+      const totalDistance = context.canvasWidth;
       const relativeDistance = absoluteXDistance / totalDistance;
 
       const duration =
@@ -187,6 +193,10 @@ const henBackAndForthMachine = setup({
   id: 'Hen-BackAndForth',
   context: ({ input }) => {
     const { destination, position, targetPosition } = getInitialState();
+    const canvasWidth = input.canvasWidth || DEMO_CONFIG.stageWidth;
+    const canvasHeight = input.canvasHeight || DEMO_CONFIG.stageHeight;
+    const leftEdge = 50; // EDGE_MARGIN
+    const rightEdge = canvasWidth - DEMO_CONFIG.henWidth - 50; // EDGE_MARGIN
 
     return {
       henRef: { current: null },
@@ -200,6 +210,10 @@ const henBackAndForthMachine = setup({
       currentTweenDirection: 0,
       movingDirection: 'none',
       currentTween: null,
+      canvasWidth,
+      canvasHeight,
+      leftEdge,
+      rightEdge,
     };
   },
   output: ({ context }) => ({

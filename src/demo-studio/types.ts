@@ -26,6 +26,8 @@ export interface ActorConfig {
   componentVersion: string;
   startPosition: Position;
   id?: string;
+  canvasWidth?: number;
+  canvasHeight?: number;
 }
 
 /**

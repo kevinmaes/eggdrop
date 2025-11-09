@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { createDemoActor } from './ActorFactory';
 import { ControlPanel } from './ControlPanel';
-import { demoConfigs } from './demo-configs';
+import { getDemoConfigs } from './demo-configs';
 import { DemoCanvas } from './DemoCanvas';
 import { DemoSelector } from './DemoSelector';
 
@@ -27,14 +27,16 @@ export function DemoStudio() {
   const [actorInstances, setActorInstances] = useState<DemoActorInstance[]>([]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [canvasWidth, setCanvasWidth] = useState<number>(1280);
 
-  // Load actors when demo selection changes
+  // Load actors when demo selection or canvas width changes
   useEffect(() => {
     if (!selectedDemoId) {
       setActorInstances([]);
       return;
     }
 
+    const demoConfigs = getDemoConfigs(canvasWidth, 720);
     const demoConfig = demoConfigs[selectedDemoId];
     if (!demoConfig) {
       console.error(`Demo config not found for: ${selectedDemoId}`);
@@ -72,7 +74,7 @@ export function DemoStudio() {
         instance.actor.stop();
       });
     };
-  }, [selectedDemoId]);
+  }, [selectedDemoId, canvasWidth]);
 
   const handlePlay = () => {
     // Future: Send play event to actors
@@ -89,6 +91,7 @@ export function DemoStudio() {
     setSelectedDemoId(null);
   };
 
+  const demoConfigs = getDemoConfigs(canvasWidth, 720);
   const currentDemoConfig = selectedDemoId ? demoConfigs[selectedDemoId] : null;
 
   return (
@@ -105,12 +108,55 @@ export function DemoStudio() {
         currentDemoId={selectedDemoId}
         onSelect={setSelectedDemoId}
       />
-      <ControlPanel
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onReset={handleReset}
-        isPlaying={isPlaying}
-      />
+      <div
+        style={{
+          display: 'flex',
+          gap: '1rem',
+          padding: '0.5rem 1rem',
+          backgroundColor: '#f0f0f0',
+          borderBottom: '1px solid #ccc',
+        }}
+      >
+        <ControlPanel
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onReset={handleReset}
+          isPlaying={isPlaying}
+        />
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>
+            Canvas width:
+          </span>
+          <button
+            onClick={() => setCanvasWidth(1280)}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: canvasWidth === 1280 ? '#4CAF50' : '#e0e0e0',
+              color: canvasWidth === 1280 ? 'white' : 'black',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: canvasWidth === 1280 ? 'bold' : 'normal',
+            }}
+          >
+            Full (1280)
+          </button>
+          <button
+            onClick={() => setCanvasWidth(640)}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: canvasWidth === 640 ? '#4CAF50' : '#e0e0e0',
+              color: canvasWidth === 640 ? 'white' : 'black',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: canvasWidth === 640 ? 'bold' : 'normal',
+            }}
+          >
+            Half (640)
+          </button>
+        </div>
+      </div>
       {isLoading && (
         <div
           style={{
@@ -127,6 +173,8 @@ export function DemoStudio() {
       )}
       {!isLoading && currentDemoConfig && (
         <DemoCanvas
+          width={canvasWidth}
+          height={720}
           background={currentDemoConfig.background}
           actorInstances={actorInstances}
         />

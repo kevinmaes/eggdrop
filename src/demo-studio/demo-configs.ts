@@ -1,4 +1,8 @@
-import { HEN_DEMO } from './demo-constants';
+import {
+  calculatePositioningForWidth,
+  ACTOR_SIZE,
+  DEMO_CANVAS,
+} from './demo-constants';
 import type { DemoConfig, DemoConfigs } from './types';
 
 /**
@@ -22,53 +26,78 @@ import type { DemoConfig, DemoConfigs } from './types';
  */
 
 /**
- * Hen Demos
- *
- * Progressive demonstrations of hen behavior, from simple to complex.
- * Order in this array determines the presentation sequence.
+ * Get hen demos with calculated positions for given canvas width
  */
-export const henDemos: DemoConfig[] = [
-  {
-    id: 'hen-idle',
-    title: 'Hen - Idle',
-    description: 'Stationary hen in idle state (simplest possible demo)',
-    actors: [
-      {
-        type: 'hen',
-        machineVersion: 'idle',
-        componentVersion: 'idle',
-        startPosition: { x: HEN_DEMO.centerX, y: HEN_DEMO.centerY },
-        id: 'hen-1',
-      },
-    ],
-    background: { type: 'solid', color: '#87CEEB' },
-  },
-  {
-    id: 'hen-back-and-forth',
-    title: 'Hen - Back and Forth',
-    description: 'Simple horizontal movement between left and right edges',
-    actors: [
-      {
-        type: 'hen',
-        machineVersion: 'back-and-forth',
-        componentVersion: 'back-and-forth',
-        startPosition: { x: HEN_DEMO.centerX, y: HEN_DEMO.centerY },
-        id: 'hen-1',
-      },
-    ],
-    background: { type: 'solid', color: '#87CEEB' },
-  },
-  // Future demos:
-  // - hen-with-pauses: Add stopping/pausing at each edge
-  // - hen-egg-laying: Add stationary egg-laying
-  // - hen-moving-eggs: Add moving egg-laying
-  // - hen-full: Production version with all features
-];
+export function getHenDemos(
+  canvasWidth: number = DEMO_CANVAS.width,
+  canvasHeight: number = DEMO_CANVAS.height
+): DemoConfig[] {
+  const henPos = calculatePositioningForWidth(
+    ACTOR_SIZE.hen.width,
+    ACTOR_SIZE.hen.height,
+    canvasWidth,
+    canvasHeight
+  );
+
+  return [
+    {
+      id: 'hen-idle',
+      title: 'Hen - Idle',
+      description: 'Stationary hen in idle state (simplest possible demo)',
+      actors: [
+        {
+          type: 'hen',
+          machineVersion: 'idle',
+          componentVersion: 'idle',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-1',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#87CEEB' },
+    },
+    {
+      id: 'hen-back-and-forth',
+      title: 'Hen - Back and Forth',
+      description: 'Simple horizontal movement between left and right edges',
+      actors: [
+        {
+          type: 'hen',
+          machineVersion: 'back-and-forth',
+          componentVersion: 'back-and-forth',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-1',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#87CEEB' },
+    },
+    // Future demos:
+    // - hen-with-pauses: Add stopping/pausing at each edge
+    // - hen-egg-laying: Add stationary egg-laying
+    // - hen-moving-eggs: Add moving egg-laying
+    // - hen-full: Production version with all features
+  ];
+}
 
 /**
- * All demos flattened into a single record for lookup
+ * Get all demo configs for given canvas dimensions
  */
-export const demoConfigs: DemoConfigs = {
-  ...Object.fromEntries(henDemos.map((d) => [d.id, d])),
-  // Future: Add chef, egg, and combined demo categories
-};
+export function getDemoConfigs(
+  canvasWidth: number = DEMO_CANVAS.width,
+  canvasHeight: number = DEMO_CANVAS.height
+): DemoConfigs {
+  const henDemos = getHenDemos(canvasWidth, canvasHeight);
+
+  return {
+    ...Object.fromEntries(henDemos.map((d) => [d.id, d])),
+    // Future: Add chef, egg, and combined demo categories
+  };
+}
+
+/**
+ * Default demo configs (for backwards compatibility)
+ */
+export const demoConfigs = getDemoConfigs();

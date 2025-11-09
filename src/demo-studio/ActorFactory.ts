@@ -23,7 +23,14 @@ import type { ActorConfig, DemoActorInstance } from './types';
 export async function createDemoActor(
   config: ActorConfig
 ): Promise<DemoActorInstance> {
-  const { type, machineVersion, componentVersion, startPosition } = config;
+  const {
+    type,
+    machineVersion,
+    componentVersion,
+    startPosition,
+    canvasWidth,
+    canvasHeight,
+  } = config;
 
   // Dynamically import the versioned machine
   const machineModule = await import(
@@ -52,11 +59,13 @@ export async function createDemoActor(
     );
   }
 
-  // Create the actor with the start position
+  // Create the actor with the start position and canvas dimensions
   const actor = createActor(machine, {
     input: {
       startPosition,
       id: config.id || `${type}-${Date.now()}`,
+      canvasWidth,
+      canvasHeight,
     },
   });
 

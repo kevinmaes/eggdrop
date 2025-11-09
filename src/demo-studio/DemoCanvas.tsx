@@ -1,6 +1,7 @@
 import { Stage, Layer } from 'react-konva';
 
 import { BackgroundRenderer } from './BackgroundRenderer';
+import { DEMO_CANVAS } from './demo-constants';
 
 import type { BackgroundConfig, DemoActorInstance } from './types';
 
@@ -18,11 +19,11 @@ interface DemoCanvasProps {
  * - Background layer (configurable)
  * - Actor layer (dynamically rendered components)
  *
- * Default size: 1280x720 (game resolution)
+ * Default size from DEMO_CANVAS (configurable in demo-constants.ts)
  */
 export function DemoCanvas({
-  width = 1280,
-  height = 720,
+  width = DEMO_CANVAS.width,
+  height = DEMO_CANVAS.height,
   background,
   actorInstances,
 }: DemoCanvasProps) {
