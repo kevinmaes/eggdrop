@@ -1,3 +1,4 @@
+import { HEN_DEMO } from './demo-constants';
 import type { DemoConfig, DemoConfigs } from './types';
 
 /**
@@ -28,6 +29,21 @@ import type { DemoConfig, DemoConfigs } from './types';
  */
 export const henDemos: DemoConfig[] = [
   {
+    id: 'hen-idle',
+    title: 'Hen - Idle',
+    description: 'Stationary hen in idle state (simplest possible demo)',
+    actors: [
+      {
+        type: 'hen',
+        machineVersion: 'idle',
+        componentVersion: 'idle',
+        startPosition: { x: HEN_DEMO.centerX, y: HEN_DEMO.centerY },
+        id: 'hen-1',
+      },
+    ],
+    background: { type: 'solid', color: '#87CEEB' },
+  },
+  {
     id: 'hen-back-and-forth',
     title: 'Hen - Back and Forth',
     description: 'Simple horizontal movement between left and right edges',
@@ -36,14 +52,14 @@ export const henDemos: DemoConfig[] = [
         type: 'hen',
         machineVersion: 'back-and-forth',
         componentVersion: 'back-and-forth',
-        startPosition: { x: 50, y: 200 },
+        startPosition: { x: HEN_DEMO.centerX, y: HEN_DEMO.centerY },
         id: 'hen-1',
       },
     ],
     background: { type: 'solid', color: '#87CEEB' },
   },
   // Future demos:
-  // - hen-with-stops: Add stopping behavior
+  // - hen-with-pauses: Add stopping/pausing at each edge
   // - hen-egg-laying: Add stationary egg-laying
   // - hen-moving-eggs: Add moving egg-laying
   // - hen-full: Production version with all features

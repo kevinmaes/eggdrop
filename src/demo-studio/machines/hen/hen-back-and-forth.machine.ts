@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
+import { HEN_DEMO, STAGE } from '../../demo-constants';
 import { tweenActor } from '../../../tweenActor';
 import { isImageRef, type Direction, type Position } from '../../../types';
 
@@ -28,13 +29,15 @@ import type { DoneActorEvent, OutputFrom } from 'xstate';
  * - Position management structure
  */
 
-// Hardcoded configuration (replaces GameConfig)
+// Configuration using shared constants
 const DEMO_CONFIG = {
-  stageWidth: 1280,
-  stageHeight: 720,
+  stageWidth: STAGE.width,
+  stageHeight: STAGE.height,
   henWidth: 120,
   henHeight: 120,
-  henY: 200, // Vertical position
+  henY: HEN_DEMO.centerY,
+  leftEdge: HEN_DEMO.leftEdge,
+  rightEdge: HEN_DEMO.rightEdge,
   entranceDelayMS: 500,
   // Movement parameters (replaces phenotype)
   baseTweenDurationSeconds: 3,
@@ -48,7 +51,7 @@ function getInitialState() {
   // Start from left side, move towards right
   const destination: Destination = 'right-edge';
   const initialPosition = {
-    x: 50, // Start near left edge
+    x: DEMO_CONFIG.leftEdge,
     y: DEMO_CONFIG.henY,
   };
 
@@ -87,12 +90,9 @@ const henBackAndForthMachine = setup({
     'has reached destination': ({ context }) => {
       // Check if we've reached the target edge
       if (context.destination === 'right-edge') {
-        return (
-          context.position.x >=
-          DEMO_CONFIG.stageWidth - DEMO_CONFIG.henWidth - 50
-        );
+        return context.position.x >= DEMO_CONFIG.rightEdge;
       } else {
-        return context.position.x <= 50;
+        return context.position.x <= DEMO_CONFIG.leftEdge;
       }
     },
   },
@@ -107,10 +107,10 @@ const henBackAndForthMachine = setup({
       // Alternate between left and right edges
       if (context.destination === 'right-edge') {
         // We're moving right, so target is the right edge
-        targetPosition.x = DEMO_CONFIG.stageWidth - DEMO_CONFIG.henWidth - 50;
+        targetPosition.x = DEMO_CONFIG.rightEdge;
       } else {
         // We're moving left, so target is the left edge
-        targetPosition.x = 50;
+        targetPosition.x = DEMO_CONFIG.leftEdge;
       }
 
       return {
