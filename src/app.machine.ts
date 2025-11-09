@@ -40,6 +40,21 @@ export const appMachine = setup({
       population: Hendividual[];
       gameConfig: GameConfig;
       gameAssets: GameAssets | null;
+      loadedAudio: boolean;
+      loadingGate: {
+        fonts: {
+          ready: boolean;
+          delay: boolean;
+        };
+        graphics: {
+          ready: boolean;
+          delay: boolean;
+        };
+        audio: {
+          ready: boolean;
+          delay: boolean;
+        };
+      };
       loadingStatus: {
         progress: number;
         message: string;
@@ -64,6 +79,9 @@ export const appMachine = setup({
     },
     setLoadedGameAssets: assign({
       gameAssets: (_, params: GameAssets) => params,
+    }),
+    setLoadedAudio: assign({
+      loadedAudio: () => true,
     }),
     setLoadingStatus: assign({
       loadingStatus: (_, params: { progress: number; message: string }) =>
@@ -224,6 +242,57 @@ export const appMachine = setup({
       const jetBrainsMonoFont = new FontFaceObserver('JetBrains Mono');
       return Promise.all([arcoFont.load(), jetBrainsMonoFont.load()]);
     }),
+    loadAudio: fromPromise(async () => {
+      const { sounds } = await import('./sounds');
+      const soundEntries = Object.values(sounds ?? {});
+
+      await Promise.all(
+        soundEntries.map((sound) => {
+          if (!sound || typeof sound.load !== 'function') {
+            return Promise.resolve();
+          }
+
+          return new Promise<void>((resolve, reject) => {
+            const handleLoad = () => {
+              cleanup();
+              resolve();
+            };
+            const handleError = (_id: number, err: unknown) => {
+              cleanup();
+              reject(
+                err instanceof Error
+                  ? err
+                  : new Error('Failed to load audio asset')
+              );
+            };
+            const cleanup = () => {
+              if (typeof sound.off === 'function') {
+                sound.off('load', handleLoad);
+                sound.off('loaderror', handleError);
+              }
+            };
+
+            if (typeof sound.on === 'function') {
+              sound.on('load', handleLoad);
+              sound.on('loaderror', handleError);
+            }
+
+            try {
+              sound.load();
+            } catch (error) {
+              cleanup();
+              reject(
+                error instanceof Error
+                  ? error
+                  : new Error('Failed to trigger audio load')
+              );
+            }
+          });
+        })
+      );
+
+      return true;
+    }),
     gameLevelMachine,
   },
 }).createMachine({
@@ -273,6 +342,12 @@ export const appMachine = setup({
       levelResultsHistory: [],
       population: initialPopulation,
       gameAssets: null,
+      loadedAudio: false,
+      loadingGate: {
+        fonts: { ready: false, delay: false },
+        graphics: { ready: false, delay: false },
+        audio: { ready: false, delay: false },
+      },
       loadingStatus: {
         progress: 0,
         message: LOADING_MSG,
@@ -307,59 +382,158 @@ export const appMachine = setup({
       initial: 'Loading Fonts',
       states: {
         'Loading Fonts': {
-          entry: {
-            type: 'setLoadingStatus',
-            params: {
-              progress: 0.35,
+          entry: assign({
+            loadingStatus: () => ({
+              progress: 0.1,
               message: 'Loading fonts...',
-            },
-          },
+            }),
+            loadingGate: ({ context }) => ({
+              ...context.loadingGate,
+              fonts: { ready: false, delay: false },
+            }),
+          }),
           invoke: {
-            onDone: 'Loading Sprites',
-            onError: `#${APP_ACTOR_ID}.Show Error`,
             src: 'loadFonts',
-          },
-        },
-        'Loading Sprites': {
-          entry: {
-            type: 'setLoadingStatus',
-            params: {
-              progress: 0.75,
-              message: 'Loading graphics...',
-            },
-          },
-          invoke: {
             onDone: {
-              target: 'Loaded',
-              actions: {
-                type: 'setLoadedGameAssets',
-                params: ({ event }) => event.output,
-              },
+              actions: assign({
+                loadingGate: ({ context }) => ({
+                  ...context.loadingGate,
+                  fonts: { ...context.loadingGate.fonts, ready: true },
+                }),
+              }),
             },
             onError: `#${APP_ACTOR_ID}.Show Error`,
-            src: 'loadSprites',
           },
+          after: {
+            500: {
+              actions: assign({
+                loadingGate: ({ context }) => ({
+                  ...context.loadingGate,
+                  fonts: { ...context.loadingGate.fonts, delay: true },
+                }),
+              }),
+            },
+          },
+          always: [
+            {
+              target: 'Loading Graphics',
+              guard: ({ context }) =>
+                context.loadingGate.fonts.ready &&
+                context.loadingGate.fonts.delay,
+            },
+          ],
+        },
+        'Loading Graphics': {
+          entry: assign({
+            loadingStatus: ({ context }) => ({
+              progress: Math.max(context.loadingStatus.progress, 0.35),
+              message: 'Loading graphics...',
+            }),
+            loadingGate: ({ context }) => ({
+              ...context.loadingGate,
+              graphics: { ready: false, delay: false },
+            }),
+          }),
+          invoke: {
+            src: 'loadSprites',
+            onDone: {
+              actions: [
+                {
+                  type: 'setLoadedGameAssets',
+                  params: ({ event }) => event.output,
+                },
+                assign({
+                  loadingGate: ({ context }) => ({
+                    ...context.loadingGate,
+                    graphics: {
+                      ...context.loadingGate.graphics,
+                      ready: true,
+                    },
+                  }),
+                }),
+              ],
+            },
+            onError: `#${APP_ACTOR_ID}.Show Error`,
+          },
+          after: {
+            500: {
+              actions: assign({
+                loadingGate: ({ context }) => ({
+                  ...context.loadingGate,
+                  graphics: {
+                    ...context.loadingGate.graphics,
+                    delay: true,
+                  },
+                }),
+              }),
+            },
+          },
+          always: [
+            {
+              target: 'Loading Audio',
+              guard: ({ context }) =>
+                context.loadingGate.graphics.ready &&
+                context.loadingGate.graphics.delay,
+            },
+          ],
+        },
+        'Loading Audio': {
+          entry: assign({
+            loadingStatus: ({ context }) => ({
+              progress: Math.max(context.loadingStatus.progress, 0.65),
+              message: 'Loading audio...',
+            }),
+            loadingGate: ({ context }) => ({
+              ...context.loadingGate,
+              audio: { ready: false, delay: false },
+            }),
+          }),
+          invoke: {
+            src: 'loadAudio',
+            onDone: {
+              actions: [
+                { type: 'setLoadedAudio' },
+                assign({
+                  loadingGate: ({ context }) => ({
+                    ...context.loadingGate,
+                    audio: { ...context.loadingGate.audio, ready: true },
+                  }),
+                }),
+              ],
+            },
+            onError: `#${APP_ACTOR_ID}.Show Error`,
+          },
+          after: {
+            500: {
+              actions: assign({
+                loadingGate: ({ context }) => ({
+                  ...context.loadingGate,
+                  audio: { ...context.loadingGate.audio, delay: true },
+                }),
+              }),
+            },
+          },
+          always: [
+            {
+              target: 'Loaded',
+              guard: ({ context }) =>
+                context.loadingGate.audio.ready &&
+                context.loadingGate.audio.delay,
+            },
+          ],
         },
         Loaded: {
-          entry: {
-            type: 'setLoadingStatus',
-            params: {
+          entry: assign({
+            loadingStatus: () => ({
               progress: 1,
               message: 'Ready!',
-            },
-          },
+            }),
+          }),
           after: {
             1000: 'Done',
           },
         },
         Done: {
-          entry: {
-            type: 'setLoadingStatus',
-            params: {
-              progress: 1,
-              message: 'Ready!',
-            },
-          },
           type: 'final',
         },
       },

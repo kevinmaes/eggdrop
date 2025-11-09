@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createActor, fromPromise, waitFor } from 'xstate';
 
 import { appMachine } from './app.machine';
@@ -51,13 +51,17 @@ const createStubAssets = (): GameAssets => {
 
 describe('appMachine loading status', () => {
   it('updates loading status messages through the loading phases', async () => {
+    vi.useFakeTimers();
+
     const fontsDeferred = createDeferred<[void, void]>();
     const spritesDeferred = createDeferred<GameAssets>();
+    const audioDeferred = createDeferred<boolean>();
 
     const loadingTestMachine = appMachine.provide({
       actors: {
         loadFonts: fromPromise(() => fontsDeferred.promise),
         loadSprites: fromPromise(() => spritesDeferred.promise),
+        loadAudio: fromPromise(() => audioDeferred.promise),
       },
     });
 
@@ -73,26 +77,44 @@ describe('appMachine loading status', () => {
       actor.getSnapshot().matches({ Loading: 'Loading Fonts' })
     ).toBeTruthy();
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 0.35,
+      progress: 0.1,
       message: 'Loading fonts...',
     });
 
     fontsDeferred.resolve([undefined, undefined]);
+    await Promise.resolve();
+    expect(actor.getSnapshot().matches({ Loading: 'Loading Fonts' })).toBe(true);
+
+    vi.advanceTimersByTime(500);
     await waitFor(actor, (state) =>
-      state.matches({ Loading: 'Loading Sprites' })
+      state.matches({ Loading: 'Loading Graphics' })
     );
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
-      progress: 0.75,
+      progress: 0.35,
       message: 'Loading graphics...',
     });
 
     spritesDeferred.resolve(createStubAssets());
+    await Promise.resolve();
+    vi.advanceTimersByTime(500);
+    await waitFor(actor, (state) =>
+      state.matches({ Loading: 'Loading Audio' })
+    );
+    expect(actor.getSnapshot().context.loadingStatus).toEqual({
+      progress: 0.65,
+      message: 'Loading audio...',
+    });
+
+    audioDeferred.resolve(true);
+    await Promise.resolve();
+    vi.advanceTimersByTime(500);
     await waitFor(actor, (state) => state.matches({ Loading: 'Loaded' }));
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
       progress: 1,
       message: 'Ready!',
     });
 
+    vi.advanceTimersByTime(1000);
     await waitFor(actor, (state) => state.matches('Intro'));
 
     expect(actor.getSnapshot().context.loadingStatus).toEqual({
@@ -101,5 +123,6 @@ describe('appMachine loading status', () => {
     });
 
     actor.stop();
+    vi.useRealTimers();
   });
 });
