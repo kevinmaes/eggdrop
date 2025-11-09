@@ -1,97 +1,59 @@
-import { useState, useEffect } from 'react';
+import { useMachine } from '@xstate/react';
 
-import { createDemoActor } from './ActorFactory';
 import { ControlPanel } from './ControlPanel';
 import { getDemoConfigs } from './demo-configs';
 import { DemoCanvas } from './DemoCanvas';
 import { DemoSelector } from './DemoSelector';
-
-import type { DemoActorInstance } from './types';
+import { demoStudioMachine } from './demoStudio.machine';
 
 /**
  * Main Demo Studio component
  *
- * Orchestrates the demo experience:
+ * Orchestrates the demo experience using a state machine:
  * 1. Demo selection via DemoSelector
- * 2. Dynamic actor loading via ActorFactory
+ * 2. Dynamic actor loading via state machine
  * 3. Canvas rendering via DemoCanvas
  * 4. Playback controls via ControlPanel
  *
  * Usage:
  * - Select a demo from the dropdown
  * - Actors are loaded and started automatically
- * - Use controls to manage playback (future implementation)
+ * - Use controls to manage playback
  */
 export function DemoStudio() {
-  const [selectedDemoId, setSelectedDemoId] = useState<string | null>(null);
-  const [actorInstances, setActorInstances] = useState<DemoActorInstance[]>([]);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [canvasWidth, setCanvasWidth] = useState<number>(1280);
+  const [state, send] = useMachine(demoStudioMachine);
 
-  // Load actors when demo selection or canvas width changes
-  useEffect(() => {
-    if (!selectedDemoId) {
-      setActorInstances([]);
-      return;
-    }
+  const {
+    selectedDemoId,
+    canvasWidth,
+    canvasHeight,
+    actorInstances,
+    isPlaying,
+  } = state.context;
 
-    const demoConfigs = getDemoConfigs(canvasWidth, 720);
-    const demoConfig = demoConfigs[selectedDemoId];
-    if (!demoConfig) {
-      console.error(`Demo config not found for: ${selectedDemoId}`);
-      return;
-    }
+  const isLoading = state.matches('Loading Actors');
 
-    let cancelled = false;
+  const handleSelectDemo = (demoId: string) => {
+    send({ type: 'Select demo', demoId });
+  };
 
-    const loadActors = async () => {
-      setIsLoading(true);
-      try {
-        const instances = await Promise.all(
-          demoConfig.actors.map((actorConfig) => createDemoActor(actorConfig))
-        );
-
-        if (!cancelled) {
-          setActorInstances(instances);
-          setIsPlaying(true);
-        }
-      } catch (error) {
-        console.error('Failed to load actors:', error);
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadActors();
-
-    // Cleanup: stop actors when unmounting or changing demos
-    return () => {
-      cancelled = true;
-      actorInstances.forEach((instance) => {
-        instance.actor.stop();
-      });
-    };
-  }, [selectedDemoId, canvasWidth]);
+  const handleCanvasWidthChange = (width: number) => {
+    send({ type: 'Change canvas width', width });
+  };
 
   const handlePlay = () => {
-    // Future: Send play event to actors
-    setIsPlaying(true);
+    send({ type: 'Play' });
   };
 
   const handlePause = () => {
-    // Future: Send pause event to actors
-    setIsPlaying(false);
+    send({ type: 'Pause' });
   };
 
   const handleReset = () => {
-    // Future: Reset actors to initial state
-    setSelectedDemoId(null);
+    send({ type: 'Reset' });
   };
 
-  const demoConfigs = getDemoConfigs(canvasWidth, 720);
+  const demoConfigs = getDemoConfigs(canvasWidth, canvasHeight);
   const currentDemoConfig = selectedDemoId ? demoConfigs[selectedDemoId] : null;
 
   return (
@@ -106,7 +68,7 @@ export function DemoStudio() {
       <DemoSelector
         demoConfigs={demoConfigs}
         currentDemoId={selectedDemoId}
-        onSelect={setSelectedDemoId}
+        onSelect={handleSelectDemo}
       />
       <div
         style={{
@@ -128,7 +90,7 @@ export function DemoStudio() {
             Canvas width:
           </span>
           <button
-            onClick={() => setCanvasWidth(1280)}
+            onClick={() => handleCanvasWidthChange(1280)}
             style={{
               padding: '0.5rem 1rem',
               backgroundColor: canvasWidth === 1280 ? '#4CAF50' : '#e0e0e0',
@@ -142,7 +104,7 @@ export function DemoStudio() {
             Full (1280)
           </button>
           <button
-            onClick={() => setCanvasWidth(640)}
+            onClick={() => handleCanvasWidthChange(640)}
             style={{
               padding: '0.5rem 1rem',
               backgroundColor: canvasWidth === 640 ? '#4CAF50' : '#e0e0e0',
