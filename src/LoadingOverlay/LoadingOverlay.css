@@ -23,9 +23,24 @@
   gap: 1.5rem;
 }
 
-.loading-overlay__egg {
+.loading-overlay__egg-container {
+  position: relative;
   width: clamp(160px, 22vw, 240px);
-  height: auto;
+  aspect-ratio: 3 / 4;
+}
+
+.loading-overlay__egg-shell,
+.loading-overlay__egg-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.loading-overlay__egg-fill {
+  transition: clip-path 0.4s ease;
 }
 
 .loading-overlay__percentage {

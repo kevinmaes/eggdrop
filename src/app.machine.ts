@@ -300,7 +300,7 @@ export const appMachine = setup({
       entry: {
         type: 'setLoadingStatus',
         params: {
-          progress: 0.1,
+          progress: 0,
           message: 'Initializing...',
         },
       },
