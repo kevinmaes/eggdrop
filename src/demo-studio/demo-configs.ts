@@ -1,7 +1,10 @@
-import type { DemoConfigs } from './types';
+import type { DemoConfig, DemoConfigs } from './types';
 
 /**
  * Demo Studio Configurations
+ *
+ * Demos are organized by category (hen, chef, egg, combined) in arrays.
+ * The array order determines the progression shown in the Demo Studio.
  *
  * Each demo config defines:
  * - actors: Array of actor configurations (type, versions, start position)
@@ -11,24 +14,45 @@ import type { DemoConfigs } from './types';
  * - inspector: Optional Stately Inspector integration settings
  *
  * Usage:
- * - Add new demos by adding entries to this object
- * - Reference demos by their key string (e.g., 'hen-simple-walk')
- * - Versioned machines and components are loaded dynamically by ActorFactory
+ * - Add new demos by adding entries to the category arrays
+ * - Reorder demos by rearranging array items
+ * - Insert intermediate demos anywhere in the progression
+ * - Machine/component versions use descriptive names, not numbers
+ */
+
+/**
+ * Hen Demos
  *
- * Example structure:
- * ```
- * 'demo-id': {
- *   actors: [{
- *     type: 'hen',
- *     machineVersion: 'v1-simple',
- *     componentVersion: 'v1-simple',
- *     startPosition: { x: 100, y: 200 }
- *   }],
- *   background: { type: 'solid', color: '#87CEEB' },
- *   title: 'Demo Title'
- * }
- * ```
+ * Progressive demonstrations of hen behavior, from simple to complex.
+ * Order in this array determines the presentation sequence.
+ */
+export const henDemos: DemoConfig[] = [
+  {
+    id: 'hen-back-and-forth',
+    title: 'Hen - Back and Forth',
+    description: 'Simple horizontal movement between left and right edges',
+    actors: [
+      {
+        type: 'hen',
+        machineVersion: 'back-and-forth',
+        componentVersion: 'back-and-forth',
+        startPosition: { x: 50, y: 200 },
+        id: 'hen-1',
+      },
+    ],
+    background: { type: 'solid', color: '#87CEEB' },
+  },
+  // Future demos:
+  // - hen-with-stops: Add stopping behavior
+  // - hen-egg-laying: Add stationary egg-laying
+  // - hen-moving-eggs: Add moving egg-laying
+  // - hen-full: Production version with all features
+];
+
+/**
+ * All demos flattened into a single record for lookup
  */
 export const demoConfigs: DemoConfigs = {
-  // Demos will be added here in future commits
+  ...Object.fromEntries(henDemos.map((d) => [d.id, d])),
+  // Future: Add chef, egg, and combined demo categories
 };

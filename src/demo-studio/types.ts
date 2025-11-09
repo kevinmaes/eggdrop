@@ -32,6 +32,7 @@ export interface ActorConfig {
  * Configuration for a complete demo
  */
 export interface DemoConfig {
+  id: string;
   actors: ActorConfig[];
   background: BackgroundConfig;
   title: string;
