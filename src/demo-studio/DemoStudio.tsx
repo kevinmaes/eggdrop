@@ -1,7 +1,9 @@
 import { useMachine } from '@xstate/react';
 
+import { InspectorPlaceholder } from './components/InspectorPlaceholder';
 import { ControlPanel } from './ControlPanel';
 import { getDemoConfigs } from './demo-configs';
+import { PRESENTATION_LAYOUT } from './demo-constants';
 import { DemoCanvas } from './DemoCanvas';
 import { DemoSelector } from './DemoSelector';
 import { demoStudioMachine } from './demoStudio.machine';
@@ -25,6 +27,7 @@ export function DemoStudio() {
 
   const {
     selectedDemoId,
+    layoutMode,
     canvasWidth,
     canvasHeight,
     actorInstances,
@@ -68,13 +71,20 @@ export function DemoStudio() {
   const demoConfigs = getDemoConfigs(canvasWidth, canvasHeight);
   const currentDemoConfig = selectedDemoId ? demoConfigs[selectedDemoId] : null;
 
+  const isPresentationMode = layoutMode !== null;
+  const containerDimensions = isPresentationMode
+    ? PRESENTATION_LAYOUT.total
+    : { width: '100vw', height: '100vh' };
+
   return (
     <div
       style={{
-        width: '100vw',
-        height: '100vh',
+        width: containerDimensions.width,
+        height: containerDimensions.height,
         display: 'flex',
         flexDirection: 'column',
+        margin: isPresentationMode ? '0 auto' : '0',
+        backgroundColor: isPresentationMode ? '#000' : 'transparent',
       }}
     >
       <DemoSelector
@@ -160,6 +170,70 @@ export function DemoStudio() {
             const hasHeadless = headlessActors.length > 0;
             const hasVisual = visualActors.length > 0;
 
+            if (isPresentationMode && layoutMode) {
+              const isHorizontalSplit = layoutMode === 'horizontal-split';
+              const isVerticalSplitTop = layoutMode === 'vertical-split-top';
+              const isVerticalSplitBottom =
+                layoutMode === 'vertical-split-bottom';
+
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: isHorizontalSplit ? 'row' : 'column',
+                    flex: 1,
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* For vertical-split-bottom, inspector comes first */}
+                  {isVerticalSplitBottom && (
+                    <InspectorPlaceholder layoutMode={layoutMode} />
+                  )}
+
+                  {/* Demo Canvas */}
+                  {hasVisual && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#000',
+                      }}
+                    >
+                      <DemoCanvas
+                        width={canvasWidth}
+                        height={canvasHeight}
+                        background={currentDemoConfig.background}
+                        actorInstances={visualActors}
+                      />
+                    </div>
+                  )}
+
+                  {/* For horizontal-split and vertical-split-top, inspector comes after */}
+                  {(isHorizontalSplit || isVerticalSplitTop) && (
+                    <InspectorPlaceholder layoutMode={layoutMode} />
+                  )}
+
+                  {/* Headless actors (hidden, for inspector only) */}
+                  {hasHeadless && (
+                    <div style={{ display: 'none' }}>
+                      {headlessActors.map((instance, index) => {
+                        const { Component, config } = instance;
+                        return (
+                          <Component
+                            key={config.id || `actor-${index}`}
+                            config={config}
+                            shouldStart={isPlaying}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // Non-presentation mode (original layout)
             return (
               <div
                 style={{
@@ -182,7 +256,7 @@ export function DemoStudio() {
                   >
                     <DemoCanvas
                       width={canvasWidth}
-                      height={720}
+                      height={canvasHeight}
                       background={currentDemoConfig.background}
                       actorInstances={visualActors}
                     />

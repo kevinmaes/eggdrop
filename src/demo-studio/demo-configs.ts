@@ -57,6 +57,7 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
+      layoutMode: 'vertical-split-top',
     },
     {
       id: 'hen-back-and-forth',
@@ -84,6 +85,7 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
+      layoutMode: 'vertical-split-top',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -103,6 +105,7 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
+      layoutMode: 'vertical-split-top',
     },
     // Future demos:
     // - hen-egg-laying: Add stationary egg-laying

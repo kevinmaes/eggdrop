@@ -1,3 +1,4 @@
+import type { LayoutMode } from './demo-constants';
 import type { ActorRefFrom } from 'xstate';
 
 /**
@@ -39,6 +40,7 @@ export interface DemoConfig {
   background: BackgroundConfig;
   title: string;
   description?: string;
+  layoutMode?: LayoutMode;
   inspector?: {
     visible: boolean;
     position?: 'left' | 'right' | 'bottom';

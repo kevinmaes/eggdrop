@@ -2,8 +2,9 @@ import { assign, fromPromise, setup } from 'xstate';
 
 import { createDemoActor } from './ActorFactory';
 import { getDemoConfigs } from './demo-configs';
-import { DEMO_CANVAS } from './demo-constants';
+import { DEMO_CANVAS, getCanvasDimensionsForLayout } from './demo-constants';
 
+import type { LayoutMode } from './demo-constants';
 import type { DemoActorInstance, DemoConfig } from './types';
 
 /**
@@ -42,6 +43,7 @@ export const demoStudioMachine = setup({
   types: {
     context: {} as {
       selectedDemoId: string | null;
+      layoutMode: LayoutMode | null;
       canvasWidth: number;
       canvasHeight: number;
       actorInstances: DemoActorInstance[];
@@ -75,6 +77,27 @@ export const demoStudioMachine = setup({
     setSelectedDemoId: assign({
       selectedDemoId: (_, params: string) => params,
     }),
+    setLayoutModeAndDimensions: assign(({ context, event }) => {
+      const demoId = 'demoId' in event ? event.demoId : context.selectedDemoId;
+      if (!demoId) return {};
+
+      const demoConfigs = getDemoConfigs(
+        context.canvasWidth,
+        context.canvasHeight
+      );
+      const demoConfig = demoConfigs[demoId];
+      if (!demoConfig) return {};
+
+      const layoutMode = demoConfig.layoutMode || null;
+      if (!layoutMode) return { layoutMode };
+
+      const dimensions = getCanvasDimensionsForLayout(layoutMode);
+      return {
+        layoutMode,
+        canvasWidth: dimensions.width,
+        canvasHeight: dimensions.height,
+      };
+    }),
     setCanvasWidth: assign({
       canvasWidth: (_, params: number) => params,
     }),
@@ -98,6 +121,7 @@ export const demoStudioMachine = setup({
     }),
     resetDemo: assign({
       selectedDemoId: null,
+      layoutMode: null,
       actorInstances: [],
       isPlaying: false,
       error: null,
@@ -114,6 +138,7 @@ export const demoStudioMachine = setup({
   id: 'DemoStudio',
   context: {
     selectedDemoId: null,
+    layoutMode: null,
     canvasWidth: DEMO_CANVAS.width,
     canvasHeight: DEMO_CANVAS.height,
     actorInstances: [],
@@ -128,10 +153,13 @@ export const demoStudioMachine = setup({
         'Select demo': {
           guard: 'demo config exists',
           target: 'Loading Actors',
-          actions: {
-            type: 'setSelectedDemoId',
-            params: ({ event }) => event.demoId,
-          },
+          actions: [
+            {
+              type: 'setSelectedDemoId',
+              params: ({ event }) => event.demoId,
+            },
+            'setLayoutModeAndDimensions',
+          ],
         },
       },
     },
@@ -189,6 +217,7 @@ export const demoStudioMachine = setup({
               type: 'setSelectedDemoId',
               params: ({ event }) => event.demoId,
             },
+            'setLayoutModeAndDimensions',
           ],
         },
         'Change canvas width': {
@@ -219,6 +248,7 @@ export const demoStudioMachine = setup({
               type: 'setSelectedDemoId',
               params: ({ event }) => event.demoId,
             },
+            'setLayoutModeAndDimensions',
           ],
         },
         'Change canvas width': {
@@ -261,6 +291,7 @@ export const demoStudioMachine = setup({
               type: 'setSelectedDemoId',
               params: ({ event }) => event.demoId,
             },
+            'setLayoutModeAndDimensions',
           ],
         },
         'Change canvas width': {
@@ -281,10 +312,13 @@ export const demoStudioMachine = setup({
         'Select demo': {
           guard: 'demo config exists',
           target: 'Loading Actors',
-          actions: {
-            type: 'setSelectedDemoId',
-            params: ({ event }) => event.demoId,
-          },
+          actions: [
+            {
+              type: 'setSelectedDemoId',
+              params: ({ event }) => event.demoId,
+            },
+            'setLayoutModeAndDimensions',
+          ],
         },
         Reset: {
           target: 'Idle',
