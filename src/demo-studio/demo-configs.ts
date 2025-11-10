@@ -73,10 +73,6 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
-      inspector: {
-        visible: true,
-        position: 'right',
-      },
     },
     {
       id: 'hen-with-pauses',
@@ -95,6 +91,28 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
+    },
+    {
+      id: 'hen-back-and-forth-headless',
+      title: 'Hen - Back and Forth (Headless Inspector)',
+      description:
+        'Headless text-based version for inspector visualization without Konva',
+      actors: [
+        {
+          type: 'hen',
+          machineVersion: 'back-and-forth',
+          componentVersion: 'back-and-forth-headless',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-1',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#1e1e1e' },
+      inspector: {
+        visible: true,
+        position: 'right',
+      },
     },
     // Future demos:
     // - hen-egg-laying: Add stationary egg-laying

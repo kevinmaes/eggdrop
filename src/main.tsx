@@ -23,24 +23,24 @@ const isDemoStudio = pathname === '/demo-studio';
 const isInspectorPOC = pathname === '/inspector-poc';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  isInspectorPOC ? (
-    // Inspector POC runs without StrictMode to avoid double mounting issues
-    <InspectorProofOfConcept />
+  isInspectorPOC || isDemoStudio ? (
+    // Inspector POC and Demo Studio run without StrictMode to avoid double mounting issues with inspector
+    isDemoStudio ? (
+      <DemoStudio />
+    ) : (
+      <InspectorProofOfConcept />
+    )
   ) : (
     <React.StrictMode>
-      {isDemoStudio ? (
-        <DemoStudio />
-      ) : (
-        <AppActorContext.Provider
-          options={{
-            input: {
-              gameConfig,
-            },
-          }}
-        >
-          <App />
-        </AppActorContext.Provider>
-      )}
+      <AppActorContext.Provider
+        options={{
+          input: {
+            gameConfig,
+          },
+        }}
+      >
+        <App />
+      </AppActorContext.Provider>
     </React.StrictMode>
   )
 );

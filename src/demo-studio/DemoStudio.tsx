@@ -134,12 +134,30 @@ export function DemoStudio() {
         </div>
       )}
       {!isLoading && currentDemoConfig && (
-        <DemoCanvas
-          width={canvasWidth}
-          height={720}
-          background={currentDemoConfig.background}
-          actorInstances={actorInstances}
-        />
+        <>
+          {/* Check if this is a headless demo */}
+          {actorInstances.length > 0 &&
+          actorInstances[0].config.componentVersion?.includes('headless') ? (
+            // Render headless component directly (bypasses Konva canvas)
+            actorInstances.map((instance, index) => {
+              const { Component, config } = instance;
+              return (
+                <Component
+                  key={config.id || `actor-${index}`}
+                  config={config}
+                />
+              );
+            })
+          ) : (
+            // Render normal Konva-based demos
+            <DemoCanvas
+              width={canvasWidth}
+              height={720}
+              background={currentDemoConfig.background}
+              actorInstances={actorInstances}
+            />
+          )}
+        </>
       )}
       {!isLoading && !currentDemoConfig && (
         <div

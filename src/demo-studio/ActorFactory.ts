@@ -1,7 +1,5 @@
 import { createActor } from 'xstate';
 
-import { inspect } from './utils/inspector';
-
 import type { ActorConfig, DemoActorInstance } from './types';
 
 /**
@@ -12,7 +10,6 @@ import type { ActorConfig, DemoActorInstance } from './types';
  * - Component: `./components/{type}/{type}-{componentVersion}.tsx`
  *
  * @param config - Actor configuration specifying type and versions
- * @param enableInspector - Whether to enable Stately Inspector for this actor
  * @returns Promise resolving to actor instance, component, and config
  *
  * @example
@@ -21,11 +18,10 @@ import type { ActorConfig, DemoActorInstance } from './types';
  *   machineVersion: 'v1-simple',
  *   componentVersion: 'v1-simple',
  *   startPosition: { x: 100, y: 200 }
- * }, true);
+ * });
  */
 export async function createDemoActor(
-  config: ActorConfig,
-  enableInspector = false
+  config: ActorConfig
 ): Promise<DemoActorInstance> {
   const {
     type,
@@ -63,24 +59,28 @@ export async function createDemoActor(
     );
   }
 
-  // Create the actor with the start position and canvas dimensions
-  console.log(
-    `[ActorFactory] Creating actor for ${type}-${machineVersion}, inspector enabled: ${enableInspector}`
-  );
+  // Check if this is a headless component (creates its own actor)
+  const isHeadless = componentVersion.includes('headless');
 
-  const actor = createActor(machine, {
-    input: {
-      startPosition,
-      id: config.id || `${type}-${Date.now()}`,
-      canvasWidth,
-      canvasHeight,
-    },
-    inspect: enableInspector ? inspect : undefined,
-  });
+  // Headless components create their own actors with inspector integration
+  // So we create a dummy actor that won't be used
+  let actor;
+  if (isHeadless) {
+    // Create a minimal dummy actor just to satisfy the type
+    actor = null as any;
+  } else {
+    // Create the actor with the start position and canvas dimensions
+    actor = createActor(machine, {
+      input: {
+        startPosition,
+        id: config.id || `${type}-${Date.now()}`,
+        canvasWidth,
+        canvasHeight,
+      },
+    });
 
-  console.log('[ActorFactory] Actor created, starting...', actor);
-  actor.start();
-  console.log('[ActorFactory] Actor started');
+    actor.start();
+  }
 
   return {
     actor,
