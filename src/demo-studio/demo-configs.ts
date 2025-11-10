@@ -73,6 +73,10 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
+      inspector: {
+        visible: true,
+        position: 'right',
+      },
     },
     {
       id: 'hen-with-pauses',

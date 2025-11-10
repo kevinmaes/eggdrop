@@ -1,5 +1,7 @@
 import { createActor } from 'xstate';
 
+import { inspect } from './utils/inspector';
+
 import type { ActorConfig, DemoActorInstance } from './types';
 
 /**
@@ -10,6 +12,7 @@ import type { ActorConfig, DemoActorInstance } from './types';
  * - Component: `./components/{type}/{type}-{componentVersion}.tsx`
  *
  * @param config - Actor configuration specifying type and versions
+ * @param enableInspector - Whether to enable Stately Inspector for this actor
  * @returns Promise resolving to actor instance, component, and config
  *
  * @example
@@ -18,10 +21,11 @@ import type { ActorConfig, DemoActorInstance } from './types';
  *   machineVersion: 'v1-simple',
  *   componentVersion: 'v1-simple',
  *   startPosition: { x: 100, y: 200 }
- * });
+ * }, true);
  */
 export async function createDemoActor(
-  config: ActorConfig
+  config: ActorConfig,
+  enableInspector = false
 ): Promise<DemoActorInstance> {
   const {
     type,
@@ -60,6 +64,10 @@ export async function createDemoActor(
   }
 
   // Create the actor with the start position and canvas dimensions
+  console.log(
+    `[ActorFactory] Creating actor for ${type}-${machineVersion}, inspector enabled: ${enableInspector}`
+  );
+
   const actor = createActor(machine, {
     input: {
       startPosition,
@@ -67,9 +75,12 @@ export async function createDemoActor(
       canvasWidth,
       canvasHeight,
     },
+    inspect: enableInspector ? inspect : undefined,
   });
 
+  console.log('[ActorFactory] Actor created, starting...', actor);
   actor.start();
+  console.log('[ActorFactory] Actor started');
 
   return {
     actor,

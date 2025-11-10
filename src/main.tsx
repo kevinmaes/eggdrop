@@ -8,6 +8,7 @@ import { AppActorContext } from './app.machine';
 import './index.css';
 import App from './App.tsx';
 import { DemoStudio } from './demo-studio/DemoStudio.tsx';
+import { InspectorProofOfConcept } from './demo-studio/InspectorProofOfConcept.tsx';
 import { getGameConfig } from './gameConfig.ts';
 
 // Get the game config which will be passed down to the app
@@ -16,23 +17,30 @@ const gameConfig = getGameConfig();
 // Set the audio mute according to the isMuted value
 Howler.mute(gameConfig.isMuted);
 
-// Simple routing: Check if we're in demo studio mode
-const isDemoStudio = window.location.pathname === '/demo-studio';
+// Simple routing: Check which route we're on
+const pathname = window.location.pathname;
+const isDemoStudio = pathname === '/demo-studio';
+const isInspectorPOC = pathname === '/inspector-poc';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    {isDemoStudio ? (
-      <DemoStudio />
-    ) : (
-      <AppActorContext.Provider
-        options={{
-          input: {
-            gameConfig,
-          },
-        }}
-      >
-        <App />
-      </AppActorContext.Provider>
-    )}
-  </React.StrictMode>
+  isInspectorPOC ? (
+    // Inspector POC runs without StrictMode to avoid double mounting issues
+    <InspectorProofOfConcept />
+  ) : (
+    <React.StrictMode>
+      {isDemoStudio ? (
+        <DemoStudio />
+      ) : (
+        <AppActorContext.Provider
+          options={{
+            input: {
+              gameConfig,
+            },
+          }}
+        >
+          <App />
+        </AppActorContext.Provider>
+      )}
+    </React.StrictMode>
+  )
 );

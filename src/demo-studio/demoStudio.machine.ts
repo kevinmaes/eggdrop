@@ -31,8 +31,11 @@ const loadDemoActorsActor = fromPromise(
   }: {
     input: { demoConfig: DemoConfig };
   }): Promise<DemoActorInstance[]> => {
+    const enableInspector = input.demoConfig.inspector?.visible ?? false;
     const instances = await Promise.all(
-      input.demoConfig.actors.map((actorConfig) => createDemoActor(actorConfig))
+      input.demoConfig.actors.map((actorConfig) =>
+        createDemoActor(actorConfig, enableInspector)
+      )
     );
     return instances;
   }
