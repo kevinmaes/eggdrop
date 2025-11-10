@@ -44,32 +44,32 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-stage-wrapper">
       <div className="app-stage-container">
-      <Stage
-        width={gameConfig.stage.width}
-        height={gameConfig.stage.height}
-        style={{
-          border: '5px solid',
-          borderColor: '#98aace',
-        }}
-      >
-        {/* Background graphics layer - static (no events) */}
-        <BackgroundLayer />
-        {children}
-        {/* Dynamic App UI Layer */}
-        <Layer>
-          <MuteButton />
-          {showGameIntro && (
-            // Play button
-            <TransparentButton
-              x={0.5 * gameConfig.stage.width - 500}
-              y={0.5 * gameConfig.stage.height - 250}
-              width={1000}
-              height={500}
-              onClick={() => appActorRef.send({ type: 'Play' })}
-            />
-          )}
-        </Layer>
-      </Stage>
+        <Stage
+          width={gameConfig.stage.width}
+          height={gameConfig.stage.height}
+          style={{
+            border: '5px solid',
+            borderColor: '#98aace',
+          }}
+        >
+          {/* Background graphics layer - static (no events) */}
+          <BackgroundLayer />
+          {children}
+          {/* Dynamic App UI Layer */}
+          <Layer>
+            <MuteButton />
+            {showGameIntro && (
+              // Play button
+              <TransparentButton
+                x={0.5 * gameConfig.stage.width - 500}
+                y={0.5 * gameConfig.stage.height - 250}
+                width={1000}
+                height={500}
+                onClick={() => appActorRef.send({ type: 'Play' })}
+              />
+            )}
+          </Layer>
+        </Stage>
       </div>
       <DevPanel />
     </div>
