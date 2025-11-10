@@ -7,6 +7,10 @@ export type LoadingStatus = {
   message: string;
 };
 
+const MIN_PHASE_DISPLAY_MS = 500;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const loadingMachine = setup({
   types: {} as {
     context: {
@@ -50,7 +54,7 @@ export const loadingMachine = setup({
           await Promise.all([arcoFont.load(), jetBrainsMonoFont.load()]);
         })(),
         // Minimum display time
-        new Promise((resolve) => setTimeout(resolve, 500)),
+        wait(MIN_PHASE_DISPLAY_MS),
       ]);
     }),
     loadGraphics: fromPromise<GameAssets>(async () => {
@@ -83,7 +87,7 @@ export const loadingMachine = setup({
           };
         })(),
         // Minimum display time
-        new Promise((resolve) => setTimeout(resolve, 500)),
+        wait(MIN_PHASE_DISPLAY_MS),
       ]);
       return assets;
     }),
@@ -140,7 +144,7 @@ export const loadingMachine = setup({
           );
         })(),
         // Minimum display time
-        new Promise((resolve) => setTimeout(resolve, 500)),
+        wait(MIN_PHASE_DISPLAY_MS),
       ]);
     }),
   },
