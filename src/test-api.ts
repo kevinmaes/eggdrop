@@ -211,23 +211,33 @@ function createTestAPI(state: TestAPIState): TestAPI {
       return chefAndEggsData;
     },
     areThereMoreEggs: () => {
-      const gameLevelActorRef = state.app?.system.get(
-        GAME_LEVEL_ACTOR_ID
-      ) as GameLevelActorRef;
+      const gameLevelActorRef = state.app?.system.get(GAME_LEVEL_ACTOR_ID) as
+        | GameLevelActorRef
+        | undefined;
+      if (!gameLevelActorRef) {
+        return false;
+      }
       const { eggActorRefs } = gameLevelActorRef.getSnapshot().context;
       return eggActorRefs.length > 0;
     },
     getGameLevelScore: () => {
-      return (
-        state.app?.system.get(GAME_LEVEL_ACTOR_ID).getSnapshot().context
-          .scoreData.levelScore ?? 0
-      );
+      const gameLevelActorRef = state.app?.system.get(GAME_LEVEL_ACTOR_ID) as
+        | GameLevelActorRef
+        | undefined;
+      if (!gameLevelActorRef) {
+        return 0;
+      }
+      return gameLevelActorRef.getSnapshot().context.scoreData.levelScore ?? 0;
     },
     getGameLevelRemainingTime: () => {
-      return (
-        state.app?.system.get(GAME_LEVEL_ACTOR_ID).getSnapshot().getSnapshot()
-          .context.remainingMS ?? 0
-      );
+      const gameLevelActorRef = state.app?.system.get(GAME_LEVEL_ACTOR_ID) as
+        | GameLevelActorRef
+        | undefined;
+      if (!gameLevelActorRef) {
+        return 0;
+      }
+      const snapshot = gameLevelActorRef.getSnapshot();
+      return snapshot.getSnapshot().context.remainingMS ?? 0;
     },
     findEggInHistory: (id: string) => {
       const eggHistoryEntry = state.eggHistory.get(id);
