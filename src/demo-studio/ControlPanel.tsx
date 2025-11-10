@@ -1,6 +1,5 @@
 interface ControlPanelProps {
   onPlay?: () => void;
-  onPause?: () => void;
   onReset?: () => void;
   isPlaying?: boolean;
 }
@@ -9,13 +8,11 @@ interface ControlPanelProps {
  * Control panel for demo playback
  *
  * Provides basic controls for managing demo state:
- * - Play: Start or resume actor animations
- * - Pause: Pause actor animations
- * - Reset: Reset demo to initial state
+ * - Play: Start actor animations
+ * - Reset: Reload current demo from beginning
  */
 export function ControlPanel({
   onPlay,
-  onPause,
   onReset,
   isPlaying = false,
 }: ControlPanelProps) {
@@ -42,17 +39,6 @@ export function ControlPanel({
         Play
       </button>
       <button
-        onClick={onPause}
-        disabled={!isPlaying}
-        style={{
-          padding: '0.5rem 1rem',
-          cursor: !isPlaying ? 'not-allowed' : 'pointer',
-          opacity: !isPlaying ? 0.5 : 1,
-        }}
-      >
-        Pause
-      </button>
-      <button
         onClick={onReset}
         style={{
           padding: '0.5rem 1rem',
@@ -68,7 +54,7 @@ export function ControlPanel({
           color: '#666',
         }}
       >
-        {isPlaying ? 'Playing' : 'Paused'}
+        {isPlaying ? 'Playing' : 'Ready'}
       </span>
     </div>
   );

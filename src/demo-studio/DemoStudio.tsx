@@ -32,6 +32,7 @@ export function DemoStudio() {
     canvasHeight,
     actorInstances,
     isPlaying,
+    resetCount,
   } = state.context;
 
   const isLoading = state.matches('Loading Actors');
@@ -58,10 +59,6 @@ export function DemoStudio() {
 
     // Update isPlaying state to start headless actors
     send({ type: 'Play' });
-  };
-
-  const handlePause = () => {
-    send({ type: 'Pause' });
   };
 
   const handleReset = () => {
@@ -103,7 +100,6 @@ export function DemoStudio() {
       >
         <ControlPanel
           onPlay={handlePlay}
-          onPause={handlePause}
           onReset={handleReset}
           isPlaying={isPlaying}
         />
@@ -205,6 +201,7 @@ export function DemoStudio() {
                         height={canvasHeight}
                         background={currentDemoConfig.background}
                         actorInstances={visualActors}
+                        resetCount={resetCount}
                       />
                     </div>
                   )}
@@ -221,7 +218,7 @@ export function DemoStudio() {
                         const { Component, config } = instance;
                         return (
                           <Component
-                            key={config.id || `actor-${index}`}
+                            key={`${config.id || `actor-${index}`}-${resetCount}`}
                             config={config}
                             shouldStart={isPlaying}
                           />
@@ -259,6 +256,7 @@ export function DemoStudio() {
                       height={canvasHeight}
                       background={currentDemoConfig.background}
                       actorInstances={visualActors}
+                      resetCount={resetCount}
                     />
                   </div>
                 )}
@@ -277,7 +275,7 @@ export function DemoStudio() {
                       const { Component, config } = instance;
                       return (
                         <Component
-                          key={config.id || `actor-${index}`}
+                          key={`${config.id || `actor-${index}`}-${resetCount}`}
                           config={config}
                           shouldStart={isPlaying}
                         />

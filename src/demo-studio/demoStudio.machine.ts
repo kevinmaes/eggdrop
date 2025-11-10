@@ -49,12 +49,12 @@ export const demoStudioMachine = setup({
       actorInstances: DemoActorInstance[];
       isPlaying: boolean;
       error: string | null;
+      resetCount: number;
     },
     events: {} as
       | { type: 'Select demo'; demoId: string }
       | { type: 'Change canvas width'; width: number }
       | { type: 'Play' }
-      | { type: 'Pause' }
       | { type: 'Reset' },
   },
   actors: {
@@ -110,26 +110,22 @@ export const demoStudioMachine = setup({
     setPlaying: assign({
       isPlaying: true,
     }),
-    setPaused: assign({
-      isPlaying: false,
-    }),
     setError: assign({
       error: (_, params: string) => params,
     }),
     clearError: assign({
       error: null,
     }),
-    resetDemo: assign({
-      selectedDemoId: null,
-      layoutMode: null,
-      actorInstances: [],
+    resetPlaybackState: assign(({ context }) => ({
       isPlaying: false,
-      error: null,
-    }),
+      resetCount: context.resetCount + 1,
+    })),
     cleanupActors: ({ context }) => {
-      // Stop all running actors
+      // Stop all running actors (only if they exist)
       context.actorInstances.forEach((instance) => {
-        instance.actor.stop();
+        if (instance.actor) {
+          instance.actor.stop();
+        }
       });
     },
   },
@@ -144,6 +140,7 @@ export const demoStudioMachine = setup({
     actorInstances: [],
     isPlaying: false,
     error: null,
+    resetCount: 0,
   },
   initial: 'Idle',
   states: {
@@ -213,6 +210,7 @@ export const demoStudioMachine = setup({
           target: 'Loading Actors',
           actions: [
             'cleanupActors',
+            'resetPlaybackState',
             {
               type: 'setSelectedDemoId',
               params: ({ event }) => event.demoId,
@@ -232,8 +230,9 @@ export const demoStudioMachine = setup({
           ],
         },
         Reset: {
-          target: 'Idle',
-          actions: ['cleanupActors', 'resetDemo'],
+          guard: 'has demo selected',
+          target: 'Loading Actors',
+          actions: ['cleanupActors', 'resetPlaybackState'],
         },
       },
     },
@@ -244,6 +243,7 @@ export const demoStudioMachine = setup({
           target: 'Loading Actors',
           actions: [
             'cleanupActors',
+            'resetPlaybackState',
             {
               type: 'setSelectedDemoId',
               params: ({ event }) => event.demoId,
@@ -262,48 +262,10 @@ export const demoStudioMachine = setup({
             },
           ],
         },
-        Pause: {
-          target: 'Demo Paused',
-          actions: 'setPaused',
-        },
         Reset: {
-          target: 'Idle',
-          actions: ['cleanupActors', 'resetDemo'],
-        },
-      },
-    },
-    'Demo Paused': {
-      on: {
-        Play: {
-          target: 'Demo Playing',
-          actions: 'setPlaying',
-        },
-        Reset: {
-          target: 'Idle',
-          actions: ['cleanupActors', 'resetDemo'],
-        },
-        'Select demo': {
-          guard: 'demo config exists',
-          target: 'Loading Actors',
-          actions: [
-            'cleanupActors',
-            {
-              type: 'setSelectedDemoId',
-              params: ({ event }) => event.demoId,
-            },
-            'setLayoutModeAndDimensions',
-          ],
-        },
-        'Change canvas width': {
           guard: 'has demo selected',
           target: 'Loading Actors',
-          actions: [
-            'cleanupActors',
-            {
-              type: 'setCanvasWidth',
-              params: ({ event }) => event.width,
-            },
-          ],
+          actions: ['cleanupActors', 'resetPlaybackState'],
         },
       },
     },
@@ -322,7 +284,7 @@ export const demoStudioMachine = setup({
         },
         Reset: {
           target: 'Idle',
-          actions: 'resetDemo',
+          actions: 'clearError',
         },
       },
     },

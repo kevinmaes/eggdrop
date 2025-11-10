@@ -43,21 +43,32 @@ export function getHenDemos(
   return [
     {
       id: 'hen-idle',
-      title: 'Hen - Idle',
-      description: 'Stationary hen in idle state (simplest possible demo)',
+      title: 'Hen - Idle (Dual Mode)',
+      description:
+        'Stationary hen in idle state (simplest possible demo) - Visual demo + headless inspector',
       actors: [
         {
           type: 'hen',
           machineVersion: 'idle',
           componentVersion: 'idle',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
-          id: 'hen-1',
+          id: 'hen-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'hen',
+          machineVersion: 'idle-headless',
+          componentVersion: 'idle-headless',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-headless',
           canvasWidth,
           canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
+      inspector: { visible: true, position: 'right' },
     },
     {
       id: 'hen-back-and-forth',
@@ -90,22 +101,32 @@ export function getHenDemos(
     },
     {
       id: 'hen-with-pauses',
-      title: 'Hen - With Pauses',
+      title: 'Hen - With Pauses (Dual Mode)',
       description:
-        'Back and forth movement with 1-2 second pauses at each destination',
+        'Back and forth movement with 1-2 second pauses - Visual demo + headless inspector',
       actors: [
         {
           type: 'hen',
           machineVersion: 'with-pauses',
           componentVersion: 'with-pauses',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
-          id: 'hen-1',
+          id: 'hen-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'hen',
+          machineVersion: 'with-pauses-headless',
+          componentVersion: 'with-pauses-headless',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-headless',
           canvasWidth,
           canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
+      inspector: { visible: true, position: 'right' },
     },
     // Future demos:
     // - hen-egg-laying: Add stationary egg-laying

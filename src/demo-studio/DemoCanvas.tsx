@@ -10,6 +10,7 @@ interface DemoCanvasProps {
   height?: number;
   background: BackgroundConfig;
   actorInstances: DemoActorInstance[];
+  resetCount?: number;
 }
 
 /**
@@ -26,6 +27,7 @@ export function DemoCanvas({
   height = DEMO_CANVAS.height,
   background,
   actorInstances,
+  resetCount = 0,
 }: DemoCanvasProps) {
   return (
     <div
@@ -42,7 +44,10 @@ export function DemoCanvas({
           {actorInstances.map((instance, index) => {
             const { Component, actor, config } = instance;
             return (
-              <Component key={config.id || `actor-${index}`} actorRef={actor} />
+              <Component
+                key={`${config.id || `actor-${index}`}-${resetCount}`}
+                actorRef={actor}
+              />
             );
           })}
         </Layer>
