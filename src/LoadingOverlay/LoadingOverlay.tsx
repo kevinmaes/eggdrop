@@ -16,6 +16,11 @@ type LoadingOverlayProps = {
 const SVG_WIDTH = 120;
 const SVG_HEIGHT = 160;
 const WAVE_SEGMENTS = 10;
+const FILL_INSET_X = 1.2;
+const FILL_INSET_Y = 1.6;
+const FILL_SCALE_X = (SVG_WIDTH - FILL_INSET_X * 2) / SVG_WIDTH;
+const FILL_SCALE_Y = (SVG_HEIGHT - FILL_INSET_Y * 2) / SVG_HEIGHT;
+const FILL_TRANSFORM = `translate(${FILL_INSET_X}, ${FILL_INSET_Y}) scale(${FILL_SCALE_X} ${FILL_SCALE_Y})`;
 
 function clampProgress(progress: number): number {
   if (Number.isNaN(progress)) {
@@ -173,6 +178,7 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
                 clipPath={`url(#${clipPathId})`}
                 width={SVG_WIDTH}
                 height={SVG_HEIGHT}
+                transform={FILL_TRANSFORM}
                 preserveAspectRatio="xMidYMid slice"
               />
             </svg>
