@@ -16,15 +16,13 @@ const gameConfig = getGameConfig();
 Howler.mute(gameConfig.isMuted);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <AppActorContext.Provider
-      options={{
-        input: {
-          gameConfig,
-        },
-      }}
-    >
-      <App />
-    </AppActorContext.Provider>
-  </React.StrictMode>
+  <AppActorContext.Provider
+    options={{
+      input: {
+        gameConfig,
+      },
+    }}
+  >
+    <App />
+  </AppActorContext.Provider>
 );

@@ -216,6 +216,11 @@ export const loadingMachine = setup({
       audio: createGateState(),
     },
   },
+  output: ({ context }) => ({
+    status: context.status,
+    gameAssets: context.gameAssets as GameAssets,
+    audioLoaded: context.audioLoaded,
+  }),
   initial: 'Loading Fonts',
   states: {
     'Loading Fonts': {
@@ -366,11 +371,6 @@ export const loadingMachine = setup({
     },
     Done: {
       type: 'final',
-      output: ({ context }) => ({
-        status: context.status,
-        gameAssets: context.gameAssets as GameAssets,
-        audioLoaded: context.audioLoaded,
-      }),
     },
     Failure: {
       type: 'final',

@@ -17,6 +17,7 @@ export function IntroImage() {
     <Group
       x={0.5 * gameConfig.stage.width - 500}
       y={0.5 * gameConfig.stage.height - 250}
+      listening={false}
     >
       {/* Border stroke */}
       <Rect

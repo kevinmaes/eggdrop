@@ -297,15 +297,10 @@ export const appMachine = setup({
         onDone: {
           target: 'Intro',
           actions: assign({
-            gameAssets: ({ event }) =>
-              (event as unknown as { output?: { gameAssets?: GameAssets } })
-                .output?.gameAssets ?? null,
-            loadedAudio: ({ event }) =>
-              (event as unknown as { output?: { audioLoaded?: boolean } })
-                .output?.audioLoaded ?? false,
+            gameAssets: ({ event }) => event.output?.gameAssets ?? null,
+            loadedAudio: ({ event }) => event.output?.audioLoaded ?? false,
             loadingStatus: ({ event }) =>
-              (event as unknown as { output?: { status?: LoadingStatus } })
-                .output?.status ?? { progress: 1, message: 'Ready!' },
+              event.output?.status ?? { progress: 1, message: 'Ready!' },
           }),
         },
         onError: 'Show Error',
