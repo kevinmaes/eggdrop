@@ -271,18 +271,13 @@ export const loadingMachine = setup({
     'Loading Graphics': {
       entry: [
         'resetGraphicsGate',
-        assign({
-          status: ({ context }) => ({
-            progress: Math.max(context.status.progress, 0.35),
-            message: context.status.message,
-          }),
-        }),
-        assign({
-          status: () => ({
+        {
+          type: 'updateStatus',
+          params: {
             progress: 0.35,
             message: 'Loading graphics...',
-          }),
-        }),
+          },
+        },
       ],
       invoke: {
         src: 'loadGraphics',
@@ -308,12 +303,13 @@ export const loadingMachine = setup({
             context.gates.graphics.ready && context.gates.graphics.delay,
           target: 'Loading Audio',
           actions: [
-            assign({
-              status: () => ({
+            {
+              type: 'updateStatus',
+              params: {
                 progress: 0.65,
                 message: 'Loading audio...',
-              }),
-            }),
+              },
+            },
           ],
         },
       ],
