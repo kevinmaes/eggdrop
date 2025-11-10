@@ -84,7 +84,7 @@ const henWithPausesHeadlessMachine = setup({
       rightEdge: number;
       pauseDuration: number;
     };
-    events: never;
+    events: { type: 'Start' };
   },
   guards: {
     'has reached destination': ({ context }) => {
@@ -201,8 +201,13 @@ const henWithPausesHeadlessMachine = setup({
       pauseDuration: DEMO_CONFIG.minPauseDurationMS,
     };
   },
-  initial: 'Offscreen',
+  initial: 'Ready',
   states: {
+    Ready: {
+      on: {
+        Start: 'Offscreen',
+      },
+    },
     Offscreen: {
       after: {
         [DEMO_CONFIG.entranceDelayMS]: {

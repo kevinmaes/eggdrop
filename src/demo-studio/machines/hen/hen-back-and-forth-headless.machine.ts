@@ -80,7 +80,7 @@ const henBackAndForthHeadlessMachine = setup({
       leftEdge: number;
       rightEdge: number;
     };
-    events: never;
+    events: { type: 'Start' };
   },
   guards: {
     'has reached destination': ({ context }) => {
@@ -189,8 +189,13 @@ const henBackAndForthHeadlessMachine = setup({
       rightEdge,
     };
   },
-  initial: 'Offscreen',
+  initial: 'Ready',
   states: {
+    Ready: {
+      on: {
+        Start: 'Offscreen',
+      },
+    },
     Offscreen: {
       after: {
         [DEMO_CONFIG.entranceDelayMS]: {

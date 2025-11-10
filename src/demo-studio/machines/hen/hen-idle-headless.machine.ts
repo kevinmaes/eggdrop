@@ -38,7 +38,7 @@ const henIdleHeadlessMachine = setup({
       canvasWidth: number;
       canvasHeight: number;
     };
-    events: never;
+    events: { type: 'Start' };
   },
 }).createMachine({
   id: 'hen-idle-headless',
@@ -54,8 +54,13 @@ const henIdleHeadlessMachine = setup({
   output: ({ context }) => ({
     henId: context.id,
   }),
-  initial: 'Idle',
+  initial: 'Ready',
   states: {
+    Ready: {
+      on: {
+        Start: 'Idle',
+      },
+    },
     Idle: {
       // Hen stays in this state forever
       // No transitions, no actions, just idle

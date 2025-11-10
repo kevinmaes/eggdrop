@@ -220,6 +220,7 @@ export function DemoStudio() {
                           <Component
                             key={`${config.id || `actor-${index}`}-${resetCount}`}
                             config={config}
+                            resetCount={resetCount}
                             shouldStart={isPlaying}
                           />
                         );
@@ -277,6 +278,7 @@ export function DemoStudio() {
                         <Component
                           key={`${config.id || `actor-${index}`}-${resetCount}`}
                           config={config}
+                          resetCount={resetCount}
                           shouldStart={isPlaying}
                         />
                       );

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { createBrowserInspector } from '@statelyai/inspect';
 import { createActor } from 'xstate';
 
 import henWithPausesHeadlessMachine from '../../machines/hen/hen-with-pauses-headless.machine';
+import { getSharedInspector } from '../../utils/shared-inspector';
 
 import type { ActorConfig } from '../../types';
 
@@ -15,63 +15,64 @@ import type { ActorConfig } from '../../types';
  *
  * Purpose: Enable recording inspector visualization for pause behavior demo.
  *
- * IMPORTANT: This component creates its OWN inspector instance and actor,
- * ignoring the actor passed from ActorFactory to avoid the shared inspector.
+ * IMPORTANT: This component uses the shared inspector instance to ensure
+ * that switching demos updates the same inspector window.
  */
 
 interface HenWithPausesHeadlessProps {
   config: ActorConfig;
+  resetCount?: number;
   shouldStart?: boolean;
 }
 
 function HenWithPausesHeadless({
   config,
+  resetCount = 0,
   shouldStart = false,
 }: HenWithPausesHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
   const [hasStarted, setHasStarted] = useState(false);
-  const inspectorRef = useRef<ReturnType<typeof createBrowserInspector> | null>(
-    null
-  );
 
-  // Create actor and inspector once
+  // Create actor with shared inspector - start actor but don't trigger animation yet
   useEffect(() => {
-    // Create the inspector instance once
-    if (!inspectorRef.current) {
-      inspectorRef.current = createBrowserInspector();
-    }
+    // Get the shared inspector instance
+    const { inspect } = getSharedInspector();
 
-    const { inspect } = inspectorRef.current;
-
-    // Create our own actor with inspection (but don't start it yet)
+    // Create and immediately start the actor with inspection
+    // Starting the actor connects it to inspector, machine starts in Ready state
+    // Include resetCount in ID to ensure each instance is unique for inspector
+    const actorId = `${config.id || 'hen-with-pauses-headless'}-${resetCount}`;
     const newActor = createActor(henWithPausesHeadlessMachine as any, {
+      id: actorId, // XState actor ID for inspector
       input: {
         startPosition: config.startPosition,
-        id: config.id || `hen-with-pauses-headless-${Date.now()}`,
+        id: actorId,
         canvasWidth: config.canvasWidth,
         canvasHeight: config.canvasHeight,
       },
       inspect,
     });
 
-    // DO NOT subscribe yet - subscribing may auto-start the actor
+    // Start actor to connect to inspector
+    newActor.start();
+
+    // Subscribe to state changes
+    newActor.subscribe((snapshot: any) => {
+      setState(snapshot);
+    });
+
     setActor(newActor);
 
     return () => {
       newActor.stop();
     };
-  }, [config]);
+  }, [config, resetCount]);
 
-  // Start actor when shouldStart becomes true
+  // Send Start event when shouldStart becomes true
   useEffect(() => {
     if (shouldStart && actor && !hasStarted) {
-      // Start actor first
-      actor.start();
-      // Then subscribe to state changes
-      actor.subscribe((snapshot: any) => {
-        setState(snapshot);
-      });
+      actor.send({ type: 'Start' });
       setHasStarted(true);
     }
   }, [shouldStart, actor, hasStarted]);

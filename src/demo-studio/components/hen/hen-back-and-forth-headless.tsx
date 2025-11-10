@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { createBrowserInspector } from '@statelyai/inspect';
 import { createActor } from 'xstate';
 
 import henBackAndForthHeadlessMachine from '../../machines/hen/hen-back-and-forth-headless.machine';
+import { getSharedInspector } from '../../utils/shared-inspector';
 
 import type { ActorConfig } from '../../types';
 
@@ -17,63 +17,64 @@ import type { ActorConfig } from '../../types';
  * Purpose: Enable recording inspector visualization alongside visual demo
  * for presentation purposes.
  *
- * IMPORTANT: This component creates its OWN inspector instance and actor,
- * ignoring the actor passed from ActorFactory to avoid the shared inspector.
+ * IMPORTANT: This component uses the shared inspector instance to ensure
+ * that switching demos updates the same inspector window.
  */
 
 interface HenBackAndForthHeadlessProps {
   config: ActorConfig;
+  resetCount?: number;
   shouldStart?: boolean;
 }
 
 function HenBackAndForthHeadless({
   config,
+  resetCount = 0,
   shouldStart = false,
 }: HenBackAndForthHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
   const [hasStarted, setHasStarted] = useState(false);
-  const inspectorRef = useRef<ReturnType<typeof createBrowserInspector> | null>(
-    null
-  );
 
-  // Create actor and inspector once
+  // Create actor with shared inspector - start actor but don't trigger animation yet
   useEffect(() => {
-    // Create the inspector instance once
-    if (!inspectorRef.current) {
-      inspectorRef.current = createBrowserInspector();
-    }
+    // Get the shared inspector instance
+    const { inspect } = getSharedInspector();
 
-    const { inspect } = inspectorRef.current;
-
-    // Create our own actor with inspection (but don't start it yet)
+    // Create and immediately start the actor with inspection
+    // Starting the actor connects it to inspector but machine stays in initial state
+    // Include resetCount in ID to ensure each instance is unique for inspector
+    const actorId = `${config.id || 'hen-back-and-forth-headless'}-${resetCount}`;
     const newActor = createActor(henBackAndForthHeadlessMachine as any, {
+      id: actorId, // XState actor ID for inspector
       input: {
         startPosition: config.startPosition,
-        id: config.id || `hen-headless-${Date.now()}`,
+        id: actorId,
         canvasWidth: config.canvasWidth,
         canvasHeight: config.canvasHeight,
       },
       inspect,
     });
 
-    // DO NOT subscribe yet - subscribing may auto-start the actor
+    // Start actor to connect to inspector
+    newActor.start();
+
+    // Subscribe to state changes
+    newActor.subscribe((snapshot: any) => {
+      setState(snapshot);
+    });
+
     setActor(newActor);
 
     return () => {
       newActor.stop();
     };
-  }, [config]);
+  }, [config, resetCount]);
 
-  // Start actor when shouldStart becomes true
+  // Send Start event when shouldStart becomes true
   useEffect(() => {
     if (shouldStart && actor && !hasStarted) {
-      // Start actor first
-      actor.start();
-      // Then subscribe to state changes
-      actor.subscribe((snapshot: any) => {
-        setState(snapshot);
-      });
+      actor.send({ type: 'Start' });
       setHasStarted(true);
     }
   }, [shouldStart, actor, hasStarted]);
