@@ -13,8 +13,8 @@
  *
  * Optimized layouts for 1920x1080 presentation recording:
  * - horizontal-split: Demo on left (25%), Inspector on right (75%)
- * - vertical-split-top: Demo on top (20%), Inspector on bottom (80%)
- * - vertical-split-bottom: Inspector on top (80%), Demo on bottom (20%)
+ * - vertical-split-top: Demo on top (10%), Inspector on bottom (90%)
+ * - vertical-split-bottom: Inspector on top (90%), Demo on bottom (10%)
  */
 export type LayoutMode =
   | 'horizontal-split'
@@ -25,8 +25,8 @@ export type LayoutMode =
  * Presentation Layout Dimensions
  *
  * Full presentation canvas is always 1920x1080
- * - 20% height = 216px
- * - 80% height = 864px
+ * - 10% height = 108px
+ * - 90% height = 972px
  */
 export const PRESENTATION_LAYOUT = {
   total: {
@@ -38,12 +38,12 @@ export const PRESENTATION_LAYOUT = {
     inspector: { width: 1440, height: 1080 },
   },
   verticalSplitTop: {
-    demo: { width: 1920, height: 216 },
-    inspector: { width: 1920, height: 864 },
+    demo: { width: 1920, height: 108 },
+    inspector: { width: 1920, height: 972 },
   },
   verticalSplitBottom: {
-    inspector: { width: 1920, height: 864 },
-    demo: { width: 1920, height: 216 },
+    inspector: { width: 1920, height: 972 },
+    demo: { width: 1920, height: 108 },
   },
 } as const;
 
