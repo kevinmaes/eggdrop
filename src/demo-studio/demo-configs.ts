@@ -56,7 +56,7 @@ export function getHenDemos(
           canvasHeight,
         },
       ],
-      background: { type: 'solid', color: '#87CEEB' },
+      background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
     },
     {
@@ -84,7 +84,7 @@ export function getHenDemos(
           canvasHeight,
         },
       ],
-      background: { type: 'solid', color: '#87CEEB' },
+      background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
       inspector: { visible: true, position: 'right' },
     },
@@ -104,7 +104,7 @@ export function getHenDemos(
           canvasHeight,
         },
       ],
-      background: { type: 'solid', color: '#87CEEB' },
+      background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
     },
     // Future demos:
