@@ -169,14 +169,17 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
               }}
             >
               <defs>
-                <clipPath id={eggClipId}>
+                <clipPath id={eggClipId} clipPathUnits="userSpaceOnUse">
                   <g transform={`scale(${SVG_WIDTH / 30}, ${SVG_HEIGHT / 40})`}>
                     <g transform="scale(1,-1) translate(0,-40)">
-                      <path d={EGG_SHELL_PATH} transform="translate(2.8,-0.8)" />
+                      <path
+                        d={EGG_SHELL_PATH}
+                        transform="translate(2.8,-0.8)"
+                      />
                     </g>
                   </g>
                 </clipPath>
-                <clipPath id={waveClipId}>
+                <clipPath id={waveClipId} clipPathUnits="userSpaceOnUse">
                   <path d={wavePath} />
                 </clipPath>
                 <linearGradient
