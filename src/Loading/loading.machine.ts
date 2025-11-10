@@ -1,6 +1,6 @@
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
-import { type GameAssets } from '../types/assets';
+import { ASSET_MANIFEST, type GameAssets } from '../types/assets';
 
 export type LoadingStatus = {
   progress: number;
@@ -49,8 +49,10 @@ export const loadingMachine = setup({
           const { default: FontFaceObserver } = await import(
             /* webpackChunkName: "fontfaceobserver" */ 'fontfaceobserver'
           );
-          const arcoFont = new FontFaceObserver('Arco');
-          const jetBrainsMonoFont = new FontFaceObserver('JetBrains Mono');
+          const arcoFont = new FontFaceObserver(ASSET_MANIFEST.fonts.arco);
+          const jetBrainsMonoFont = new FontFaceObserver(
+            ASSET_MANIFEST.fonts.jetBrainsMono
+          );
           await Promise.all([arcoFont.load(), jetBrainsMonoFont.load()]);
         })(),
         // Minimum display time
@@ -63,11 +65,11 @@ export const loadingMachine = setup({
         (async () => {
           const [henResult, eggResult, chickResult, chefResult, uiResult] =
             await Promise.all([
-              fetch('images/hen.sprite.json'),
-              fetch('images/egg.sprite.json'),
-              fetch('images/chick.sprite.json'),
-              fetch('images/chef.sprite.json'),
-              fetch('images/ui.sprite.json'),
+              fetch(ASSET_MANIFEST.sprites.hen),
+              fetch(ASSET_MANIFEST.sprites.egg),
+              fetch(ASSET_MANIFEST.sprites.chick),
+              fetch(ASSET_MANIFEST.sprites.chef),
+              fetch(ASSET_MANIFEST.sprites.ui),
             ]);
 
           const [hen, egg, chick, chef, ui] = await Promise.all([
