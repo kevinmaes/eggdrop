@@ -5,8 +5,8 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import henIdleMachine from '../../machines/hen/hen-idle.machine';
 import henSpriteData from '../../../../public/images/hen.sprite.json';
+import henIdleMachine from '../../machines/hen/hen-idle.machine';
 
 import type { ActorRefFrom } from 'xstate';
 

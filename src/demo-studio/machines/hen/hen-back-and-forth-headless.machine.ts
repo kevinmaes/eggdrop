@@ -2,8 +2,8 @@ import { assign, setup } from 'xstate';
 
 import { HEN_DEMO, DEMO_CANVAS } from '../../demo-constants';
 import { tweenActorHeadless } from '../../tweenActorHeadless';
-import type { Direction, Position } from '../../../types';
 
+import type { Direction, Position } from '../../../types';
 import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 /**

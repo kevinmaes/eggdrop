@@ -2,6 +2,7 @@ import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
 import { HEN_DEMO } from '../../demo-constants';
+
 import type { Position } from '../../../types';
 
 /**

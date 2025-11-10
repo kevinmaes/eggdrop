@@ -41,31 +41,29 @@ export function BackgroundRenderer({
     );
   }
 
-  if (config.type === 'gradient') {
-    // Future: Implement gradient rendering
-    const startColor = config.gradient?.start || '#ffffff';
-    const endColor = config.gradient?.end || '#cccccc';
-    const direction = config.gradient?.direction || 'vertical';
-
-    const gradientStart =
-      direction === 'vertical' ? { x: 0, y: 0 } : { x: 0, y: 0 };
-    const gradientEnd =
-      direction === 'vertical' ? { x: 0, y: height } : { x: width, y: 0 };
-
-    return (
-      <Layer>
-        <Rect
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          fillLinearGradientStartPoint={gradientStart}
-          fillLinearGradientEndPoint={gradientEnd}
-          fillLinearGradientColorStops={[0, startColor, 1, endColor]}
-        />
-      </Layer>
-    );
-  }
+  // Future: Implement gradient rendering
+  // if (config.type === 'gradient') {
+  //   const startColor = config.gradient?.start || '#ffffff';
+  //   const endColor = config.gradient?.end || '#cccccc';
+  //   const direction = config.gradient?.direction || 'vertical';
+  //   const gradientStart =
+  //     direction === 'vertical' ? { x: 0, y: 0 } : { x: 0, y: 0 };
+  //   const gradientEnd =
+  //     direction === 'vertical' ? { x: 0, y: height } : { x: width, y: 0 };
+  //   return (
+  //     <Layer>
+  //       <Rect
+  //         x={0}
+  //         y={0}
+  //         width={width}
+  //         height={height}
+  //         fillLinearGradientStartPoint={gradientStart}
+  //         fillLinearGradientEndPoint={gradientEnd}
+  //         fillLinearGradientColorStops={[0, startColor, 1, endColor]}
+  //       />
+  //     </Layer>
+  //   );
+  // }
 
   // Future: image and game backgrounds
   return null;

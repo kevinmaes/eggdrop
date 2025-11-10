@@ -3,7 +3,8 @@
     "allow": [
       "Bash(pnpm test)",
       "Bash(pnpm lint)",
-      "Bash(pnpm format)"
+      "Bash(pnpm format)",
+      "Bash(pnpm exec tsc:*)"
     ],
     "deny": [],
     "ask": []

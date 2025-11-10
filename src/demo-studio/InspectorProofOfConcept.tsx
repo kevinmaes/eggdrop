@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { createActor, setup } from 'xstate';
+
 import { createBrowserInspector } from '@statelyai/inspect';
+import { createActor, setup } from 'xstate';
 
 /**
  * Proof of Concept: Simple Traffic Light State Machine with Inspector

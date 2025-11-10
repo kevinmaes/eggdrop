@@ -3,6 +3,7 @@ import {
   ACTOR_SIZE,
   DEMO_CANVAS,
 } from './demo-constants';
+
 import type { DemoConfig, DemoConfigs } from './types';
 
 /**

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { createActor } from 'xstate';
+
 import { createBrowserInspector } from '@statelyai/inspect';
+import { createActor } from 'xstate';
 
 import henBackAndForthHeadlessMachine from '../../machines/hen/hen-back-and-forth-headless.machine';
+
 import type { ActorConfig } from '../../types';
 
 /**
@@ -45,7 +47,7 @@ function HenBackAndForthHeadless({
     const { inspect } = inspectorRef.current;
 
     // Create our own actor with inspection (but don't start it yet)
-    const newActor = createActor(henBackAndForthHeadlessMachine, {
+    const newActor = createActor(henBackAndForthHeadlessMachine as any, {
       input: {
         startPosition: config.startPosition,
         id: config.id || `hen-headless-${Date.now()}`,
@@ -69,7 +71,7 @@ function HenBackAndForthHeadless({
       // Start actor first
       actor.start();
       // Then subscribe to state changes
-      actor.subscribe((snapshot) => {
+      actor.subscribe((snapshot: any) => {
         setState(snapshot);
       });
       setHasStarted(true);

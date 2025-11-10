@@ -61,13 +61,13 @@ export function DemoSelector({
         <option value="">-- Choose a demo --</option>
         {demoIds.map((demoId) => (
           <option key={demoId} value={demoId}>
-            {demoConfigs[demoId].title}
+            {demoConfigs[demoId]?.title}
           </option>
         ))}
       </select>
       {currentDemoId && (
         <span style={{ color: '#666', fontSize: '0.875rem' }}>
-          {demoConfigs[currentDemoId].description}
+          {demoConfigs[currentDemoId]?.description}
         </span>
       )}
     </div>

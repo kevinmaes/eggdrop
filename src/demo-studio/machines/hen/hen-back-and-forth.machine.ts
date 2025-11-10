@@ -1,11 +1,9 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { HEN_DEMO, DEMO_CANVAS } from '../../demo-constants';
 import { tweenActor } from '../../../tweenActor';
 import { isImageRef, type Direction, type Position } from '../../../types';
-
-import type { DoneActorEvent, OutputFrom } from 'xstate';
+import { HEN_DEMO, DEMO_CANVAS } from '../../demo-constants';
 
 /**
  * Simplified Hen Machine - Back and Forth Movement
