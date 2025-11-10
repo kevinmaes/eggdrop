@@ -55,6 +55,7 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
     [rawId]
   );
   const waveClipId = `${idBase}-wave-clip`;
+  const eggClipId = `${idBase}-egg-clip`;
   const fillGradientId = `${idBase}-fill-gradient`;
   const shellGradientId = `${idBase}-shell-gradient`;
   const targetProgress = clampProgress(status.progress);
@@ -168,6 +169,13 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
               }}
             >
               <defs>
+                <clipPath id={eggClipId}>
+                  <g transform={`scale(${SVG_WIDTH / 30}, ${SVG_HEIGHT / 40})`}>
+                    <g transform="scale(1,-1) translate(0,-40)">
+                      <path d={EGG_SHELL_PATH} transform="translate(2.8,-0.8)" />
+                    </g>
+                  </g>
+                </clipPath>
                 <clipPath id={waveClipId}>
                   <path d={wavePath} />
                 </clipPath>
@@ -182,12 +190,14 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
                   <stop offset="100%" stopColor="#ff007f" />
                 </linearGradient>
               </defs>
-              <rect
-                width={SVG_WIDTH}
-                height={SVG_HEIGHT}
-                fill={`url(#${fillGradientId})`}
-                clipPath={`url(#${waveClipId})`}
-              />
+              <g clipPath={`url(#${eggClipId})`}>
+                <rect
+                  width={SVG_WIDTH}
+                  height={SVG_HEIGHT}
+                  fill={`url(#${fillGradientId})`}
+                  clipPath={`url(#${waveClipId})`}
+                />
+              </g>
             </svg>
           </div>
           <svg
