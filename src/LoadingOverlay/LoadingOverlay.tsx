@@ -54,7 +54,6 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
     () => rawId.replace(/[^a-zA-Z0-9_-]/g, '') || 'loader',
     [rawId]
   );
-  const waveClipId = `${idBase}-wave-clip`;
   const eggClipId = `${idBase}-egg-clip`;
   const fillGradientId = `${idBase}-fill-gradient`;
   const shellGradientId = `${idBase}-shell-gradient`;
@@ -179,9 +178,6 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
                     </g>
                   </g>
                 </clipPath>
-                <clipPath id={waveClipId} clipPathUnits="userSpaceOnUse">
-                  <path d={wavePath} />
-                </clipPath>
                 <linearGradient
                   id={fillGradientId}
                   x1="0%"
@@ -194,12 +190,7 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
                 </linearGradient>
               </defs>
               <g clipPath={`url(#${eggClipId})`}>
-                <rect
-                  width={SVG_WIDTH}
-                  height={SVG_HEIGHT}
-                  fill={`url(#${fillGradientId})`}
-                  clipPath={`url(#${waveClipId})`}
-                />
+                <path d={wavePath} fill={`url(#${fillGradientId})`} />
               </g>
             </svg>
           </div>
