@@ -236,8 +236,7 @@ function createTestAPI(state: TestAPIState): TestAPI {
       if (!gameLevelActorRef) {
         return 0;
       }
-      const snapshot = gameLevelActorRef.getSnapshot();
-      return snapshot.getSnapshot().context.remainingMS ?? 0;
+      return gameLevelActorRef.getSnapshot().context.remainingMS ?? 0;
     },
     findEggInHistory: (id: string) => {
       const eggHistoryEntry = state.eggHistory.get(id);
