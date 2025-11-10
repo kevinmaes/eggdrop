@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@statelyai/inspect':
         specifier: ^0.4.0
-        version: 0.4.0(ws@8.18.3)(xstate@5.23.0)
+        version: 0.4.0(ws@8.18.3)(xstate@5.24.0)
       '@xstate/react':
         specifier: ^6.0.0
-        version: 6.0.0(@types/react@19.2.2)(react@19.2.0)(xstate@5.23.0)
+        version: 6.0.0(@types/react@19.2.2)(react@19.2.0)(xstate@5.24.0)
       fontfaceobserver:
         specifier: ^2.3.0
         version: 2.3.0
@@ -39,8 +39,8 @@ importers:
         specifier: ^1.1.4
         version: 1.1.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       xstate:
-        specifier: ^5.23.0
-        version: 5.23.0
+        specifier: ^5.24.0
+        version: 5.24.0
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.7
@@ -2323,8 +2323,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  xstate@5.23.0:
-    resolution: {integrity: sha512-jo126xWXkU6ySQ91n51+H2xcgnMuZcCQpQoD3FQ79d32a6RQvryRh8rrDHnH4WDdN/yg5xNjlIRol9ispMvzeg==}
+  xstate@5.24.0:
+    resolution: {integrity: sha512-h/213ThFfZbOefUWrLc9ZvYggEVBr0jrD2dNxErxNMLQfZRN19v+80TaXFho17hs8Q2E1mULtm/6nv12um0C4A==}
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
@@ -2894,7 +2894,7 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@statelyai/inspect@0.4.0(ws@8.18.3)(xstate@5.23.0)':
+  '@statelyai/inspect@0.4.0(ws@8.18.3)(xstate@5.24.0)':
     dependencies:
       fast-safe-stringify: 2.1.1
       isomorphic-ws: 5.0.0(ws@8.18.3)
@@ -2902,7 +2902,7 @@ snapshots:
       safe-stable-stringify: 2.5.0
       superjson: 1.13.3
       uuid: 9.0.1
-      xstate: 5.23.0
+      xstate: 5.24.0
     transitivePeerDependencies:
       - ws
 
@@ -3175,13 +3175,13 @@ snapshots:
       '@vitest/pretty-format': 4.0.5
       tinyrainbow: 3.0.3
 
-  '@xstate/react@6.0.0(@types/react@19.2.2)(react@19.2.0)(xstate@5.23.0)':
+  '@xstate/react@6.0.0(@types/react@19.2.2)(react@19.2.0)(xstate@5.24.0)':
     dependencies:
       react: 19.2.0
       use-isomorphic-layout-effect: 1.2.1(@types/react@19.2.2)(react@19.2.0)
       use-sync-external-store: 1.6.0(react@19.2.0)
     optionalDependencies:
-      xstate: 5.23.0
+      xstate: 5.24.0
     transitivePeerDependencies:
       - '@types/react'
 
@@ -4744,7 +4744,7 @@ snapshots:
 
   ws@8.18.3: {}
 
-  xstate@5.23.0: {}
+  xstate@5.24.0: {}
 
   yallist@3.1.1: {}
 
