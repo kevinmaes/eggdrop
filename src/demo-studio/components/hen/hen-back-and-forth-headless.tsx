@@ -21,15 +21,21 @@ import type { ActorConfig } from '../../types';
 
 interface HenBackAndForthHeadlessProps {
   config: ActorConfig;
+  shouldStart?: boolean;
 }
 
-function HenBackAndForthHeadless({ config }: HenBackAndForthHeadlessProps) {
+function HenBackAndForthHeadless({
+  config,
+  shouldStart = false,
+}: HenBackAndForthHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
+  const [hasStarted, setHasStarted] = useState(false);
   const inspectorRef = useRef<ReturnType<typeof createBrowserInspector> | null>(
     null
   );
 
+  // Create actor and inspector once
   useEffect(() => {
     // Create the inspector instance once
     if (!inspectorRef.current) {
@@ -38,7 +44,7 @@ function HenBackAndForthHeadless({ config }: HenBackAndForthHeadlessProps) {
 
     const { inspect } = inspectorRef.current;
 
-    // Create our own actor with inspection
+    // Create our own actor with inspection (but don't start it yet)
     const newActor = createActor(henBackAndForthHeadlessMachine, {
       input: {
         startPosition: config.startPosition,
@@ -49,11 +55,7 @@ function HenBackAndForthHeadless({ config }: HenBackAndForthHeadlessProps) {
       inspect,
     });
 
-    newActor.subscribe((snapshot) => {
-      setState(snapshot);
-    });
-
-    newActor.start();
+    // DO NOT subscribe yet - subscribing may auto-start the actor
     setActor(newActor);
 
     return () => {
@@ -61,10 +63,36 @@ function HenBackAndForthHeadless({ config }: HenBackAndForthHeadlessProps) {
     };
   }, [config]);
 
-  if (!state) {
+  // Start actor when shouldStart becomes true
+  useEffect(() => {
+    if (shouldStart && actor && !hasStarted) {
+      // Start actor first
+      actor.start();
+      // Then subscribe to state changes
+      actor.subscribe((snapshot) => {
+        setState(snapshot);
+      });
+      setHasStarted(true);
+    }
+  }, [shouldStart, actor, hasStarted]);
+
+  if (!actor) {
     return (
       <div style={{ padding: '40px', fontFamily: 'monospace' }}>
         Loading headless demo...
+      </div>
+    );
+  }
+
+  if (!state) {
+    return (
+      <div style={{ padding: '40px', fontFamily: 'monospace' }}>
+        <h1 style={{ color: '#4ec9b0', marginBottom: '10px' }}>
+          Hen Back-and-Forth (Headless Inspector Mode)
+        </h1>
+        <p style={{ color: '#808080', marginBottom: '20px' }}>
+          Ready to start. Click Play to begin synchronized playback.
+        </p>
       </div>
     );
   }

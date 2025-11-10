@@ -59,20 +59,31 @@ export function getHenDemos(
     },
     {
       id: 'hen-back-and-forth',
-      title: 'Hen - Back and Forth',
-      description: 'Simple horizontal movement between left and right edges',
+      title: 'Hen - Back and Forth (Dual Mode)',
+      description:
+        'Visual demo + headless inspector (for synchronized video recording)',
       actors: [
         {
           type: 'hen',
           machineVersion: 'back-and-forth',
           componentVersion: 'back-and-forth',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
-          id: 'hen-1',
+          id: 'hen-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'hen',
+          machineVersion: 'back-and-forth-headless',
+          componentVersion: 'back-and-forth-headless',
+          startPosition: { x: henPos.centerX, y: henPos.centerY },
+          id: 'hen-headless',
           canvasWidth,
           canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
+      inspector: { visible: true, position: 'right' },
     },
     {
       id: 'hen-with-pauses',
@@ -91,28 +102,6 @@ export function getHenDemos(
         },
       ],
       background: { type: 'solid', color: '#87CEEB' },
-    },
-    {
-      id: 'hen-back-and-forth-headless',
-      title: 'Hen - Back and Forth (Headless Inspector)',
-      description:
-        'Headless text-based version for inspector visualization without Konva',
-      actors: [
-        {
-          type: 'hen',
-          machineVersion: 'back-and-forth',
-          componentVersion: 'back-and-forth-headless',
-          startPosition: { x: henPos.centerX, y: henPos.centerY },
-          id: 'hen-1',
-          canvasWidth,
-          canvasHeight,
-        },
-      ],
-      background: { type: 'solid', color: '#1e1e1e' },
-      inspector: {
-        visible: true,
-        position: 'right',
-      },
     },
     // Future demos:
     // - hen-egg-laying: Add stationary egg-laying

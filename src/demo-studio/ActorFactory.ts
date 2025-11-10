@@ -70,6 +70,7 @@ export async function createDemoActor(
     actor = null as any;
   } else {
     // Create the actor with the start position and canvas dimensions
+    // NOTE: Actor is NOT started - DemoStudio will start it via Play button
     actor = createActor(machine, {
       input: {
         startPosition,
@@ -78,8 +79,6 @@ export async function createDemoActor(
         canvasHeight,
       },
     });
-
-    actor.start();
   }
 
   return {

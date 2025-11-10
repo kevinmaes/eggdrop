@@ -42,6 +42,18 @@ export function DemoStudio() {
   };
 
   const handlePlay = () => {
+    // Start all visual (Konva) actors
+    // henRef should already be set by component useEffect
+    actorInstances.forEach((instance) => {
+      if (
+        instance.actor &&
+        !instance.config.componentVersion?.includes('headless')
+      ) {
+        instance.actor.start();
+      }
+    });
+
+    // Update isPlaying state to start headless actors
     send({ type: 'Play' });
   };
 
@@ -135,28 +147,73 @@ export function DemoStudio() {
       )}
       {!isLoading && currentDemoConfig && (
         <>
-          {/* Check if this is a headless demo */}
-          {actorInstances.length > 0 &&
-          actorInstances[0].config.componentVersion?.includes('headless') ? (
-            // Render headless component directly (bypasses Konva canvas)
-            actorInstances.map((instance, index) => {
-              const { Component, config } = instance;
-              return (
-                <Component
-                  key={config.id || `actor-${index}`}
-                  config={config}
-                />
-              );
-            })
-          ) : (
-            // Render normal Konva-based demos
-            <DemoCanvas
-              width={canvasWidth}
-              height={720}
-              background={currentDemoConfig.background}
-              actorInstances={actorInstances}
-            />
-          )}
+          {/* Separate headless and visual actors */}
+          {(() => {
+            const headlessActors = actorInstances.filter((instance) =>
+              instance.config.componentVersion?.includes('headless')
+            );
+            const visualActors = actorInstances.filter(
+              (instance) =>
+                !instance.config.componentVersion?.includes('headless')
+            );
+
+            const hasHeadless = headlessActors.length > 0;
+            const hasVisual = visualActors.length > 0;
+
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '1rem',
+                  flex: 1,
+                  padding: '1rem',
+                }}
+              >
+                {/* Visual Konva demos */}
+                {hasVisual && (
+                  <div
+                    style={{
+                      flex: hasHeadless ? 1 : 1,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                    }}
+                  >
+                    <DemoCanvas
+                      width={canvasWidth}
+                      height={720}
+                      background={currentDemoConfig.background}
+                      actorInstances={visualActors}
+                    />
+                  </div>
+                )}
+
+                {/* Headless inspector demos */}
+                {hasHeadless && (
+                  <div
+                    style={{
+                      flex: hasVisual ? 1 : 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '1rem',
+                    }}
+                  >
+                    {headlessActors.map((instance, index) => {
+                      const { Component, config } = instance;
+                      return (
+                        <Component
+                          key={config.id || `actor-${index}`}
+                          config={config}
+                          shouldStart={isPlaying}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </>
       )}
       {!isLoading && !currentDemoConfig && (
