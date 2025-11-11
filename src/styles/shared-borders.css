@@ -17,8 +17,14 @@
   --border-radius-inner: var(--border-radius-base);
   --border-radius-stage: var(--border-radius-base);
 
-  /* Border colors - outer is darker, inner is lighter */
+  /* Border colors - outer is darker with subtle gradient, inner is lighter solid */
   --border-outer-color: #0b1020;
+  --border-outer-gradient: linear-gradient(
+    135deg,
+    #0f1528 0%,
+    #0b1020 50%,
+    #08091a 100%
+  );
   --border-inner-color: #1a2844;
   --border-glow-color: rgba(152, 170, 206, 0.3);
   --border-glow-color-secondary: rgba(152, 170, 206, 0.15);
