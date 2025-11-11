@@ -9,7 +9,7 @@ export function IntroImage() {
   const { gameConfig } = snapshot.context;
   const showGameIntro = snapshot.matches('Intro');
 
-  const [titleImage] = useImage('images/egg-drop-title.png');
+  const [titleImage] = useImage('images/eggdrop-title.png');
   const borderRadius = getBorderRadius();
 
   if (!showGameIntro) {
