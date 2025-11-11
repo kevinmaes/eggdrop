@@ -69,8 +69,8 @@ export function DemoSelector({
           const hasInspector = config?.inspector?.visible === true;
           return (
             <option key={demoId} value={demoId}>
-              {hasInspector ? '◆ ' : ''}
               {config?.title}
+              {hasInspector ? ' ◆' : ''}
             </option>
           );
         })}

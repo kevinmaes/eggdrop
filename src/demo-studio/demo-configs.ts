@@ -167,7 +167,7 @@ export function getEggDemos(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
-      inspector: { visible: true, position: 'right' },
+      inspector: { visible: false, position: 'right' },
     },
     {
       id: 'egg-splat',
@@ -187,7 +187,7 @@ export function getEggDemos(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
-      inspector: { visible: true, position: 'right' },
+      inspector: { visible: false, position: 'right' },
     },
   ];
 }
