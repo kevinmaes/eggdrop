@@ -11,11 +11,16 @@ import { TransparentButton } from './TransparentButton/TransparentButton';
 import './App.css';
 
 function App() {
-  const snapshot = AppActorContext.useSelector((state) => state);
-  const loadingStatus = snapshot.context.loadingStatus;
-  const isLoading = snapshot.matches('Loading');
-  const showError = snapshot.matches('Show Error');
-  const showGamePlayLevel = snapshot.hasTag('actively playing');
+  const { isLoading, showError, showGamePlayLevel, loadingStatus } =
+    AppActorContext.useSelector((state) => ({
+      stateValue: state.value,
+      showError: state.matches('Show Error'),
+      isLoading: state.matches('Loading'),
+      showGameIntro: state.matches('Intro'),
+      showGamePlay: state.matches('Game Play'),
+      showGamePlayLevel: state.hasTag('actively playing'),
+      loadingStatus: state.context.loadingStatus,
+    }));
 
   if (showError) {
     return <div>Error loading the game...</div>;
