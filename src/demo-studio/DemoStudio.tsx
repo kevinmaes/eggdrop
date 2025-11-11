@@ -76,126 +76,205 @@ export function DemoStudio() {
   return (
     <div
       style={{
-        width: containerDimensions.width,
-        height: containerDimensions.height,
         display: 'flex',
         flexDirection: 'column',
-        margin: isPresentationMode ? '0 auto' : '0',
-        backgroundColor: isPresentationMode ? '#000' : 'transparent',
       }}
     >
-      <DemoSelector
-        demoConfigs={demoConfigs}
-        currentDemoId={selectedDemoId}
-        onSelect={handleSelectDemo}
-      />
+      {/* Controls - outside presentation area */}
       <div
         style={{
           display: 'flex',
-          gap: '1rem',
-          padding: '0.5rem 1rem',
+          flexDirection: 'column',
           backgroundColor: '#f0f0f0',
           borderBottom: '1px solid #ccc',
         }}
       >
-        <ControlPanel
-          onPlay={handlePlay}
-          onReset={handleReset}
-          isPlaying={isPlaying}
+        <DemoSelector
+          demoConfigs={demoConfigs}
+          currentDemoId={selectedDemoId}
+          onSelect={handleSelectDemo}
         />
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>
-            Canvas width:
-          </span>
-          <button
-            onClick={() => handleCanvasWidthChange(1280)}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: canvasWidth === 1280 ? '#4CAF50' : '#e0e0e0',
-              color: canvasWidth === 1280 ? 'white' : 'black',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: canvasWidth === 1280 ? 'bold' : 'normal',
-            }}
-          >
-            Full (1280)
-          </button>
-          <button
-            onClick={() => handleCanvasWidthChange(640)}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: canvasWidth === 640 ? '#4CAF50' : '#e0e0e0',
-              color: canvasWidth === 640 ? 'white' : 'black',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: canvasWidth === 640 ? 'bold' : 'normal',
-            }}
-          >
-            Half (640)
-          </button>
-        </div>
-      </div>
-      {isLoading && (
         <div
           style={{
-            flex: 1,
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            color: '#666',
+            gap: '1rem',
+            padding: '0.5rem 1rem',
           }}
         >
-          Loading demo...
+          <ControlPanel
+            onPlay={handlePlay}
+            onReset={handleReset}
+            isPlaying={isPlaying}
+          />
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>
+              Canvas width:
+            </span>
+            <button
+              onClick={() => handleCanvasWidthChange(1280)}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: canvasWidth === 1280 ? '#4CAF50' : '#e0e0e0',
+                color: canvasWidth === 1280 ? 'white' : 'black',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: canvasWidth === 1280 ? 'bold' : 'normal',
+              }}
+            >
+              Full (1280)
+            </button>
+            <button
+              onClick={() => handleCanvasWidthChange(640)}
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: canvasWidth === 640 ? '#4CAF50' : '#e0e0e0',
+                color: canvasWidth === 640 ? 'white' : 'black',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: canvasWidth === 640 ? 'bold' : 'normal',
+              }}
+            >
+              Half (640)
+            </button>
+          </div>
         </div>
-      )}
-      {!isLoading && currentDemoConfig && (
-        <>
-          {/* Separate headless and visual actors */}
-          {(() => {
-            const headlessActors = actorInstances.filter((instance) =>
-              instance.config.componentVersion?.includes('headless')
-            );
-            const visualActors = actorInstances.filter(
-              (instance) =>
-                !instance.config.componentVersion?.includes('headless')
-            );
+      </div>
 
-            const hasHeadless = headlessActors.length > 0;
-            const hasVisual = visualActors.length > 0;
+      {/* Presentation area - exactly 1920x1080 */}
+      <div
+        style={{
+          width: containerDimensions.width,
+          height: containerDimensions.height,
+          margin: isPresentationMode ? '0 auto' : '0',
+          backgroundColor: isPresentationMode ? '#000' : 'transparent',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {isLoading && (
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.5rem',
+              color: '#666',
+            }}
+          >
+            Loading demo...
+          </div>
+        )}
+        {!isLoading && currentDemoConfig && (
+          <>
+            {/* Separate headless and visual actors */}
+            {(() => {
+              const headlessActors = actorInstances.filter((instance) =>
+                instance.config.componentVersion?.includes('headless')
+              );
+              const visualActors = actorInstances.filter(
+                (instance) =>
+                  !instance.config.componentVersion?.includes('headless')
+              );
 
-            if (isPresentationMode && layoutMode) {
-              const isHorizontalSplit =
-                layoutMode === 'horizontal-split' ||
-                layoutMode === 'horizontal-split-narrow';
-              const isVerticalSplitTop = layoutMode === 'vertical-split-top';
-              const isVerticalSplitBottom =
-                layoutMode === 'vertical-split-bottom';
+              const hasHeadless = headlessActors.length > 0;
+              const hasVisual = visualActors.length > 0;
 
+              if (isPresentationMode && layoutMode) {
+                const isHorizontalSplit =
+                  layoutMode === 'horizontal-split' ||
+                  layoutMode === 'horizontal-split-narrow';
+                const isVerticalSplitTop = layoutMode === 'vertical-split-top';
+                const isVerticalSplitBottom =
+                  layoutMode === 'vertical-split-bottom';
+
+                return (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: isHorizontalSplit ? 'row' : 'column',
+                      flex: 1,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {/* For vertical-split-bottom, inspector comes first */}
+                    {isVerticalSplitBottom && (
+                      <InspectorPlaceholder
+                        layoutMode={layoutMode}
+                        demoTitle={currentDemoConfig.title}
+                      />
+                    )}
+
+                    {/* Demo Canvas */}
+                    {hasVisual && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                          backgroundColor: '#000',
+                        }}
+                      >
+                        <DemoCanvas
+                          width={canvasWidth}
+                          height={canvasHeight}
+                          background={currentDemoConfig.background}
+                          actorInstances={visualActors}
+                          resetCount={resetCount}
+                          demoTitle={currentDemoConfig.title}
+                        />
+                      </div>
+                    )}
+
+                    {/* For horizontal-split and vertical-split-top, inspector comes after */}
+                    {(isHorizontalSplit || isVerticalSplitTop) && (
+                      <InspectorPlaceholder
+                        layoutMode={layoutMode}
+                        demoTitle={currentDemoConfig.title}
+                      />
+                    )}
+
+                    {/* Headless actors (hidden, for inspector only) */}
+                    {hasHeadless && (
+                      <div style={{ display: 'none' }}>
+                        {headlessActors.map((instance, index) => {
+                          const { Component, config } = instance;
+                          return (
+                            <Component
+                              key={`${config.id || `actor-${index}`}-${resetCount}`}
+                              config={config}
+                              resetCount={resetCount}
+                              shouldStart={isPlaying}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // Non-presentation mode (original layout)
               return (
                 <div
                   style={{
                     display: 'flex',
-                    flexDirection: isHorizontalSplit ? 'row' : 'column',
+                    flexDirection: 'row',
+                    gap: '1rem',
                     flex: 1,
-                    overflow: 'hidden',
+                    padding: '1rem',
                   }}
                 >
-                  {/* For vertical-split-bottom, inspector comes first */}
-                  {isVerticalSplitBottom && (
-                    <InspectorPlaceholder layoutMode={layoutMode} />
-                  )}
-
-                  {/* Demo Canvas */}
+                  {/* Visual Konva demos */}
                   {hasVisual && (
                     <div
                       style={{
+                        flex: hasHeadless ? 1 : 1,
                         display: 'flex',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        backgroundColor: '#000',
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
                       }}
                     >
                       <DemoCanvas
@@ -204,18 +283,21 @@ export function DemoStudio() {
                         background={currentDemoConfig.background}
                         actorInstances={visualActors}
                         resetCount={resetCount}
+                        demoTitle={currentDemoConfig.title}
                       />
                     </div>
                   )}
 
-                  {/* For horizontal-split and vertical-split-top, inspector comes after */}
-                  {(isHorizontalSplit || isVerticalSplitTop) && (
-                    <InspectorPlaceholder layoutMode={layoutMode} />
-                  )}
-
-                  {/* Headless actors (hidden, for inspector only) */}
+                  {/* Headless inspector demos */}
                   {hasHeadless && (
-                    <div style={{ display: 'none' }}>
+                    <div
+                      style={{
+                        flex: hasVisual ? 1 : 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem',
+                      }}
+                    >
                       {headlessActors.map((instance, index) => {
                         const { Component, config } = instance;
                         return (
@@ -231,81 +313,24 @@ export function DemoStudio() {
                   )}
                 </div>
               );
-            }
-
-            // Non-presentation mode (original layout)
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: '1rem',
-                  flex: 1,
-                  padding: '1rem',
-                }}
-              >
-                {/* Visual Konva demos */}
-                {hasVisual && (
-                  <div
-                    style={{
-                      flex: hasHeadless ? 1 : 1,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <DemoCanvas
-                      width={canvasWidth}
-                      height={canvasHeight}
-                      background={currentDemoConfig.background}
-                      actorInstances={visualActors}
-                      resetCount={resetCount}
-                    />
-                  </div>
-                )}
-
-                {/* Headless inspector demos */}
-                {hasHeadless && (
-                  <div
-                    style={{
-                      flex: hasVisual ? 1 : 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '1rem',
-                    }}
-                  >
-                    {headlessActors.map((instance, index) => {
-                      const { Component, config } = instance;
-                      return (
-                        <Component
-                          key={`${config.id || `actor-${index}`}-${resetCount}`}
-                          config={config}
-                          resetCount={resetCount}
-                          shouldStart={isPlaying}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })()}
-        </>
-      )}
-      {!isLoading && !currentDemoConfig && (
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            color: '#666',
-          }}
-        >
-          Select a demo to begin
-        </div>
-      )}
+            })()}
+          </>
+        )}
+        {!isLoading && !currentDemoConfig && (
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.5rem',
+              color: '#666',
+            }}
+          >
+            Select a demo to begin
+          </div>
+        )}
+      </div>
     </div>
   );
 }

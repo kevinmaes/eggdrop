@@ -11,6 +11,7 @@ interface DemoCanvasProps {
   background: BackgroundConfig;
   actorInstances: DemoActorInstance[];
   resetCount?: number;
+  demoTitle?: string;
 }
 
 /**
@@ -28,21 +29,59 @@ export function DemoCanvas({
   background,
   actorInstances,
   resetCount = 0,
+  demoTitle,
 }: DemoCanvasProps) {
   return (
-    <Stage width={width} height={height}>
-      <BackgroundRenderer config={background} width={width} height={height} />
-      <Layer>
-        {actorInstances.map((instance, index) => {
-          const { Component, actor, config } = instance;
-          return (
-            <Component
-              key={`${config.id || `actor-${index}`}-${resetCount}`}
-              actorRef={actor}
-            />
-          );
-        })}
-      </Layer>
-    </Stage>
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <Stage width={width} height={height}>
+        <BackgroundRenderer config={background} width={width} height={height} />
+        <Layer>
+          {actorInstances.map((instance, index) => {
+            const { Component, actor, config } = instance;
+            return (
+              <Component
+                key={`${config.id || `actor-${index}`}-${resetCount}`}
+                actorRef={actor}
+              />
+            );
+          })}
+        </Layer>
+      </Stage>
+      {demoTitle && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '8px',
+            left: '16px',
+            fontSize: '11px',
+            color: 'rgba(255, 255, 255, 0.4)',
+            fontFamily: 'monospace',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        >
+          {demoTitle}
+        </div>
+      )}
+      <div
+        style={{
+          position: 'absolute',
+          top: '8px',
+          right: '0',
+          fontSize: '11px',
+          color: 'rgba(255, 255, 255, 0.4)',
+          fontFamily: 'monospace',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          textAlign: 'right',
+          paddingRight: '16px',
+          maxWidth: '250px',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {width}×{height}px
+      </div>
+    </div>
   );
 }

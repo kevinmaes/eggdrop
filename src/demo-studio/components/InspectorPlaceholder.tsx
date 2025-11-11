@@ -4,10 +4,12 @@ import type { LayoutMode } from '../demo-constants';
 
 interface InspectorPlaceholderProps {
   layoutMode: LayoutMode;
+  demoTitle?: string;
 }
 
 export function InspectorPlaceholder({
   layoutMode,
+  demoTitle,
 }: InspectorPlaceholderProps) {
   const dimensions = getInspectorDimensions(layoutMode);
   const isVertical = layoutMode.startsWith('vertical');
@@ -31,8 +33,26 @@ export function InspectorPlaceholder({
         justifyContent: 'center',
         padding: '2rem',
         gap: '1rem',
+        position: 'relative',
+        boxSizing: 'border-box',
       }}
     >
+      {demoTitle && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '8px',
+            left: '16px',
+            fontSize: '11px',
+            color: 'rgba(255, 255, 255, 0.4)',
+            fontFamily: 'monospace',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        >
+          {demoTitle}
+        </div>
+      )}
       <div
         style={{
           fontSize: '1.5rem',
@@ -56,10 +76,14 @@ export function InspectorPlaceholder({
       </div>
       <div
         style={{
-          fontSize: '0.875rem',
-          color: '#5a5a5a',
+          position: 'absolute',
+          top: '8px',
+          right: '16px',
+          fontSize: '11px',
+          color: 'rgba(255, 255, 255, 0.4)',
           fontFamily: 'monospace',
-          marginTop: '1rem',
+          pointerEvents: 'none',
+          userSelect: 'none',
         }}
       >
         {dimensions.width}×{dimensions.height}px ({percentage})
