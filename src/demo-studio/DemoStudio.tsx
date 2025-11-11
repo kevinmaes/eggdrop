@@ -69,9 +69,8 @@ export function DemoStudio() {
   const currentDemoConfig = selectedDemoId ? demoConfigs[selectedDemoId] : null;
 
   const isPresentationMode = layoutMode !== null;
-  const containerDimensions = isPresentationMode
-    ? PRESENTATION_LAYOUT.total
-    : { width: '100vw', height: '100vh' };
+  // Always use presentation layout dimensions for consistency
+  const containerDimensions = PRESENTATION_LAYOUT.total;
 
   return (
     <div
@@ -84,7 +83,10 @@ export function DemoStudio() {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          padding: '0.5rem 1rem',
           backgroundColor: '#f0f0f0',
           borderBottom: '1px solid #ccc',
         }}
@@ -94,52 +96,11 @@ export function DemoStudio() {
           currentDemoId={selectedDemoId}
           onSelect={handleSelectDemo}
         />
-        <div
-          style={{
-            display: 'flex',
-            gap: '1rem',
-            padding: '0.5rem 1rem',
-          }}
-        >
-          <ControlPanel
-            onPlay={handlePlay}
-            onReset={handleReset}
-            isPlaying={isPlaying}
-          />
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.875rem', fontWeight: 'bold' }}>
-              Canvas width:
-            </span>
-            <button
-              onClick={() => handleCanvasWidthChange(1280)}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: canvasWidth === 1280 ? '#4CAF50' : '#e0e0e0',
-                color: canvasWidth === 1280 ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: canvasWidth === 1280 ? 'bold' : 'normal',
-              }}
-            >
-              Full (1280)
-            </button>
-            <button
-              onClick={() => handleCanvasWidthChange(640)}
-              style={{
-                padding: '0.5rem 1rem',
-                backgroundColor: canvasWidth === 640 ? '#4CAF50' : '#e0e0e0',
-                color: canvasWidth === 640 ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: canvasWidth === 640 ? 'bold' : 'normal',
-              }}
-            >
-              Half (640)
-            </button>
-          </div>
-        </div>
+        <ControlPanel
+          onPlay={handlePlay}
+          onReset={handleReset}
+          isPlaying={isPlaying}
+        />
       </div>
 
       {/* Presentation area - exactly 1920x1080 */}
@@ -147,8 +108,8 @@ export function DemoStudio() {
         style={{
           width: containerDimensions.width,
           height: containerDimensions.height,
-          margin: isPresentationMode ? '0 auto' : '0',
-          backgroundColor: isPresentationMode ? '#000' : 'transparent',
+          margin: '0 auto',
+          backgroundColor: '#000',
           display: 'flex',
           flexDirection: 'column',
         }}
