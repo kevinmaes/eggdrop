@@ -35,15 +35,17 @@ function EggFalling({
 }: {
   actorRef: ActorRefFrom<typeof eggFallingMachine>;
 }) {
-  const position = useSelector(
-    actorRef,
-    (state) => state?.context.position ?? { x: 0, y: 0 }
-  );
+  const { position, isFalling } = useSelector(actorRef, (state) => ({
+    position: state?.context.position ?? { x: 0, y: 0 },
+    isFalling: state?.matches('Falling') ?? false,
+  }));
 
   const [image] = useImage('/images/egg.sprite.png');
 
   const eggRef = useRef<Konva.Image>(null);
   const animationFrameRef = useRef<number>();
+  const lastUpdateRef = useRef<number>(0);
+  const hasStartedRef = useRef(false);
 
   useEffect(() => {
     if (isImageRef(eggRef)) {
@@ -51,10 +53,41 @@ function EggFalling({
     }
   }, [actorRef, eggRef]);
 
-  // Animation loop
+  // Listen for when actor is started by DemoStudio (.start() is called)
+  // and send the Start event to transition from Waiting to Falling
   useEffect(() => {
-    const animate = () => {
-      actorRef.send({ type: 'Update' });
+    const subscription = actorRef.subscribe((snapshot) => {
+      // When actor transitions to active and we haven't sent Start yet
+      if (!hasStartedRef.current && snapshot.status === 'active') {
+        hasStartedRef.current = true;
+        actorRef.send({ type: 'Start' });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      hasStartedRef.current = false;
+    };
+  }, [actorRef]);
+
+  // Animation loop with frame rate limiting (60 FPS)
+  // Only runs when in Falling state
+  useEffect(() => {
+    if (!isFalling) {
+      return;
+    }
+
+    const targetFPS = 60;
+    const frameTime = 1000 / targetFPS;
+
+    const animate = (timestamp: number) => {
+      const elapsed = timestamp - lastUpdateRef.current;
+
+      if (elapsed >= frameTime) {
+        actorRef.send({ type: 'Update' });
+        lastUpdateRef.current = timestamp;
+      }
+
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
@@ -65,7 +98,7 @@ function EggFalling({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [actorRef]);
+  }, [actorRef, isFalling]);
 
   if (!position) {
     return null;

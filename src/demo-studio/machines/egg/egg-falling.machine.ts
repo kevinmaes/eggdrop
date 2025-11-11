@@ -28,8 +28,9 @@ import type { Position } from '../../../types';
 const DEMO_CONFIG = {
   eggWidth: 60,
   eggHeight: 60,
-  gravity: 0.5, // Acceleration in pixels per frame
+  gravity: 0.15, // Acceleration in pixels per frame (reduced for smoother fall)
   startY: 100, // Starting Y position (where hen would be)
+  maxVelocity: 8, // Terminal velocity to prevent falling too fast
 };
 
 const eggFallingMachine = setup({
@@ -66,7 +67,11 @@ const eggFallingMachine = setup({
           y: newY,
         };
       },
-      velocity: ({ context }) => context.velocity + DEMO_CONFIG.gravity,
+      velocity: ({ context }) => {
+        // Apply gravity but cap at max velocity (terminal velocity)
+        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
+        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
+      },
     }),
   },
 }).createMachine({
@@ -100,8 +105,15 @@ const eggFallingMachine = setup({
       },
     },
   },
-  initial: 'Falling',
+  initial: 'Waiting',
   states: {
+    Waiting: {
+      // Egg is visible but not falling yet
+      // Waits for Play button to be clicked
+      on: {
+        Start: 'Falling',
+      },
+    },
     Falling: {
       on: {
         Update: {

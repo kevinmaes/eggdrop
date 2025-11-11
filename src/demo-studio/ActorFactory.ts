@@ -71,6 +71,7 @@ export async function createDemoActor(
   } else {
     // Create the actor with the start position and canvas dimensions
     // NOTE: Actor is NOT started - DemoStudio will start it via Play button
+    // We explicitly prevent auto-start by not calling .start() here
     actor = createActor(machine, {
       input: {
         startPosition,
@@ -79,6 +80,7 @@ export async function createDemoActor(
         canvasHeight,
       },
     });
+    // Actor is in 'stopped' state until DemoStudio calls actor.start()
   }
 
   return {
