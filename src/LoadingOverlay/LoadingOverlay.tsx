@@ -157,8 +157,9 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
   return (
     <div className="loading-overlay">
       <div className="loading-overlay__content">
-        <div className="loading-overlay__content-inner">
-          <div className="loading-overlay__egg-container">
+        <div className="loading-overlay__content-middle">
+          <div className="loading-overlay__content-inner">
+            <div className="loading-overlay__egg-container">
           <div className="loading-overlay__egg-fill-wrapper">
             <svg
               className="loading-overlay__egg-fill"
@@ -199,6 +200,7 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
         <div className="loading-overlay__sr-message" aria-live="polite">
           {status.message}
         </div>
+          </div>
         </div>
       </div>
     </div>

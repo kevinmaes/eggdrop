@@ -16,8 +16,13 @@
   padding: var(--border-outer-padding);
   border-radius: var(--border-radius-outer);
   background-color: var(--border-outer-color);
-  border: var(--border-inner-thickness) solid var(--border-inner-color);
   box-shadow: var(--border-box-shadow);
+}
+
+.loading-overlay__content-middle {
+  padding: var(--border-inner-thickness);
+  border-radius: var(--border-radius-middle);
+  background-color: var(--border-inner-color);
 }
 
 .loading-overlay__content-inner {
