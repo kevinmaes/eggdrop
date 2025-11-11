@@ -30,28 +30,19 @@ export function DemoCanvas({
   resetCount = 0,
 }: DemoCanvasProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '1rem',
-        backgroundColor: '#333',
-      }}
-    >
-      <Stage width={width} height={height}>
-        <BackgroundRenderer config={background} width={width} height={height} />
-        <Layer>
-          {actorInstances.map((instance, index) => {
-            const { Component, actor, config } = instance;
-            return (
-              <Component
-                key={`${config.id || `actor-${index}`}-${resetCount}`}
-                actorRef={actor}
-              />
-            );
-          })}
-        </Layer>
-      </Stage>
-    </div>
+    <Stage width={width} height={height}>
+      <BackgroundRenderer config={background} width={width} height={height} />
+      <Layer>
+        {actorInstances.map((instance, index) => {
+          const { Component, actor, config } = instance;
+          return (
+            <Component
+              key={`${config.id || `actor-${index}`}-${resetCount}`}
+              actorRef={actor}
+            />
+          );
+        })}
+      </Layer>
+    </Stage>
   );
 }

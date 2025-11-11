@@ -136,6 +136,43 @@ export function getHenDemos(
 }
 
 /**
+ * Get egg demos with calculated positions for given canvas width
+ */
+export function getEggDemos(
+  canvasWidth: number = DEMO_CANVAS.width,
+  canvasHeight: number = DEMO_CANVAS.height
+): DemoConfig[] {
+  // Position eggs centered in the demo canvas
+  // Demo canvas is 384px wide (20% of 1920px)
+  // Center the egg: (canvasWidth / 2) - (egg width / 2)
+  const eggCenterX = Math.floor((canvasWidth - ACTOR_SIZE.egg.width) / 2);
+  const startY = 100; // Starting Y position (roughly where hen would be)
+
+  return [
+    {
+      id: 'egg-falling',
+      title: 'Egg - Falling',
+      description:
+        'Egg falls straight down with gravity from top to bottom of screen - positioned in left 20% of canvas',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'falling',
+          componentVersion: 'falling',
+          startPosition: { x: eggCenterX, y: startY },
+          id: 'egg-falling',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
+  ];
+}
+
+/**
  * Get all demo configs for given canvas dimensions
  */
 export function getDemoConfigs(
@@ -143,10 +180,12 @@ export function getDemoConfigs(
   canvasHeight: number = DEMO_CANVAS.height
 ): DemoConfigs {
   const henDemos = getHenDemos(canvasWidth, canvasHeight);
+  const eggDemos = getEggDemos(canvasWidth, canvasHeight);
 
   return {
     ...Object.fromEntries(henDemos.map((d) => [d.id, d])),
-    // Future: Add chef, egg, and combined demo categories
+    ...Object.fromEntries(eggDemos.map((d) => [d.id, d])),
+    // Future: Add chef and combined demo categories
   };
 }
 

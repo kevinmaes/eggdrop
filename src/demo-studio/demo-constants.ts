@@ -13,11 +13,13 @@
  *
  * Optimized layouts for 1920x1080 presentation recording:
  * - horizontal-split: Demo on left (25%), Inspector on right (75%)
+ * - horizontal-split-narrow: Demo on left (20%), Inspector on right (80%)
  * - vertical-split-top: Demo on top (10%), Inspector on bottom (90%)
  * - vertical-split-bottom: Inspector on top (90%), Demo on bottom (10%)
  */
 export type LayoutMode =
   | 'horizontal-split'
+  | 'horizontal-split-narrow'
   | 'vertical-split-top'
   | 'vertical-split-bottom';
 
@@ -27,6 +29,10 @@ export type LayoutMode =
  * Full presentation canvas is always 1920x1080
  * - 10% height = 108px
  * - 90% height = 972px
+ * - 20% width = 384px
+ * - 80% width = 1536px
+ * - 25% width = 480px
+ * - 75% width = 1440px
  */
 export const PRESENTATION_LAYOUT = {
   total: {
@@ -36,6 +42,10 @@ export const PRESENTATION_LAYOUT = {
   horizontalSplit: {
     demo: { width: 480, height: 1080 },
     inspector: { width: 1440, height: 1080 },
+  },
+  horizontalSplitNarrow: {
+    demo: { width: 384, height: 1080 },
+    inspector: { width: 1536, height: 1080 },
   },
   verticalSplitTop: {
     demo: { width: 1920, height: 108 },
@@ -54,6 +64,8 @@ export function getCanvasDimensionsForLayout(mode: LayoutMode) {
   switch (mode) {
     case 'horizontal-split':
       return PRESENTATION_LAYOUT.horizontalSplit.demo;
+    case 'horizontal-split-narrow':
+      return PRESENTATION_LAYOUT.horizontalSplitNarrow.demo;
     case 'vertical-split-top':
       return PRESENTATION_LAYOUT.verticalSplitTop.demo;
     case 'vertical-split-bottom':
@@ -64,16 +76,13 @@ export function getCanvasDimensionsForLayout(mode: LayoutMode) {
 /**
  * Demo Canvas Configuration
  *
- * Default canvas dimensions (non-presentation mode)
- * Common options:
- * - Full width: 1280
- * - Half width: 640
- * - Two-thirds: 853
- * - Custom: any value
+ * Default canvas dimensions set to 1920x1080 for all demos
+ * This ensures consistent full HD canvas size even when demos
+ * only use a portion of the canvas space.
  */
 export const DEMO_CANVAS = {
-  width: 1280, // Change this to resize all demos
-  height: 720,
+  width: 1920,
+  height: 1080,
 } as const;
 
 /**

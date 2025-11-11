@@ -11,6 +11,12 @@ export function InspectorPlaceholder({
 }: InspectorPlaceholderProps) {
   const dimensions = getInspectorDimensions(layoutMode);
   const isVertical = layoutMode.startsWith('vertical');
+  const percentage =
+    layoutMode === 'horizontal-split-narrow'
+      ? '80% width'
+      : isVertical
+        ? '90% height'
+        : '75% width';
 
   return (
     <div
@@ -56,8 +62,7 @@ export function InspectorPlaceholder({
           marginTop: '1rem',
         }}
       >
-        {dimensions.width}×{dimensions.height}px (
-        {isVertical ? '75% height' : '75% width'})
+        {dimensions.width}×{dimensions.height}px ({percentage})
       </div>
     </div>
   );
@@ -67,6 +72,8 @@ function getInspectorDimensions(layoutMode: LayoutMode) {
   switch (layoutMode) {
     case 'horizontal-split':
       return PRESENTATION_LAYOUT.horizontalSplit.inspector;
+    case 'horizontal-split-narrow':
+      return PRESENTATION_LAYOUT.horizontalSplitNarrow.inspector;
     case 'vertical-split-top':
       return PRESENTATION_LAYOUT.verticalSplitTop.inspector;
     case 'vertical-split-bottom':

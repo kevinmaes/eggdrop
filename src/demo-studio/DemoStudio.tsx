@@ -167,7 +167,9 @@ export function DemoStudio() {
             const hasVisual = visualActors.length > 0;
 
             if (isPresentationMode && layoutMode) {
-              const isHorizontalSplit = layoutMode === 'horizontal-split';
+              const isHorizontalSplit =
+                layoutMode === 'horizontal-split' ||
+                layoutMode === 'horizontal-split-narrow';
               const isVerticalSplitTop = layoutMode === 'vertical-split-top';
               const isVerticalSplitBottom =
                 layoutMode === 'vertical-split-bottom';
@@ -191,7 +193,7 @@ export function DemoStudio() {
                     <div
                       style={{
                         display: 'flex',
-                        justifyContent: 'center',
+                        justifyContent: 'flex-start',
                         alignItems: 'center',
                         backgroundColor: '#000',
                       }}
