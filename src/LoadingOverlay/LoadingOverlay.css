@@ -16,6 +16,7 @@
   padding: var(--border-outer-padding);
   border-radius: var(--border-radius-outer);
   background: var(--border-outer-gradient);
+  outline: 1px solid var(--border-outline-color);
   box-shadow: var(--border-box-shadow);
 }
 
