@@ -4,8 +4,8 @@ import { AppActorContext } from './app.machine';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
 import { DevPanel } from './DevPanel/DevPanel';
-import { GameLevel } from './GameLevel/GameLevel';
 import { getBorderRadius } from './gameConfig';
+import { GameLevel } from './GameLevel/GameLevel';
 import { LoadingOverlay } from './LoadingOverlay/LoadingOverlay';
 import { MuteButton } from './MuteButton/MuteButton';
 import { TransparentButton } from './TransparentButton/TransparentButton';
@@ -43,9 +43,12 @@ function App() {
 
 function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
   const appActorRef = AppActorContext.useActorRef();
-  const snapshot = AppActorContext.useSelector((state) => state);
-  const { gameConfig } = snapshot.context;
-  const showGameIntro = snapshot.matches('Intro');
+  const { gameConfig, showGameIntro } = AppActorContext.useSelector(
+    (state) => ({
+      gameConfig: state.context.gameConfig,
+      showGameIntro: state.matches('Intro'),
+    })
+  );
 
   return (
     <div className="app-stage-wrapper">

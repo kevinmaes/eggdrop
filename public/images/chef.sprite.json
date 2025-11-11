@@ -1,36 +1,34 @@
-{"frames": {
-
-"chef-catching.png":
 {
-	"frame": {"x":1,"y":1,"w":344,"h":344},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":344,"h":344},
-	"sourceSize": {"w":344,"h":344}
-},
-"chef-leg-1.png":
-{
-	"frame": {"x":347,"y":1,"w":344,"h":344},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":344,"h":344},
-	"sourceSize": {"w":344,"h":344}
-},
-"chef-leg-2.png":
-{
-	"frame": {"x":693,"y":1,"w":344,"h":344},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":344,"h":344},
-	"sourceSize": {"w":344,"h":344}
-}},
-"meta": {
-	"app": "https://www.codeandweb.com/texturepacker",
-	"version": "1.0",
-	"image": "chef.sprite.png",
-	"format": "RGBA8888",
-	"size": {"w":1038,"h":346},
-	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:5f2edd6b421afb6cb6dbac08f88a95e1:117353e47aad2ee9052799846378d1b1:09f740166a1f47cbee89a65747e4fcd0$"
-}
+  "frames": {
+    "chef-catching.png": {
+      "frame": { "x": 1, "y": 1, "w": 344, "h": 344 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 344, "h": 344 },
+      "sourceSize": { "w": 344, "h": 344 }
+    },
+    "chef-leg-1.png": {
+      "frame": { "x": 347, "y": 1, "w": 344, "h": 344 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 344, "h": 344 },
+      "sourceSize": { "w": 344, "h": 344 }
+    },
+    "chef-leg-2.png": {
+      "frame": { "x": 693, "y": 1, "w": 344, "h": 344 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 344, "h": 344 },
+      "sourceSize": { "w": 344, "h": 344 }
+    }
+  },
+  "meta": {
+    "app": "https://www.codeandweb.com/texturepacker",
+    "version": "1.0",
+    "image": "chef.sprite.png",
+    "format": "RGBA8888",
+    "size": { "w": 1038, "h": 346 },
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:5f2edd6b421afb6cb6dbac08f88a95e1:117353e47aad2ee9052799846378d1b1:09f740166a1f47cbee89a65747e4fcd0$"
+  }
 }

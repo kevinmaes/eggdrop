@@ -5,9 +5,12 @@ import { AppActorContext } from '../app.machine';
 import { getBorderRadius } from '../gameConfig';
 
 export function IntroImage() {
-  const snapshot = AppActorContext.useSelector((state) => state);
-  const { gameConfig } = snapshot.context;
-  const showGameIntro = snapshot.matches('Intro');
+  const { gameConfig, showGameIntro } = AppActorContext.useSelector(
+    (state) => ({
+      gameConfig: state.context.gameConfig,
+      showGameIntro: state.matches('Intro'),
+    })
+  );
 
   const [titleImage] = useImage('images/eggdrop-title.png');
   const borderRadius = getBorderRadius();

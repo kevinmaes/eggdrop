@@ -1,15 +1,12 @@
 /* global process */
 // This file contains the configuration for the game
 
+import { getBorderRadius } from './utils/styles';
+
 const POPULATION_SIZE = 40;
 
-// Read border radius from CSS custom property at runtime
-export function getBorderRadius(): number {
-  if (typeof window === 'undefined') return 0;
-  const styles = getComputedStyle(document.documentElement);
-  const radius = styles.getPropertyValue('--border-radius-base').trim();
-  return parseInt(radius) || 0;
-}
+// Re-export getBorderRadius for backward compatibility
+export { getBorderRadius };
 
 export interface GameConfig {
   isTestMode: boolean;
