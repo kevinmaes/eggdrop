@@ -169,6 +169,26 @@ export function getEggDemos(
       layoutMode: 'horizontal-split-narrow',
       inspector: { visible: true, position: 'right' },
     },
+    {
+      id: 'egg-splat',
+      title: 'Egg - Splat',
+      description:
+        'Egg falls and splats on the ground, showing broken egg sprite - simplified version of full egg machine',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'splat',
+          componentVersion: 'splat',
+          startPosition: { x: eggCenterX, y: startY },
+          id: 'egg-splat',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
   ];
 }
 
