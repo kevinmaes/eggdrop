@@ -43,7 +43,7 @@ export function getHenDemos(
   return [
     {
       id: 'hen-idle',
-      title: 'Hen - Idle (Dual Mode)',
+      title: 'Hen - Idle',
       description:
         'Stationary hen in idle state (simplest possible demo) - Visual demo + headless inspector',
       actors: [
@@ -72,7 +72,7 @@ export function getHenDemos(
     },
     {
       id: 'hen-back-and-forth',
-      title: 'Hen - Back and Forth (Dual Mode)',
+      title: 'Hen - Back and Forth',
       description:
         'Visual demo + headless inspector (for synchronized video recording)',
       actors: [
@@ -101,7 +101,7 @@ export function getHenDemos(
     },
     {
       id: 'hen-with-pauses',
-      title: 'Hen - With Pauses (Dual Mode)',
+      title: 'Hen - With Pauses',
       description:
         'Back and forth movement with 1-2 second pauses - Visual demo + headless inspector',
       actors: [

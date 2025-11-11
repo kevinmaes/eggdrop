@@ -1,3 +1,5 @@
+import { Network } from 'lucide-react';
+
 import type { DemoConfigs } from './types';
 
 interface DemoSelectorProps {
@@ -34,6 +36,9 @@ export function DemoSelector({
     );
   }
 
+  const currentConfig = currentDemoId ? demoConfigs[currentDemoId] : null;
+  const hasInspector = currentConfig?.inspector?.visible === true;
+
   return (
     <div
       style={{
@@ -59,16 +64,30 @@ export function DemoSelector({
         }}
       >
         <option value="">-- Choose a demo --</option>
-        {demoIds.map((demoId) => (
-          <option key={demoId} value={demoId}>
-            {demoConfigs[demoId]?.title}
-          </option>
-        ))}
+        {demoIds.map((demoId) => {
+          const config = demoConfigs[demoId];
+          const hasInspector = config?.inspector?.visible === true;
+          return (
+            <option key={demoId} value={demoId}>
+              {hasInspector ? '◆ ' : ''}
+              {config?.title}
+            </option>
+          );
+        })}
       </select>
       {currentDemoId && (
-        <span style={{ color: '#666', fontSize: '0.875rem' }}>
-          {demoConfigs[currentDemoId]?.description}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {hasInspector && (
+            <Network
+              size={16}
+              style={{ color: '#4CAF50', flexShrink: 0 }}
+              title="Includes state machine diagram"
+            />
+          )}
+          <span style={{ color: '#666', fontSize: '0.875rem' }}>
+            {currentConfig?.description}
+          </span>
+        </div>
       )}
     </div>
   );
