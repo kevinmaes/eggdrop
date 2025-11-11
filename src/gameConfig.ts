@@ -3,6 +3,14 @@
 
 const POPULATION_SIZE = 40;
 
+// Read border radius from CSS custom property at runtime
+export function getBorderRadius(): number {
+  if (typeof window === 'undefined') return 0;
+  const styles = getComputedStyle(document.documentElement);
+  const radius = styles.getPropertyValue('--border-radius-base').trim();
+  return parseInt(radius) || 0;
+}
+
 export interface GameConfig {
   isTestMode: boolean;
   isMuted: boolean;

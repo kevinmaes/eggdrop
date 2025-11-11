@@ -5,6 +5,7 @@ import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
 import { DevPanel } from './DevPanel/DevPanel';
 import { GameLevel } from './GameLevel/GameLevel';
+import { getBorderRadius } from './gameConfig';
 import { LoadingOverlay } from './LoadingOverlay/LoadingOverlay';
 import { MuteButton } from './MuteButton/MuteButton';
 import { TransparentButton } from './TransparentButton/TransparentButton';
@@ -53,9 +54,8 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
           width={gameConfig.stage.width}
           height={gameConfig.stage.height}
           style={{
-            border: '10px solid',
-            borderColor: gameConfig.colors.borderBlueGray,
-            borderRadius: '20px',
+            borderRadius: `${getBorderRadius()}px`,
+            overflow: 'hidden',
           }}
         >
           {/* Background graphics layer - static (no events) */}
