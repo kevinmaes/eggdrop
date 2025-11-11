@@ -27,6 +27,7 @@ export interface GameConfig {
     secondaryOrange: string;
     primaryBlue: string;
     secondaryBlue: string;
+    borderBlueGray: string;
   };
   chef: {
     x: number;
@@ -150,6 +151,7 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
       secondaryOrange: '#c69334',
       primaryBlue: '#a5c4fa',
       secondaryBlue: '#455579',
+      borderBlueGray: '#98aace',
     },
     chef: {
       x: STAGE_DIMENSIONS.width / 2,

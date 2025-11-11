@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useState } from 'react';
 
 import eggFillSrc from '../assets/svg/egg-gold-flat.svg';
 import eggShellSrc from '../assets/svg/egg-white-flat.svg';
+import { getGameConfig } from '../gameConfig';
 import './LoadingOverlay.css';
 
 export type LoadingStatus = {
@@ -52,6 +53,7 @@ function usePrefersReducedMotion(): boolean {
 }
 
 export function LoadingOverlay({ status }: LoadingOverlayProps) {
+  const gameConfig = getGameConfig();
   const percentage = Math.max(
     0,
     Math.min(100, Math.round(status.progress * 100))
@@ -154,7 +156,12 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
 
   return (
     <div className="loading-overlay">
-      <div className="loading-overlay__content">
+      <div
+        className="loading-overlay__content"
+        style={{
+          borderColor: gameConfig.colors.borderBlueGray,
+        }}
+      >
         <div className="loading-overlay__egg-container">
           <div className="loading-overlay__egg-fill-wrapper">
             <svg

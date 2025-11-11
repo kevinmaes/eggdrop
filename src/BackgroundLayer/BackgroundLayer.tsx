@@ -20,6 +20,7 @@ export function BackgroundLayer() {
           image={kitchenBgImage}
           width={gameConfig.stage.width}
           height={gameConfig.stage.height}
+          cornerRadius={10}
         />
         {/* Translucent overlay to mute the background image */}
         <Rect
@@ -28,6 +29,7 @@ export function BackgroundLayer() {
           opacity={0.5}
           fill="black"
           y={0}
+          cornerRadius={10}
         />
         {/* Hen beam image */}
         <Image

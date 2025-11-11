@@ -15,7 +15,9 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * Combines asset loading with minimum display time.
  * Ensures loading phases show for at least MIN_PHASE_DISPLAY_MS even if assets load faster.
  */
-const loadWithMinimumDelay = async <T>(loader: () => Promise<T>): Promise<T> => {
+const loadWithMinimumDelay = async <T>(
+  loader: () => Promise<T>
+): Promise<T> => {
   const [result] = await Promise.all([loader(), wait(MIN_PHASE_DISPLAY_MS)]);
   return result;
 };
