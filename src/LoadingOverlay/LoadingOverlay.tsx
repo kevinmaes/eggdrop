@@ -2,7 +2,6 @@ import { useEffect, useId, useMemo, useState } from 'react';
 
 import eggFillSrc from '../assets/svg/egg-gold-flat.svg';
 import eggShellSrc from '../assets/svg/egg-white-flat.svg';
-import { getGameConfig } from '../gameConfig';
 import './LoadingOverlay.css';
 
 export type LoadingStatus = {
@@ -53,7 +52,6 @@ function usePrefersReducedMotion(): boolean {
 }
 
 export function LoadingOverlay({ status }: LoadingOverlayProps) {
-  const gameConfig = getGameConfig();
   const percentage = Math.max(
     0,
     Math.min(100, Math.round(status.progress * 100))
@@ -160,46 +158,46 @@ export function LoadingOverlay({ status }: LoadingOverlayProps) {
         <div className="loading-overlay__content-middle">
           <div className="loading-overlay__content-inner">
             <div className="loading-overlay__egg-container">
-          <div className="loading-overlay__egg-fill-wrapper">
-            <svg
-              className="loading-overlay__egg-fill"
-              viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
-              role="presentation"
-              aria-hidden="true"
-              style={{
-                transform: prefersReducedMotion
-                  ? undefined
-                  : `rotate(${Math.sin(wavePhase * 0.8) * 4}deg)`,
-              }}
-            >
-              <defs>
-                <clipPath id={clipPathId}>
-                  <path d={wavePath} />
-                </clipPath>
-              </defs>
-              <image
-                href={eggFillSrc}
-                clipPath={`url(#${clipPathId})`}
-                width={SVG_WIDTH}
-                height={SVG_HEIGHT}
-                transform={FILL_TRANSFORM}
-                preserveAspectRatio="xMidYMid slice"
+              <div className="loading-overlay__egg-fill-wrapper">
+                <svg
+                  className="loading-overlay__egg-fill"
+                  viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+                  role="presentation"
+                  aria-hidden="true"
+                  style={{
+                    transform: prefersReducedMotion
+                      ? undefined
+                      : `rotate(${Math.sin(wavePhase * 0.8) * 4}deg)`,
+                  }}
+                >
+                  <defs>
+                    <clipPath id={clipPathId}>
+                      <path d={wavePath} />
+                    </clipPath>
+                  </defs>
+                  <image
+                    href={eggFillSrc}
+                    clipPath={`url(#${clipPathId})`}
+                    width={SVG_WIDTH}
+                    height={SVG_HEIGHT}
+                    transform={FILL_TRANSFORM}
+                    preserveAspectRatio="xMidYMid slice"
+                  />
+                </svg>
+              </div>
+              <img
+                src={eggShellSrc}
+                alt=""
+                className="loading-overlay__egg-shell"
+                loading="eager"
+                aria-hidden="true"
               />
-            </svg>
-          </div>
-          <img
-            src={eggShellSrc}
-            alt=""
-            className="loading-overlay__egg-shell"
-            loading="eager"
-            aria-hidden="true"
-          />
-        </div>
-        <div className="loading-overlay__status">{status.message}</div>
-        <div className="loading-overlay__percentage">{percentage}%</div>
-        <div className="loading-overlay__sr-message" aria-live="polite">
-          {status.message}
-        </div>
+            </div>
+            <div className="loading-overlay__status">{status.message}</div>
+            <div className="loading-overlay__percentage">{percentage}%</div>
+            <div className="loading-overlay__sr-message" aria-live="polite">
+              {status.message}
+            </div>
           </div>
         </div>
       </div>
