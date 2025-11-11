@@ -31,7 +31,6 @@ yarn-error.log*
 
 # IDE
 .idea
-.vscode
 *.swp
 *.swo
 
@@ -48,12 +47,9 @@ pnpm-lock.yaml
 
 # Config files
 .eslintrc
-.prettierrc
-.editorconfig
-
 
 # Large files
-*.json
 *.csv
 *.tsv
 *.log
+tsconfig*.json
