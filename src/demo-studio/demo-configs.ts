@@ -273,15 +273,15 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-enhanced-hatch',
-      title: 'Egg - Enhanced Hatching',
+      id: 'egg-hatch-game-accurate',
+      title: 'Egg - Game-Accurate Hatching',
       description:
-        'Detailed hatching animation: egg falls, cracks with wobble, chick jumps out and bounces, walks away - Visual demo + headless inspector',
+        'Matches real game exactly: egg falls, hatches (300ms), jumps and bounces, pauses (500ms), slides off - Visual demo + headless inspector',
       actors: [
         {
           type: 'egg',
-          machineVersion: 'enhanced-hatch',
-          componentVersion: 'enhanced-hatch',
+          machineVersion: 'hatch-game-accurate',
+          componentVersion: 'hatch-game-accurate',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
           canvasWidth,
@@ -289,8 +289,8 @@ export function getEggDemos(
         },
         {
           type: 'egg',
-          machineVersion: 'enhanced-hatch-headless',
-          componentVersion: 'enhanced-hatch-headless',
+          machineVersion: 'hatch-game-accurate-headless',
+          componentVersion: 'hatch-game-accurate-headless',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
           canvasWidth,
