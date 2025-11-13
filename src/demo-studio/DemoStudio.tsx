@@ -4,6 +4,7 @@ import { useMachine } from '@xstate/react';
 
 import { CharacterSelector } from './CharacterSelector';
 import { InspectorPlaceholder } from './components/InspectorPlaceholder';
+import { StatelyEmbed } from './components/StatelyEmbed';
 import { ControlPanel } from './ControlPanel';
 import { DemoButtons } from './DemoButtons';
 import { getDemoConfigs } from './demo-configs';
@@ -34,6 +35,10 @@ export function DemoStudio() {
   const [state, send] = useMachine(demoStudioMachine);
   const [selectedCharacter, setSelectedCharacter] =
     useState<CharacterType>('egg');
+  const [showStatelyEmbed, setShowStatelyEmbed] = useState(false);
+  const [statelyUrl, setStatelyUrl] = useState(
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893'
+  );
 
   const {
     selectedDemoId,
@@ -144,12 +149,26 @@ export function DemoStudio() {
           />
         </div>
 
-        {/* Right side: Inspector toggle + controls */}
+        {/* Right side: Inspector toggle + Stately embed toggle + controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <InspectorToggle
             inspectorEnabled={inspectorEnabled}
             onToggle={handleToggleInspector}
           />
+          <button
+            onClick={() => setShowStatelyEmbed(!showStatelyEmbed)}
+            style={{
+              padding: '8px 12px',
+              backgroundColor: showStatelyEmbed ? '#4a90e2' : '#2c2c2c',
+              color: '#e0e0e0',
+              border: '1px solid #444',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+            }}
+          >
+            {showStatelyEmbed ? 'Hide' : 'Show'} Stately Embed
+          </button>
           <ControlPanel
             onPlay={handlePlay}
             onReset={handleReset}
@@ -216,12 +235,19 @@ export function DemoStudio() {
                     }}
                   >
                     {/* For vertical-split-bottom, inspector comes first */}
-                    {isVerticalSplitBottom && (
-                      <InspectorPlaceholder
-                        layoutMode={layoutMode}
-                        demoTitle={currentDemoConfig.title}
-                      />
-                    )}
+                    {isVerticalSplitBottom &&
+                      (showStatelyEmbed ? (
+                        <StatelyEmbed
+                          layoutMode={layoutMode}
+                          demoTitle={currentDemoConfig.title}
+                          statelyUrl={statelyUrl}
+                        />
+                      ) : (
+                        <InspectorPlaceholder
+                          layoutMode={layoutMode}
+                          demoTitle={currentDemoConfig.title}
+                        />
+                      ))}
 
                     {/* Demo Canvas */}
                     {hasVisual && (
@@ -245,12 +271,19 @@ export function DemoStudio() {
                     )}
 
                     {/* For horizontal-split and vertical-split-top, inspector comes after */}
-                    {(isHorizontalSplit || isVerticalSplitTop) && (
-                      <InspectorPlaceholder
-                        layoutMode={layoutMode}
-                        demoTitle={currentDemoConfig.title}
-                      />
-                    )}
+                    {(isHorizontalSplit || isVerticalSplitTop) &&
+                      (showStatelyEmbed ? (
+                        <StatelyEmbed
+                          layoutMode={layoutMode}
+                          demoTitle={currentDemoConfig.title}
+                          statelyUrl={statelyUrl}
+                        />
+                      ) : (
+                        <InspectorPlaceholder
+                          layoutMode={layoutMode}
+                          demoTitle={currentDemoConfig.title}
+                        />
+                      ))}
 
                     {/* Headless actors (hidden, for inspector only) */}
                     {hasHeadless && (
