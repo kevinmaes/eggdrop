@@ -40,3 +40,18 @@ export function closeAndReopenInspector() {
   // Return the new inspector instance
   return getSharedInspector();
 }
+
+/**
+ * Closes the inspector window without reopening it.
+ * Used when inspector is toggled off.
+ */
+export function closeInspectorIfOpen() {
+  if (sharedInspectorInstance?.adapter?.targetWindow) {
+    try {
+      sharedInspectorInstance.adapter.targetWindow.close();
+    } catch (error) {
+      console.warn('Failed to close inspector window:', error);
+    }
+  }
+  sharedInspectorInstance = null;
+}

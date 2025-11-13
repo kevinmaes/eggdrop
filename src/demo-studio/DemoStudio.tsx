@@ -7,6 +7,7 @@ import { PRESENTATION_LAYOUT } from './demo-constants';
 import { DemoCanvas } from './DemoCanvas';
 import { DemoSelector } from './DemoSelector';
 import { demoStudioMachine } from './demoStudio.machine';
+import InspectorToggle from './InspectorToggle';
 
 /**
  * Main Demo Studio component
@@ -33,6 +34,7 @@ export function DemoStudio() {
     actorInstances,
     isPlaying,
     resetCount,
+    inspectorEnabled,
   } = state.context;
 
   const isLoading = state.matches('Loading Actors');
@@ -63,6 +65,10 @@ export function DemoStudio() {
 
   const handleReset = () => {
     send({ type: 'Reset' });
+  };
+
+  const handleToggleInspector = () => {
+    send({ type: 'Toggle inspector' });
   };
 
   const demoConfigs = getDemoConfigs(canvasWidth, canvasHeight);
@@ -96,11 +102,17 @@ export function DemoStudio() {
           currentDemoId={selectedDemoId}
           onSelect={handleSelectDemo}
         />
-        <ControlPanel
-          onPlay={handlePlay}
-          onReset={handleReset}
-          isPlaying={isPlaying}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <InspectorToggle
+            inspectorEnabled={inspectorEnabled}
+            onToggle={handleToggleInspector}
+          />
+          <ControlPanel
+            onPlay={handlePlay}
+            onReset={handleReset}
+            isPlaying={isPlaying}
+          />
+        </div>
       </div>
 
       {/* Presentation area - exactly 1920x1080 */}
