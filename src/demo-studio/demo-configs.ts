@@ -273,10 +273,68 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-hatch-jump-only',
-      title: 'Egg - Hatching Jump',
+      id: 'egg-land-hatch',
+      title: 'Egg - Land and Hatch',
       description:
-        'Incremental demo: chick jumps out of shell and bounces - Focuses on jump mechanics with easing - Visual demo + headless inspector',
+        'Incremental demo: egg falls and lands, shows chick in shell - Basic hatch transition without jump - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'land-hatch',
+          componentVersion: 'land-hatch',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'land-hatch-headless',
+          componentVersion: 'land-hatch-headless',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'hatched-chick-exit',
+      title: 'Hatched Chick - Exit',
+      description:
+        'Incremental demo: chick in shell transitions to running off - Shows exit animation without jump - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'hatched-chick-exit',
+          componentVersion: 'hatched-chick-exit',
+          startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'hatched-chick-exit-headless',
+          componentVersion: 'hatched-chick-exit-headless',
+          startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'egg-hatch-jump-only',
+      title: 'Egg - Hatching with Jump (Inserted Animation)',
+      description:
+        'Demonstrates inserting jump: egg lands, hatches, JUMPS, then exits - Shows how jump animation fits between hatch and exit - Visual demo + headless inspector',
       actors: [
         {
           type: 'egg',
@@ -292,35 +350,6 @@ export function getEggDemos(
           machineVersion: 'hatch-jump-only-headless',
           componentVersion: 'hatch-jump-only-headless',
           startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
-          id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
-        },
-      ],
-      background: { type: 'solid', color: '#2c5f7f' },
-      layoutMode: 'horizontal-split-narrow',
-      inspector: { visible: true, position: 'right' },
-    },
-    {
-      id: 'egg-hatch',
-      title: 'Egg - Hatch & Chick',
-      description:
-        'Complete lifecycle: egg falls, lands, hatches into chick, chick runs off - Visual demo + headless inspector',
-      actors: [
-        {
-          type: 'egg',
-          machineVersion: 'hatch',
-          componentVersion: 'hatch',
-          startPosition: { x: eggCenterPointX, y: startY },
-          id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
-        },
-        {
-          type: 'egg',
-          machineVersion: 'hatch-headless',
-          componentVersion: 'hatch-headless',
-          startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
           canvasWidth,
           canvasHeight,
