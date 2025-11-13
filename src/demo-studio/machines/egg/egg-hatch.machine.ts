@@ -90,8 +90,9 @@ const eggHatchMachine = setup({
     }),
     positionEggOnGround: assign({
       position: ({ context }) => ({
-        // Position egg on ground (still using center-based coordinates during hatching)
-        x: context.position.x,
+        // Convert from center-based (falling with offsetX/offsetY) to left-edge-based (chick without offsets)
+        // The falling egg position.x was the center, so subtract half width to get left edge
+        x: context.position.x - DEMO_CONFIG.chickWidth / 2,
         y: context.groundY - DEMO_CONFIG.eggHeight,
       }),
       velocity: 0, // Stop all movement
