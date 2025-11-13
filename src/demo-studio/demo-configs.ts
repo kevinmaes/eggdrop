@@ -42,7 +42,7 @@ export function getHenDemos(
 
   return [
     {
-      id: 'hen-idle',
+      id: 'Hen Idle',
       title: 'Hen - Idle',
       description:
         'Stationary hen in idle state (simplest possible demo) - Visual demo + headless inspector',
@@ -71,7 +71,7 @@ export function getHenDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'hen-back-and-forth',
+      id: 'Hen Back And Forth',
       title: 'Hen - Back and Forth',
       description:
         'Visual demo + headless inspector (for synchronized video recording)',
@@ -100,7 +100,7 @@ export function getHenDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'hen-with-pauses',
+      id: 'Hen With Pauses',
       title: 'Hen - With Pauses',
       description:
         'Back and forth movement with 1-2 second pauses - Visual demo + headless inspector',
@@ -159,7 +159,7 @@ export function getEggDemos(
 
   return [
     {
-      id: 'egg-falling',
+      id: 'Egg Falling',
       title: 'Egg - Falling',
       description:
         'Egg falls straight down with gravity from top to bottom of screen - Visual demo + headless inspector',
@@ -193,7 +193,7 @@ export function getEggDemos(
       },
     },
     {
-      id: 'egg-falling-rotating',
+      id: 'Egg Falling Rotating',
       title: 'Egg - Falling + Rotating',
       description:
         'Egg falls with gravity AND rotates continuously (like in the game) - Visual demo + headless inspector',
@@ -222,7 +222,7 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-splat',
+      id: 'Egg Splat',
       title: 'Egg - Splat',
       description:
         'Egg falls and splats on the ground, showing broken egg sprite - Visual demo + headless inspector',
@@ -251,7 +251,7 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-fall-land-only',
+      id: 'Egg Fall Land Only',
       title: 'Egg - Falling and Landing',
       description:
         'Incremental demo: egg falls with rotation and lands - Shows physics and landing detection - Visual demo + headless inspector',
@@ -280,7 +280,7 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-land-hatch',
+      id: 'Egg Land Hatch',
       title: 'Egg - Land and Hatch',
       description:
         'Incremental demo: egg falls and lands, shows chick in shell - Basic hatch transition without jump - Visual demo + headless inspector',
@@ -309,7 +309,7 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'hatched-chick-exit',
+      id: 'Hatched Chick Exit',
       title: 'Hatched Chick - Exit',
       description:
         'Incremental demo: chick in shell transitions to running off - Shows exit animation without jump - Visual demo + headless inspector',
@@ -338,7 +338,7 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-hatch-jump-only',
+      id: 'Egg Hatch Jump Only',
       title: 'Egg - Hatching with Jump (Inserted Animation)',
       description:
         'Demonstrates inserting jump: egg lands, hatches, JUMPS, then exits - Shows how jump animation fits between hatch and exit - Visual demo + headless inspector',
@@ -367,7 +367,7 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-hatch-game-accurate',
+      id: 'Egg Hatch Game Accurate',
       title: 'Egg - Complete Hatching (Game-Accurate)',
       description:
         'Full sequence matching real game: falls, hatches (300ms), jumps and bounces, pauses (500ms), runs off - Visual demo + headless inspector',

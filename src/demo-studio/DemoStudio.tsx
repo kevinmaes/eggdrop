@@ -88,8 +88,11 @@ export function DemoStudio() {
 
   // Filter demos by selected character
   const getCharacterDemos = (character: CharacterType): DemoConfig[] => {
+    // Convert character to Title Case for matching (e.g., 'egg' -> 'Egg')
+    const titleCaseChar =
+      character.charAt(0).toUpperCase() + character.slice(1);
     return Object.values(demoConfigs).filter((demo) =>
-      demo.id.startsWith(character)
+      demo.id.startsWith(titleCaseChar)
     );
   };
 
