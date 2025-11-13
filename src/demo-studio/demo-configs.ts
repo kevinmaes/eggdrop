@@ -272,6 +272,35 @@ export function getEggDemos(
       layoutMode: 'horizontal-split-narrow',
       inspector: { visible: true, position: 'right' },
     },
+    {
+      id: 'egg-enhanced-hatch',
+      title: 'Egg - Enhanced Hatching',
+      description:
+        'Detailed hatching animation: egg falls, cracks with wobble, chick jumps out and bounces, walks away - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'enhanced-hatch',
+          componentVersion: 'enhanced-hatch',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'enhanced-hatch-headless',
+          componentVersion: 'enhanced-hatch-headless',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
   ];
 }
 
