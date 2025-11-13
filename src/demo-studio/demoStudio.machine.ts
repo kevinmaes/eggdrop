@@ -239,7 +239,7 @@ export const demoStudioMachine = setup({
         Reset: {
           guard: 'has demo selected',
           target: 'Loading Actors',
-          actions: ['cleanupActors', 'resetPlaybackState'],
+          actions: ['reopenInspector', 'cleanupActors', 'resetPlaybackState'],
         },
       },
     },
@@ -273,7 +273,7 @@ export const demoStudioMachine = setup({
         Reset: {
           guard: 'has demo selected',
           target: 'Loading Actors',
-          actions: ['cleanupActors', 'resetPlaybackState'],
+          actions: ['reopenInspector', 'cleanupActors', 'resetPlaybackState'],
         },
       },
     },
