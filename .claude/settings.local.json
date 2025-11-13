@@ -4,7 +4,8 @@
       "Bash(pnpm test)",
       "Bash(pnpm lint)",
       "Bash(pnpm format)",
-      "Bash(pnpm exec tsc:*)"
+      "Bash(pnpm exec tsc:*)",
+      "Bash(pnpm dev)"
     ],
     "deny": [],
     "ask": []
