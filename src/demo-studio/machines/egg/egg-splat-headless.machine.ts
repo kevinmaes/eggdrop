@@ -3,10 +3,12 @@ import { setup, assign, type ActorRefFrom } from 'xstate';
 import type { Position } from '../../../types';
 
 /**
- * Egg Splat Machine - Simplified Demo
+ * Headless Egg Splat Machine - Simplified Demo
  *
- * Based on the real egg.machine.ts but with complexities stripped out.
- * Demonstrates a simple falling and splatting animation.
+ * This is a version of egg-splat.machine.ts with all React ref dependencies removed.
+ * It maintains the same state structure and logic but uses pure data for position updates.
+ *
+ * Purpose: Enable Stately Inspector integration without serialization issues.
  *
  * States:
  * - Waiting: Initial state before falling starts
@@ -34,7 +36,7 @@ const DEMO_CONFIG = {
   maxVelocity: 8,
 };
 
-const eggSplatMachine = setup({
+const eggSplatHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -46,22 +48,15 @@ const eggSplatMachine = setup({
       eggId: string;
     };
     context: {
-      eggRef: { current: null };
       id: string;
       position: Position;
       velocity: number;
       canvasHeight: number;
       groundY: number; // Y position where egg hits ground
     };
-    events:
-      | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
-      | { type: 'Update' };
+    events: { type: 'Start' } | { type: 'Update' };
   },
   actions: {
-    setEggRef: assign({
-      eggRef: (_, params: React.RefObject<any>) => params,
-    }),
     updatePosition: assign({
       position: ({ context }) => {
         const newY = context.position.y + context.velocity;
@@ -92,7 +87,7 @@ const eggSplatMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Egg-Splat',
+  id: 'Egg-Splat-Headless',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
@@ -100,7 +95,6 @@ const eggSplatMachine = setup({
     const groundY = canvasHeight - 50; // Ground is 50px from bottom
 
     return {
-      eggRef: { current: null },
       id: input.id,
       position: input.startPosition || {
         x: eggCenterX,
@@ -114,14 +108,6 @@ const eggSplatMachine = setup({
   output: ({ context }) => ({
     eggId: context.id,
   }),
-  on: {
-    'Set eggRef': {
-      actions: {
-        type: 'setEggRef',
-        params: ({ event }) => event.eggRef,
-      },
-    },
-  },
   initial: 'Waiting',
   states: {
     Waiting: {
@@ -154,5 +140,7 @@ const eggSplatMachine = setup({
   },
 });
 
-export default eggSplatMachine;
-export type EggSplatActorRef = ActorRefFrom<typeof eggSplatMachine>;
+export default eggSplatHeadlessMachine;
+export type EggSplatHeadlessActorRef = ActorRefFrom<
+  typeof eggSplatHeadlessMachine
+>;

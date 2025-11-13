@@ -18,7 +18,9 @@ import type { ActorRefFrom } from 'xstate';
  * Shows white egg while falling, then switches to broken egg sprite on splat.
  */
 
-function isImageRef(imageRef: unknown): imageRef is React.RefObject<Konva.Image> {
+function isImageRef(
+  imageRef: unknown
+): imageRef is React.RefObject<Konva.Image> {
   if (imageRef) {
     return true;
   }
