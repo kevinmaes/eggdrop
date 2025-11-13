@@ -1,13 +1,18 @@
+import { useState } from 'react';
+
 import { useMachine } from '@xstate/react';
 
+import { CharacterSelector } from './CharacterSelector';
 import { InspectorPlaceholder } from './components/InspectorPlaceholder';
 import { ControlPanel } from './ControlPanel';
+import { DemoButtons } from './DemoButtons';
 import { getDemoConfigs } from './demo-configs';
 import { PRESENTATION_LAYOUT } from './demo-constants';
 import { DemoCanvas } from './DemoCanvas';
-import { DemoSelector } from './DemoSelector';
 import { demoStudioMachine } from './demoStudio.machine';
 import InspectorToggle from './InspectorToggle';
+
+import type { DemoConfig } from './types';
 
 /**
  * Main Demo Studio component
@@ -23,8 +28,12 @@ import InspectorToggle from './InspectorToggle';
  * - Actors are loaded and started automatically
  * - Use controls to manage playback
  */
+type CharacterType = 'hen' | 'egg' | 'chef';
+
 export function DemoStudio() {
   const [state, send] = useMachine(demoStudioMachine);
+  const [selectedCharacter, setSelectedCharacter] =
+    useState<CharacterType>('egg');
 
   const {
     selectedDemoId,
@@ -74,6 +83,24 @@ export function DemoStudio() {
   const demoConfigs = getDemoConfigs(canvasWidth, canvasHeight);
   const currentDemoConfig = selectedDemoId ? demoConfigs[selectedDemoId] : null;
 
+  // Filter demos by selected character
+  const getCharacterDemos = (character: CharacterType): DemoConfig[] => {
+    return Object.values(demoConfigs).filter((demo) =>
+      demo.id.startsWith(character)
+    );
+  };
+
+  const characterDemos = getCharacterDemos(selectedCharacter);
+
+  const handleSelectCharacter = (character: CharacterType) => {
+    setSelectedCharacter(character);
+    // Optionally auto-select first demo of new character
+    const demos = getCharacterDemos(character);
+    if (demos.length > 0 && demos[0].id !== selectedDemoId) {
+      handleSelectDemo(demos[0].id);
+    }
+  };
+
   const isPresentationMode = layoutMode !== null;
   // Always use presentation layout dimensions for consistency
   const containerDimensions = PRESENTATION_LAYOUT.total;
@@ -97,11 +124,27 @@ export function DemoStudio() {
           borderBottom: '1px solid #ccc',
         }}
       >
-        <DemoSelector
-          demoConfigs={demoConfigs}
-          currentDemoId={selectedDemoId}
-          onSelect={handleSelectDemo}
-        />
+        {/* Left side: Character selector + demo buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <CharacterSelector
+            selectedCharacter={selectedCharacter}
+            onSelectCharacter={handleSelectCharacter}
+          />
+          <div
+            style={{
+              width: '1px',
+              height: '50px',
+              backgroundColor: '#ccc',
+            }}
+          />
+          <DemoButtons
+            demos={characterDemos}
+            selectedDemoId={selectedDemoId}
+            onSelectDemo={handleSelectDemo}
+          />
+        </div>
+
+        {/* Right side: Inspector toggle + controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <InspectorToggle
             inspectorEnabled={inspectorEnabled}
