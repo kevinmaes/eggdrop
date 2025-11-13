@@ -1,11 +1,14 @@
-import { Image } from 'react-konva';
-import useImage from 'use-image';
+import { useEffect, useRef } from 'react';
+
+import henSpriteData from '../../public/images/hen.sprite.json';
+import eggSpriteData from '../../public/images/egg.sprite.json';
+import chefSpriteData from '../../public/images/chef.sprite.json';
 
 /**
  * Character Selector Component
  *
  * Button group for selecting character category (hen, egg, chef).
- * Each button shows a small icon of the character.
+ * Each button shows a single cropped frame from the sprite sheet.
  * Only one can be selected at a time.
  */
 
@@ -25,6 +28,8 @@ function CharacterButton({
   isSelected: boolean;
   onClick: () => void;
 }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const getImagePath = () => {
     switch (character) {
       case 'hen':
@@ -33,6 +38,17 @@ function CharacterButton({
         return '/images/egg.sprite.png';
       case 'chef':
         return '/images/chef.sprite.png';
+    }
+  };
+
+  const getFrameData = () => {
+    switch (character) {
+      case 'hen':
+        return henSpriteData.frames['hen-idle-1.png']?.frame;
+      case 'egg':
+        return eggSpriteData.frames['egg-white.png']?.frame;
+      case 'chef':
+        return chefSpriteData.frames['chef-idle-1.png']?.frame;
     }
   };
 
@@ -46,6 +62,51 @@ function CharacterButton({
         return 'Chef';
     }
   };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const img = new Image();
+    img.src = getImagePath();
+
+    img.onload = () => {
+      const frameData = getFrameData();
+      if (!frameData) return;
+
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Calculate scale to fit the frame in 40x40 canvas while maintaining aspect ratio
+      const scale = Math.min(
+        40 / frameData.w,
+        40 / frameData.h
+      );
+
+      const scaledWidth = frameData.w * scale;
+      const scaledHeight = frameData.h * scale;
+
+      // Center the image in the canvas
+      const x = (40 - scaledWidth) / 2;
+      const y = (40 - scaledHeight) / 2;
+
+      // Draw the cropped sprite frame
+      ctx.drawImage(
+        img,
+        frameData.x,
+        frameData.y,
+        frameData.w,
+        frameData.h,
+        x,
+        y,
+        scaledWidth,
+        scaledHeight
+      );
+    };
+  }, [character]);
 
   return (
     <button
@@ -78,13 +139,12 @@ function CharacterButton({
         }
       }}
     >
-      <img
-        src={getImagePath()}
-        alt={getLabel()}
+      <canvas
+        ref={canvasRef}
+        width={40}
+        height={40}
         style={{
-          width: '36px',
-          height: '36px',
-          objectFit: 'contain',
+          imageRendering: 'pixelated',
         }}
       />
       <span
