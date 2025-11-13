@@ -144,8 +144,15 @@ export function getEggDemos(
 ): DemoConfig[] {
   // Position eggs centered in the demo canvas
   // Demo canvas is 384px wide (20% of 1920px)
+
+  // For eggs WITHOUT rotation (no offsetX/offsetY): position.x = left edge
   // Center the egg: (canvasWidth / 2) - (egg width / 2)
-  const eggCenterX = Math.floor((canvasWidth - ACTOR_SIZE.egg.width) / 2);
+  const eggLeftEdgeCenterX = Math.floor((canvasWidth - ACTOR_SIZE.egg.width) / 2);
+
+  // For eggs WITH rotation (with offsetX/offsetY): position.x = center point
+  // Simply use center of canvas
+  const eggCenterPointX = Math.floor(canvasWidth / 2);
+
   const startY = 100; // Starting Y position (roughly where hen would be)
 
   return [
@@ -159,7 +166,7 @@ export function getEggDemos(
           type: 'egg',
           machineVersion: 'falling',
           componentVersion: 'falling',
-          startPosition: { x: eggCenterX, y: startY },
+          startPosition: { x: eggLeftEdgeCenterX, y: startY },
           id: 'egg-visual',
           canvasWidth,
           canvasHeight,
@@ -168,7 +175,36 @@ export function getEggDemos(
           type: 'egg',
           machineVersion: 'falling-headless',
           componentVersion: 'falling-headless',
-          startPosition: { x: eggCenterX, y: startY },
+          startPosition: { x: eggLeftEdgeCenterX, y: startY },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'egg-falling-rotating',
+      title: 'Egg - Falling + Rotating',
+      description:
+        'Egg falls with gravity AND rotates continuously (like in the game) - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'falling-rotating',
+          componentVersion: 'falling-rotating',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'falling-rotating-headless',
+          componentVersion: 'falling-rotating-headless',
+          startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
           canvasWidth,
           canvasHeight,
@@ -188,7 +224,7 @@ export function getEggDemos(
           type: 'egg',
           machineVersion: 'splat',
           componentVersion: 'splat',
-          startPosition: { x: eggCenterX, y: startY },
+          startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
           canvasWidth,
           canvasHeight,
@@ -197,7 +233,7 @@ export function getEggDemos(
           type: 'egg',
           machineVersion: 'splat-headless',
           componentVersion: 'splat-headless',
-          startPosition: { x: eggCenterX, y: startY },
+          startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
           canvasWidth,
           canvasHeight,

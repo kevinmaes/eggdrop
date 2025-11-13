@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
@@ -6,21 +6,19 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import eggSpriteData from '../../../../public/images/egg.sprite.json';
-import eggSplatMachine from '../../machines/egg/egg-splat.machine';
+import eggFallingRotatingMachine from '../../machines/egg/egg-falling-rotating.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
 /**
- * Egg Splat Component
+ * Egg Falling with Rotation Component
  *
- * Displays an egg that falls and splats on the ground.
- * Uses requestAnimationFrame to continuously update position.
- * Shows white egg while falling, then switches to broken egg sprite on splat.
+ * Displays a falling egg with gravity physics AND rotation.
+ * Uses requestAnimationFrame to continuously update position and rotation.
+ * Shows the white egg sprite as it falls and rotates.
  */
 
-function isImageRef(
-  imageRef: unknown
-): imageRef is React.RefObject<Konva.Image> {
+function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
   if (imageRef) {
     return true;
   }
@@ -32,30 +30,18 @@ const EGG_SIZE = {
   height: 60,
 };
 
-const BROKEN_EGG_SIZE = {
-  width: 90,
-  height: 60,
-};
-
-function EggSplat({
+function EggFallingRotating({
   actorRef,
 }: {
-  actorRef: ActorRefFrom<typeof eggSplatMachine>;
+  actorRef: ActorRefFrom<typeof eggFallingRotatingMachine>;
 }) {
-  const { position, rotation, currentState } = useSelector(
-    actorRef,
-    (state) => ({
-      position: state?.context.position ?? { x: 0, y: 0 },
-      rotation: state?.context.rotation ?? 0,
-      currentState: state?.value ?? 'Waiting',
-    })
-  );
+  const { position, rotation, isFalling } = useSelector(actorRef, (state) => ({
+    position: state?.context.position ?? { x: 0, y: 0 },
+    rotation: state?.context.rotation ?? 0,
+    isFalling: state?.matches('Falling') ?? false,
+  }));
 
-  const isFalling = currentState === 'Falling';
-  const isSplatting = currentState === 'Splatting';
-
-  const [eggImage] = useImage('/images/egg.sprite.png');
-  const [brokenEggImage] = useImage('/images/egg-broken-white.png');
+  const [image] = useImage('/images/egg.sprite.png');
 
   const eggRef = useRef<Konva.Image>(null);
   const animationFrameRef = useRef<number>();
@@ -72,6 +58,7 @@ function EggSplat({
   // and send the Start event to transition from Waiting to Falling
   useEffect(() => {
     const subscription = actorRef.subscribe((snapshot) => {
+      // When actor transitions to active and we haven't sent Start yet
       if (!hasStartedRef.current && snapshot.status === 'active') {
         hasStartedRef.current = true;
         actorRef.send({ type: 'Start' });
@@ -118,21 +105,7 @@ function EggSplat({
     return null;
   }
 
-  // Show broken egg when splatting
-  if (isSplatting) {
-    return (
-      <Image
-        ref={eggRef}
-        image={brokenEggImage}
-        x={position.x}
-        y={position.y}
-        width={BROKEN_EGG_SIZE.width}
-        height={BROKEN_EGG_SIZE.height}
-      />
-    );
-  }
-
-  // Show white egg while falling or waiting
+  // Use the white egg sprite
   const currentFrame = eggSpriteData.frames['egg-white.png']?.frame;
   if (!currentFrame) {
     return null;
@@ -141,7 +114,7 @@ function EggSplat({
   return (
     <Image
       ref={eggRef}
-      image={eggImage}
+      image={image}
       x={position.x}
       y={position.y}
       width={EGG_SIZE.width}
@@ -159,4 +132,4 @@ function EggSplat({
   );
 }
 
-export default EggSplat;
+export default EggFallingRotating;

@@ -1,6 +1,6 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
-import type { Position } from '../../../types';
+import type { Direction, Position } from '../../../types';
 
 /**
  * Egg Splat Machine - Simplified Demo
@@ -32,6 +32,7 @@ const DEMO_CONFIG = {
   gravity: 0.15,
   startY: 100,
   maxVelocity: 8,
+  rotationSpeed: 5, // Degrees per frame
 };
 
 const eggSplatMachine = setup({
@@ -41,6 +42,7 @@ const eggSplatMachine = setup({
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
+      rotationDirection?: Direction['value'];
     };
     output: {
       eggId: string;
@@ -50,6 +52,8 @@ const eggSplatMachine = setup({
       id: string;
       position: Position;
       velocity: number;
+      rotation: number;
+      rotationDirection: Direction['value'];
       canvasHeight: number;
       groundY: number; // Y position where egg hits ground
     };
@@ -62,7 +66,7 @@ const eggSplatMachine = setup({
     setEggRef: assign({
       eggRef: (_, params: React.RefObject<any>) => params,
     }),
-    updatePosition: assign({
+    updatePositionAndRotation: assign({
       position: ({ context }) => {
         const newY = context.position.y + context.velocity;
         return {
@@ -74,13 +78,19 @@ const eggSplatMachine = setup({
         const newVelocity = context.velocity + DEMO_CONFIG.gravity;
         return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
       },
+      rotation: ({ context }) => {
+        // Rotate the egg continuously while falling
+        return (
+          context.rotation +
+          context.rotationDirection * DEMO_CONFIG.rotationSpeed
+        );
+      },
     }),
     splatOnFloor: assign({
       position: ({ context }) => ({
-        // Center the wider splat sprite on the egg's x position
-        x:
-          context.position.x -
-          (DEMO_CONFIG.brokenEggWidth - DEMO_CONFIG.eggWidth) / 2,
+        // Center the broken egg sprite on the egg's center position
+        // Since the egg now uses offsetX/offsetY for rotation, position.x is the center
+        x: context.position.x - DEMO_CONFIG.brokenEggWidth / 2,
         y: context.groundY - DEMO_CONFIG.brokenEggHeight,
       }),
       velocity: 0, // Stop all movement
@@ -96,7 +106,8 @@ const eggSplatMachine = setup({
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    const eggCenterX = Math.floor((canvasWidth - DEMO_CONFIG.eggWidth) / 2);
+    // Since we use offsetX/offsetY for rotation, position.x IS the center point
+    const eggCenterX = Math.floor(canvasWidth / 2);
     const groundY = canvasHeight - 50; // Ground is 50px from bottom
 
     return {
@@ -107,6 +118,8 @@ const eggSplatMachine = setup({
         y: DEMO_CONFIG.startY,
       },
       velocity: 0,
+      rotation: 0,
+      rotationDirection: input.rotationDirection ?? 1,
       canvasHeight,
       groundY,
     };
@@ -137,7 +150,7 @@ const eggSplatMachine = setup({
             target: 'Landed',
           },
           {
-            actions: 'updatePosition',
+            actions: 'updatePositionAndRotation',
           },
         ],
       },

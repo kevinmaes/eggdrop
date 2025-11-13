@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 
 import { createActor } from 'xstate';
 
-import eggSplatHeadlessMachine from '../../machines/egg/egg-splat-headless.machine';
+import eggFallingRotatingHeadlessMachine from '../../machines/egg/egg-falling-rotating-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
 
 import type { ActorConfig } from '../../types';
 
 /**
- * Headless Egg Splat Component with Inspector
+ * Headless Egg Falling with Rotation Component with Inspector
  *
- * This component uses the same state machine as the visual egg splat demo
+ * This component uses the same state machine as the visual egg falling with rotation demo
  * but displays state information as text instead of Konva graphics.
  * This allows the Stately Inspector to work without serialization issues.
  *
@@ -21,17 +21,17 @@ import type { ActorConfig } from '../../types';
  * that switching demos updates the same inspector window.
  */
 
-interface EggSplatHeadlessProps {
+interface EggFallingRotatingHeadlessProps {
   config: ActorConfig;
   resetCount?: number;
   shouldStart?: boolean;
 }
 
-function EggSplatHeadless({
+function EggFallingRotatingHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
-}: EggSplatHeadlessProps) {
+}: EggFallingRotatingHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
   const [hasStarted, setHasStarted] = useState(false);
@@ -45,8 +45,8 @@ function EggSplatHeadless({
     // Create and immediately start the actor with inspection
     // Starting the actor connects it to inspector but machine stays in initial state
     // Include resetCount in ID to ensure each instance is unique for inspector
-    const actorId = `${config.id || 'egg-splat-headless'}-${resetCount}`;
-    const newActor = createActor(eggSplatHeadlessMachine as any, {
+    const actorId = `${config.id || 'egg-falling-rotating-headless'}-${resetCount}`;
+    const newActor = createActor(eggFallingRotatingHeadlessMachine as any, {
       id: actorId, // XState actor ID for inspector
       input: {
         startPosition: config.startPosition,
@@ -83,12 +83,9 @@ function EggSplatHeadless({
     }
   }, [shouldStart, actor, hasStarted]);
 
-  // Animation loop - send Update events on each frame (only when falling)
+  // Animation loop - send Update events on each frame
   useEffect(() => {
-    if (!actor || !hasStarted || !state) return;
-
-    const currentState = String(state.value);
-    if (currentState !== 'Falling') return;
+    if (!actor || !hasStarted) return;
 
     const animate = () => {
       actor.send({ type: 'Update' });
@@ -102,7 +99,7 @@ function EggSplatHeadless({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [actor, hasStarted, state]);
+  }, [actor, hasStarted]);
 
   if (!actor) {
     return (
@@ -116,7 +113,7 @@ function EggSplatHeadless({
     return (
       <div style={{ padding: '40px', fontFamily: 'monospace' }}>
         <h1 style={{ color: '#4ec9b0', marginBottom: '10px' }}>
-          Egg Splat (Headless Inspector Mode)
+          Egg Falling + Rotating (Headless Inspector Mode)
         </h1>
         <p style={{ color: '#808080', marginBottom: '20px' }}>
           Ready to start. Click Play to begin synchronized playback.
@@ -139,7 +136,7 @@ function EggSplatHeadless({
       }}
     >
       <h1 style={{ color: '#4ec9b0', marginBottom: '10px' }}>
-        Egg Splat (Headless Inspector Mode)
+        Egg Falling + Rotating (Headless Inspector Mode)
       </h1>
       <p style={{ color: '#808080', marginBottom: '30px' }}>
         Text-based visualization for inspector integration
@@ -207,7 +204,6 @@ function EggSplatHeadless({
             label="Current Y"
             value={Math.round(context.position.y)}
           />
-          <StateField label="Ground Y" value={context.groundY} />
           <StateField label="Canvas Height" value={context.canvasHeight} />
           <StateField
             label="Rotation Direction"
@@ -254,7 +250,7 @@ function EggSplatHeadless({
           <h2
             style={{ color: '#4fc1ff', fontSize: '18px', marginBottom: '15px' }}
           >
-            Progress & Status
+            Progress
           </h2>
           <StateField label="Actor ID" value={context.id} />
           <StateField
@@ -262,16 +258,8 @@ function EggSplatHeadless({
             value={context.velocity >= 8 ? 'Yes' : 'No'}
           />
           <StateField
-            label="Has Landed"
-            value={
-              currentState === 'Landed' || currentState === 'Splatting'
-                ? 'Yes'
-                : 'No'
-            }
-          />
-          <StateField
-            label="Is Splatted"
-            value={currentState === 'Splatting' ? 'Yes' : 'No'}
+            label="Distance Fallen"
+            value={`${Math.round(context.position.y - 100)}px`}
           />
           <StateField
             label="Rotations"
@@ -297,19 +285,18 @@ function EggSplatHeadless({
             The Stately Inspector should open in a separate window automatically
           </li>
           <li>
-            Watch the state transitions in real-time as the egg falls, rotates,
-            and splats
+            Watch the state transitions in real-time as the egg falls and
+            rotates
           </li>
-          <li>States: Waiting → Falling → Landed → Splatting</li>
+          <li>States: Waiting → Falling (continuous updates)</li>
           <li>
-            Context values update every frame during falling (position,
-            velocity, rotation)
+            Context values update every frame showing velocity, position, and
+            rotation
           </li>
           <li>
-            Observe the landing detection and transition to splatting state
+            Observe gravity acceleration until terminal velocity is reached
           </li>
-          <li>Watch rotation accumulate while falling</li>
-          <li>Splat remains visible indefinitely in Splatting state</li>
+          <li>Watch rotation accumulate continuously while falling</li>
         </ol>
       </div>
     </div>
@@ -343,4 +330,4 @@ function StateField({
   );
 }
 
-export default EggSplatHeadless;
+export default EggFallingRotatingHeadless;
