@@ -44,11 +44,11 @@ function CharacterButton({
   const getFrameData = () => {
     switch (character) {
       case 'hen':
-        return henSpriteData.frames['hen-idle-1.png']?.frame;
+        return henSpriteData.frames['forward.png']?.frame;
       case 'egg':
         return eggSpriteData.frames['egg-white.png']?.frame;
       case 'chef':
-        return chefSpriteData.frames['chef-idle-1.png']?.frame;
+        return chefSpriteData.frames['chef-leg-1.png']?.frame;
     }
   };
 
@@ -115,9 +115,9 @@ function CharacterButton({
         width: '60px',
         height: '60px',
         padding: '4px',
-        border: isSelected ? '3px solid #4CAF50' : '2px solid #ccc',
+        border: isSelected ? '3px solid #4CAF50' : '2px solid #999',
         borderRadius: '4px',
-        backgroundColor: isSelected ? '#e8f5e9' : '#fff',
+        backgroundColor: '#2c5f7f',
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
@@ -128,14 +128,12 @@ function CharacterButton({
       }}
       onMouseEnter={(e) => {
         if (!isSelected) {
-          e.currentTarget.style.backgroundColor = '#f5f5f5';
-          e.currentTarget.style.borderColor = '#999';
+          e.currentTarget.style.borderColor = '#4CAF50';
         }
       }}
       onMouseLeave={(e) => {
         if (!isSelected) {
-          e.currentTarget.style.backgroundColor = '#fff';
-          e.currentTarget.style.borderColor = '#ccc';
+          e.currentTarget.style.borderColor = '#999';
         }
       }}
     >
@@ -152,7 +150,7 @@ function CharacterButton({
           fontSize: '10px',
           marginTop: '2px',
           fontWeight: isSelected ? 'bold' : 'normal',
-          color: isSelected ? '#2E7D32' : '#666',
+          color: isSelected ? '#4CAF50' : '#fff',
         }}
       >
         {getLabel()}
