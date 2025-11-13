@@ -399,6 +399,82 @@ export function getEggDemos(
 }
 
 /**
+ * Get chef demos with calculated positions for given canvas width
+ */
+export function getChefDemos(
+  canvasWidth: number = DEMO_CANVAS.width,
+  canvasHeight: number = DEMO_CANVAS.height
+): DemoConfig[] {
+  const chefPos = calculatePositioningForWidth(
+    ACTOR_SIZE.chef.width,
+    ACTOR_SIZE.chef.height,
+    canvasWidth,
+    canvasHeight
+  );
+
+  return [
+    {
+      id: 'Chef Idle',
+      title: 'Chef - Idle',
+      description:
+        'Stationary chef in idle state (simplest possible demo) - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'chef',
+          machineVersion: 'idle',
+          componentVersion: 'idle',
+          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
+          id: 'chef-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'chef',
+          machineVersion: 'idle-headless',
+          componentVersion: 'idle-headless',
+          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
+          id: 'chef-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'vertical-split-top',
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'Chef Back And Forth',
+      title: 'Chef - Back and Forth',
+      description:
+        'Chef moves back and forth left to right - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'chef',
+          machineVersion: 'back-and-forth',
+          componentVersion: 'back-and-forth',
+          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
+          id: 'chef-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'chef',
+          machineVersion: 'back-and-forth-headless',
+          componentVersion: 'back-and-forth-headless',
+          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
+          id: 'chef-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'vertical-split-top',
+      inspector: { visible: true, position: 'right' },
+    },
+  ];
+}
+
+/**
  * Get all demo configs for given canvas dimensions
  */
 export function getDemoConfigs(
@@ -407,11 +483,12 @@ export function getDemoConfigs(
 ): DemoConfigs {
   const henDemos = getHenDemos(canvasWidth, canvasHeight);
   const eggDemos = getEggDemos(canvasWidth, canvasHeight);
+  const chefDemos = getChefDemos(canvasWidth, canvasHeight);
 
   return {
     ...Object.fromEntries(henDemos.map((d) => [d.id, d])),
     ...Object.fromEntries(eggDemos.map((d) => [d.id, d])),
-    // Future: Add chef and combined demo categories
+    ...Object.fromEntries(chefDemos.map((d) => [d.id, d])),
   };
 }
 
