@@ -184,7 +184,9 @@ const eggEnhancedHatchHeadlessMachine = setup({
     },
     chickOffScreen: ({ context }) => {
       if (context.chickWalkDirection === 1) {
-        return context.position.x > context.canvasWidth + DEMO_CONFIG.chickWidth;
+        return (
+          context.position.x > context.canvasWidth + DEMO_CONFIG.chickWidth
+        );
       } else {
         return context.position.x < -DEMO_CONFIG.chickWidth;
       }

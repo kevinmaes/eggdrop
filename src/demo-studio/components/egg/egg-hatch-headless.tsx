@@ -101,7 +101,13 @@ function EggHatchHeadless({
   }, [isFalling, isChickRunning]);
 
   // Helper component for displaying state fields
-  function StateField({ label, value }: { label: string; value: string | number }) {
+  function StateField({
+    label,
+    value,
+  }: {
+    label: string;
+    value: string | number;
+  }) {
     return (
       <div
         style={{
@@ -152,7 +158,9 @@ function EggHatchHeadless({
           marginBottom: '20px',
         }}
       >
-        <h3 style={{ margin: '0 0 15px 0', fontSize: '18px', color: '#569cd6' }}>
+        <h3
+          style={{ margin: '0 0 15px 0', fontSize: '18px', color: '#569cd6' }}
+        >
           Current State
         </h3>
         <div
@@ -179,7 +187,9 @@ function EggHatchHeadless({
           marginBottom: '20px',
         }}
       >
-        <h3 style={{ margin: '0 0 15px 0', fontSize: '18px', color: '#569cd6' }}>
+        <h3
+          style={{ margin: '0 0 15px 0', fontSize: '18px', color: '#569cd6' }}
+        >
           Context Values
         </h3>
         <div>
@@ -191,10 +201,7 @@ function EggHatchHeadless({
             label="Current Y"
             value={Math.round(context.position.y)}
           />
-          <StateField
-            label="Velocity"
-            value={context.velocity.toFixed(2)}
-          />
+          <StateField label="Velocity" value={context.velocity.toFixed(2)} />
           <StateField
             label="Rotation"
             value={`${Math.round(context.rotation)}°`}
@@ -224,7 +231,9 @@ function EggHatchHeadless({
           marginBottom: '20px',
         }}
       >
-        <h3 style={{ margin: '0 0 15px 0', fontSize: '18px', color: '#569cd6' }}>
+        <h3
+          style={{ margin: '0 0 15px 0', fontSize: '18px', color: '#569cd6' }}
+        >
           State Flow
         </h3>
         <div style={{ lineHeight: '1.8', color: '#cccccc' }}>
@@ -253,15 +262,13 @@ function EggHatchHeadless({
             The Stately Inspector should open in a separate window automatically
           </li>
           <li>
-            Watch the complete state flow: Waiting → Falling → Landed →
-            Hatching → ChickRunning → Complete
+            Watch the complete state flow: Waiting → Falling → Landed → Hatching
+            → ChickRunning → Complete
           </li>
           <li>
             Observe gravity physics during Falling state (velocity increases)
           </li>
-          <li>
-            Watch the 1-second delay timer during Hatching state
-          </li>
+          <li>Watch the 1-second delay timer during Hatching state</li>
           <li>
             Track chick position as it runs off screen (ChickRunning state)
           </li>

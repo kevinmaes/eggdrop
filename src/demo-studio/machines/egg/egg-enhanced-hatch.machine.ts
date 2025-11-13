@@ -208,7 +208,9 @@ const eggEnhancedHatchMachine = setup({
     },
     chickOffScreen: ({ context }) => {
       if (context.chickWalkDirection === 1) {
-        return context.position.x > context.canvasWidth + DEMO_CONFIG.chickWidth;
+        return (
+          context.position.x > context.canvasWidth + DEMO_CONFIG.chickWidth
+        );
       } else {
         return context.position.x < -DEMO_CONFIG.chickWidth;
       }
@@ -351,4 +353,6 @@ const eggEnhancedHatchMachine = setup({
 });
 
 export default eggEnhancedHatchMachine;
-export type EggEnhancedHatchActorRef = ActorRefFrom<typeof eggEnhancedHatchMachine>;
+export type EggEnhancedHatchActorRef = ActorRefFrom<
+  typeof eggEnhancedHatchMachine
+>;

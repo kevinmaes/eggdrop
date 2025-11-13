@@ -110,11 +110,7 @@ function EggEnhancedHatch({
   // Animation loop for falling, cracking, jumping, and walking (60 FPS)
   useEffect(() => {
     const needsAnimation =
-      isFalling ||
-      isCracking ||
-      isJumpingUp ||
-      isBouncingDown ||
-      isWalking;
+      isFalling || isCracking || isJumpingUp || isBouncingDown || isWalking;
 
     if (!needsAnimation) {
       return;

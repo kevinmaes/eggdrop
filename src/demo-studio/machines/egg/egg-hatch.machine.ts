@@ -101,7 +101,8 @@ const eggHatchMachine = setup({
     updateChickPosition: assign({
       position: ({ context }) => {
         const newX =
-          context.position.x + context.chickRunDirection * DEMO_CONFIG.chickSpeed;
+          context.position.x +
+          context.chickRunDirection * DEMO_CONFIG.chickSpeed;
         return {
           x: newX,
           y: context.position.y,
@@ -117,7 +118,9 @@ const eggHatchMachine = setup({
       // Check if chick has run completely off screen
       if (context.chickRunDirection === 1) {
         // Running right
-        return context.position.x > context.canvasWidth + DEMO_CONFIG.chickWidth;
+        return (
+          context.position.x > context.canvasWidth + DEMO_CONFIG.chickWidth
+        );
       } else {
         // Running left
         return context.position.x < -DEMO_CONFIG.chickWidth;

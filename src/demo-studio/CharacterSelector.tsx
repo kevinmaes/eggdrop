@@ -71,10 +71,7 @@ function CharacterButton({
 
       // Calculate scale to fit the frame in 56x56 canvas while maintaining aspect ratio
       // Egg is smaller than hen/chef in real life, so scale it down to 60% size
-      const baseScale = Math.min(
-        56 / frameData.w,
-        56 / frameData.h
-      );
+      const baseScale = Math.min(56 / frameData.w, 56 / frameData.h);
       const scale = character === 'egg' ? baseScale * 0.6 : baseScale;
 
       const scaledWidth = frameData.w * scale;

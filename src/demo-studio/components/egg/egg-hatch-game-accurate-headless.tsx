@@ -274,8 +274,8 @@ function EggHatchGameAccurateHeadless({
           <div>3. Landed (transition)</div>
           <div>4. Hatching (300ms pause)</div>
           <div>5. Hatching Jump:</div>
-          <div>   → Jumping Up (400ms)</div>
-          <div>   → Bouncing Down (400ms)</div>
+          <div> → Jumping Up (400ms)</div>
+          <div> → Bouncing Down (400ms)</div>
           <div>6. Hatched (500ms pause)</div>
           <div>7. Exiting (1s linear slide)</div>
           <div>8. Done (final)</div>

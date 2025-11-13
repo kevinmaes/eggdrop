@@ -295,14 +295,10 @@ function EggEnhancedHatchHeadless({
           <li>
             The Stately Inspector should open in a separate window automatically
           </li>
-          <li>
-            Watch the complete 9-state flow with realistic animations
-          </li>
+          <li>Watch the complete 9-state flow with realistic animations</li>
           <li>Observe the cracking wobble animation (rotation oscillates)</li>
           <li>Track the jump physics (easeOut up, bounceEaseOut down)</li>
-          <li>
-            Watch position updates during each animation phase
-          </li>
+          <li>Watch position updates during each animation phase</li>
           <li>Note the random chickWalkDirection chosen at initialization</li>
         </ol>
       </div>

@@ -245,8 +245,8 @@ function EggHatchJumpOnlyHeadless({
           <div>1. Waiting (chick in shell on ground)</div>
           <div>2. Hatching (300ms pause)</div>
           <div>3. Hatching Jump:</div>
-          <div>   → Jumping Up (400ms, easeOut)</div>
-          <div>   → Bouncing Down (400ms, bounceEaseOut)</div>
+          <div> → Jumping Up (400ms, easeOut)</div>
+          <div> → Bouncing Down (400ms, bounceEaseOut)</div>
           <div>4. Hatched (500ms pause, standing)</div>
           <div>5. Done</div>
         </div>

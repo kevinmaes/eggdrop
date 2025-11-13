@@ -47,7 +47,8 @@ const eggHatchJumpOnlyHeadlessMachine = setup({
   },
   actions: {
     prepareForJump: assign({
-      jumpStartY: ({ context }) => context.groundY - DEMO_CONFIG.chickHeight / 2,
+      jumpStartY: ({ context }) =>
+        context.groundY - DEMO_CONFIG.chickHeight / 2,
       jumpStartTime: () => Date.now(),
     }),
     updateJumpUp: assign({

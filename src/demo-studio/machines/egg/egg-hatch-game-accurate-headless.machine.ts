@@ -95,7 +95,8 @@ const eggHatchGameAccurateHeadlessMachine = setup({
         x: context.position.x,
         y: context.groundY - DEMO_CONFIG.chickHeight / 2,
       }),
-      jumpStartY: ({ context }) => context.groundY - DEMO_CONFIG.chickHeight / 2,
+      jumpStartY: ({ context }) =>
+        context.groundY - DEMO_CONFIG.chickHeight / 2,
       jumpStartTime: () => Date.now(),
     }),
     updateJumpUp: assign({
