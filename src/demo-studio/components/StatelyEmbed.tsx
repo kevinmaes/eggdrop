@@ -5,7 +5,7 @@ import type { LayoutMode } from '../demo-constants';
 interface StatelyEmbedProps {
   layoutMode: LayoutMode;
   demoTitle?: string;
-  statelyUrl: string;
+  statelyUrl?: string;
 }
 
 /**
@@ -53,15 +53,32 @@ export function StatelyEmbed({
           {demoTitle}
         </div>
       )}
-      <iframe
-        src={statelyUrl}
-        style={{
-          width: '100%',
-          height: '100%',
-          border: 'none',
-        }}
-        title="Stately Statechart"
-      />
+      {statelyUrl ? (
+        <iframe
+          src={statelyUrl}
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+          }}
+          title="Stately Statechart"
+        />
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            color: '#6a6a6a',
+            fontSize: '1rem',
+            textAlign: 'center',
+            padding: '2rem',
+          }}
+        >
+          No Stately embed URL configured for this demo
+        </div>
+      )}
     </div>
   );
 }

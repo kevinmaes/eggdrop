@@ -147,7 +147,9 @@ export function getEggDemos(
 
   // For eggs WITHOUT rotation (no offsetX/offsetY): position.x = left edge
   // Center the egg: (canvasWidth / 2) - (egg width / 2)
-  const eggLeftEdgeCenterX = Math.floor((canvasWidth - ACTOR_SIZE.egg.width) / 2);
+  const eggLeftEdgeCenterX = Math.floor(
+    (canvasWidth - ACTOR_SIZE.egg.width) / 2
+  );
 
   // For eggs WITH rotation (with offsetX/offsetY): position.x = center point
   // Simply use center of canvas
@@ -183,7 +185,12 @@ export function getEggDemos(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
-      inspector: { visible: true, position: 'right' },
+      inspector: {
+        visible: true,
+        position: 'right',
+        statelyEmbedUrl:
+          'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893',
+      },
     },
     {
       id: 'egg-falling-rotating',

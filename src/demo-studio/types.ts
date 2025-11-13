@@ -44,6 +44,7 @@ export interface DemoConfig {
   inspector?: {
     visible: boolean;
     position?: 'left' | 'right' | 'bottom';
+    statelyEmbedUrl?: string;
   };
 }
 
