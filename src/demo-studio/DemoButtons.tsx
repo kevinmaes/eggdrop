@@ -26,13 +26,23 @@ function DemoButton({
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // Extract short name from title (everything after the dash and category)
+  // Get concise button label focusing on what makes each demo unique
   const getShortName = () => {
-    // Title format: "Category - Short Name"
-    // e.g., "Hen - Idle" -> "Idle"
-    // e.g., "Egg - Falling and Landing" -> "Falling and Landing"
-    const parts = demo.title.split(' - ');
-    return parts.length > 1 ? parts[1] : demo.title;
+    const shortNameMap: Record<string, string> = {
+      'Hen - Idle': 'Idle',
+      'Hen - Back and Forth': 'Back and Forth',
+      'Hen - With Pauses': 'With Pauses',
+      'Egg - Falling': 'Falling',
+      'Egg - Falling + Rotating': '+Rotating',
+      'Egg - Splat': '+Splat',
+      'Egg - Falling and Landing': '+Landing',
+      'Egg - Land and Hatch': '+Hatch',
+      'Hatched Chick - Exit': 'Chick Exit',
+      'Egg - Hatching with Jump (Inserted Animation)': '+Jump',
+      'Egg - Complete Hatching (Game-Accurate)': 'Complete',
+    };
+
+    return shortNameMap[demo.title] || demo.title;
   };
 
   return (
@@ -84,7 +94,8 @@ function DemoButton({
             borderRadius: '4px',
             fontSize: '12px',
             whiteSpace: 'normal',
-            maxWidth: '300px',
+            maxWidth: '500px',
+            minWidth: '250px',
             zIndex: 1000,
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             pointerEvents: 'none',
