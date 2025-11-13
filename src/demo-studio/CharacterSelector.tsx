@@ -52,17 +52,6 @@ function CharacterButton({
     }
   };
 
-  const getLabel = () => {
-    switch (character) {
-      case 'hen':
-        return 'Hen';
-      case 'egg':
-        return 'Egg';
-      case 'chef':
-        return 'Chef';
-    }
-  };
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -80,18 +69,20 @@ function CharacterButton({
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Calculate scale to fit the frame in 40x40 canvas while maintaining aspect ratio
-      const scale = Math.min(
-        40 / frameData.w,
-        40 / frameData.h
+      // Calculate scale to fit the frame in 56x56 canvas while maintaining aspect ratio
+      // Egg is smaller than hen/chef in real life, so scale it down to 60% size
+      const baseScale = Math.min(
+        56 / frameData.w,
+        56 / frameData.h
       );
+      const scale = character === 'egg' ? baseScale * 0.6 : baseScale;
 
       const scaledWidth = frameData.w * scale;
       const scaledHeight = frameData.h * scale;
 
       // Center the image in the canvas
-      const x = (40 - scaledWidth) / 2;
-      const y = (40 - scaledHeight) / 2;
+      const x = (56 - scaledWidth) / 2;
+      const y = (56 - scaledHeight) / 2;
 
       // Draw the cropped sprite frame
       ctx.drawImage(
@@ -114,13 +105,12 @@ function CharacterButton({
       style={{
         width: '60px',
         height: '60px',
-        padding: '4px',
+        padding: '2px',
         border: isSelected ? '3px solid #4CAF50' : '2px solid #999',
         borderRadius: '4px',
         backgroundColor: '#2c5f7f',
         cursor: 'pointer',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         transition: 'all 0.2s',
@@ -139,22 +129,12 @@ function CharacterButton({
     >
       <canvas
         ref={canvasRef}
-        width={40}
-        height={40}
+        width={56}
+        height={56}
         style={{
           imageRendering: 'pixelated',
         }}
       />
-      <span
-        style={{
-          fontSize: '10px',
-          marginTop: '2px',
-          fontWeight: isSelected ? 'bold' : 'normal',
-          color: isSelected ? '#4CAF50' : '#fff',
-        }}
-      >
-        {getLabel()}
-      </span>
     </button>
   );
 }
