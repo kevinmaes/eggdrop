@@ -243,6 +243,35 @@ export function getEggDemos(
       layoutMode: 'horizontal-split-narrow',
       inspector: { visible: true, position: 'right' },
     },
+    {
+      id: 'egg-hatch',
+      title: 'Egg - Hatch & Chick',
+      description:
+        'Complete lifecycle: egg falls, lands, hatches into chick, chick runs off - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'hatch',
+          componentVersion: 'hatch',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'hatch-headless',
+          componentVersion: 'hatch-headless',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
   ];
 }
 
