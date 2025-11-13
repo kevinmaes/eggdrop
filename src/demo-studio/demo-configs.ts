@@ -273,10 +273,68 @@ export function getEggDemos(
       inspector: { visible: true, position: 'right' },
     },
     {
-      id: 'egg-hatch-game-accurate',
-      title: 'Egg - Game-Accurate Hatching',
+      id: 'egg-fall-land-only',
+      title: 'Egg - Falling and Landing',
       description:
-        'Matches real game exactly: egg falls, hatches (300ms), jumps and bounces, pauses (500ms), slides off - Visual demo + headless inspector',
+        'Incremental demo: egg falls with rotation and lands - Shows physics and landing detection - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'fall-land-only',
+          componentVersion: 'fall-land-only',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'fall-land-only-headless',
+          componentVersion: 'fall-land-only-headless',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'egg-hatch-jump-only',
+      title: 'Egg - Hatching Jump',
+      description:
+        'Incremental demo: chick jumps out of shell and bounces - Focuses on jump mechanics with easing - Visual demo + headless inspector',
+      actors: [
+        {
+          type: 'egg',
+          machineVersion: 'hatch-jump-only',
+          componentVersion: 'hatch-jump-only',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-visual',
+          canvasWidth,
+          canvasHeight,
+        },
+        {
+          type: 'egg',
+          machineVersion: 'hatch-jump-only-headless',
+          componentVersion: 'hatch-jump-only-headless',
+          startPosition: { x: eggCenterPointX, y: startY },
+          id: 'egg-headless',
+          canvasWidth,
+          canvasHeight,
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'egg-hatch-game-accurate',
+      title: 'Egg - Complete Hatching (Game-Accurate)',
+      description:
+        'Full sequence matching real game: falls, hatches (300ms), jumps and bounces, pauses (500ms), runs off - Visual demo + headless inspector',
       actors: [
         {
           type: 'egg',

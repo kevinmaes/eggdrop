@@ -105,11 +105,11 @@ const eggHatchGameAccurateMachine = setup({
     }),
     prepareForJump: assign({
       position: ({ context }) => ({
-        // Convert from center-based to left-edge-based
-        x: context.position.x - DEMO_CONFIG.chickWidth / 2,
-        y: context.groundY - DEMO_CONFIG.chickHeight,
+        // Keep center-based positioning (chick now uses offsetX/offsetY)
+        x: context.position.x,
+        y: context.groundY - DEMO_CONFIG.chickHeight / 2,
       }),
-      jumpStartY: ({ context }) => context.groundY - DEMO_CONFIG.chickHeight,
+      jumpStartY: ({ context }) => context.groundY - DEMO_CONFIG.chickHeight / 2,
       jumpStartTime: () => Date.now(),
     }),
     updateJumpUp: assign({

@@ -3,98 +3,59 @@ import { setup, assign, type ActorRefFrom } from 'xstate';
 import type { Direction, Position } from '../../../types';
 
 /**
- * Headless Game-Accurate Egg Hatch Machine
+ * Hatching Jump Only Demo
  *
- * Matches the exact hatching sequence from the real game's egg.machine.ts.
- * This version has all React ref dependencies removed for Stately Inspector integration.
+ * Focuses on just the hatching jump sequence:
+ * - Waiting (chick in shell on ground)
+ * - Hatching (300ms pause)
+ * - Hatching Jump (Jumping Up → Bouncing Down)
+ * - Hatched (500ms pause)
+ * - Done
  *
- * States match the game exactly:
- * Waiting → Falling → Landed → Hatching (300ms) → Hatching Jump (Jumping Up → Bouncing Down) → Hatched (500ms) → Exiting → Done
+ * This isolates the jump animation mechanics for learning purposes.
  */
 
 const DEMO_CONFIG = {
-  eggWidth: 60,
-  eggHeight: 60,
   chickWidth: 60,
   chickHeight: 60,
-  gravity: 0.15,
-  startY: 100,
-  maxVelocity: 8,
-  rotationSpeed: 5,
   hatchingPauseDuration: 300,
   jumpUpDuration: 400,
   jumpHeight: 70,
   bounceDuration: 400,
   hatchedPauseDuration: 500,
-  exitDuration: 1000,
-  exitSpeed: 10,
 };
 
-const eggHatchGameAccurateHeadlessMachine = setup({
+const eggHatchJumpOnlyMachine = setup({
   types: {} as {
     input: {
       id: string;
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
-      rotationDirection?: Direction['value'];
-      chickExitDirection?: Direction['value'];
     };
     output: {
       eggId: string;
     };
     context: {
+      eggRef: { current: null };
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: Direction['value'];
-      chickExitDirection: Direction['value'];
       canvasWidth: number;
       canvasHeight: number;
       groundY: number;
       jumpStartY: number;
       jumpStartTime: number;
-      exitStartTime: number;
-      exitStartX: number;
-      exitTargetX: number;
     };
-    events: { type: 'Start' } | { type: 'Update' };
+    events:
+      | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
+      | { type: 'Start' }
+      | { type: 'Update' };
   },
   actions: {
-    updatePositionAndRotation: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-      rotation: ({ context }) => {
-        return (
-          context.rotation +
-          context.rotationDirection * DEMO_CONFIG.rotationSpeed
-        );
-      },
-    }),
-    positionEggOnGround: assign({
-      position: ({ context }) => ({
-        x: context.position.x,
-        y: context.groundY - DEMO_CONFIG.eggHeight,
-      }),
-      velocity: 0,
-      rotation: 0,
+    setEggRef: assign({
+      eggRef: (_, params: React.RefObject<any>) => params,
     }),
     prepareForJump: assign({
-      position: ({ context }) => ({
-        // Keep center-based positioning (matches visual component)
-        x: context.position.x,
-        y: context.groundY - DEMO_CONFIG.chickHeight / 2,
-      }),
       jumpStartY: ({ context }) => context.groundY - DEMO_CONFIG.chickHeight / 2,
       jumpStartTime: () => Date.now(),
     }),
@@ -139,35 +100,8 @@ const eggHatchGameAccurateHeadlessMachine = setup({
         };
       },
     }),
-    prepareForExit: assign({
-      exitStartTime: () => Date.now(),
-      exitStartX: ({ context }) => context.position.x,
-      exitTargetX: ({ context }) => {
-        if (context.chickExitDirection === 1) {
-          return context.canvasWidth + DEMO_CONFIG.chickWidth;
-        } else {
-          return -DEMO_CONFIG.chickWidth;
-        }
-      },
-    }),
-    updateExitPosition: assign({
-      position: ({ context }) => {
-        const elapsed = Date.now() - context.exitStartTime;
-        const progress = Math.min(elapsed / DEMO_CONFIG.exitDuration, 1);
-        const newX =
-          context.exitStartX +
-          (context.exitTargetX - context.exitStartX) * progress;
-        return {
-          x: newX,
-          y: context.position.y,
-        };
-      },
-    }),
   },
   guards: {
-    hasLanded: ({ context }) => {
-      return context.position.y + DEMO_CONFIG.eggHeight >= context.groundY;
-    },
     jumpUpComplete: ({ context }) => {
       const elapsed = Date.now() - context.jumpStartTime;
       return elapsed >= DEMO_CONFIG.jumpUpDuration;
@@ -176,76 +110,53 @@ const eggHatchGameAccurateHeadlessMachine = setup({
       const elapsed = Date.now() - context.jumpStartTime;
       return elapsed >= DEMO_CONFIG.bounceDuration;
     },
-    exitComplete: ({ context }) => {
-      const elapsed = Date.now() - context.exitStartTime;
-      return elapsed >= DEMO_CONFIG.exitDuration;
-    },
   },
   delays: {
     hatchingPauseDuration: DEMO_CONFIG.hatchingPauseDuration,
     hatchedPauseDuration: DEMO_CONFIG.hatchedPauseDuration,
   },
 }).createMachine({
-  id: 'Egg-Hatch-Game-Accurate-Headless',
+  id: 'Egg-Hatch-Jump-Only',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    const eggCenterX = Math.floor(canvasWidth / 2);
     const groundY = canvasHeight - 50;
-
-    const chickExitDirection =
-      input.chickExitDirection ?? (Math.random() < 0.5 ? -1 : 1);
+    const centerX = Math.floor(canvasWidth / 2);
 
     return {
+      eggRef: { current: null },
       id: input.id,
       position: input.startPosition || {
-        x: eggCenterX,
-        y: DEMO_CONFIG.startY,
+        x: centerX,
+        y: groundY - DEMO_CONFIG.chickHeight / 2,
       },
-      velocity: 0,
-      rotation: 0,
-      rotationDirection: input.rotationDirection ?? 1,
-      chickExitDirection,
       canvasWidth,
       canvasHeight,
       groundY,
       jumpStartY: 0,
       jumpStartTime: 0,
-      exitStartTime: 0,
-      exitStartX: 0,
-      exitTargetX: 0,
     };
   },
   output: ({ context }) => ({
     eggId: context.id,
   }),
+  on: {
+    'Set eggRef': {
+      actions: {
+        type: 'setEggRef',
+        params: ({ event }) => event.eggRef,
+      },
+    },
+  },
   initial: 'Waiting',
   states: {
     Waiting: {
       on: {
-        Start: 'Falling',
-      },
-    },
-    Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'hasLanded',
-            target: 'Landed',
-          },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
-      },
-    },
-    Landed: {
-      always: {
-        target: 'Hatching',
-        actions: ['positionEggOnGround', 'prepareForJump'],
+        Start: 'Hatching',
       },
     },
     Hatching: {
+      entry: 'prepareForJump',
       after: {
         hatchingPauseDuration: 'Hatching Jump',
       },
@@ -288,21 +199,7 @@ const eggHatchGameAccurateHeadlessMachine = setup({
     },
     Hatched: {
       after: {
-        hatchedPauseDuration: 'Exiting',
-      },
-    },
-    Exiting: {
-      entry: 'prepareForExit',
-      on: {
-        Update: [
-          {
-            guard: 'exitComplete',
-            target: 'Done',
-          },
-          {
-            actions: 'updateExitPosition',
-          },
-        ],
+        hatchedPauseDuration: 'Done',
       },
     },
     Done: {
@@ -311,7 +208,7 @@ const eggHatchGameAccurateHeadlessMachine = setup({
   },
 });
 
-export default eggHatchGameAccurateHeadlessMachine;
-export type EggHatchGameAccurateHeadlessActorRef = ActorRefFrom<
-  typeof eggHatchGameAccurateHeadlessMachine
+export default eggHatchJumpOnlyMachine;
+export type EggHatchJumpOnlyActorRef = ActorRefFrom<
+  typeof eggHatchJumpOnlyMachine
 >;

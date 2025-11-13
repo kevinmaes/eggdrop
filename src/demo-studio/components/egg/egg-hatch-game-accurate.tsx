@@ -226,6 +226,8 @@ function EggHatchGameAccurate({
         y={position.y}
         width={CHICK_SIZE.width}
         height={CHICK_SIZE.height}
+        offsetX={CHICK_SIZE.width / 2}
+        offsetY={CHICK_SIZE.height / 2}
         crop={{
           x: chickFrameData.x,
           y: chickFrameData.y,
