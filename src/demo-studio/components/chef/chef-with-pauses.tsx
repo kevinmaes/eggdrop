@@ -105,15 +105,14 @@ function ChefWithPauses({
 
   // Flip sprite horizontally when moving right (opposite of what you'd expect)
   const scaleX = movingDirection === 'right' ? -1 : 1;
-  // Adjust offset when flipped
-  const offsetX = movingDirection === 'right' ? CHEF_SIZE.width : 0;
 
   return (
     <Image
       ref={chefRef}
       image={image}
-      x={position.x + offsetX}
+      x={position.x}
       y={position.y}
+      offsetX={CHEF_SIZE.width / 2}
       width={CHEF_SIZE.width}
       height={CHEF_SIZE.height}
       scaleX={scaleX}
