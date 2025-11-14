@@ -362,11 +362,12 @@ export function getChefDemos(): DemoConfig[] {
   const chefCanvasWidth = 1920;
   const chefCanvasHeight = 500;
 
-  // Chef starts at center X, positioned for stage at bottom
+  // Chef starts at center X, positioned in lower portion of canvas
   const chefCenterX = Math.floor(
     chefCanvasWidth / 2 - ACTOR_SIZE.chef.width / 2
   );
-  const chefY = Math.floor(chefCanvasHeight - 180); // Position chef on the stage
+  // Position chef in bottom 30% of canvas for now (can be tweaked later)
+  const chefY = Math.floor(chefCanvasHeight * 0.7); // 70% down = bottom 30% area
 
   return [
     {
@@ -384,10 +385,8 @@ export function getChefDemos(): DemoConfig[] {
         },
       ],
       background: {
-        type: 'stage',
+        type: 'solid',
         color: '#2c5f7f',
-        stageColor: '#654321',
-        stageHeightPercent: 0.35,
       },
       layoutMode: 'vertical-split-bottom',
       canvasWidth: chefCanvasWidth,
@@ -409,10 +408,8 @@ export function getChefDemos(): DemoConfig[] {
         },
       ],
       background: {
-        type: 'stage',
+        type: 'solid',
         color: '#2c5f7f',
-        stageColor: '#654321',
-        stageHeightPercent: 0.35,
       },
       layoutMode: 'vertical-split-bottom',
       canvasWidth: chefCanvasWidth,
