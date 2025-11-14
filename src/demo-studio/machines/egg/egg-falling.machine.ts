@@ -51,7 +51,8 @@ const eggFallingMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
-      | { type: 'Update' };
+      | { type: 'Update' }
+      | { type: 'Start' };
   },
   actions: {
     setEggRef: assign({

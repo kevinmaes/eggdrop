@@ -25,12 +25,16 @@ interface EggFallingRotatingHeadlessProps {
   config: ActorConfig;
   resetCount?: number;
   shouldStart?: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
 }
 
 function EggFallingRotatingHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
+  canvasWidth,
+  canvasHeight,
 }: EggFallingRotatingHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
@@ -51,8 +55,8 @@ function EggFallingRotatingHeadless({
       input: {
         startPosition: config.startPosition,
         id: actorId,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
       },
       inspect,
     });
@@ -73,7 +77,7 @@ function EggFallingRotatingHeadless({
       }
       newActor.stop();
     };
-  }, [config, resetCount]);
+  }, [config, resetCount, canvasWidth, canvasHeight]);
 
   // Send Start event when shouldStart becomes true
   useEffect(() => {

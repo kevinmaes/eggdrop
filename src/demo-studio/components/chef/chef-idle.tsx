@@ -52,8 +52,8 @@ function ChefIdle({
     return null;
   }
 
-  // Show the forward-facing idle frame
-  const currentFrame = chefSpriteData.frames['forward.png']?.frame;
+  // Show the catching idle frame
+  const currentFrame = chefSpriteData.frames['chef-catching.png']?.frame;
   if (!currentFrame) {
     return null;
   }

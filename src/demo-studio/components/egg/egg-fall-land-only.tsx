@@ -51,7 +51,7 @@ function EggFallLandOnly({
 
   const [eggImage] = useImage('/images/egg.sprite.png');
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
   const hasStartedRef = useRef(false);
 

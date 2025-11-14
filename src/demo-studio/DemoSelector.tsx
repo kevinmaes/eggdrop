@@ -78,11 +78,7 @@ export function DemoSelector({
       {currentDemoId && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {hasInspector && (
-            <Network
-              size={16}
-              style={{ color: '#4CAF50', flexShrink: 0 }}
-              title="Includes state machine diagram"
-            />
+            <Network size={16} style={{ color: '#4CAF50', flexShrink: 0 }} />
           )}
           <span style={{ color: '#666', fontSize: '0.875rem' }}>
             {currentConfig?.description}

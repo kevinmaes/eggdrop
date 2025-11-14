@@ -216,17 +216,14 @@ const chefBackAndForthMachine = setup({
         id: 'tweenActor',
         src: 'tweenActor',
         input: ({ context }) => ({
-          currentTweenSpeed: context.currentTweenSpeed,
-          currentTweenDurationMS: context.currentTweenDurationMS,
-          currentTweenStartTime: context.currentTweenStartTime,
-          tweenDirection: context.currentTweenDirection,
-          targetPosition: context.targetPosition,
+          node: isImageRef(context.chefRef) ? context.chefRef.current : null,
+          tween: context.currentTween,
         }),
         onDone: {
           target: 'Done Moving',
           actions: {
             type: 'updateToLastTweenPosition',
-            params: ({ event }) => event.output.lastPosition,
+            params: ({ event }) => event.output,
           },
         },
       },

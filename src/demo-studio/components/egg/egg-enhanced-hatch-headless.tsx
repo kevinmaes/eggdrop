@@ -26,25 +26,29 @@ function EggEnhancedHatchHeadless({
   config,
   resetCount,
   shouldStart,
+  canvasWidth,
+  canvasHeight,
 }: {
   config: ActorConfig;
   resetCount: number;
   shouldStart: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
 }) {
   const actorRef = useRef(
     createActor(eggEnhancedHatchHeadlessMachine, {
       input: {
         id: config.id || 'egg-enhanced-hatch-headless',
         startPosition: config.startPosition,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
         rotationDirection: 1,
       },
       inspect: getSharedInspector().inspect,
     })
   );
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
   // Start the actor

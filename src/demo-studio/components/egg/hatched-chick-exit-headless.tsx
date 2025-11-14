@@ -15,28 +15,34 @@ import type { ActorConfig } from '../../types';
  * Shows chick transitioning from shell to running off screen.
  */
 
+interface HatchedChickExitHeadlessProps {
+  config: ActorConfig;
+  resetCount: number;
+  shouldStart: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 function HatchedChickExitHeadless({
   config,
   resetCount,
   shouldStart,
-}: {
-  config: ActorConfig;
-  resetCount: number;
-  shouldStart: boolean;
-}) {
+  canvasWidth,
+  canvasHeight,
+}: HatchedChickExitHeadlessProps) {
   const actorRef = useRef(
     createActor(hatchedChickExitHeadlessMachine, {
       input: {
         id: config.id || 'hatched-chick-exit-headless',
         startPosition: config.startPosition,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
       },
       inspect: getSharedInspector().inspect,
     })
   );
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {

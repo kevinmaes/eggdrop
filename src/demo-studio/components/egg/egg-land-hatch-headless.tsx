@@ -15,29 +15,35 @@ import type { ActorConfig } from '../../types';
  * Shows egg falling, landing, and transitioning to hatched chick in shell.
  */
 
+interface EggLandHatchHeadlessProps {
+  config: ActorConfig;
+  resetCount: number;
+  shouldStart: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 function EggLandHatchHeadless({
   config,
   resetCount,
   shouldStart,
-}: {
-  config: ActorConfig;
-  resetCount: number;
-  shouldStart: boolean;
-}) {
+  canvasWidth,
+  canvasHeight,
+}: EggLandHatchHeadlessProps) {
   const actorRef = useRef(
     createActor(eggLandHatchHeadlessMachine, {
       input: {
         id: config.id || 'egg-land-hatch-headless',
         startPosition: config.startPosition,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
         rotationDirection: 1,
       },
       inspect: getSharedInspector().inspect,
     })
   );
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {

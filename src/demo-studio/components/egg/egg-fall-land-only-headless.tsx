@@ -15,29 +15,35 @@ import type { ActorConfig } from '../../types';
  * Focuses on physics and landing detection in isolation.
  */
 
+interface EggFallLandOnlyHeadlessProps {
+  config: ActorConfig;
+  resetCount: number;
+  shouldStart: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 function EggFallLandOnlyHeadless({
   config,
   resetCount,
   shouldStart,
-}: {
-  config: ActorConfig;
-  resetCount: number;
-  shouldStart: boolean;
-}) {
+  canvasWidth,
+  canvasHeight,
+}: EggFallLandOnlyHeadlessProps) {
   const actorRef = useRef(
     createActor(eggFallLandOnlyHeadlessMachine, {
       input: {
         id: config.id || 'egg-fall-land-only-headless',
         startPosition: config.startPosition,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
         rotationDirection: 1,
       },
       inspect: getSharedInspector().inspect,
     })
   );
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {

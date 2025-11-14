@@ -16,16 +16,7 @@ import type { ActorRefFrom } from 'xstate';
  * Based on hen-back-and-forth pattern with chef sprite animations.
  */
 
-type ChefFrameName =
-  | 'forward.png'
-  | 'walk-left-1.png'
-  | 'walk-left-2.png'
-  | 'walk-left-3.png'
-  | 'walk-left-4.png'
-  | 'walk-right-1.png'
-  | 'walk-right-2.png'
-  | 'walk-right-3.png'
-  | 'walk-right-4.png';
+type ChefFrameName = 'chef-catching.png' | 'chef-leg-1.png' | 'chef-leg-2.png';
 
 function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
   if (imageRef) {
@@ -47,7 +38,7 @@ function ChefBackAndForth({
   const { position, isMoving, movingDirection, absoluteTweenSpeed } =
     useSelector(actorRef, (state) => ({
       position: state?.context.position ?? { x: 0, y: 0 },
-      isMoving: state?.matches('Moving') ?? false,
+      isMoving: state?.value === 'Moving',
       movingDirection: state?.context.movingDirection ?? 'none',
       absoluteTweenSpeed: Math.abs(state?.context.currentTweenSpeed ?? 0),
     }));
@@ -61,24 +52,22 @@ function ChefBackAndForth({
     }
   }, [actorRef, chefRef]);
 
-  const [frameName, setFrameName] = useState<ChefFrameName>('forward.png');
+  const [frameName, setFrameName] =
+    useState<ChefFrameName>('chef-catching.png');
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     const [animationIntervalMinMS, animationIntervalMaxMS] = [50, 750];
 
     if (isMoving && movingDirection !== 'none') {
+      // Chef only has 2 walking frames (leg-1 and leg-2), no directional variants
       const walkFrameNames: ChefFrameName[] = [
-        `walk-${movingDirection}-1.png`,
-        `walk-${movingDirection}-2.png`,
-        `walk-${movingDirection}-3.png`,
-        `walk-${movingDirection}-4.png`,
+        'chef-leg-1.png',
+        'chef-leg-2.png',
       ];
 
       // Set first frame immediately
-      if (walkFrameNames[0]) {
-        setFrameName(walkFrameNames[0]);
-      }
+      setFrameName(walkFrameNames[0]!);
 
       // Calculate interval based on tween speed
       const intervalMS = Math.max(
@@ -90,13 +79,13 @@ function ChefBackAndForth({
         setFrameName((prevFrameName) => {
           const index = walkFrameNames.indexOf(prevFrameName);
           if (index === -1 || index === walkFrameNames.length - 1) {
-            return walkFrameNames[0] as ChefFrameName;
+            return walkFrameNames[0]!;
           }
-          return walkFrameNames[index + 1] as ChefFrameName;
+          return walkFrameNames[index + 1]!;
         });
       }, intervalMS);
     } else {
-      setFrameName('forward.png');
+      setFrameName('chef-catching.png');
     }
 
     return () => {

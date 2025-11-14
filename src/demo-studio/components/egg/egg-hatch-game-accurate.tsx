@@ -87,7 +87,6 @@ function EggHatchGameAccurate({
   // - Hatching Jump (jumping/bouncing): chick-forward-2.png (out of shell)
   // - Hatched: chick-forward-1.png (standing)
   // - Exiting: chick-run frames (animated)
-  const _useHatchingFrame = isHatching;
   const useJumpingFrame = isJumpingUp || isBouncingDown;
   const useStandingFrame = isHatched;
   const useRunningFrame = isExiting;
@@ -96,7 +95,7 @@ function EggHatchGameAccurate({
   const [chickImage] = useImage('/images/chick.sprite.png');
 
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
   const hasStartedRef = useRef(false);
 
@@ -212,7 +211,9 @@ function EggHatchGameAccurate({
       frameName = `chick-run-${direction}-${chickRunFrame}.png`;
     }
 
-    const chickFrameData = chickSpriteData.frames[frameName]?.frame;
+    const chickFrameData =
+      chickSpriteData.frames[frameName as keyof typeof chickSpriteData.frames]
+        ?.frame;
     if (!chickFrameData) return null;
 
     return (

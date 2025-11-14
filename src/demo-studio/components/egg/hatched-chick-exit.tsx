@@ -52,7 +52,7 @@ function HatchedChickExit({
 
   const [chickImage] = useImage('/images/chick.sprite.png');
   const chickRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
   const hasStartedRef = useRef(false);
 
@@ -128,7 +128,9 @@ function HatchedChickExit({
     frameName = `chick-run-${direction}-${chickRunFrame}.png`;
   }
 
-  const chickFrameData = chickSpriteData.frames[frameName]?.frame;
+  const chickFrameData =
+    chickSpriteData.frames[frameName as keyof typeof chickSpriteData.frames]
+      ?.frame;
   if (!chickFrameData) return null;
 
   return (

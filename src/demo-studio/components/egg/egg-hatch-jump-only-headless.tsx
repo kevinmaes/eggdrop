@@ -15,28 +15,34 @@ import type { ActorConfig } from '../../types';
  * Focuses on the jump mechanics in isolation.
  */
 
+interface EggHatchJumpOnlyHeadlessProps {
+  config: ActorConfig;
+  resetCount: number;
+  shouldStart: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 function EggHatchJumpOnlyHeadless({
   config,
   resetCount,
   shouldStart,
-}: {
-  config: ActorConfig;
-  resetCount: number;
-  shouldStart: boolean;
-}) {
+  canvasWidth,
+  canvasHeight,
+}: EggHatchJumpOnlyHeadlessProps) {
   const actorRef = useRef(
     createActor(eggHatchJumpOnlyHeadlessMachine, {
       input: {
         id: config.id || 'egg-hatch-jump-only-headless',
         startPosition: config.startPosition,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
       },
       inspect: getSharedInspector().inspect,
     })
   );
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
@@ -58,7 +64,8 @@ function EggHatchJumpOnlyHeadless({
   const context = snapshot.context;
   const currentState = snapshot.value;
 
-  let displayState = currentState;
+  let displayState: string =
+    typeof currentState === 'string' ? currentState : 'Unknown';
   if (typeof currentState === 'object' && 'Hatching Jump' in currentState) {
     displayState = `Hatching Jump / ${currentState['Hatching Jump']}`;
   }

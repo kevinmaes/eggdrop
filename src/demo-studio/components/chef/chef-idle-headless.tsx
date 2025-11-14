@@ -20,12 +20,16 @@ interface ChefIdleHeadlessProps {
   config: ActorConfig;
   resetCount?: number;
   shouldStart?: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
 }
 
 function ChefIdleHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
+  canvasWidth,
+  canvasHeight,
 }: ChefIdleHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
@@ -41,8 +45,8 @@ function ChefIdleHeadless({
       input: {
         startPosition: config.startPosition,
         id: actorId,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
       },
       inspect,
     });
@@ -58,7 +62,7 @@ function ChefIdleHeadless({
     return () => {
       newActor.stop();
     };
-  }, [config, resetCount]);
+  }, [config, resetCount, canvasWidth, canvasHeight]);
 
   // Send Start event when shouldStart becomes true
   useEffect(() => {

@@ -25,29 +25,35 @@ import type { ActorConfig } from '../../types';
  * - Done
  */
 
+interface EggHatchGameAccurateHeadlessProps {
+  config: ActorConfig;
+  resetCount: number;
+  shouldStart: boolean;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
 function EggHatchGameAccurateHeadless({
   config,
   resetCount,
   shouldStart,
-}: {
-  config: ActorConfig;
-  resetCount: number;
-  shouldStart: boolean;
-}) {
+  canvasWidth,
+  canvasHeight,
+}: EggHatchGameAccurateHeadlessProps) {
   const actorRef = useRef(
     createActor(eggHatchGameAccurateHeadlessMachine, {
       input: {
         id: config.id || 'egg-hatch-game-accurate-headless',
         startPosition: config.startPosition,
-        canvasWidth: config.canvasWidth,
-        canvasHeight: config.canvasHeight,
+        canvasWidth,
+        canvasHeight,
         rotationDirection: 1,
       },
       inspect: getSharedInspector().inspect,
     })
   );
 
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
@@ -70,7 +76,8 @@ function EggHatchGameAccurateHeadless({
   const currentState = snapshot.value;
 
   // Get nested state if in Hatching Jump
-  let displayState = currentState;
+  let displayState: string =
+    typeof currentState === 'string' ? currentState : 'Unknown';
   if (typeof currentState === 'object' && 'Hatching Jump' in currentState) {
     displayState = `Hatching Jump / ${currentState['Hatching Jump']}`;
   }

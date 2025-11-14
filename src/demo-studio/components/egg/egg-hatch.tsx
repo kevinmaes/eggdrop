@@ -61,7 +61,6 @@ function EggHatch({
   );
 
   const isFalling = currentState === 'Falling';
-  const _isWaiting = currentState === 'Waiting';
   const isHatching = currentState === 'Hatching';
   const isChickRunning = currentState === 'ChickRunning';
 
@@ -69,7 +68,7 @@ function EggHatch({
   const [chickImage] = useImage('/images/chick.sprite.png');
 
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
   const hasStartedRef = useRef(false);
 
@@ -168,7 +167,9 @@ function EggHatch({
   if (isChickRunning) {
     const direction = chickRunDirection === 1 ? 'right' : 'left';
     const frameName = `chick-run-${direction}-${chickFrame}.png`;
-    const runFrame = chickSpriteData.frames[frameName]?.frame;
+    const runFrame =
+      chickSpriteData.frames[frameName as keyof typeof chickSpriteData.frames]
+        ?.frame;
     if (!runFrame) return null;
 
     return (

@@ -77,7 +77,7 @@ function EggEnhancedHatch({
   const [chickImage] = useImage('/images/chick.sprite.png');
 
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
   const hasStartedRef = useRef(false);
 
@@ -189,7 +189,9 @@ function EggEnhancedHatch({
       frameName = 'chick-hatch.png';
     }
 
-    const chickFrameData = chickSpriteData.frames[frameName]?.frame;
+    const chickFrameData =
+      chickSpriteData.frames[frameName as keyof typeof chickSpriteData.frames]
+        ?.frame;
     if (!chickFrameData) return null;
 
     return (

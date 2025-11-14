@@ -98,8 +98,8 @@ export function DemoStudio() {
     setSelectedCharacter(character);
     // Optionally auto-select first demo of new character
     const demos = getCharacterDemos(character);
-    if (demos.length > 0 && demos[0].id !== selectedDemoId) {
-      handleSelectDemo(demos[0].id);
+    if (demos.length > 0 && demos[0]?.id !== selectedDemoId) {
+      handleSelectDemo(demos[0]!.id);
     }
   };
 
@@ -293,6 +293,8 @@ export function DemoStudio() {
                               config={config}
                               resetCount={resetCount}
                               shouldStart={isPlaying}
+                              canvasWidth={canvasWidth}
+                              canvasHeight={canvasHeight}
                             />
                           );
                         })}
@@ -352,6 +354,8 @@ export function DemoStudio() {
                             config={config}
                             resetCount={resetCount}
                             shouldStart={isPlaying}
+                            canvasWidth={canvasWidth}
+                            canvasHeight={canvasHeight}
                           />
                         );
                       })}
