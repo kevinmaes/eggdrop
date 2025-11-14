@@ -417,6 +417,52 @@ export function getChefDemos(): DemoConfig[] {
       canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
     },
+    {
+      id: 'Chef Facing Direction',
+      title: 'Chef - Facing Direction',
+      description:
+        'Chef moves back and forth and faces the correct direction - Visual demo',
+      actors: [
+        {
+          type: 'chef',
+          machineVersion: 'facing-direction',
+          componentVersion: 'facing-direction',
+          startPosition: { x: chefCenterX, y: chefY },
+          id: 'chef-visual',
+        },
+      ],
+      background: {
+        type: 'solid',
+        color: '#2c5f7f',
+      },
+      layoutMode: 'vertical-split-bottom',
+      canvasWidth: chefCanvasWidth,
+      canvasHeight: chefCanvasHeight,
+      inspector: { visible: true, position: 'right' },
+    },
+    {
+      id: 'Chef With Pauses',
+      title: 'Chef - With Pauses',
+      description:
+        'Chef moves with random pauses and faces direction of movement - Visual demo',
+      actors: [
+        {
+          type: 'chef',
+          machineVersion: 'with-pauses',
+          componentVersion: 'with-pauses',
+          startPosition: { x: chefCenterX, y: chefY },
+          id: 'chef-visual',
+        },
+      ],
+      background: {
+        type: 'solid',
+        color: '#2c5f7f',
+      },
+      layoutMode: 'vertical-split-bottom',
+      canvasWidth: chefCanvasWidth,
+      canvasHeight: chefCanvasHeight,
+      inspector: { visible: true, position: 'right' },
+    },
   ];
 }
 
