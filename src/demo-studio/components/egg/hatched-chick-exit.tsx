@@ -38,12 +38,15 @@ function HatchedChickExit({
 }: {
   actorRef: ActorRefFrom<typeof hatchedChickExitMachine>;
 }) {
-  const { position, currentState } = useSelector(actorRef, (state) => ({
-    position: state?.context.position ?? { x: 0, y: 0 },
-    currentState: state?.value ?? 'Waiting',
-  }));
+  const { position, currentState, chickExitDirection } = useSelector(
+    actorRef,
+    (state) => ({
+      position: state?.context.position ?? { x: 0, y: 0 },
+      currentState: state?.value ?? 'Waiting',
+      chickExitDirection: state?.context.chickExitDirection ?? 1,
+    })
+  );
 
-  const isWaiting = currentState === 'Waiting';
   const isHatched = currentState === 'Hatched';
   const isExiting = currentState === 'Exiting';
 
@@ -100,14 +103,14 @@ function HatchedChickExit({
         }
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isExiting]);
@@ -121,9 +124,6 @@ function HatchedChickExit({
   if (isHatched) {
     frameName = 'chick-forward-1.png'; // Standing
   } else if (isExiting) {
-    const { chickExitDirection } = useSelector(actorRef, (state) => ({
-      chickExitDirection: state?.context.chickExitDirection ?? 1,
-    }));
     const direction = chickExitDirection === 1 ? 'right' : 'left';
     frameName = `chick-run-${direction}-${chickRunFrame}.png`;
   }

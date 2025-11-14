@@ -5,8 +5,8 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
+import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import eggHatchMachine from '../../machines/egg/egg-hatch.machine';
 
 import type { ActorRefFrom } from 'xstate';
@@ -61,7 +61,7 @@ function EggHatch({
   );
 
   const isFalling = currentState === 'Falling';
-  const isWaiting = currentState === 'Waiting';
+  const _isWaiting = currentState === 'Waiting';
   const isHatching = currentState === 'Hatching';
   const isChickRunning = currentState === 'ChickRunning';
 
@@ -125,14 +125,14 @@ function EggHatch({
         }
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isFalling, isChickRunning]);

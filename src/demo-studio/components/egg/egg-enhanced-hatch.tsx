@@ -5,8 +5,8 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
+import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import eggEnhancedHatchMachine from '../../machines/egg/egg-enhanced-hatch.machine';
 
 import type { ActorRefFrom } from 'xstate';
@@ -51,13 +51,12 @@ function EggEnhancedHatch({
 }: {
   actorRef: ActorRefFrom<typeof eggEnhancedHatchMachine>;
 }) {
-  const { position, rotation, currentState, chickWalkDirection } = useSelector(
+  const { position, rotation, currentState } = useSelector(
     actorRef,
     (state) => ({
       position: state?.context.position ?? { x: 0, y: 0 },
       rotation: state?.context.rotation ?? 0,
       currentState: state?.value ?? 'Waiting',
-      chickWalkDirection: (state?.context.chickWalkDirection ?? 1) as number,
     })
   );
 
@@ -136,14 +135,14 @@ function EggEnhancedHatch({
         }
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isFalling, isCracking, isJumpingUp, isBouncingDown, isWalking]);

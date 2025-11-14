@@ -5,8 +5,8 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
+import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import eggHatchGameAccurateMachine from '../../machines/egg/egg-hatch-game-accurate.machine';
 
 import type { ActorRefFrom } from 'xstate';
@@ -50,12 +50,13 @@ function EggHatchGameAccurate({
 }: {
   actorRef: ActorRefFrom<typeof eggHatchGameAccurateMachine>;
 }) {
-  const { position, rotation, currentState } = useSelector(
+  const { position, rotation, currentState, chickExitDirection } = useSelector(
     actorRef,
     (state) => ({
       position: state?.context.position ?? { x: 0, y: 0 },
       rotation: state?.context.rotation ?? 0,
       currentState: state?.value ?? 'Waiting',
+      chickExitDirection: state?.context.chickExitDirection ?? 1,
     })
   );
 
@@ -86,7 +87,7 @@ function EggHatchGameAccurate({
   // - Hatching Jump (jumping/bouncing): chick-forward-2.png (out of shell)
   // - Hatched: chick-forward-1.png (standing)
   // - Exiting: chick-run frames (animated)
-  const useHatchingFrame = isHatching;
+  const _useHatchingFrame = isHatching;
   const useJumpingFrame = isJumpingUp || isBouncingDown;
   const useStandingFrame = isHatched;
   const useRunningFrame = isExiting;
@@ -153,14 +154,14 @@ function EggHatchGameAccurate({
         }
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isFalling, isJumpingUp, isBouncingDown, isExiting]);
@@ -207,10 +208,6 @@ function EggHatchGameAccurate({
       frameName = 'chick-forward-1.png';
     } else if (useRunningFrame) {
       // During exit: animated running
-      // Get exit direction from context
-      const { chickExitDirection } = useSelector(actorRef, (state) => ({
-        chickExitDirection: state?.context.chickExitDirection ?? 1,
-      }));
       const direction = chickExitDirection === 1 ? 'right' : 'left';
       frameName = `chick-run-${direction}-${chickRunFrame}.png`;
     }

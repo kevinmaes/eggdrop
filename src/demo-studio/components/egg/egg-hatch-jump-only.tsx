@@ -59,7 +59,7 @@ function EggHatchJumpOnly({
   const isHatched = currentState === 'Hatched';
 
   // Sprite selection
-  const useHatchingFrame = isWaiting || isHatching;
+  const _useHatchingFrame = isWaiting || isHatching;
   const useJumpingFrame = isJumpingUp || isBouncingDown;
   const useStandingFrame = isHatched;
 
@@ -107,14 +107,14 @@ function EggHatchJumpOnly({
         lastUpdateRef.current = timestamp;
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isJumpingUp, isBouncingDown]);

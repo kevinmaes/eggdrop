@@ -14,7 +14,7 @@ import type { ActorRefFrom } from 'xstate';
  * Egg Splat Component
  *
  * Displays an egg that falls and splats on the ground.
- * Uses requestAnimationFrame to continuously update position.
+ * Uses window.requestAnimationFrame to continuously update position.
  * Shows white egg while falling, then switches to broken egg sprite on splat.
  */
 
@@ -102,14 +102,14 @@ function EggSplat({
         lastUpdateRef.current = timestamp;
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isFalling]);

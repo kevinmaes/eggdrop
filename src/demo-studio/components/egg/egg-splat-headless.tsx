@@ -69,7 +69,7 @@ function EggSplatHeadless({
 
     return () => {
       if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
       newActor.stop();
     };
@@ -92,14 +92,14 @@ function EggSplatHeadless({
 
     const animate = () => {
       actor.send({ type: 'Update' });
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actor, hasStarted, state]);

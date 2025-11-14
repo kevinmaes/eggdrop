@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-import henSpriteData from '../../public/images/hen.sprite.json';
-import eggSpriteData from '../../public/images/egg.sprite.json';
 import chefSpriteData from '../../public/images/chef.sprite.json';
+import eggSpriteData from '../../public/images/egg.sprite.json';
+import henSpriteData from '../../public/images/hen.sprite.json';
 
 /**
  * Character Selector Component
@@ -30,28 +30,6 @@ function CharacterButton({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const getImagePath = () => {
-    switch (character) {
-      case 'hen':
-        return '/images/hen.sprite.png';
-      case 'egg':
-        return '/images/egg.sprite.png';
-      case 'chef':
-        return '/images/chef.sprite.png';
-    }
-  };
-
-  const getFrameData = () => {
-    switch (character) {
-      case 'hen':
-        return henSpriteData.frames['forward.png']?.frame;
-      case 'egg':
-        return eggSpriteData.frames['egg-white.png']?.frame;
-      case 'chef':
-        return chefSpriteData.frames['chef-leg-1.png']?.frame;
-    }
-  };
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -59,7 +37,29 @@ function CharacterButton({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const img = new Image();
+    const getImagePath = () => {
+      switch (character) {
+        case 'hen':
+          return '/images/hen.sprite.png';
+        case 'egg':
+          return '/images/egg.sprite.png';
+        case 'chef':
+          return '/images/chef.sprite.png';
+      }
+    };
+
+    const getFrameData = () => {
+      switch (character) {
+        case 'hen':
+          return henSpriteData.frames['forward.png']?.frame;
+        case 'egg':
+          return eggSpriteData.frames['egg-white.png']?.frame;
+        case 'chef':
+          return chefSpriteData.frames['chef-leg-1.png']?.frame;
+      }
+    };
+
+    const img = new window.Image();
     img.src = getImagePath();
 
     img.onload = () => {

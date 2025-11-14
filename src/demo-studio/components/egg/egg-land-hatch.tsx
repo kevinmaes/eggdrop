@@ -5,8 +5,8 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
+import eggSpriteData from '../../../../public/images/egg.sprite.json';
 import eggLandHatchMachine from '../../machines/egg/egg-land-hatch.machine';
 
 import type { ActorRefFrom } from 'xstate';
@@ -105,14 +105,14 @@ function EggLandHatch({
         lastUpdateRef.current = timestamp;
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isFalling]);

@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from '@xstate/react';
 import { createActor } from 'xstate';
 
-import { getSharedInspector } from '../../utils/shared-inspector';
 import eggLandHatchHeadlessMachine from '../../machines/egg/egg-land-hatch-headless.machine';
+import { getSharedInspector } from '../../utils/shared-inspector';
 
 import type { ActorConfig } from '../../types';
 
@@ -77,14 +77,14 @@ function EggLandHatchHeadless({
         lastUpdateRef.current = timestamp;
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [needsAnimation]);

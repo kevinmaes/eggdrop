@@ -1,6 +1,5 @@
 import { assign, setup } from 'xstate';
 
-import { EGG_DEMO } from '../../demo-constants';
 
 import type { Direction, Position } from '../../../types';
 

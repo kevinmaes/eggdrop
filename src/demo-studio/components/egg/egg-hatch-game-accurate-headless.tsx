@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from '@xstate/react';
 import { createActor } from 'xstate';
 
-import { getSharedInspector } from '../../utils/shared-inspector';
 import eggHatchGameAccurateHeadlessMachine from '../../machines/egg/egg-hatch-game-accurate-headless.machine';
+import { getSharedInspector } from '../../utils/shared-inspector';
 
 import type { ActorConfig } from '../../types';
 
@@ -106,14 +106,14 @@ function EggHatchGameAccurateHeadless({
         lastUpdateRef.current = timestamp;
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [needsAnimation]);

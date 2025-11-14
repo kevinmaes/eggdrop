@@ -14,7 +14,7 @@ import type { ActorRefFrom } from 'xstate';
  * Egg Falling Component
  *
  * Displays a falling egg with gravity physics.
- * Uses requestAnimationFrame to continuously update position.
+ * Uses window.requestAnimationFrame to continuously update position.
  * Shows the white egg sprite as it falls.
  */
 
@@ -88,14 +88,14 @@ function EggFalling({
         lastUpdateRef.current = timestamp;
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current = window.requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+        window.cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [actorRef, isFalling]);

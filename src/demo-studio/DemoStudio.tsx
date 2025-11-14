@@ -6,9 +6,9 @@ import { CharacterSelector } from './CharacterSelector';
 import { InspectorPlaceholder } from './components/InspectorPlaceholder';
 import { StatelyEmbed } from './components/StatelyEmbed';
 import { ControlPanel } from './ControlPanel';
-import { DemoButtons } from './DemoButtons';
 import { getDemoConfigs } from './demo-configs';
 import { PRESENTATION_LAYOUT } from './demo-constants';
+import { DemoButtons } from './DemoButtons';
 import { DemoCanvas } from './DemoCanvas';
 import { demoStudioMachine } from './demoStudio.machine';
 import InspectorToggle from './InspectorToggle';
@@ -52,10 +52,6 @@ export function DemoStudio() {
 
   const handleSelectDemo = (demoId: string) => {
     send({ type: 'Select demo', demoId });
-  };
-
-  const handleCanvasWidthChange = (width: number) => {
-    send({ type: 'Change canvas width', width });
   };
 
   const handlePlay = () => {

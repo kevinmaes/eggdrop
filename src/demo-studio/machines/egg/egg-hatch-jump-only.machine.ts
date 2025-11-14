@@ -1,6 +1,6 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
-import type { Direction, Position } from '../../../types';
+import type { Position } from '../../../types';
 
 /**
  * Hatching Jump Only Demo
