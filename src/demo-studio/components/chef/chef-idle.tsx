@@ -25,8 +25,8 @@ function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
 }
 
 const CHEF_SIZE = {
-  width: 100,
-  height: 100,
+  width: 344,
+  height: 344,
 };
 
 function ChefIdle({

@@ -14,8 +14,8 @@ import { CHEF_DEMO, DEMO_CANVAS } from '../../demo-constants';
 const DEMO_CONFIG = {
   stageWidth: DEMO_CANVAS.width,
   stageHeight: DEMO_CANVAS.height,
-  chefWidth: 100,
-  chefHeight: 100,
+  chefWidth: 344,
+  chefHeight: 344,
   chefY: CHEF_DEMO.centerY,
   entranceDelayMS: 500,
   baseTweenDurationSeconds: 3,
@@ -172,15 +172,16 @@ const chefBackAndForthMachine = setup({
     const leftEdge = (canvasWidth - movementRange) / 2;
     const rightEdge = leftEdge + movementRange;
 
-    const { destination, position, targetPosition } =
-      getInitialState(canvasWidth);
+    // Use startPosition from input for initial position
+    const position = input.startPosition;
+    const destination: Destination = 'right-edge';
 
     return {
       chefRef: { current: null },
       id: input.id,
       destination,
       position,
-      targetPosition,
+      targetPosition: position,
       currentTweenDirection: 0,
       movingDirection: 'right',
       currentTween: null,

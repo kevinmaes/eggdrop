@@ -366,8 +366,9 @@ export function getChefDemos(): DemoConfig[] {
   const chefCenterX = Math.floor(
     chefCanvasWidth / 2 - ACTOR_SIZE.chef.width / 2
   );
-  // Position chef in bottom 30% of canvas for now (can be tweaked later)
-  const chefY = Math.floor(chefCanvasHeight * 0.7); // 70% down = bottom 30% area
+  // Position chef near the bottom with 20px margin from bottom edge
+  // Canvas height is 500, chef height is 344, so position at 500 - 344 - 20 = 136
+  const chefY = chefCanvasHeight - ACTOR_SIZE.chef.height - 20;
 
   return [
     {

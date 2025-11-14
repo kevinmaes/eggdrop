@@ -90,7 +90,7 @@ export const DEMO_CANVAS = {
  */
 export const ACTOR_SIZE = {
   hen: { width: 120, height: 120 },
-  chef: { width: 100, height: 100 },
+  chef: { width: 344, height: 344 }, // Actual sprite size
   egg: { width: 60, height: 60 },
 } as const;
 
