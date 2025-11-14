@@ -52,8 +52,8 @@ export const PRESENTATION_LAYOUT = {
     inspector: { width: 1920, height: 972 },
   },
   verticalSplitBottom: {
-    inspector: { width: 1920, height: 972 },
-    demo: { width: 1920, height: 108 },
+    inspector: { width: 1920, height: 580 },
+    demo: { width: 1920, height: 500 },
   },
 } as const;
 

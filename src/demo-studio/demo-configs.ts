@@ -53,8 +53,6 @@ export function getHenDemos(
           componentVersion: 'idle',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
           id: 'hen-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'hen',
@@ -62,8 +60,6 @@ export function getHenDemos(
           componentVersion: 'idle-headless',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
           id: 'hen-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -82,8 +78,6 @@ export function getHenDemos(
           componentVersion: 'back-and-forth',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
           id: 'hen-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'hen',
@@ -91,8 +85,6 @@ export function getHenDemos(
           componentVersion: 'back-and-forth-headless',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
           id: 'hen-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -111,8 +103,6 @@ export function getHenDemos(
           componentVersion: 'with-pauses',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
           id: 'hen-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'hen',
@@ -120,8 +110,6 @@ export function getHenDemos(
           componentVersion: 'with-pauses-headless',
           startPosition: { x: henPos.centerX, y: henPos.centerY },
           id: 'hen-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -170,8 +158,6 @@ export function getEggDemos(
           componentVersion: 'falling',
           startPosition: { x: eggLeftEdgeCenterX, y: startY },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -179,8 +165,6 @@ export function getEggDemos(
           componentVersion: 'falling-headless',
           startPosition: { x: eggLeftEdgeCenterX, y: startY },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -204,8 +188,6 @@ export function getEggDemos(
           componentVersion: 'falling-rotating',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -213,8 +195,6 @@ export function getEggDemos(
           componentVersion: 'falling-rotating-headless',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -233,8 +213,6 @@ export function getEggDemos(
           componentVersion: 'splat',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -242,8 +220,6 @@ export function getEggDemos(
           componentVersion: 'splat-headless',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -262,8 +238,6 @@ export function getEggDemos(
           componentVersion: 'fall-land-only',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -271,8 +245,6 @@ export function getEggDemos(
           componentVersion: 'fall-land-only-headless',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -291,8 +263,6 @@ export function getEggDemos(
           componentVersion: 'land-hatch',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -300,8 +270,6 @@ export function getEggDemos(
           componentVersion: 'land-hatch-headless',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -320,8 +288,6 @@ export function getEggDemos(
           componentVersion: 'hatched-chick-exit',
           startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -329,8 +295,6 @@ export function getEggDemos(
           componentVersion: 'hatched-chick-exit-headless',
           startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -349,8 +313,6 @@ export function getEggDemos(
           componentVersion: 'hatch-jump-only',
           startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -358,8 +320,6 @@ export function getEggDemos(
           componentVersion: 'hatch-jump-only-headless',
           startPosition: { x: eggCenterPointX, y: canvasHeight - 80 },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -378,8 +338,6 @@ export function getEggDemos(
           componentVersion: 'hatch-game-accurate',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-visual',
-          canvasWidth,
-          canvasHeight,
         },
         {
           type: 'egg',
@@ -387,8 +345,6 @@ export function getEggDemos(
           componentVersion: 'hatch-game-accurate-headless',
           startPosition: { x: eggCenterPointX, y: startY },
           id: 'egg-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
       background: { type: 'solid', color: '#2c5f7f' },
@@ -399,18 +355,18 @@ export function getEggDemos(
 }
 
 /**
- * Get chef demos with calculated positions for given canvas width
+ * Get chef demos with custom canvas size for bottom presentation area
  */
-export function getChefDemos(
-  canvasWidth: number = DEMO_CANVAS.width,
-  canvasHeight: number = DEMO_CANVAS.height
-): DemoConfig[] {
-  const chefPos = calculatePositioningForWidth(
-    ACTOR_SIZE.chef.width,
-    ACTOR_SIZE.chef.height,
-    canvasWidth,
-    canvasHeight
+export function getChefDemos(): DemoConfig[] {
+  // Chef demos use a custom canvas size: 1920x500 at bottom of presentation area
+  const chefCanvasWidth = 1920;
+  const chefCanvasHeight = 500;
+
+  // Chef starts at center X, positioned for stage at bottom
+  const chefCenterX = Math.floor(
+    chefCanvasWidth / 2 - ACTOR_SIZE.chef.width / 2
   );
+  const chefY = Math.floor(chefCanvasHeight - 180); // Position chef on the stage
 
   return [
     {
@@ -423,23 +379,19 @@ export function getChefDemos(
           type: 'chef',
           machineVersion: 'idle',
           componentVersion: 'idle',
-          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
+          startPosition: { x: chefCenterX, y: chefY },
           id: 'chef-visual',
-          canvasWidth,
-          canvasHeight,
-        },
-        {
-          type: 'chef',
-          machineVersion: 'idle-headless',
-          componentVersion: 'idle-headless',
-          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
-          id: 'chef-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
-      background: { type: 'solid', color: '#2c5f7f' },
-      layoutMode: 'vertical-split-top',
+      background: {
+        type: 'stage',
+        color: '#2c5f7f',
+        stageColor: '#654321',
+        stageHeightPercent: 0.35,
+      },
+      layoutMode: 'vertical-split-bottom',
+      canvasWidth: chefCanvasWidth,
+      canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -452,23 +404,19 @@ export function getChefDemos(
           type: 'chef',
           machineVersion: 'back-and-forth',
           componentVersion: 'back-and-forth',
-          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
+          startPosition: { x: chefCenterX, y: chefY },
           id: 'chef-visual',
-          canvasWidth,
-          canvasHeight,
-        },
-        {
-          type: 'chef',
-          machineVersion: 'back-and-forth-headless',
-          componentVersion: 'back-and-forth-headless',
-          startPosition: { x: chefPos.centerX, y: chefPos.centerY },
-          id: 'chef-headless',
-          canvasWidth,
-          canvasHeight,
         },
       ],
-      background: { type: 'solid', color: '#2c5f7f' },
-      layoutMode: 'vertical-split-top',
+      background: {
+        type: 'stage',
+        color: '#2c5f7f',
+        stageColor: '#654321',
+        stageHeightPercent: 0.35,
+      },
+      layoutMode: 'vertical-split-bottom',
+      canvasWidth: chefCanvasWidth,
+      canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
     },
   ];
@@ -483,7 +431,7 @@ export function getDemoConfigs(
 ): DemoConfigs {
   const henDemos = getHenDemos(canvasWidth, canvasHeight);
   const eggDemos = getEggDemos(canvasWidth, canvasHeight);
-  const chefDemos = getChefDemos(canvasWidth, canvasHeight);
+  const chefDemos = getChefDemos();
 
   return {
     ...Object.fromEntries(henDemos.map((d) => [d.id, d])),

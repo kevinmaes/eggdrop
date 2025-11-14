@@ -10,6 +10,8 @@ import type { ActorConfig, DemoActorInstance } from './types';
  * - Component: `./components/{type}/{type}-{componentVersion}.tsx`
  *
  * @param config - Actor configuration specifying type and versions
+ * @param canvasWidth - Canvas width (from demo config)
+ * @param canvasHeight - Canvas height (from demo config)
  * @returns Promise resolving to actor instance, component, and config
  *
  * @example
@@ -18,19 +20,14 @@ import type { ActorConfig, DemoActorInstance } from './types';
  *   machineVersion: 'v1-simple',
  *   componentVersion: 'v1-simple',
  *   startPosition: { x: 100, y: 200 }
- * });
+ * }, 1920, 500);
  */
 export async function createDemoActor(
-  config: ActorConfig
+  config: ActorConfig,
+  canvasWidth: number,
+  canvasHeight: number
 ): Promise<DemoActorInstance> {
-  const {
-    type,
-    machineVersion,
-    componentVersion,
-    startPosition,
-    canvasWidth,
-    canvasHeight,
-  } = config;
+  const { type, machineVersion, componentVersion, startPosition } = config;
 
   // Dynamically import the versioned machine
   const machineModule = await import(

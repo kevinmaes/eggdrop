@@ -13,9 +13,11 @@ export interface Position {
  * Configuration for a demo background
  */
 export interface BackgroundConfig {
-  type: 'none' | 'solid' | 'image' | 'game';
+  type: 'none' | 'solid' | 'image' | 'game' | 'stage';
   color?: string;
   image?: string;
+  stageColor?: string;
+  stageHeightPercent?: number;
 }
 
 /**
@@ -27,8 +29,6 @@ export interface ActorConfig {
   componentVersion: string;
   startPosition: Position;
   id?: string;
-  canvasWidth?: number;
-  canvasHeight?: number;
 }
 
 /**
@@ -41,6 +41,8 @@ export interface DemoConfig {
   title: string;
   description?: string;
   layoutMode?: LayoutMode;
+  canvasWidth?: number;
+  canvasHeight?: number;
   inspector?: {
     visible: boolean;
     position?: 'left' | 'right' | 'bottom';

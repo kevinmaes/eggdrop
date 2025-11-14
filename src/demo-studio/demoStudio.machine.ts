@@ -34,7 +34,12 @@ const loadDemoActorsActor = fromPromise(
   async ({
     input,
   }: {
-    input: { demoConfig: DemoConfig; inspectorEnabled: boolean };
+    input: {
+      demoConfig: DemoConfig;
+      inspectorEnabled: boolean;
+      canvasWidth: number;
+      canvasHeight: number;
+    };
   }): Promise<DemoActorInstance[]> => {
     // Filter out headless actors if inspector is disabled
     const actorsToLoad = input.inspectorEnabled
@@ -44,7 +49,9 @@ const loadDemoActorsActor = fromPromise(
         );
 
     const instances = await Promise.all(
-      actorsToLoad.map((actorConfig) => createDemoActor(actorConfig))
+      actorsToLoad.map((actorConfig) =>
+        createDemoActor(actorConfig, input.canvasWidth, input.canvasHeight)
+      )
     );
     return instances;
   }
@@ -103,6 +110,17 @@ export const demoStudioMachine = setup({
       if (!demoConfig) return {};
 
       const layoutMode = demoConfig.layoutMode || null;
+
+      // Check demo config for explicit dimensions first
+      if (demoConfig.canvasWidth && demoConfig.canvasHeight) {
+        return {
+          layoutMode,
+          canvasWidth: demoConfig.canvasWidth,
+          canvasHeight: demoConfig.canvasHeight,
+        };
+      }
+
+      // Fall back to layout mode dimensions
       if (!layoutMode) return { layoutMode };
 
       const dimensions = getCanvasDimensionsForLayout(layoutMode);
@@ -205,6 +223,8 @@ export const demoStudioMachine = setup({
           return {
             demoConfig,
             inspectorEnabled: context.inspectorEnabled,
+            canvasWidth: context.canvasWidth,
+            canvasHeight: context.canvasHeight,
           };
         },
         onDone: {
