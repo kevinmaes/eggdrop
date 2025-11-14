@@ -12,7 +12,7 @@ import henSpriteData from '../../public/images/hen.sprite.json';
  * Only one can be selected at a time.
  */
 
-type CharacterType = 'hen' | 'egg' | 'chef';
+type CharacterType = 'hen' | 'egg' | 'chef' | 'other';
 
 interface CharacterSelectorProps {
   selectedCharacter: CharacterType | null;
@@ -56,17 +56,33 @@ function CharacterButton({
           return eggSpriteData.frames['egg-white.png']?.frame;
         case 'chef':
           return chefSpriteData.frames['chef-leg-1.png']?.frame;
+        case 'other':
+          return null; // Will render text instead
       }
     };
 
     const img = new window.Image();
     img.src = getImagePath();
 
-    img.onload = () => {
-      const frameData = getFrameData();
-      if (!frameData) return;
+    const frameData = getFrameData();
 
-      // Clear canvas
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (character === 'other') {
+      // Render text for "Other" button
+      ctx.fillStyle = '#e0e0e0';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('...', 28, 28);
+      return;
+    }
+
+    if (!frameData) return;
+
+    img.onload = () => {
+      // Clear canvas again for image render
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Calculate scale to fit the frame in 56x56 canvas while maintaining aspect ratio
@@ -158,7 +174,7 @@ export function CharacterSelector({
   selectedCharacter,
   onSelectCharacter,
 }: CharacterSelectorProps) {
-  const characters: CharacterType[] = ['hen', 'egg', 'chef'];
+  const characters: CharacterType[] = ['hen', 'egg', 'chef', 'other'];
 
   return (
     <div

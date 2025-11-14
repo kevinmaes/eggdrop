@@ -69,14 +69,25 @@ export async function createDemoActor(
     // Create the actor with the start position and canvas dimensions
     // NOTE: Actor is NOT started - DemoStudio will start it via Play button
     // We explicitly prevent auto-start by not calling .start() here
-    actor = createActor(machine, {
-      input: {
+
+    // Special handling for egg-caught-points which has different input requirements
+    let input: any;
+    if (type === 'egg-caught-points') {
+      input = {
+        eggCaughtPointsId: config.id || `${type}-${Date.now()}`,
+        eggColor: (config as any).eggColor || 'white',
+        position: startPosition,
+      };
+    } else {
+      input = {
         startPosition,
         id: config.id || `${type}-${Date.now()}`,
         canvasWidth,
         canvasHeight,
-      },
-    });
+      };
+    }
+
+    actor = createActor(machine, { input });
     // Actor is in 'stopped' state until DemoStudio calls actor.start()
   }
 

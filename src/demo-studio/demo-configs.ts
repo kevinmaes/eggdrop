@@ -465,6 +465,52 @@ export function getChefDemos(): DemoConfig[] {
 }
 
 /**
+ * Get "Other" demos (misc demos like points, UI elements, etc.)
+ */
+export function getOtherDemos(
+  canvasWidth: number = DEMO_CANVAS.width,
+  canvasHeight: number = DEMO_CANVAS.height
+): DemoConfig[] {
+  // Use horizontal-split-narrow layout like eggs (384px wide, 1080px tall)
+  const demoCanvasWidth = 384;
+  const demoCanvasHeight = 1080;
+
+  const centerX = Math.floor(demoCanvasWidth / 2);
+  const centerY = Math.floor(demoCanvasHeight / 2);
+
+  return [
+    {
+      id: 'Other Egg Caught Points',
+      title: 'Other - Egg Caught Points',
+      description: 'Points animation that appears when catching an egg - loops every 2 seconds',
+      actors: [
+        {
+          type: 'egg-caught-points',
+          machineVersion: 'demo',
+          componentVersion: 'demo',
+          startPosition: { x: centerX, y: centerY + 100 },
+          id: 'egg-caught-points-white',
+          eggColor: 'white',
+        },
+        {
+          type: 'egg-caught-points',
+          machineVersion: 'demo',
+          componentVersion: 'demo',
+          startPosition: { x: centerX, y: centerY - 100 },
+          id: 'egg-caught-points-gold',
+          eggColor: 'gold',
+        },
+      ],
+      background: { type: 'solid', color: '#2c5f7f' },
+      layoutMode: 'horizontal-split-narrow',
+      canvasWidth: demoCanvasWidth,
+      canvasHeight: demoCanvasHeight,
+      inspector: { visible: true, position: 'right' },
+    },
+  ];
+}
+
+/**
  * Get all demo configs for given canvas dimensions
  */
 export function getDemoConfigs(
@@ -474,11 +520,13 @@ export function getDemoConfigs(
   const henDemos = getHenDemos(canvasWidth, canvasHeight);
   const eggDemos = getEggDemos(canvasWidth, canvasHeight);
   const chefDemos = getChefDemos();
+  const otherDemos = getOtherDemos(canvasWidth, canvasHeight);
 
   return {
     ...Object.fromEntries(henDemos.map((d) => [d.id, d])),
     ...Object.fromEntries(eggDemos.map((d) => [d.id, d])),
     ...Object.fromEntries(chefDemos.map((d) => [d.id, d])),
+    ...Object.fromEntries(otherDemos.map((d) => [d.id, d])),
   };
 }
 

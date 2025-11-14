@@ -29,7 +29,7 @@ import type { DemoConfig } from './types';
  * - Actors are loaded and started automatically
  * - Use controls to manage playback
  */
-type CharacterType = 'hen' | 'egg' | 'chef';
+type CharacterType = 'hen' | 'egg' | 'chef' | 'other';
 
 export function DemoStudio() {
   const [state, send] = useMachine(demoStudioMachine);
@@ -125,8 +125,20 @@ export function DemoStudio() {
           borderBottom: '1px solid #ccc',
         }}
       >
-        {/* Left side: Character selector + demo buttons */}
+        {/* Left side: Logo + Character selector + demo buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <img
+            src="/src/assets/storybuk.svg"
+            alt="Storybuk"
+            style={{ height: '50px', width: 'auto' }}
+          />
+          <div
+            style={{
+              width: '1px',
+              height: '50px',
+              backgroundColor: '#ccc',
+            }}
+          />
           <CharacterSelector
             selectedCharacter={selectedCharacter}
             onSelectCharacter={handleSelectCharacter}
@@ -350,13 +362,25 @@ export function DemoStudio() {
             style={{
               flex: 1,
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '1.5rem',
-              color: '#666',
+              gap: '2rem',
             }}
           >
-            Select a demo to begin
+            <img
+              src="/src/assets/storybuk.svg"
+              alt="Storybuk"
+              style={{ width: '1200px', height: 'auto' }}
+            />
+            <div
+              style={{
+                fontSize: '1.5rem',
+                color: '#666',
+              }}
+            >
+              Select a demo to begin
+            </div>
           </div>
         )}
       </div>
