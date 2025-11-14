@@ -81,18 +81,36 @@ function CharacterButton({
       const x = (56 - scaledWidth) / 2;
       const y = (56 - scaledHeight) / 2;
 
-      // Draw the cropped sprite frame
-      ctx.drawImage(
-        img,
-        frameData.x,
-        frameData.y,
-        frameData.w,
-        frameData.h,
-        x,
-        y,
-        scaledWidth,
-        scaledHeight
-      );
+      // Flip chef horizontally to match demo facing direction
+      if (character === 'chef') {
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(
+          img,
+          frameData.x,
+          frameData.y,
+          frameData.w,
+          frameData.h,
+          -x - scaledWidth,
+          y,
+          scaledWidth,
+          scaledHeight
+        );
+        ctx.restore();
+      } else {
+        // Draw the cropped sprite frame
+        ctx.drawImage(
+          img,
+          frameData.x,
+          frameData.y,
+          frameData.w,
+          frameData.h,
+          x,
+          y,
+          scaledWidth,
+          scaledHeight
+        );
+      }
     };
   }, [character]);
 

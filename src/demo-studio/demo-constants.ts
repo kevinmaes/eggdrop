@@ -145,8 +145,8 @@ export const HEN_DEMO = {
 export const CHEF_DEMO = {
   ...calculatePositioning(ACTOR_SIZE.chef.width, ACTOR_SIZE.chef.height),
   size: ACTOR_SIZE.chef,
-  // Override centerY for chef (bottom third)
-  centerY: Math.floor((DEMO_CANVAS.height * 2) / 3),
+  // Override centerY for chef (centered in 400px canvas for vertical-split-bottom)
+  centerY: 200,
 } as const;
 
 /**

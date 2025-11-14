@@ -362,10 +362,8 @@ export function getChefDemos(): DemoConfig[] {
   const chefCanvasWidth = 1920;
   const chefCanvasHeight = 400;
 
-  // Chef starts at center X, positioned in lower portion of canvas
-  const chefCenterX = Math.floor(
-    chefCanvasWidth / 2 - ACTOR_SIZE.chef.width / 2
-  );
+  // Chef starts at center X (offsetX is handled in component via Konva)
+  const chefCenterX = Math.floor(chefCanvasWidth / 2);
   // Position chef near the bottom with 20px margin from bottom edge
   // Canvas height is 400, chef height is 344, so position at 400 - 344 - 20 = 36
   const chefY = chefCanvasHeight - ACTOR_SIZE.chef.height - 20;
@@ -396,7 +394,7 @@ export function getChefDemos(): DemoConfig[] {
     },
     {
       id: 'Chef Back And Forth',
-      title: 'Chef - Back and Forth',
+      title: 'Chef - Moving',
       description:
         'Chef moves back and forth left to right - Visual demo + headless inspector',
       actors: [
@@ -419,7 +417,7 @@ export function getChefDemos(): DemoConfig[] {
     },
     {
       id: 'Chef Facing Direction',
-      title: 'Chef - Facing Direction',
+      title: 'Chef - Face Forward',
       description:
         'Chef moves back and forth and faces the correct direction - Visual demo',
       actors: [
@@ -442,7 +440,7 @@ export function getChefDemos(): DemoConfig[] {
     },
     {
       id: 'Chef With Pauses',
-      title: 'Chef - With Pauses',
+      title: 'Chef - Move + Stop',
       description:
         'Chef moves with random pauses and faces direction of movement - Visual demo',
       actors: [

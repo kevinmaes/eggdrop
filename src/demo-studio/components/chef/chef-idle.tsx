@@ -52,11 +52,14 @@ function ChefIdle({
     return null;
   }
 
-  // Show the catching idle frame
-  const currentFrame = chefSpriteData.frames['chef-catching.png']?.frame;
+  // Use leg-1 instead of catching to avoid showing steam from pot
+  const currentFrame = chefSpriteData.frames['chef-leg-1.png']?.frame;
   if (!currentFrame) {
     return null;
   }
+
+  // Match the facing direction of other chef demos
+  const scaleX = -1;
 
   return (
     <Image
@@ -64,8 +67,10 @@ function ChefIdle({
       image={image}
       x={position.x}
       y={position.y}
+      offsetX={CHEF_SIZE.width / 2}
       width={CHEF_SIZE.width}
       height={CHEF_SIZE.height}
+      scaleX={scaleX}
       crop={{
         x: currentFrame.x,
         y: currentFrame.y,
