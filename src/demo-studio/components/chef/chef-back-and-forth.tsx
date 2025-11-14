@@ -85,7 +85,8 @@ function ChefBackAndForth({
         });
       }, intervalMS);
     } else {
-      setFrameName('chef-catching.png');
+      // Use leg-1 instead of catching to avoid showing steam from pot
+      setFrameName('chef-leg-1.png');
     }
 
     return () => {
@@ -104,14 +105,19 @@ function ChefBackAndForth({
     return null;
   }
 
+  // Keep chef facing left (flipped) throughout the animation
+  const scaleX = -1;
+
   return (
     <Image
       ref={chefRef}
       image={image}
       x={position.x}
       y={position.y}
+      offsetX={CHEF_SIZE.width / 2}
       width={CHEF_SIZE.width}
       height={CHEF_SIZE.height}
+      scaleX={scaleX}
       crop={{
         x: currentFrame.x,
         y: currentFrame.y,
