@@ -169,6 +169,9 @@ const henWithPausesHeadlessMachine = setup({
   actors: {
     tweenActorHeadless: tweenActorHeadless,
   },
+  delays: {
+    pauseDuration: ({ context }) => context.pauseDuration,
+  },
 }).createMachine({
   id: 'hen-with-pauses-headless',
   context: ({ input }) => {
@@ -258,12 +261,9 @@ const henWithPausesHeadlessMachine = setup({
       },
     },
     Pausing: {
-      after: [
-        {
-          delay: ({ context }) => context.pauseDuration,
-          target: 'Moving',
-        },
-      ],
+      after: {
+        pauseDuration: 'Moving',
+      },
     },
   },
   output: ({ context }) => ({
