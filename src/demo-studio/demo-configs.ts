@@ -358,16 +358,16 @@ export function getEggDemos(
  * Get chef demos with custom canvas size for bottom presentation area
  */
 export function getChefDemos(): DemoConfig[] {
-  // Chef demos use a custom canvas size: 1920x500 at bottom of presentation area
+  // Chef demos use a custom canvas size: 1920x400 at bottom of presentation area
   const chefCanvasWidth = 1920;
-  const chefCanvasHeight = 500;
+  const chefCanvasHeight = 400;
 
   // Chef starts at center X, positioned in lower portion of canvas
   const chefCenterX = Math.floor(
     chefCanvasWidth / 2 - ACTOR_SIZE.chef.width / 2
   );
   // Position chef near the bottom with 20px margin from bottom edge
-  // Canvas height is 500, chef height is 344, so position at 500 - 344 - 20 = 136
+  // Canvas height is 400, chef height is 344, so position at 400 - 344 - 20 = 36
   const chefY = chefCanvasHeight - ACTOR_SIZE.chef.height - 20;
 
   return [
