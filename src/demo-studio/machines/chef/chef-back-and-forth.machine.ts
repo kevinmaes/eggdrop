@@ -18,29 +18,12 @@ const DEMO_CONFIG = {
   chefHeight: 344,
   chefY: CHEF_DEMO.centerY,
   entranceDelayMS: 500,
-  baseTweenDurationSeconds: 3,
-  speed: 0.5,
+  baseTweenDurationSeconds: 2,
+  speed: 0.3,
   movementRangePercent: 0.5,
 };
 
 type Destination = 'left-edge' | 'right-edge';
-
-function getInitialState(canvasWidth: number) {
-  const movementRange = canvasWidth * DEMO_CONFIG.movementRangePercent;
-  const leftEdge = (canvasWidth - movementRange) / 2;
-
-  const destination: Destination = 'right-edge';
-  const initialPosition = {
-    x: leftEdge,
-    y: DEMO_CONFIG.chefY,
-  };
-
-  return {
-    destination,
-    position: initialPosition,
-    targetPosition: initialPosition,
-  };
-}
 
 const chefBackAndForthMachine = setup({
   types: {} as {
@@ -141,22 +124,17 @@ const chefBackAndForthMachine = setup({
       position: (_, params: Position) => params,
       currentTweenSpeed: 0,
     }),
-    cleanupTween: assign(({ context }) => {
-      if (context.currentTween) {
-        context.currentTween.destroy();
-      }
-      return {
-        currentTweenSpeed: 0,
-        currentTweenDirection: 0,
-        currentTween: null,
-      };
+    cleanupTween: assign({
+      currentTweenSpeed: 0,
+      currentTweenDirection: 0,
+      currentTweenDurationMS: 0,
+      currentTweenStartTime: 0,
+      currentTween: null,
+      movingDirection: 'none',
     }),
-    pickOppositeDestination: assign(({ context }) => {
-      const newDestination: Destination =
-        context.destination === 'right-edge' ? 'left-edge' : 'right-edge';
-      return {
-        destination: newDestination,
-      };
+    flipDestination: assign({
+      destination: ({ context }) =>
+        context.destination === 'right-edge' ? 'left-edge' : 'right-edge',
     }),
   },
   actors: {
@@ -213,6 +191,7 @@ const chefBackAndForthMachine = setup({
     },
     Moving: {
       entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
+      exit: 'cleanupTween',
       invoke: {
         id: 'tweenActor',
         src: 'tweenActor',
@@ -230,11 +209,11 @@ const chefBackAndForthMachine = setup({
       },
     },
     'Done Moving': {
-      entry: ['cleanupTween'],
       always: [
         {
           guard: 'has reached destination',
           target: 'Reached Destination',
+          actions: 'flipDestination',
         },
         {
           target: 'Moving',
@@ -242,11 +221,8 @@ const chefBackAndForthMachine = setup({
       ],
     },
     'Reached Destination': {
-      entry: ['pickOppositeDestination'],
       after: {
-        1000: {
-          target: 'Moving',
-        },
+        100: 'Moving',
       },
     },
   },
