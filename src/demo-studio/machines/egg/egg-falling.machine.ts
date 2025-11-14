@@ -1,7 +1,6 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-
 import type { Position } from '../../../types';
 
 /**

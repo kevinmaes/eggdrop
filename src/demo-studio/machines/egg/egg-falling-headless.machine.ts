@@ -1,6 +1,5 @@
 import { assign, setup } from 'xstate';
 
-
 import type { Position } from '../../../types';
 
 /**
