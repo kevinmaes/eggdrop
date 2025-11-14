@@ -14,6 +14,7 @@ interface BackgroundRendererProps {
  * Supports multiple background types:
  * - none: Transparent background
  * - solid: Single color fill
+ * - stage: Background with stage/ground at bottom
  * - gradient: Linear gradient (future implementation)
  * - image: Background image (future implementation)
  * - game: Full game background (future implementation)
@@ -36,6 +37,33 @@ export function BackgroundRenderer({
           width={width}
           height={height}
           fill={config.color || '#ffffff'}
+        />
+      </Layer>
+    );
+  }
+
+  if (config.type === 'stage') {
+    const stageHeightPercent = config.stageHeightPercent || 0.4;
+    const stageHeight = height * stageHeightPercent;
+    const stageY = height - stageHeight;
+
+    return (
+      <Layer>
+        {/* Background fill */}
+        <Rect
+          x={0}
+          y={0}
+          width={width}
+          height={height}
+          fill={config.color || '#2c5f7f'}
+        />
+        {/* Stage/ground at bottom */}
+        <Rect
+          x={0}
+          y={stageY}
+          width={width}
+          height={stageHeight}
+          fill={config.stageColor || '#654321'}
         />
       </Layer>
     );
