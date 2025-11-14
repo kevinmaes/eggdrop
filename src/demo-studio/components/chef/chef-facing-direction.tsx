@@ -83,7 +83,8 @@ function ChefFacingDirection({
         });
       }, intervalMS);
     } else {
-      setFrameName('chef-catching.png');
+      // Use leg-1 instead of catching to avoid showing steam from pot
+      setFrameName('chef-leg-1.png');
     }
 
     return () => {
@@ -102,10 +103,10 @@ function ChefFacingDirection({
     return null;
   }
 
-  // Flip sprite horizontally when moving left
-  const scaleX = movingDirection === 'left' ? -1 : 1;
+  // Flip sprite horizontally when moving right (opposite of what you'd expect)
+  const scaleX = movingDirection === 'right' ? -1 : 1;
   // Adjust offset when flipped
-  const offsetX = movingDirection === 'left' ? CHEF_SIZE.width : 0;
+  const offsetX = movingDirection === 'right' ? CHEF_SIZE.width : 0;
 
   return (
     <Image
