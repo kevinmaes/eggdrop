@@ -9,7 +9,7 @@ import {
 } from './utils/shared-inspector';
 
 import type { LayoutMode } from './story-constants';
-import type { StoryActorInstance } from './types';
+import type { StoryActorInstance, StoryConfig } from './types';
 
 /**
  * Storybuk State Machine

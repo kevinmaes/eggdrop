@@ -19,6 +19,7 @@ export interface BackgroundConfig {
   image?: string;
   stageColor?: string;
   stageHeightPercent?: number;
+  stageWidthPercent?: number;
 }
 
 /**
