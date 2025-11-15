@@ -8,9 +8,10 @@ import { ControlPanel } from './ControlPanel';
 import InspectorToggle from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
 import { PRESENTATION_LAYOUT } from './story-constants';
-import { storybukMachine } from './storybuk.machine';
 import { StoryButtons } from './StoryButtons';
 import { StoryCanvas } from './StoryCanvas';
+import { STORYBUK_COLORS } from './storybuk-theme';
+import { storybukMachine } from './storybuk.machine';
 
 import type { StoryConfig } from './types';
 
@@ -122,8 +123,8 @@ export function Storybuk() {
           justifyContent: 'space-between',
           gap: '1rem',
           padding: '0.5rem 1rem',
-          backgroundColor: '#f0f0f0',
-          borderBottom: '1px solid #ccc',
+          backgroundColor: STORYBUK_COLORS.header.background,
+          borderBottom: `1px solid ${STORYBUK_COLORS.header.border}`,
         }}
       >
         {/* Left side: Logo + Character selector + story buttons */}
@@ -137,7 +138,7 @@ export function Storybuk() {
             style={{
               width: '1px',
               height: '50px',
-              backgroundColor: '#ccc',
+              backgroundColor: STORYBUK_COLORS.header.border,
             }}
           />
           <CharacterSelector
@@ -148,7 +149,7 @@ export function Storybuk() {
             style={{
               width: '1px',
               height: '50px',
-              backgroundColor: '#ccc',
+              backgroundColor: STORYBUK_COLORS.header.border,
             }}
           />
           <StoryButtons

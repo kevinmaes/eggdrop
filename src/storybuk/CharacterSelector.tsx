@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import chefSpriteData from '../../public/images/chef.sprite.json';
 import eggSpriteData from '../../public/images/egg.sprite.json';
 import henSpriteData from '../../public/images/hen.sprite.json';
+import { STORYBUK_COLORS } from './storybuk-theme';
 
 /**
  * Character Selector Component
@@ -137,24 +138,35 @@ function CharacterButton({
         width: '60px',
         height: '60px',
         padding: '2px',
-        border: isSelected ? '3px solid #4CAF50' : '2px solid #999',
+        border: isSelected
+          ? `3px solid ${STORYBUK_COLORS.navigation.itemBorderActive}`
+          : `2px solid ${STORYBUK_COLORS.header.border}`,
         borderRadius: '4px',
-        backgroundColor: '#2c5f7f',
+        backgroundColor: isSelected
+          ? STORYBUK_COLORS.navigation.itemBackgroundActive
+          : STORYBUK_COLORS.navigation.itemBackground,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         transition: 'all 0.2s',
-        boxShadow: isSelected ? '0 2px 8px rgba(76, 175, 80, 0.3)' : 'none',
+        boxShadow: isSelected
+          ? `0 2px 8px ${STORYBUK_COLORS.navigation.itemBorderActive}40`
+          : 'none',
       }}
       onMouseEnter={(e) => {
         if (!isSelected) {
-          e.currentTarget.style.borderColor = '#4CAF50';
+          e.currentTarget.style.borderColor =
+            STORYBUK_COLORS.navigation.itemBorderActive;
+          e.currentTarget.style.backgroundColor =
+            STORYBUK_COLORS.navigation.itemBackgroundHover;
         }
       }}
       onMouseLeave={(e) => {
         if (!isSelected) {
-          e.currentTarget.style.borderColor = '#999';
+          e.currentTarget.style.borderColor = STORYBUK_COLORS.header.border;
+          e.currentTarget.style.backgroundColor =
+            STORYBUK_COLORS.navigation.itemBackground;
         }
       }}
     >
