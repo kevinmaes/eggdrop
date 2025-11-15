@@ -79,6 +79,9 @@ export const STORYBUK_COLORS = {
     error: '#F44336',
     info: '#2196F3',
   },
+
+  // Story demo background color
+  storyDemoBackground: '#2c5f7f',
 } as const;
 
 export const STORYBUK_LAYOUT = {

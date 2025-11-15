@@ -17,7 +17,6 @@ export function StatelyEmbed({
   demoTitle,
   statelyUrl,
 }: StatelyEmbedProps) {
-
   return (
     <div
       style={{

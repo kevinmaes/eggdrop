@@ -199,123 +199,124 @@ export function StoryNavigation({
 
       {/* Story Navigation Tree */}
       <div style={{ flex: 1, overflow: 'auto' }}>
-      {characters.map((character) => {
-        const stories = getStoriesByCharacter(character);
-        if (stories.length === 0) return null;
+        {characters.map((character) => {
+          const stories = getStoriesByCharacter(character);
+          if (stories.length === 0) return null;
 
-        const isExpanded = expandedFolders.has(character);
+          const isExpanded = expandedFolders.has(character);
 
-        return (
-          <div key={character}>
-            {/* Folder Header */}
-            <button
-              onClick={() => toggleFolder(character)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                border: 'none',
-                background: STORYBUK_COLORS.sidebar.folderBackground,
-                cursor: 'pointer',
-                color: STORYBUK_COLORS.sidebar.text,
-                fontSize: '14px',
-                fontWeight: 600,
-                transition: 'background-color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  STORYBUK_COLORS.navigation.itemBackgroundHover;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  STORYBUK_COLORS.sidebar.folderBackground;
-              }}
-            >
-              {/* Expand/Collapse Arrow */}
-              <ChevronRight
-                size={14}
+          return (
+            <div key={character}>
+              {/* Folder Header */}
+              <button
+                onClick={() => toggleFolder(character)}
                 style={{
-                  transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.15s ease',
-                  color: STORYBUK_COLORS.sidebar.folderIcon,
-                  flexShrink: 0,
+                  width: '100%',
+                  padding: '8px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: 'none',
+                  background: STORYBUK_COLORS.sidebar.folderBackground,
+                  cursor: 'pointer',
+                  color: STORYBUK_COLORS.sidebar.text,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  transition: 'background-color 0.2s',
                 }}
-              />
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    STORYBUK_COLORS.navigation.itemBackgroundHover;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    STORYBUK_COLORS.sidebar.folderBackground;
+                }}
+              >
+                {/* Expand/Collapse Arrow */}
+                <ChevronRight
+                  size={14}
+                  style={{
+                    transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.15s ease',
+                    color: STORYBUK_COLORS.sidebar.folderIcon,
+                    flexShrink: 0,
+                  }}
+                />
 
-              {/* Character Icon */}
-              <CharacterIcon character={character} size={20} />
+                {/* Character Icon */}
+                <CharacterIcon character={character} size={20} />
 
-              {/* Character Name */}
-              <span>{character}</span>
-            </button>
+                {/* Character Name */}
+                <span>{character}</span>
+              </button>
 
-            {/* Story List */}
-            {isExpanded && (
-              <div style={{ paddingLeft: '12px' }}>
-                {stories.map((story) => {
-                  const isSelected = story.id === selectedStoryId;
+              {/* Story List */}
+              {isExpanded && (
+                <div style={{ paddingLeft: '12px' }}>
+                  {stories.map((story) => {
+                    const isSelected = story.id === selectedStoryId;
 
-                  return (
-                    <button
-                      key={story.id}
-                      onClick={() => onSelectStory(story.id)}
-                      style={{
-                        width: '100%',
-                        padding: '6px 12px 6px 32px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        border: 'none',
-                        borderLeft: isSelected
-                          ? `3px solid ${STORYBUK_COLORS.navigation.itemBorderActive}`
-                          : '3px solid transparent',
-                        background: isSelected
-                          ? STORYBUK_COLORS.navigation.itemBackgroundActive
-                          : 'transparent',
-                        cursor: 'pointer',
-                        color: isSelected
-                          ? STORYBUK_COLORS.navigation.itemTextActive
-                          : STORYBUK_COLORS.navigation.itemText,
-                        fontSize: '13px',
-                        textAlign: 'left',
-                        transition: 'all 0.2s',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isSelected) {
-                          e.currentTarget.style.backgroundColor =
-                            STORYBUK_COLORS.navigation.itemBackgroundHover;
-                          e.currentTarget.style.color =
-                            STORYBUK_COLORS.navigation.itemTextHover;
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isSelected) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color =
-                            STORYBUK_COLORS.navigation.itemText;
-                        }
-                      }}
-                    >
-                      <BookOpen
-                        size={14}
+                    return (
+                      <button
+                        key={story.id}
+                        onClick={() => onSelectStory(story.id)}
                         style={{
+                          width: '100%',
+                          padding: '6px 12px 6px 32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          border: 'none',
+                          borderLeft: isSelected
+                            ? `3px solid ${STORYBUK_COLORS.navigation.itemBorderActive}`
+                            : '3px solid transparent',
+                          background: isSelected
+                            ? STORYBUK_COLORS.navigation.itemBackgroundActive
+                            : 'transparent',
+                          cursor: 'pointer',
                           color: isSelected
                             ? STORYBUK_COLORS.navigation.itemTextActive
-                            : STORYBUK_COLORS.sidebar.folderIcon,
-                          flexShrink: 0,
+                            : STORYBUK_COLORS.navigation.itemText,
+                          fontSize: '13px',
+                          textAlign: 'left',
+                          transition: 'all 0.2s',
                         }}
-                      />
-                      {story.title}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        );
-      })}
+                        onMouseEnter={(e) => {
+                          if (!isSelected) {
+                            e.currentTarget.style.backgroundColor =
+                              STORYBUK_COLORS.navigation.itemBackgroundHover;
+                            e.currentTarget.style.color =
+                              STORYBUK_COLORS.navigation.itemTextHover;
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isSelected) {
+                            e.currentTarget.style.backgroundColor =
+                              'transparent';
+                            e.currentTarget.style.color =
+                              STORYBUK_COLORS.navigation.itemText;
+                          }
+                        }}
+                      >
+                        <BookOpen
+                          size={14}
+                          style={{
+                            color: isSelected
+                              ? STORYBUK_COLORS.navigation.itemTextActive
+                              : STORYBUK_COLORS.sidebar.folderIcon,
+                            flexShrink: 0,
+                          }}
+                        />
+                        {story.title}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

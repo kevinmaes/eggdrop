@@ -14,12 +14,9 @@ export interface Position {
  * Configuration for a story background
  */
 export interface BackgroundConfig {
-  type: 'none' | 'solid' | 'image' | 'game' | 'stage';
-  color?: string;
+  type: 'none' | 'solid' | 'image' | 'game';
+  color: string;
   image?: string;
-  stageColor?: string;
-  stageHeightPercent?: number;
-  stageWidthPercent?: number;
 }
 
 /**

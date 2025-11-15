@@ -3,6 +3,7 @@ import {
   ACTOR_SIZE,
   calculateStoryCanvasDimensions,
 } from './story-constants';
+import { STORYBUK_COLORS } from './storybuk-theme';
 
 import type { StoryConfig, StoryConfigs, ActorConfig } from './types';
 
@@ -59,7 +60,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
     ...calculateStoryCanvasDimensions(
@@ -88,7 +89,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
     ...calculateStoryCanvasDimensions(
@@ -117,7 +118,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
     ...calculateStoryCanvasDimensions(
@@ -159,7 +160,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -190,7 +191,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -219,7 +220,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -248,7 +249,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -277,7 +278,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -306,7 +307,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions('horizontal', 10),
@@ -332,7 +333,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -361,7 +362,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions(
@@ -393,7 +394,7 @@ const CHEF_STORIES: StoryConfig[] = [
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
     ...calculateStoryCanvasDimensions(
@@ -417,7 +418,7 @@ const CHEF_STORIES: StoryConfig[] = [
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
     ...calculateStoryCanvasDimensions(
@@ -441,7 +442,7 @@ const CHEF_STORIES: StoryConfig[] = [
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
     ...calculateStoryCanvasDimensions(
@@ -465,7 +466,7 @@ const CHEF_STORIES: StoryConfig[] = [
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
     ...calculateStoryCanvasDimensions(
@@ -504,7 +505,7 @@ const OTHER_STORIES: StoryConfig[] = [
     ],
     background: {
       type: 'solid',
-      color: '#2c5f7f',
+      color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
     ...calculateStoryCanvasDimensions('horizontal', 20),

@@ -7,7 +7,11 @@ import { StatelyEmbed } from './components/StatelyEmbed';
 import { ControlPanel } from './ControlPanel';
 import InspectorToggle from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
-import { STORYBUK_COLORS, STORYBUK_LAYOUT, STORYBUK_FONTS } from './storybuk-theme';
+import {
+  STORYBUK_COLORS,
+  STORYBUK_LAYOUT,
+  STORYBUK_FONTS,
+} from './storybuk-theme';
 import { storybukMachine } from './storybuk.machine';
 import { StoryCanvas } from './StoryCanvas';
 import { StoryNavigation } from './StoryNavigation';
@@ -86,21 +90,29 @@ export function Storybuk() {
     if (splitOrientation === 'horizontal') {
       // Story on LEFT, Stately on RIGHT
       // Story controls width only, height fills content area
-      const storyWidth = currentStoryConfig?.canvasWidth ||
-                        STORYBUK_LAYOUT.horizontal.storyCanvas.width;
+      const storyWidth =
+        currentStoryConfig?.canvasWidth ||
+        STORYBUK_LAYOUT.horizontal.storyCanvas.width;
       return {
         storyCanvas: { width: storyWidth, height: contentArea.height },
-        statelyCanvas: { width: contentArea.width - storyWidth, height: contentArea.height }
+        statelyCanvas: {
+          width: contentArea.width - storyWidth,
+          height: contentArea.height,
+        },
       };
     }
 
     // vertical: Story on TOP, Stately on BOTTOM
     // Story controls height only, width fills content area
-    const storyHeight = currentStoryConfig?.canvasHeight ||
-                       STORYBUK_LAYOUT.vertical.storyCanvas.height;
+    const storyHeight =
+      currentStoryConfig?.canvasHeight ||
+      STORYBUK_LAYOUT.vertical.storyCanvas.height;
     return {
       storyCanvas: { width: contentArea.width, height: storyHeight },
-      statelyCanvas: { width: contentArea.width, height: contentArea.height - storyHeight }
+      statelyCanvas: {
+        width: contentArea.width,
+        height: contentArea.height - storyHeight,
+      },
     };
   };
 
@@ -163,8 +175,7 @@ export function Storybuk() {
             width: STORYBUK_LAYOUT.contentArea.width,
             height: STORYBUK_LAYOUT.contentArea.height,
             display: 'flex',
-            flexDirection:
-              splitOrientation === 'horizontal' ? 'row' : 'column',
+            flexDirection: splitOrientation === 'horizontal' ? 'row' : 'column',
           }}
         >
           {isLoading && (
@@ -208,7 +219,8 @@ export function Storybuk() {
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          backgroundColor: STORYBUK_COLORS.content.canvasBackground,
+                          backgroundColor:
+                            STORYBUK_COLORS.content.canvasBackground,
                         }}
                       >
                         <StoryCanvas

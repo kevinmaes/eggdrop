@@ -14,7 +14,6 @@ interface BackgroundRendererProps {
  * Supports multiple background types:
  * - none: Transparent background
  * - solid: Single color fill
- * - stage: Background with stage/ground at bottom
  * - gradient: Linear gradient (future implementation)
  * - image: Background image (future implementation)
  * - game: Full game background (future implementation)
@@ -37,76 +36,6 @@ export function BackgroundRenderer({
           width={width}
           height={height}
           fill={config.color || '#ffffff'}
-        />
-      </Layer>
-    );
-  }
-
-  if (config.type === 'stage') {
-    // Support both horizontal (left side) and vertical (bottom) stages
-    const hasHorizontalStage = config.stageWidthPercent !== undefined;
-    const hasVerticalStage = config.stageHeightPercent !== undefined;
-
-    if (hasHorizontalStage) {
-      // Stage on the left side (for horizontal layouts)
-      const stageWidth = width * config.stageWidthPercent;
-
-      return (
-        <Layer>
-          {/* Background fill */}
-          <Rect
-            x={0}
-            y={0}
-            width={width}
-            height={height}
-            fill={config.color || '#2c5f7f'}
-          />
-          {/* Stage/ground on left */}
-          <Rect
-            x={0}
-            y={0}
-            width={stageWidth}
-            height={height}
-            fill={config.stageColor || '#8B7355'}
-          />
-        </Layer>
-      );
-    } else if (hasVerticalStage) {
-      // Stage at the bottom (for vertical layouts)
-      const stageHeight = height * config.stageHeightPercent;
-      const stageY = height - stageHeight;
-
-      return (
-        <Layer>
-          {/* Background fill */}
-          <Rect
-            x={0}
-            y={0}
-            width={width}
-            height={height}
-            fill={config.color || '#2c5f7f'}
-          />
-          {/* Stage/ground at bottom */}
-          <Rect
-            x={0}
-            y={stageY}
-            width={width}
-            height={stageHeight}
-            fill={config.stageColor || '#8B7355'}
-          />
-        </Layer>
-      );
-    }
-
-    // Fallback to solid color if no stage dimensions specified
-    return (
-      <Layer>
-        <Rect
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          fill={config.color || '#2c5f7f'}
         />
       </Layer>
     );
