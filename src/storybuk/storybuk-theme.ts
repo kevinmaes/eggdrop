@@ -1,0 +1,95 @@
+/**
+ * Storybuk Theme - Colors and styling based on Storybook design system
+ *
+ * Color palette extracted from Storybook UI to match the look and feel
+ */
+
+export const STORYBUK_COLORS = {
+  // Header
+  header: {
+    background: '#ffffff',
+    border: '#e8e8e8',
+    text: '#333333',
+  },
+
+  // Sidebar navigation
+  sidebar: {
+    background: '#f6f9fc',
+    border: '#e8e8e8',
+    text: '#37352f',
+    textHover: '#1a1918',
+    folderIcon: '#73737d',
+  },
+
+  // Navigation items
+  navigation: {
+    itemBackground: 'transparent',
+    itemBackgroundHover: '#e6f7ff',
+    itemBackgroundActive: '#e6f7ff',
+    itemText: '#37352f',
+    itemTextHover: '#1a1918',
+    itemTextActive: '#1565C0',
+    itemBorder: 'transparent',
+    itemBorderActive: '#2196F3',
+  },
+
+  // Buttons
+  button: {
+    primary: {
+      background: '#2196F3',
+      backgroundHover: '#1976D2',
+      text: '#ffffff',
+      border: '#2196F3',
+    },
+    secondary: {
+      background: '#ffffff',
+      backgroundHover: '#f5f5f5',
+      text: '#333333',
+      border: '#e8e8e8',
+    },
+  },
+
+  // Content areas
+  content: {
+    background: '#ffffff',
+    canvasBackground: '#2c5f7f',
+    statelyBackground: '#1a1a1a',
+    border: '#e8e8e8',
+  },
+
+  // Text
+  text: {
+    primary: '#333333',
+    secondary: '#666666',
+    tertiary: '#999999',
+    disabled: '#cccccc',
+    inverse: '#ffffff',
+  },
+
+  // Status colors
+  status: {
+    success: '#4CAF50',
+    warning: '#FF9800',
+    error: '#F44336',
+    info: '#2196F3',
+  },
+} as const;
+
+export const STORYBUK_LAYOUT = {
+  total: { width: 1920, height: 1080 },
+  header: { height: 60 },
+  sidebar: { width: 300 },
+  contentArea: { width: 1620, height: 1020 }, // 1920 - 300 sidebar
+
+  // Orientation-specific layouts
+  'split-horizontal': {
+    storyCanvas: { width: 810, height: 1020 }, // Left half
+    statelyEmbed: { width: 810, height: 1020 }, // Right half
+  },
+  'split-vertical': {
+    storyCanvas: { width: 1620, height: 510 }, // Top half
+    statelyEmbed: { width: 1620, height: 510 }, // Bottom half
+  },
+} as const;
+
+export type LayoutOrientation = 'split-horizontal' | 'split-vertical';

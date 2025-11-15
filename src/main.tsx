@@ -7,8 +7,8 @@ import { Howler } from 'howler';
 import { AppActorContext } from './app.machine';
 import './index.css';
 import App from './App.tsx';
-import { DemoStudio } from './demo-studio/DemoStudio.tsx';
-import { InspectorProofOfConcept } from './demo-studio/InspectorProofOfConcept.tsx';
+import { Storybuk } from './storybuk/Storybuk.tsx';
+import { InspectorProofOfConcept } from './storybuk/InspectorProofOfConcept.tsx';
 import { getGameConfig } from './gameConfig.ts';
 
 // Get the game config which will be passed down to the app
@@ -19,14 +19,14 @@ Howler.mute(gameConfig.isMuted);
 
 // Simple routing: Check which route we're on
 const pathname = window.location.pathname;
-const isDemoStudio = pathname === '/demo-studio';
+const isStorybuk = pathname === '/storybuk';
 const isInspectorPOC = pathname === '/inspector-poc';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  isInspectorPOC || isDemoStudio ? (
-    // Inspector POC and Demo Studio run without StrictMode to avoid double mounting issues with inspector
-    isDemoStudio ? (
-      <DemoStudio />
+  isInspectorPOC || isStorybuk ? (
+    // Inspector POC and Storybuk run without StrictMode to avoid double mounting issues with inspector
+    isStorybuk ? (
+      <Storybuk />
     ) : (
       <InspectorProofOfConcept />
     )
