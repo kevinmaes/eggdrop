@@ -1,44 +1,36 @@
-import { useState } from 'react';
-
 import { useMachine } from '@xstate/react';
 
-import { CharacterSelector } from './CharacterSelector';
 import { StatelyEmbed } from './components/StatelyEmbed';
 import { ControlPanel } from './ControlPanel';
 import InspectorToggle from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
-import { PRESENTATION_LAYOUT } from './story-constants';
-import { StoryButtons } from './StoryButtons';
 import { StoryCanvas } from './StoryCanvas';
-import { STORYBUK_COLORS } from './storybuk-theme';
+import { StoryNavigation } from './StoryNavigation';
+import { STORYBUK_COLORS, STORYBUK_LAYOUT } from './storybuk-theme';
 import { storybukMachine } from './storybuk.machine';
-
-import type { StoryConfig } from './types';
 
 /**
  * Main Storybuk component
  *
  * Orchestrates the story experience using a state machine:
- * 1. Story selection via StorySelector
+ * 1. Story selection via StoryNavigation sidebar
  * 2. Dynamic actor loading via state machine
  * 3. Canvas rendering via StoryCanvas
- * 4. Playback controls via ControlPanel
+ * 4. Stately embed for state chart visualization
+ * 5. Playback controls via ControlPanel
+ * 6. Inspector toggle for headless actors
  *
- * Usage:
- * - Select a story from the dropdown
- * - Actors are loaded and started automatically
- * - Use controls to manage playback
+ * Layout: 1920×1080
+ * - Header: 60px (Logo + Controls)
+ * - Sidebar: 300px (Story navigation)
+ * - Content: 1620×1020 (Split based on layoutOrientation)
  */
-type CharacterType = 'hen' | 'egg' | 'chef' | 'other';
 
 export function Storybuk() {
   const [state, send] = useMachine(storybukMachine);
-  const [selectedCharacter, setSelectedCharacter] =
-    useState<CharacterType>('egg');
 
   const {
     selectedStoryId,
-    layoutMode,
     canvasWidth,
     canvasHeight,
     actorInstances,
@@ -49,13 +41,12 @@ export function Storybuk() {
 
   const isLoading = state.matches('Loading Actors');
 
-  const handleSelectStory = (demoId: string) => {
-    send({ type: 'Select story', demoId });
+  const handleSelectStory = (storyId: string) => {
+    send({ type: 'Select story', demoId: storyId });
   };
 
   const handlePlay = () => {
     // Start all visual (Konva) actors
-    // henRef should already be set by component useEffect
     actorInstances.forEach((instance) => {
       if (
         instance.actor &&
@@ -81,85 +72,50 @@ export function Storybuk() {
   const currentStoryConfig = selectedStoryId
     ? storyConfigs[selectedStoryId]
     : null;
+
+  const layoutOrientation = currentStoryConfig?.layoutOrientation;
   const statelyUrl = currentStoryConfig?.inspector?.statelyEmbedUrl;
 
-  // Filter stories by selected character
-  const getCharacterStories = (character: CharacterType): StoryConfig[] => {
-    // Convert character to Title Case for matching (e.g., 'egg' -> 'Egg')
-    const titleCaseChar =
-      character.charAt(0).toUpperCase() + character.slice(1);
-    return Object.values(storyConfigs).filter((demo) =>
-      demo.id.startsWith(titleCaseChar)
-    );
-  };
-
-  const characterStories = getCharacterStories(selectedCharacter);
-
-  const handleSelectCharacter = (character: CharacterType) => {
-    setSelectedCharacter(character);
-    // Optionally auto-select first story of new character
-    const stories = getCharacterStories(character);
-    if (stories.length > 0 && stories[0]?.id !== selectedStoryId) {
-      handleSelectStory(stories[0]!.id);
+  // Get dynamic dimensions based on layout orientation
+  const getLayoutDimensions = () => {
+    if (layoutOrientation === 'split-horizontal') {
+      return STORYBUK_LAYOUT['split-horizontal'];
     }
+    return STORYBUK_LAYOUT['split-vertical'];
   };
 
-  const isPresentationMode = layoutMode !== null;
-  // Always use presentation layout dimensions for consistency
-  const containerDimensions = PRESENTATION_LAYOUT.total;
+  const layoutDimensions = getLayoutDimensions();
 
   return (
     <div
       style={{
+        width: STORYBUK_LAYOUT.total.width,
+        height: STORYBUK_LAYOUT.total.height,
         display: 'flex',
         flexDirection: 'column',
+        backgroundColor: '#000',
       }}
     >
-      {/* Controls - outside presentation area */}
+      {/* Header */}
       <div
         style={{
+          height: STORYBUK_LAYOUT.header.height,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem',
-          padding: '0.5rem 1rem',
+          padding: '0 1rem',
           backgroundColor: STORYBUK_COLORS.header.background,
           borderBottom: `1px solid ${STORYBUK_COLORS.header.border}`,
         }}
       >
-        {/* Left side: Logo + Character selector + story buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img
-            src="/src/assets/storybuk.svg"
-            alt="Storybuk"
-            style={{ height: '50px', width: 'auto' }}
-          />
-          <div
-            style={{
-              width: '1px',
-              height: '50px',
-              backgroundColor: STORYBUK_COLORS.header.border,
-            }}
-          />
-          <CharacterSelector
-            selectedCharacter={selectedCharacter}
-            onSelectCharacter={handleSelectCharacter}
-          />
-          <div
-            style={{
-              width: '1px',
-              height: '50px',
-              backgroundColor: STORYBUK_COLORS.header.border,
-            }}
-          />
-          <StoryButtons
-            stories={characterStories}
-            selectedStoryId={selectedStoryId}
-            onSelectStory={handleSelectStory}
-          />
-        </div>
+        {/* Logo */}
+        <img
+          src="/src/assets/storybuk.svg"
+          alt="Storybuk"
+          style={{ height: '40px', width: 'auto' }}
+        />
 
-        {/* Right side: Controls + Inspector toggle */}
+        {/* Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <ControlPanel
             onPlay={handlePlay}
@@ -173,88 +129,72 @@ export function Storybuk() {
         </div>
       </div>
 
-      {/* Presentation area - exactly 1920x1080 */}
-      <div
-        style={{
-          width: containerDimensions.width,
-          height: containerDimensions.height,
-          margin: '0 auto',
-          backgroundColor: '#000',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {isLoading && (
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.5rem',
-              color: '#666',
-            }}
-          >
-            Loading demo...
-          </div>
-        )}
-        {!isLoading && currentStoryConfig && (
-          <>
-            {/* Separate headless and visual actors */}
-            {(() => {
-              const headlessActors = actorInstances.filter((instance) =>
-                instance.config.componentVersion?.includes('headless')
-              );
-              const visualActors = actorInstances.filter(
-                (instance) =>
-                  !instance.config.componentVersion?.includes('headless')
-              );
+      {/* Main content area with sidebar */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Story Navigation Sidebar */}
+        <StoryNavigation
+          storyConfigs={storyConfigs}
+          selectedStoryId={selectedStoryId}
+          onSelectStory={handleSelectStory}
+        />
 
-              const hasHeadless = headlessActors.length > 0;
-              const hasVisual = visualActors.length > 0;
+        {/* Content Area */}
+        <div
+          style={{
+            width: STORYBUK_LAYOUT.contentArea.width,
+            height: STORYBUK_LAYOUT.contentArea.height,
+            display: 'flex',
+            flexDirection:
+              layoutOrientation === 'split-horizontal' ? 'row' : 'column',
+          }}
+        >
+          {isLoading && (
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                color: '#666',
+              }}
+            >
+              Loading story...
+            </div>
+          )}
 
-              if (isPresentationMode && layoutMode) {
-                const isHorizontalSplit =
-                  layoutMode === 'horizontal-split' ||
-                  layoutMode === 'horizontal-split-narrow';
-                const isVerticalSplitTop = layoutMode === 'vertical-split-top';
-                const isVerticalSplitBottom =
-                  layoutMode === 'vertical-split-bottom';
+          {!isLoading && currentStoryConfig && (
+            <>
+              {/* Separate headless and visual actors */}
+              {(() => {
+                const headlessActors = actorInstances.filter((instance) =>
+                  instance.config.componentVersion?.includes('headless')
+                );
+                const visualActors = actorInstances.filter(
+                  (instance) =>
+                    !instance.config.componentVersion?.includes('headless')
+                );
+
+                const hasHeadless = headlessActors.length > 0;
+                const hasVisual = visualActors.length > 0;
 
                 return (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: isHorizontalSplit ? 'row' : 'column',
-                      flex: 1,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {/* For vertical-split-bottom, inspector comes first */}
-                    {isVerticalSplitBottom && (
-                      <StatelyEmbed
-                        layoutMode={layoutMode}
-                        demoTitle={currentStoryConfig.title}
-                        statelyUrl={
-                          statelyUrl ||
-                          'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893'
-                        }
-                      />
-                    )}
-
+                  <>
                     {/* Story Canvas */}
                     {hasVisual && (
                       <div
                         style={{
+                          width: layoutDimensions.storyCanvas.width,
+                          height: layoutDimensions.storyCanvas.height,
                           display: 'flex',
-                          justifyContent: 'flex-start',
+                          justifyContent: 'center',
                           alignItems: 'center',
                           backgroundColor: '#000',
                         }}
                       >
                         <StoryCanvas
-                          width={canvasWidth}
-                          height={canvasHeight}
+                          width={layoutDimensions.storyCanvas.width}
+                          height={layoutDimensions.storyCanvas.height}
                           background={currentStoryConfig.background}
                           actorInstances={visualActors}
                           resetCount={resetCount}
@@ -263,17 +203,23 @@ export function Storybuk() {
                       </div>
                     )}
 
-                    {/* For horizontal-split and vertical-split-top, inspector comes after */}
-                    {(isHorizontalSplit || isVerticalSplitTop) && (
+                    {/* Stately Embed */}
+                    <div
+                      style={{
+                        width: layoutDimensions.statelyEmbed.width,
+                        height: layoutDimensions.statelyEmbed.height,
+                      }}
+                    >
                       <StatelyEmbed
-                        layoutMode={layoutMode}
+                        width={layoutDimensions.statelyEmbed.width}
+                        height={layoutDimensions.statelyEmbed.height}
                         demoTitle={currentStoryConfig.title}
                         statelyUrl={
                           statelyUrl ||
                           'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893'
                         }
                       />
-                    )}
+                    </div>
 
                     {/* Headless actors (hidden, for inspector only) */}
                     {hasHeadless && (
@@ -293,98 +239,39 @@ export function Storybuk() {
                         })}
                       </div>
                     )}
-                  </div>
+                  </>
                 );
-              }
+              })()}
+            </>
+          )}
 
-              // Non-presentation mode (original layout)
-              return (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: '1rem',
-                    flex: 1,
-                    padding: '1rem',
-                  }}
-                >
-                  {/* Visual Konva stories */}
-                  {hasVisual && (
-                    <div
-                      style={{
-                        flex: hasHeadless ? 1 : 1,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                      }}
-                    >
-                      <StoryCanvas
-                        width={canvasWidth}
-                        height={canvasHeight}
-                        background={currentStoryConfig.background}
-                        actorInstances={visualActors}
-                        resetCount={resetCount}
-                        demoTitle={currentStoryConfig.title}
-                      />
-                    </div>
-                  )}
-
-                  {/* Headless inspector stories */}
-                  {hasHeadless && (
-                    <div
-                      style={{
-                        flex: hasVisual ? 1 : 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '1rem',
-                      }}
-                    >
-                      {headlessActors.map((instance, index) => {
-                        const { Component, config } = instance;
-                        return (
-                          <Component
-                            key={`${config.id || `actor-${index}`}-${resetCount}`}
-                            config={config}
-                            resetCount={resetCount}
-                            shouldStart={isPlaying}
-                            canvasWidth={canvasWidth}
-                            canvasHeight={canvasHeight}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
-          </>
-        )}
-        {!isLoading && !currentStoryConfig && (
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2rem',
-            }}
-          >
-            <img
-              src="/src/assets/storybuk.svg"
-              alt="Storybuk"
-              style={{ width: '1200px', height: 'auto' }}
-            />
+          {!isLoading && !currentStoryConfig && (
             <div
               style={{
-                fontSize: '1.5rem',
-                color: '#666',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '2rem',
               }}
             >
-              Select a story to begin
+              <img
+                src="/src/assets/storybuk.svg"
+                alt="Storybuk"
+                style={{ width: '800px', height: 'auto', opacity: 0.3 }}
+              />
+              <div
+                style={{
+                  fontSize: '1.5rem',
+                  color: '#666',
+                }}
+              >
+                Select a story to begin
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

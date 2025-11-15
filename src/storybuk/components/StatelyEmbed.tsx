@@ -1,9 +1,6 @@
-import { PRESENTATION_LAYOUT } from '../story-constants';
-
-import type { LayoutMode } from '../story-constants';
-
 interface StatelyEmbedProps {
-  layoutMode: LayoutMode;
+  width: number;
+  height: number;
   demoTitle?: string;
   statelyUrl?: string;
 }
@@ -11,21 +8,21 @@ interface StatelyEmbedProps {
 /**
  * Embeds a Stately statechart visualization in an iframe
  *
- * Replaces the InspectorPlaceholder with an embedded Stately editor view.
+ * Displays an embedded Stately editor view showing the state chart.
  * The URL should be from stately.ai/registry/editor/...
  */
 export function StatelyEmbed({
-  layoutMode,
+  width,
+  height,
   demoTitle,
   statelyUrl,
 }: StatelyEmbedProps) {
-  const dimensions = getInspectorDimensions(layoutMode);
 
   return (
     <div
       style={{
-        width: dimensions.width,
-        height: dimensions.height,
+        width,
+        height,
         backgroundColor: '#1a1a1a',
         border: '2px solid #4a4a4a',
         display: 'flex',
@@ -81,17 +78,4 @@ export function StatelyEmbed({
       )}
     </div>
   );
-}
-
-function getInspectorDimensions(layoutMode: LayoutMode) {
-  switch (layoutMode) {
-    case 'horizontal-split':
-      return PRESENTATION_LAYOUT.horizontalSplit.inspector;
-    case 'horizontal-split-narrow':
-      return PRESENTATION_LAYOUT.horizontalSplitNarrow.inspector;
-    case 'vertical-split-top':
-      return PRESENTATION_LAYOUT.verticalSplitTop.inspector;
-    case 'vertical-split-bottom':
-      return PRESENTATION_LAYOUT.verticalSplitBottom.inspector;
-  }
 }

@@ -1,9 +1,9 @@
 /**
  * Inspector Toggle Component
  *
- * Provides a checkbox to enable/disable the Stately Inspector.
- * When disabled, headless actors are not loaded, improving performance
- * for quick story browsing.
+ * Provides a button to launch/close the Stately Inspector window.
+ * When launched, headless actors are created and the inspector window opens.
+ * When closed, headless actors are destroyed and the inspector window closes.
  */
 
 function InspectorToggle({
@@ -13,48 +13,33 @@ function InspectorToggle({
   inspectorEnabled: boolean;
   onToggle: () => void;
 }) {
-  const handleToggle = () => {
-    onToggle();
-  };
-
   return (
-    <div
+    <button
+      onClick={onToggle}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '8px 12px',
-        backgroundColor: '#2c2c2c',
+        padding: '8px 16px',
+        backgroundColor: inspectorEnabled ? '#F44336' : '#2196F3',
+        color: '#ffffff',
+        border: 'none',
         borderRadius: '4px',
-        border: '1px solid #444',
+        fontSize: '14px',
+        fontWeight: 500,
+        cursor: 'pointer',
+        transition: 'background-color 0.2s',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = inspectorEnabled
+          ? '#D32F2F'
+          : '#1976D2';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = inspectorEnabled
+          ? '#F44336'
+          : '#2196F3';
       }}
     >
-      <label
-        htmlFor="inspector-toggle"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          cursor: 'pointer',
-          fontSize: '14px',
-          color: '#e0e0e0',
-          userSelect: 'none',
-        }}
-      >
-        <input
-          id="inspector-toggle"
-          type="checkbox"
-          checked={inspectorEnabled}
-          onChange={handleToggle}
-          style={{
-            cursor: 'pointer',
-            width: '16px',
-            height: '16px',
-          }}
-        />
-        <span>Show Inspector</span>
-      </label>
-    </div>
+      {inspectorEnabled ? 'Close Inspector' : 'Launch Inspector'}
+    </button>
   );
 }
 
