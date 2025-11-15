@@ -64,6 +64,7 @@ export function getHenStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
+      layoutOrientation: 'split-vertical',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -89,6 +90,7 @@ export function getHenStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
+      layoutOrientation: 'split-vertical',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -114,6 +116,7 @@ export function getHenStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'vertical-split-top',
+      layoutOrientation: 'split-vertical',
       inspector: { visible: true, position: 'right' },
     },
     // Future stories:
@@ -169,6 +172,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: {
         visible: true,
         position: 'right',
@@ -199,6 +203,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -224,6 +229,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -249,6 +255,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -274,6 +281,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -299,6 +307,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -324,6 +333,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
     {
@@ -349,6 +359,7 @@ export function getEggStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       inspector: { visible: true, position: 'right' },
     },
   ];
@@ -388,6 +399,7 @@ export function getChefStories(): StoryConfig[] {
         color: '#2c5f7f',
       },
       layoutMode: 'vertical-split-bottom',
+      layoutOrientation: 'split-vertical',
       canvasWidth: chefCanvasWidth,
       canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
@@ -411,6 +423,7 @@ export function getChefStories(): StoryConfig[] {
         color: '#2c5f7f',
       },
       layoutMode: 'vertical-split-bottom',
+      layoutOrientation: 'split-vertical',
       canvasWidth: chefCanvasWidth,
       canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
@@ -434,6 +447,7 @@ export function getChefStories(): StoryConfig[] {
         color: '#2c5f7f',
       },
       layoutMode: 'vertical-split-bottom',
+      layoutOrientation: 'split-vertical',
       canvasWidth: chefCanvasWidth,
       canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
@@ -457,6 +471,7 @@ export function getChefStories(): StoryConfig[] {
         color: '#2c5f7f',
       },
       layoutMode: 'vertical-split-bottom',
+      layoutOrientation: 'split-vertical',
       canvasWidth: chefCanvasWidth,
       canvasHeight: chefCanvasHeight,
       inspector: { visible: true, position: 'right' },
@@ -504,6 +519,7 @@ export function getOtherStories(
       ],
       background: { type: 'solid', color: '#2c5f7f' },
       layoutMode: 'horizontal-split-narrow',
+      layoutOrientation: 'split-horizontal',
       canvasWidth: demoCanvasWidth,
       canvasHeight: demoCanvasHeight,
       inspector: { visible: true, position: 'right' },
