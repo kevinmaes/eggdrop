@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { ChevronRight, BookOpen } from 'lucide-react';
 
 import chefSpriteData from '../../public/images/chef.sprite.json';
 import eggSpriteData from '../../public/images/egg.sprite.json';
@@ -168,13 +169,34 @@ export function StoryNavigation({
     <div
       style={{
         width: STORYBUK_LAYOUT.sidebar.width,
-        height: STORYBUK_LAYOUT.contentArea.height,
+        height: STORYBUK_LAYOUT.sidebar.height,
         backgroundColor: STORYBUK_COLORS.sidebar.background,
         borderRight: `1px solid ${STORYBUK_COLORS.sidebar.border}`,
-        overflow: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
         fontFamily: 'sans-serif',
       }}
     >
+      {/* Logo Header */}
+      <div
+        style={{
+          height: STORYBUK_LAYOUT.sidebar.header.height,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderBottom: `1px solid ${STORYBUK_COLORS.sidebar.border}`,
+          padding: '1rem',
+        }}
+      >
+        <img
+          src="/src/assets/storybuk.svg"
+          alt="Storybuk"
+          style={{ height: '50px', width: 'auto' }}
+        />
+      </div>
+
+      {/* Story Navigation Tree */}
+      <div style={{ flex: 1, overflow: 'auto' }}>
       {characters.map((character) => {
         const stories = getStoriesByCharacter(character);
         if (stories.length === 0) return null;
@@ -193,7 +215,7 @@ export function StoryNavigation({
                 alignItems: 'center',
                 gap: '8px',
                 border: 'none',
-                background: 'transparent',
+                background: STORYBUK_COLORS.sidebar.folderBackground,
                 cursor: 'pointer',
                 color: STORYBUK_COLORS.sidebar.text,
                 fontSize: '14px',
@@ -205,19 +227,20 @@ export function StoryNavigation({
                   STORYBUK_COLORS.navigation.itemBackgroundHover;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.backgroundColor =
+                  STORYBUK_COLORS.sidebar.folderBackground;
               }}
             >
               {/* Expand/Collapse Arrow */}
-              <span
+              <ChevronRight
+                size={14}
                 style={{
                   transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s',
-                  display: 'inline-block',
+                  transition: 'transform 0.15s ease',
+                  color: STORYBUK_COLORS.sidebar.folderIcon,
+                  flexShrink: 0,
                 }}
-              >
-                ▶
-              </span>
+              />
 
               {/* Character Icon */}
               <CharacterIcon character={character} size={20} />
@@ -241,6 +264,7 @@ export function StoryNavigation({
                         padding: '6px 12px 6px 32px',
                         display: 'flex',
                         alignItems: 'center',
+                        gap: '8px',
                         border: 'none',
                         borderLeft: isSelected
                           ? `3px solid ${STORYBUK_COLORS.navigation.itemBorderActive}`
@@ -272,6 +296,15 @@ export function StoryNavigation({
                         }
                       }}
                     >
+                      <BookOpen
+                        size={14}
+                        style={{
+                          color: isSelected
+                            ? STORYBUK_COLORS.navigation.itemTextActive
+                            : STORYBUK_COLORS.sidebar.folderIcon,
+                          flexShrink: 0,
+                        }}
+                      />
                       {story.title}
                     </button>
                   );
@@ -281,6 +314,7 @@ export function StoryNavigation({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

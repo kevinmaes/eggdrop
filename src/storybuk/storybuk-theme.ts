@@ -4,6 +4,11 @@
  * Color palette extracted from Storybook UI to match the look and feel
  */
 
+export const STORYBUK_FONTS = {
+  base: '"Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  mono: '"Courier New", Courier, monospace',
+} as const;
+
 export const STORYBUK_COLORS = {
   // Header
   header: {
@@ -14,7 +19,8 @@ export const STORYBUK_COLORS = {
 
   // Sidebar navigation
   sidebar: {
-    background: '#f6f9fc',
+    background: '#F6F9FC',
+    folderBackground: '#E3E8ED',
     border: '#e8e8e8',
     text: '#37352f',
     textHover: '#1a1918',
@@ -52,7 +58,7 @@ export const STORYBUK_COLORS = {
   // Content areas
   content: {
     background: '#ffffff',
-    canvasBackground: '#2c5f7f',
+    canvasBackground: '#ffffff',
     statelyBackground: '#1a1a1a',
     border: '#e8e8e8',
   },
@@ -77,9 +83,13 @@ export const STORYBUK_COLORS = {
 
 export const STORYBUK_LAYOUT = {
   total: { width: 1920, height: 1080 },
-  header: { height: 60 },
-  sidebar: { width: 300 },
-  contentArea: { width: 1620, height: 1020 }, // 1920 - 300 sidebar
+  sidebar: {
+    width: 300,
+    height: 1080, // Full height
+    header: { height: 80 }, // Logo area at top of sidebar
+  },
+  header: { height: 60 }, // Main header (right side only)
+  contentArea: { width: 1620, height: 1020 }, // 1920 - 300 sidebar, 1080 - 60 header
 
   // Orientation-specific layouts
   'split-horizontal': {

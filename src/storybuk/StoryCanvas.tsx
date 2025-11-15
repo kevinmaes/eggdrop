@@ -54,10 +54,11 @@ export function StoryCanvas({
             top: '8px',
             left: '16px',
             fontSize: '11px',
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: 'rgba(255, 255, 255, 0.6)',
             fontFamily: 'monospace',
             pointerEvents: 'none',
             userSelect: 'none',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
           }}
         >
           {demoTitle}
@@ -69,7 +70,7 @@ export function StoryCanvas({
           top: '8px',
           right: '0',
           fontSize: '11px',
-          color: 'rgba(255, 255, 255, 0.4)',
+          color: 'rgba(255, 255, 255, 0.6)',
           fontFamily: 'monospace',
           pointerEvents: 'none',
           userSelect: 'none',
@@ -78,6 +79,7 @@ export function StoryCanvas({
           maxWidth: '250px',
           overflow: 'hidden',
           whiteSpace: 'nowrap',
+          textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
         }}
       >
         {width}×{height}px

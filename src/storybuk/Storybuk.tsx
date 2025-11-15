@@ -1,4 +1,7 @@
 import { useMachine } from '@xstate/react';
+import '@fontsource/nunito-sans/400.css';
+import '@fontsource/nunito-sans/600.css';
+import '@fontsource/nunito-sans/700.css';
 
 import { StatelyEmbed } from './components/StatelyEmbed';
 import { ControlPanel } from './ControlPanel';
@@ -6,8 +9,8 @@ import InspectorToggle from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
 import { StoryCanvas } from './StoryCanvas';
 import { StoryNavigation } from './StoryNavigation';
-import { STORYBUK_COLORS, STORYBUK_LAYOUT } from './storybuk-theme';
 import { storybukMachine } from './storybuk.machine';
+import { STORYBUK_COLORS, STORYBUK_LAYOUT, STORYBUK_FONTS } from './storybuk-theme';
 
 /**
  * Main Storybuk component
@@ -92,51 +95,50 @@ export function Storybuk() {
         width: STORYBUK_LAYOUT.total.width,
         height: STORYBUK_LAYOUT.total.height,
         display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#000',
+        backgroundColor: '#ffffff',
+        fontFamily: STORYBUK_FONTS.base,
       }}
     >
-      {/* Header */}
+      {/* Story Navigation Sidebar - Full Height */}
+      <StoryNavigation
+        storyConfigs={storyConfigs}
+        selectedStoryId={selectedStoryId}
+        onSelectStory={handleSelectStory}
+      />
+
+      {/* Right Side: Header + Content Area */}
       <div
         style={{
-          height: STORYBUK_LAYOUT.header.height,
+          flex: 1,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 1rem',
-          backgroundColor: STORYBUK_COLORS.header.background,
-          borderBottom: `1px solid ${STORYBUK_COLORS.header.border}`,
+          flexDirection: 'column',
         }}
       >
-        {/* Logo */}
-        <img
-          src="/src/assets/storybuk.svg"
-          alt="Storybuk"
-          style={{ height: '40px', width: 'auto' }}
-        />
-
-        {/* Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <ControlPanel
-            onPlay={handlePlay}
-            onReset={handleReset}
-            isPlaying={isPlaying}
-          />
-          <InspectorToggle
-            inspectorEnabled={inspectorEnabled}
-            onToggle={handleToggleInspector}
-          />
+        {/* Header - Right Side Only */}
+        <div
+          style={{
+            height: STORYBUK_LAYOUT.header.height,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '0 1rem',
+            backgroundColor: STORYBUK_COLORS.header.background,
+            borderBottom: `1px solid ${STORYBUK_COLORS.header.border}`,
+          }}
+        >
+          {/* Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <ControlPanel
+              onPlay={handlePlay}
+              onReset={handleReset}
+              isPlaying={isPlaying}
+            />
+            <InspectorToggle
+              inspectorEnabled={inspectorEnabled}
+              onToggle={handleToggleInspector}
+            />
+          </div>
         </div>
-      </div>
-
-      {/* Main content area with sidebar */}
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        {/* Story Navigation Sidebar */}
-        <StoryNavigation
-          storyConfigs={storyConfigs}
-          selectedStoryId={selectedStoryId}
-          onSelectStory={handleSelectStory}
-        />
 
         {/* Content Area */}
         <div
@@ -189,7 +191,7 @@ export function Storybuk() {
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          backgroundColor: '#000',
+                          backgroundColor: STORYBUK_COLORS.content.canvasBackground,
                         }}
                       >
                         <StoryCanvas
@@ -259,7 +261,7 @@ export function Storybuk() {
               <img
                 src="/src/assets/storybuk.svg"
                 alt="Storybuk"
-                style={{ width: '800px', height: 'auto', opacity: 0.3 }}
+                style={{ width: '800px', height: 'auto', opacity: 1 }}
               />
               <div
                 style={{

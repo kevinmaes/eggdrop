@@ -218,7 +218,9 @@ export const storybukMachine = setup({
           }
           const demoConfig = storyConfigs[context.selectedStoryId];
           if (!demoConfig) {
-            throw new Error(`Demo config not found: ${context.selectedStoryId}`);
+            throw new Error(
+              `Demo config not found: ${context.selectedStoryId}`
+            );
           }
           return {
             demoConfig,

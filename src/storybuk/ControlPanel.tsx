@@ -1,3 +1,5 @@
+import { Play, RotateCcw } from 'lucide-react';
+
 interface ControlPanelProps {
   onPlay?: () => void;
   onReset?: () => void;
@@ -19,43 +21,51 @@ export function ControlPanel({
   return (
     <div
       style={{
-        padding: '1rem',
         display: 'flex',
         gap: '0.5rem',
         alignItems: 'center',
-        borderBottom: '1px solid #ccc',
-        backgroundColor: '#f5f5f5',
       }}
     >
       <button
         onClick={onPlay}
         disabled={isPlaying}
         style={{
-          padding: '0.5rem 1rem',
+          padding: '6px 12px',
           cursor: isPlaying ? 'not-allowed' : 'pointer',
           opacity: isPlaying ? 0.5 : 1,
+          backgroundColor: '#2196F3',
+          color: '#ffffff',
+          border: 'none',
+          borderRadius: '4px',
+          fontSize: '14px',
+          fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
         }}
       >
+        <Play size={16} />
         Play
       </button>
       <button
         onClick={onReset}
         style={{
-          padding: '0.5rem 1rem',
+          padding: '6px 12px',
           cursor: 'pointer',
+          backgroundColor: '#ffffff',
+          color: '#333333',
+          border: '1px solid #e8e8e8',
+          borderRadius: '4px',
+          fontSize: '14px',
+          fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
         }}
       >
+        <RotateCcw size={16} />
         Reset
       </button>
-      <span
-        style={{
-          marginLeft: 'auto',
-          fontSize: '0.875rem',
-          color: '#666',
-        }}
-      >
-        {isPlaying ? 'Playing' : 'Ready'}
-      </span>
     </div>
   );
 }
