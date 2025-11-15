@@ -31,6 +31,8 @@ import type { StoryConfig, StoryConfigs, ActorConfig } from './types';
  * - This keeps configs static while allowing dynamic canvas sizing
  */
 
+const HEN_STORY_CANVAS_HEIGHT_PERCENT = 10;
+
 /**
  * Hen Stories - Stationary hen in various states
  */
@@ -60,7 +62,10 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-top',
-    ...calculateStoryCanvasDimensions('vertical', 10),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      HEN_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
   {
     id: 'Hen Back And Forth',
@@ -86,7 +91,10 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-top',
-    ...calculateStoryCanvasDimensions('vertical', 10),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      HEN_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
   {
     id: 'Hen With Pauses',
@@ -112,13 +120,18 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-top',
-    ...calculateStoryCanvasDimensions('vertical', 10),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      HEN_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
   // Future stories:
   // - hen-egg-laying: Add stationary egg-laying
   // - hen-moving-eggs: Add moving egg-laying
   // - hen-full: Production version with all features
 ];
+
+const EGG_STORY_CANVAS_WIDTH_PERCENT = 15;
 
 /**
  * Egg Stories - Falling eggs with various physics and hatching behaviors
@@ -149,7 +162,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
     statelyEmbedUrl:
       'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893',
   },
@@ -177,7 +193,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
   {
     id: 'Egg Splat',
@@ -203,7 +222,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
   {
     id: 'Egg Fall Land Only',
@@ -229,7 +251,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
   {
     id: 'Egg Land Hatch',
@@ -255,7 +280,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
   {
     id: 'Hatched Chick Exit',
@@ -307,7 +335,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
   {
     id: 'Egg Hatch Game Accurate',
@@ -333,9 +364,14 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
 ];
+
+const CHEF_STORY_CANVAS_HEIGHT_PERCENT = 37;
 
 /**
  * Chef Stories - Chef movement and behavior demos
@@ -360,7 +396,10 @@ const CHEF_STORIES: StoryConfig[] = [
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-bottom',
-    ...calculateStoryCanvasDimensions('vertical', 37),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      CHEF_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
   {
     id: 'Chef Back And Forth',
@@ -381,7 +420,10 @@ const CHEF_STORIES: StoryConfig[] = [
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-bottom',
-    ...calculateStoryCanvasDimensions('vertical', 37),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      CHEF_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
   {
     id: 'Chef Facing Direction',
@@ -402,7 +444,10 @@ const CHEF_STORIES: StoryConfig[] = [
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-bottom',
-    ...calculateStoryCanvasDimensions('vertical', 37),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      CHEF_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
   {
     id: 'Chef With Pauses',
@@ -423,7 +468,10 @@ const CHEF_STORIES: StoryConfig[] = [
       color: '#2c5f7f',
     },
     layoutMode: 'vertical-split-bottom',
-    ...calculateStoryCanvasDimensions('vertical', 37),
+    ...calculateStoryCanvasDimensions(
+      'vertical',
+      CHEF_STORY_CANVAS_HEIGHT_PERCENT
+    ),
   },
 ];
 
@@ -459,7 +507,7 @@ const OTHER_STORIES: StoryConfig[] = [
       color: '#2c5f7f',
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('vertical', 35),
+    ...calculateStoryCanvasDimensions('horizontal', 20),
   },
 ];
 

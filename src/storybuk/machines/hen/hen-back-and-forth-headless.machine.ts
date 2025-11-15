@@ -18,8 +18,8 @@ import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 // Configuration using shared constants
 const DEMO_CONFIG = {
-  stageWidth: STORY_CANVAS.width,
-  stageHeight: STORY_CANVAS.height,
+  stageWidth: STORY_CANVAS.MAX_WIDTH,
+  stageHeight: STORY_CANVAS.MAX_HEIGHT,
   henWidth: 120,
   henHeight: 120,
   henY: HEN_DEMO.centerY,

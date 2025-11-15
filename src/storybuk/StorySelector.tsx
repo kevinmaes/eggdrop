@@ -4,7 +4,7 @@ import type { StoryConfigs } from './types';
 
 interface StorySelectorProps {
   storyConfigs: StoryConfigs;
-  currentDemoId: string | null;
+  currentStoryId: string | null;
   onSelect: (demoId: string) => void;
 }
 
@@ -16,7 +16,7 @@ interface StorySelectorProps {
  */
 export function StorySelector({
   storyConfigs,
-  currentDemoId,
+  currentStoryId,
   onSelect,
 }: StorySelectorProps) {
   const demoIds = Object.keys(storyConfigs);
@@ -36,7 +36,7 @@ export function StorySelector({
     );
   }
 
-  const currentConfig = currentDemoId ? storyConfigs[currentDemoId] : null;
+  const currentConfig = currentStoryId ? storyConfigs[currentStoryId] : null;
   const hasInspector = currentConfig?.inspector?.visible === true;
 
   return (
@@ -55,7 +55,7 @@ export function StorySelector({
       </label>
       <select
         id="demo-select"
-        value={currentDemoId || ''}
+        value={currentStoryId || ''}
         onChange={(e) => onSelect(e.target.value)}
         style={{
           padding: '0.5rem',
@@ -75,7 +75,7 @@ export function StorySelector({
           );
         })}
       </select>
-      {currentDemoId && (
+      {currentStoryId && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {hasInspector && (
             <Network size={16} style={{ color: '#4CAF50', flexShrink: 0 }} />

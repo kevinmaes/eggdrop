@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+
 import { ChevronRight, BookOpen } from 'lucide-react';
 
 import chefSpriteData from '../../public/images/chef.sprite.json';
 import eggSpriteData from '../../public/images/egg.sprite.json';
 import henSpriteData from '../../public/images/hen.sprite.json';
+
 import { STORYBUK_COLORS, STORYBUK_LAYOUT } from './storybuk-theme';
 
 import type { StoryConfigs } from './types';

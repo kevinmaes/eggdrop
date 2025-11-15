@@ -7,9 +7,9 @@ import { Howler } from 'howler';
 import { AppActorContext } from './app.machine';
 import './index.css';
 import App from './App.tsx';
-import { Storybuk } from './storybuk/Storybuk.tsx';
-import { InspectorProofOfConcept } from './storybuk/InspectorProofOfConcept.tsx';
 import { getGameConfig } from './gameConfig.ts';
+import { InspectorProofOfConcept } from './storybuk/InspectorProofOfConcept.tsx';
+import { Storybuk } from './storybuk/Storybuk.tsx';
 
 // Get the game config which will be passed down to the app
 const gameConfig = getGameConfig();
