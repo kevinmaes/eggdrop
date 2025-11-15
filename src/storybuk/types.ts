@@ -1,5 +1,5 @@
 import type { LayoutMode } from './story-constants';
-import type { LayoutOrientation } from './storybuk-theme';
+import type { SplitOrientation } from './storybuk-theme';
 import type { ActorRefFrom } from 'xstate';
 
 /**
@@ -44,14 +44,10 @@ export interface StoryConfig {
   title: string;
   description?: string;
   layoutMode?: LayoutMode;
-  layoutOrientation?: LayoutOrientation;
-  canvasWidth?: number;
-  canvasHeight?: number;
-  inspector?: {
-    visible: boolean;
-    position?: 'left' | 'right' | 'bottom';
-    statelyEmbedUrl?: string;
-  };
+  splitOrientation?: SplitOrientation;
+  canvasWidth: number;
+  canvasHeight: number;
+  statelyEmbedUrl?: string;
 }
 
 /**

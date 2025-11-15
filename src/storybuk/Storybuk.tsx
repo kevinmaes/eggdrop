@@ -7,10 +7,10 @@ import { StatelyEmbed } from './components/StatelyEmbed';
 import { ControlPanel } from './ControlPanel';
 import InspectorToggle from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
+import { STORYBUK_COLORS, STORYBUK_LAYOUT, STORYBUK_FONTS } from './storybuk-theme';
+import { storybukMachine } from './storybuk.machine';
 import { StoryCanvas } from './StoryCanvas';
 import { StoryNavigation } from './StoryNavigation';
-import { storybukMachine } from './storybuk.machine';
-import { STORYBUK_COLORS, STORYBUK_LAYOUT, STORYBUK_FONTS } from './storybuk-theme';
 
 /**
  * Main Storybuk component
@@ -76,15 +76,32 @@ export function Storybuk() {
     ? storyConfigs[selectedStoryId]
     : null;
 
-  const layoutOrientation = currentStoryConfig?.layoutOrientation;
-  const statelyUrl = currentStoryConfig?.inspector?.statelyEmbedUrl;
+  const splitOrientation = currentStoryConfig?.splitOrientation || 'horizontal';
+  const statelyUrl = currentStoryConfig?.statelyEmbedUrl;
 
-  // Get dynamic dimensions based on layout orientation
+  // Get dynamic dimensions based on split orientation
   const getLayoutDimensions = () => {
-    if (layoutOrientation === 'split-horizontal') {
-      return STORYBUK_LAYOUT['split-horizontal'];
+    const contentArea = STORYBUK_LAYOUT.contentArea; // 1620×1020
+
+    if (splitOrientation === 'horizontal') {
+      // Story on LEFT, Stately on RIGHT
+      // Story controls width only, height fills content area
+      const storyWidth = currentStoryConfig?.canvasWidth ||
+                        STORYBUK_LAYOUT.horizontal.storyCanvas.width;
+      return {
+        storyCanvas: { width: storyWidth, height: contentArea.height },
+        statelyCanvas: { width: contentArea.width - storyWidth, height: contentArea.height }
+      };
     }
-    return STORYBUK_LAYOUT['split-vertical'];
+
+    // vertical: Story on TOP, Stately on BOTTOM
+    // Story controls height only, width fills content area
+    const storyHeight = currentStoryConfig?.canvasHeight ||
+                       STORYBUK_LAYOUT.vertical.storyCanvas.height;
+    return {
+      storyCanvas: { width: contentArea.width, height: storyHeight },
+      statelyCanvas: { width: contentArea.width, height: contentArea.height - storyHeight }
+    };
   };
 
   const layoutDimensions = getLayoutDimensions();
@@ -147,7 +164,7 @@ export function Storybuk() {
             height: STORYBUK_LAYOUT.contentArea.height,
             display: 'flex',
             flexDirection:
-              layoutOrientation === 'split-horizontal' ? 'row' : 'column',
+              splitOrientation === 'horizontal' ? 'row' : 'column',
           }}
         >
           {isLoading && (
@@ -205,16 +222,16 @@ export function Storybuk() {
                       </div>
                     )}
 
-                    {/* Stately Embed */}
+                    {/* Stately Canvas */}
                     <div
                       style={{
-                        width: layoutDimensions.statelyEmbed.width,
-                        height: layoutDimensions.statelyEmbed.height,
+                        width: layoutDimensions.statelyCanvas.width,
+                        height: layoutDimensions.statelyCanvas.height,
                       }}
                     >
                       <StatelyEmbed
-                        width={layoutDimensions.statelyEmbed.width}
-                        height={layoutDimensions.statelyEmbed.height}
+                        width={layoutDimensions.statelyCanvas.width}
+                        height={layoutDimensions.statelyCanvas.height}
                         demoTitle={currentStoryConfig.title}
                         statelyUrl={
                           statelyUrl ||

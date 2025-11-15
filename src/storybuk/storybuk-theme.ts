@@ -92,14 +92,14 @@ export const STORYBUK_LAYOUT = {
   contentArea: { width: 1620, height: 1020 }, // 1920 - 300 sidebar, 1080 - 60 header
 
   // Orientation-specific layouts
-  'split-horizontal': {
+  horizontal: {
     storyCanvas: { width: 810, height: 1020 }, // Left half
-    statelyEmbed: { width: 810, height: 1020 }, // Right half
+    statelyCanvas: { width: 810, height: 1020 }, // Right half
   },
-  'split-vertical': {
+  vertical: {
     storyCanvas: { width: 1620, height: 510 }, // Top half
-    statelyEmbed: { width: 1620, height: 510 }, // Bottom half
+    statelyCanvas: { width: 1620, height: 510 }, // Bottom half
   },
 } as const;
 
-export type LayoutOrientation = 'split-horizontal' | 'split-vertical';
+export type SplitOrientation = 'horizontal' | 'vertical';

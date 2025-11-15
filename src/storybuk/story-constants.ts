@@ -8,6 +8,8 @@
  * Change STORY_CANVAS.width to adjust all stories (e.g., half width = 640).
  */
 
+import type { SplitOrientation } from './storybuk-theme';
+
 /**
  * Presentation Layout Modes
  *
@@ -81,9 +83,41 @@ export function getCanvasDimensionsForLayout(mode: LayoutMode) {
  * only use a portion of the canvas space.
  */
 export const STORY_CANVAS = {
-  width: 1920,
-  height: 1080,
+  MAX_WIDTH: 1920,
+  MAX_HEIGHT: 1080,
 } as const;
+
+interface StoryCanvasDimensions {
+  splitOrientation: SplitOrientation;
+  canvasWidth: number;
+  canvasHeight: number;
+}
+
+export function calculateStoryCanvasDimensions(
+  splitOrientation: SplitOrientation,
+  percent: number
+): StoryCanvasDimensions {
+  if (splitOrientation === 'horizontal') {
+    return {
+      splitOrientation: 'horizontal',
+      canvasWidth: Math.floor((STORY_CANVAS.MAX_WIDTH * percent) / 100),
+      canvasHeight: STORY_CANVAS.MAX_HEIGHT,
+    };
+  } else {
+    return {
+      splitOrientation: 'vertical',
+      canvasWidth: STORY_CANVAS.MAX_WIDTH,
+      canvasHeight: Math.floor((STORY_CANVAS.MAX_HEIGHT * percent) / 100),
+    };
+  }
+}
+
+// export const STORY_CANVAS_PERCENT = {
+//   calcWidth: (percent: number) =>
+//     Math.floor((STORY_CANVAS.MAX_WIDTH * percent) / 100),
+//   calcHeight: (percent: number) =>
+//     Math.floor((STORY_CANVAS.MAX_HEIGHT * percent) / 100),
+// } as const;
 
 /**
  * Actor dimensions
@@ -104,10 +138,10 @@ const EDGE_MARGIN = 50;
  */
 function calculatePositioning(actorWidth: number, actorHeight: number) {
   return {
-    centerX: Math.floor(STORY_CANVAS.width / 2 - actorWidth / 2),
-    centerY: Math.floor(STORY_CANVAS.height / 2 - actorHeight / 2),
+    centerX: Math.floor(STORY_CANVAS.MAX_WIDTH / 2 - actorWidth / 2),
+    centerY: Math.floor(STORY_CANVAS.MAX_HEIGHT / 2 - actorHeight / 2),
     leftEdge: EDGE_MARGIN,
-    rightEdge: STORY_CANVAS.width - actorWidth - EDGE_MARGIN,
+    rightEdge: STORY_CANVAS.MAX_WIDTH - actorWidth - EDGE_MARGIN,
   };
 }
 
@@ -119,7 +153,7 @@ export function calculatePositioningForWidth(
   actorWidth: number,
   actorHeight: number,
   canvasWidth: number,
-  canvasHeight: number = STORY_CANVAS.height
+  canvasHeight: number = STORY_CANVAS.MAX_HEIGHT
 ) {
   return {
     centerX: Math.floor(canvasWidth / 2 - actorWidth / 2),
