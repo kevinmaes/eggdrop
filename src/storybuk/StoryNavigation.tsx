@@ -121,7 +121,10 @@ function CharacterIcon({ character, size = 20 }: CharacterIconProps) {
       ref={canvasRef}
       width={size}
       height={size}
-      style={{ imageRendering: 'pixelated' }}
+      style={{
+        imageRendering: 'pixelated',
+        filter: 'drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3))',
+      }}
     />
   );
 }
@@ -217,7 +220,7 @@ export function StoryNavigation({
                   alignItems: 'center',
                   gap: '8px',
                   border: 'none',
-                  background: STORYBUK_COLORS.sidebar.folderBackground,
+                  background: STORYBUK_COLORS.sidebar.background,
                   cursor: 'pointer',
                   color: STORYBUK_COLORS.sidebar.text,
                   fontSize: '14px',
@@ -230,7 +233,7 @@ export function StoryNavigation({
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor =
-                    STORYBUK_COLORS.sidebar.folderBackground;
+                    STORYBUK_COLORS.sidebar.background;
                 }}
               >
                 {/* Expand/Collapse Arrow */}
@@ -268,19 +271,16 @@ export function StoryNavigation({
                           alignItems: 'flex-start',
                           gap: '8px',
                           border: 'none',
-                          borderLeft: isSelected
-                            ? `3px solid ${STORYBUK_COLORS.navigation.itemBorderActive}`
-                            : '3px solid transparent',
+                          borderLeft: '3px solid transparent',
                           background: isSelected
-                            ? STORYBUK_COLORS.navigation.itemBackgroundActive
+                            ? '#d0d7de'
                             : 'transparent',
                           cursor: 'pointer',
-                          color: isSelected
-                            ? STORYBUK_COLORS.navigation.itemTextActive
-                            : STORYBUK_COLORS.navigation.itemText,
+                          color: STORYBUK_COLORS.navigation.itemText,
                           fontSize: '13px',
                           textAlign: 'left',
                           transition: 'all 0.2s',
+                          outline: 'none',
                         }}
                         onMouseEnter={(e) => {
                           if (!isSelected) {
@@ -291,12 +291,11 @@ export function StoryNavigation({
                           }
                         }}
                         onMouseLeave={(e) => {
-                          if (!isSelected) {
-                            e.currentTarget.style.backgroundColor =
-                              'transparent';
-                            e.currentTarget.style.color =
-                              STORYBUK_COLORS.navigation.itemText;
-                          }
+                          e.currentTarget.style.backgroundColor = isSelected
+                            ? '#d0d7de'
+                            : 'transparent';
+                          e.currentTarget.style.color =
+                            STORYBUK_COLORS.navigation.itemText;
                         }}
                       >
                         <BookOpen
