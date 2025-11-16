@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
+
 import hatchedChickExitMachine from './hatched-chick-exit.machine';
 
 import type { ActorRefFrom } from 'xstate';

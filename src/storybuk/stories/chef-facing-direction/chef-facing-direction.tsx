@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import chefSpriteData from '../../../../public/images/chef.sprite.json';
+
 import chefFacingDirectionMachine from './chef-facing-direction.machine';
 
 import type { ActorRefFrom } from 'xstate';

@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import henSpriteData from '../../../../public/images/hen.sprite.json';
+
 import henBackAndForthMachine from './hen-back-and-forth.machine';
 
 import type { ActorRefFrom } from 'xstate';

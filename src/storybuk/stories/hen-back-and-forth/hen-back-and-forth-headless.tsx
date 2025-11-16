@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { createActor } from 'xstate';
 
-import henBackAndForthHeadlessMachine from './hen-back-and-forth-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import henBackAndForthHeadlessMachine from './hen-back-and-forth-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

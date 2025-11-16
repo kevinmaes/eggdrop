@@ -3,8 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from '@xstate/react';
 import { createActor } from 'xstate';
 
-import eggFallLandOnlyHeadlessMachine from './egg-fall-land-only-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import eggFallLandOnlyHeadlessMachine from './egg-fall-land-only-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

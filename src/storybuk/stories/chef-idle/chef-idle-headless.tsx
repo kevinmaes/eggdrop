@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { createActor } from 'xstate';
 
-import chefIdleHeadlessMachine from './chef-idle-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import chefIdleHeadlessMachine from './chef-idle-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

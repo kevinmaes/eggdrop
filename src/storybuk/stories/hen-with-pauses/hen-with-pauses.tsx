@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import henSpriteData from '../../../../public/images/hen.sprite.json';
+
 import henWithPausesMachine from './hen-with-pauses.machine';
 
 import type { ActorRefFrom } from 'xstate';

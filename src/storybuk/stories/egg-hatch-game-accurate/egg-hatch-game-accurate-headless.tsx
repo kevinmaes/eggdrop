@@ -3,8 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from '@xstate/react';
 import { createActor } from 'xstate';
 
-import eggHatchGameAccurateHeadlessMachine from './egg-hatch-game-accurate-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import eggHatchGameAccurateHeadlessMachine from './egg-hatch-game-accurate-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

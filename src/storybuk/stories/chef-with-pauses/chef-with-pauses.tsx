@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import chefSpriteData from '../../../../public/images/chef.sprite.json';
+
 import chefWithPausesMachine from './chef-with-pauses.machine';
 
 import type { ActorRefFrom } from 'xstate';

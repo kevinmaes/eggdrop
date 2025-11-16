@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import { createActor } from 'xstate';
 
-import eggFallingHeadlessMachine from './egg-falling-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import eggFallingHeadlessMachine from './egg-falling-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

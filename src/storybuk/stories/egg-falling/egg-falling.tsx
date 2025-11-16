@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import eggSpriteData from '../../../../public/images/egg.sprite.json';
+
 import eggFallingMachine from './egg-falling.machine';
 
 import type { ActorRefFrom } from 'xstate';

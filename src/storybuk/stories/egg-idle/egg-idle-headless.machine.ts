@@ -1,4 +1,4 @@
-import { assign, setup } from 'xstate';
+import { setup } from 'xstate';
 
 import { EGG_DEMO } from '../../story-constants';
 

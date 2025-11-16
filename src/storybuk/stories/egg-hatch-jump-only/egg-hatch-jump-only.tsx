@@ -6,6 +6,7 @@ import { Image } from 'react-konva';
 import useImage from 'use-image';
 
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
+
 import eggHatchJumpOnlyMachine from './egg-hatch-jump-only.machine';
 
 import type { ActorRefFrom } from 'xstate';

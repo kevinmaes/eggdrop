@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { createActor } from 'xstate';
 
-import henWithPausesHeadlessMachine from './hen-with-pauses-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import henWithPausesHeadlessMachine from './hen-with-pauses-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

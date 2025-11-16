@@ -7,6 +7,7 @@ import useImage from 'use-image';
 
 import chickSpriteData from '../../../../public/images/chick.sprite.json';
 import eggSpriteData from '../../../../public/images/egg.sprite.json';
+
 import eggHatchGameAccurateMachine from './egg-hatch-game-accurate.machine';
 
 import type { ActorRefFrom } from 'xstate';

@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { createActor } from 'xstate';
 
-import eggIdleHeadlessMachine from './egg-idle-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import eggIdleHeadlessMachine from './egg-idle-headless.machine';
 
 import type { ActorConfig } from '../../types';
 

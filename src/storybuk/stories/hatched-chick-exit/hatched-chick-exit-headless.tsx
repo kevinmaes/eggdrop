@@ -3,8 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from '@xstate/react';
 import { createActor } from 'xstate';
 
-import hatchedChickExitHeadlessMachine from './hatched-chick-exit-headless.machine';
 import { getSharedInspector } from '../../utils/shared-inspector';
+
+import hatchedChickExitHeadlessMachine from './hatched-chick-exit-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
