@@ -155,18 +155,23 @@ export function Storybuk() {
             height: STORYBUK_LAYOUT.header.height,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent:
+              currentStoryConfig?.type === 'animated'
+                ? 'space-between'
+                : 'flex-end',
             padding: '0 1rem',
             backgroundColor: STORYBUK_COLORS.header.background,
             borderBottom: `1px solid ${STORYBUK_COLORS.header.border}`,
           }}
         >
-          {/* Left: Playback Controls */}
-          <ControlPanel
-            onPlay={handlePlay}
-            onReset={handleReset}
-            isPlaying={isPlaying}
-          />
+          {/* Left: Playback Controls (only for animated stories) */}
+          {currentStoryConfig?.type === 'animated' && (
+            <ControlPanel
+              onPlay={handlePlay}
+              onReset={handleReset}
+              isPlaying={isPlaying}
+            />
+          )}
 
           {/* Right: Settings */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

@@ -32,10 +32,18 @@ export interface ActorConfig {
 }
 
 /**
+ * Story type determines playback behavior
+ * - static: No animation, shows graphic and state chart only (no play/reset buttons)
+ * - animated: Has animation that can be played/reset
+ */
+export type StoryType = 'static' | 'animated';
+
+/**
  * Configuration for a complete story
  */
 export interface StoryConfig {
   id: string;
+  type: StoryType;
   actors: ActorConfig[];
   background: BackgroundConfig;
   title: string;

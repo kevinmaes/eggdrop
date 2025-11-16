@@ -41,6 +41,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
   { actors: Omit<ActorConfig, 'startPosition'>[] }[] = [
   {
     id: 'Hen Idle',
+    type: 'static',
     title: 'Hen - Idle',
     description:
       'Stationary hen in idle state (simplest possible demo) - Visual story + headless inspector',
@@ -70,6 +71,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Hen Back And Forth',
+    type: 'animated',
     title: 'Hen - Back and Forth',
     description:
       'Visual story + headless inspector (for synchronized video recording)',
@@ -99,6 +101,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Hen With Pauses',
+    type: 'animated',
     title: 'Hen - With Pauses',
     description:
       'Back and forth movement with 1-2 second pauses - Visual story + headless inspector',
@@ -141,6 +144,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   { actors: Omit<ActorConfig, 'startPosition'>[] }[] = [
   {
     id: 'Egg Falling',
+    type: 'animated',
     title: 'Egg - Falling',
     description:
       'Egg falls straight down with gravity from top to bottom of screen - Visual story + headless inspector',
@@ -172,6 +176,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Egg Falling Rotating',
+    type: 'animated',
     title: 'Egg - Falling + Rotating',
     description:
       'Egg falls with gravity AND rotates continuously (like in the game) - Visual story + headless inspector',
@@ -201,6 +206,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Egg Splat',
+    type: 'animated',
     title: 'Egg - Splat',
     description:
       'Egg falls and splats on the ground, showing broken egg sprite - Visual story + headless inspector',
@@ -230,6 +236,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Egg Fall Land Only',
+    type: 'animated',
     title: 'Egg - Falling and Landing',
     description:
       'Incremental demo: egg falls with rotation and lands - Shows physics and landing detection - Visual story + headless inspector',
@@ -259,6 +266,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Egg Land Hatch',
+    type: 'animated',
     title: 'Egg - Land and Hatch',
     description:
       'Incremental demo: egg falls and lands, shows chick in shell - Basic hatch transition without jump - Visual story + headless inspector',
@@ -288,6 +296,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Hatched Chick Exit',
+    type: 'animated',
     title: 'Hatched Chick - Exit',
     description:
       'Incremental demo: chick in shell transitions to running off - Shows exit animation without jump - Visual story + headless inspector',
@@ -317,6 +326,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Egg Hatch Jump Only',
+    type: 'animated',
     title: 'Egg - Hatching with Jump (Inserted Animation)',
     description:
       'Demonstrates inserting jump: egg lands, hatches, JUMPS, then exits - Shows how jump animation fits between hatch and exit - Visual story + headless inspector',
@@ -346,6 +356,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
   },
   {
     id: 'Egg Hatch Game Accurate',
+    type: 'animated',
     title: 'Egg - Complete Hatching (Game-Accurate)',
     description:
       'Full sequence matching real game: falls, hatches (300ms), jumps and bounces, pauses (500ms), runs off - Visual story + headless inspector',
@@ -383,6 +394,7 @@ const CHEF_STORY_CANVAS_HEIGHT_PERCENT = 37;
 const CHEF_STORIES: StoryConfig[] = [
   {
     id: 'Chef Idle',
+    type: 'static',
     title: 'Chef - Idle',
     description:
       'Stationary chef in idle state (simplest possible demo) - Visual story + headless inspector',
@@ -407,6 +419,7 @@ const CHEF_STORIES: StoryConfig[] = [
   },
   {
     id: 'Chef Back And Forth',
+    type: 'animated',
     title: 'Chef - Moving',
     description:
       'Chef moves back and forth left to right - Visual story + headless inspector',
@@ -431,6 +444,7 @@ const CHEF_STORIES: StoryConfig[] = [
   },
   {
     id: 'Chef Facing Direction',
+    type: 'animated',
     title: 'Chef - Face Forward',
     description:
       'Chef moves back and forth and faces the correct direction - Visual demo',
@@ -455,6 +469,7 @@ const CHEF_STORIES: StoryConfig[] = [
   },
   {
     id: 'Chef With Pauses',
+    type: 'animated',
     title: 'Chef - Move + Stop',
     description:
       'Chef moves with random pauses and faces direction of movement - Visual demo',
@@ -485,6 +500,7 @@ const CHEF_STORIES: StoryConfig[] = [
 const OTHER_STORIES: StoryConfig[] = [
   {
     id: 'Other Egg Caught Points',
+    type: 'animated',
     title: 'Other - Egg Caught Points',
     description:
       'Points animation that appears when catching an egg - loops every 2 seconds',
