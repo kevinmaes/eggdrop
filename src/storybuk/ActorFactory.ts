@@ -6,8 +6,11 @@ import type { ActorConfig, StoryActorInstance } from './types';
  * Dynamically loads a versioned state machine and component for a story actor
  *
  * Imports are resolved at runtime using Vite's dynamic import:
- * - Machine: `./machines/{type}/{type}-{machineVersion}.machine.ts`
- * - Component: `./components/{type}/{type}-{componentVersion}.tsx`
+ * - Machine: `./stories/{storyFolder}/{type}-{machineVersion}.machine.ts`
+ * - Component: `./stories/{storyFolder}/{type}-{componentVersion}.tsx`
+ *
+ * Story folder is determined by combining type and version:
+ * - hen-idle, egg-falling, chef-back-and-forth, etc.
  *
  * @param config - Actor configuration specifying type and versions
  * @param canvasWidth - Canvas width (from story config)
@@ -17,8 +20,8 @@ import type { ActorConfig, StoryActorInstance } from './types';
  * @example
  * const instance = await createDemoActor({
  *   type: 'hen',
- *   machineVersion: 'v1-simple',
- *   componentVersion: 'v1-simple',
+ *   machineVersion: 'idle',
+ *   componentVersion: 'idle',
  *   startPosition: { x: 100, y: 200 }
  * }, 1920, 500);
  */
@@ -29,14 +32,22 @@ export async function createDemoActor(
 ): Promise<StoryActorInstance> {
   const { type, machineVersion, componentVersion, startPosition } = config;
 
+  // Determine story folder name from type and machine version
+  // Remove '-headless' suffix to get base story folder
+  const baseMachineVersion = machineVersion.replace('-headless', '');
+  const storyFolder =
+    type === 'egg-caught-points'
+      ? 'egg-caught-points-demo'
+      : `${type}-${baseMachineVersion}`;
+
   // Dynamically import the versioned machine
   const machineModule = await import(
-    `./machines/${type}/${type}-${machineVersion}.machine.ts`
+    `./stories/${storyFolder}/${type}-${machineVersion}.machine.ts`
   );
 
   // Dynamically import the versioned component
   const componentModule = await import(
-    `./components/${type}/${type}-${componentVersion}.tsx`
+    `./stories/${storyFolder}/${type}-${componentVersion}.tsx`
   );
 
   // Extract the machine and component
