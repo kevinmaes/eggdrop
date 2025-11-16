@@ -10,7 +10,6 @@ interface StoryCanvasProps {
   background: BackgroundConfig;
   actorInstances: StoryActorInstance[];
   resetCount?: number;
-  demoTitle?: string;
 }
 
 /**
@@ -28,7 +27,6 @@ export function StoryCanvas({
   background,
   actorInstances,
   resetCount = 0,
-  demoTitle,
 }: StoryCanvasProps) {
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -46,43 +44,6 @@ export function StoryCanvas({
           })}
         </Layer>
       </Stage>
-      {demoTitle && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '8px',
-            left: '16px',
-            fontSize: '11px',
-            color: 'rgba(255, 255, 255, 0.6)',
-            fontFamily: 'monospace',
-            pointerEvents: 'none',
-            userSelect: 'none',
-            textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-          }}
-        >
-          {demoTitle}
-        </div>
-      )}
-      <div
-        style={{
-          position: 'absolute',
-          top: '8px',
-          right: '0',
-          fontSize: '11px',
-          color: 'rgba(255, 255, 255, 0.6)',
-          fontFamily: 'monospace',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          textAlign: 'right',
-          paddingRight: '16px',
-          maxWidth: '250px',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-        }}
-      >
-        {width}×{height}px
-      </div>
     </div>
   );
 }

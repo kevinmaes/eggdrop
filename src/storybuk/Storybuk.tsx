@@ -155,19 +155,21 @@ export function Storybuk() {
             height: STORYBUK_LAYOUT.header.height,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             padding: '0 1rem',
             backgroundColor: STORYBUK_COLORS.header.background,
             borderBottom: `1px solid ${STORYBUK_COLORS.header.border}`,
           }}
         >
-          {/* Controls */}
+          {/* Left: Playback Controls */}
+          <ControlPanel
+            onPlay={handlePlay}
+            onReset={handleReset}
+            isPlaying={isPlaying}
+          />
+
+          {/* Right: Settings */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <ControlPanel
-              onPlay={handlePlay}
-              onReset={handleReset}
-              isPlaying={isPlaying}
-            />
             <InspectorToggle
               inspectorEnabled={inspectorEnabled}
               onToggle={handleToggleInspector}
@@ -236,7 +238,6 @@ export function Storybuk() {
                           background={currentStoryConfig.background}
                           actorInstances={visualActors}
                           resetCount={resetCount}
-                          demoTitle={currentStoryConfig.title}
                         />
                       </div>
                     )}
