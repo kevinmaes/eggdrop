@@ -1,5 +1,7 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
+import { STAGE_PADDING } from '../../story-constants';
+
 import type { Direction, Position } from '../../../types';
 
 /**
@@ -93,7 +95,7 @@ const hatchedChickExitMachine = setup({
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    const groundY = canvasHeight - 50;
+    const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
     const centerX = Math.floor(canvasWidth / 2);
 
     const chickExitDirection =

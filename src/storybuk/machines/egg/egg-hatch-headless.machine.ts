@@ -1,5 +1,7 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
+import { STAGE_PADDING } from '../../story-constants';
+
 import type { Direction, Position } from '../../../types';
 
 /**
@@ -133,7 +135,7 @@ const eggHatchHeadlessMachine = setup({
     const canvasHeight = input.canvasHeight ?? 1080;
     // Since we use offsetX/offsetY for rotation, position.x IS the center point
     const eggCenterX = Math.floor(canvasWidth / 2);
-    const groundY = canvasHeight - 50; // Ground is 50px from bottom
+    const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
 
     // Randomly choose which way the chick runs (or use input)
     const chickRunDirection =

@@ -129,6 +129,19 @@ export const ACTOR_SIZE = {
 } as const;
 
 /**
+ * Stage padding/margins for animated content
+ *
+ * Creates visual breathing room within stage boundaries:
+ * - BOTTOM_STAGE_PADDING: Distance from bottom edge where actors land/rest
+ *   Currently set to 55px to account for egg landing position:
+ *   - 25px visual padding from bottom edge
+ *   - 30px egg radius (half of 60px egg height)
+ */
+export const STAGE_PADDING = {
+  BOTTOM: 55, // Bottom edge padding for landing positions
+} as const;
+
+/**
  * Edge margin (distance from canvas edge)
  */
 const EDGE_MARGIN = 50;

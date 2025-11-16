@@ -310,7 +310,10 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
-    ...calculateStoryCanvasDimensions('horizontal', 10),
+    ...calculateStoryCanvasDimensions(
+      'horizontal',
+      EGG_STORY_CANVAS_WIDTH_PERCENT
+    ),
   },
   {
     id: 'Egg Hatch Jump Only',
@@ -561,13 +564,12 @@ function applyPositionsToStory(
       story.actors.some((a: any) => a.machineVersion.includes(version))
     );
 
-    // Determine if this is a hatched chick story (starts near bottom)
-    const isHatchedChick = story.actors.some((a: any) =>
-      a.machineVersion.includes('hatched-chick-exit')
-    );
-
     const posX = useCenterPoint ? eggCenterPointX : eggLeftEdgeCenterX;
-    const posY = isHatchedChick ? canvasHeight - 80 : startY;
+
+    // Eggs WITHOUT offset (just "falling") need Y adjusted by half egg height
+    // to visually align with eggs that have offsetY={EGG_SIZE.height / 2}
+    const usesOffset = useCenterPoint;
+    const posY = usesOffset ? startY : startY - ACTOR_SIZE.egg.height / 2;
 
     return {
       ...story,

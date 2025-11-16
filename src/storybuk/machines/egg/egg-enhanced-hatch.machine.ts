@@ -1,5 +1,7 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
+import { STAGE_PADDING } from '../../story-constants';
+
 import type { Direction, Position } from '../../../types';
 
 /**
@@ -225,7 +227,7 @@ const eggEnhancedHatchMachine = setup({
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
     const eggCenterX = Math.floor(canvasWidth / 2);
-    const groundY = canvasHeight - 50;
+    const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
 
     const chickWalkDirection =
       input.chickWalkDirection ?? (Math.random() < 0.5 ? -1 : 1);
