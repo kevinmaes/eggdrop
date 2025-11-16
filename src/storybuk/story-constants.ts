@@ -85,6 +85,9 @@ export function getCanvasDimensionsForLayout(mode: LayoutMode) {
 export const STORY_CANVAS = {
   MAX_WIDTH: 1920,
   MAX_HEIGHT: 1080,
+  // Aliases for backward compatibility
+  width: 1920,
+  height: 1080,
 } as const;
 
 interface StoryCanvasDimensions {

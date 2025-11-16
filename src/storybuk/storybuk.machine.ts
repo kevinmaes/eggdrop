@@ -88,10 +88,7 @@ export const storybukMachine = setup({
       // Check if the event contains a demoId to validate
       const demoId = 'demoId' in event ? event.demoId : context.selectedStoryId;
       if (!demoId) return false;
-      const storyConfigs = getStoryConfigs(
-        context.canvasWidth,
-        context.canvasHeight
-      );
+      const storyConfigs = getStoryConfigs();
       return !!storyConfigs[demoId];
     },
     'inspector enabled': ({ context }) => context.inspectorEnabled,
@@ -104,10 +101,7 @@ export const storybukMachine = setup({
       const demoId = 'demoId' in event ? event.demoId : context.selectedStoryId;
       if (!demoId) return {};
 
-      const storyConfigs = getStoryConfigs(
-        context.canvasWidth,
-        context.canvasHeight
-      );
+      const storyConfigs = getStoryConfigs();
       const demoConfig = storyConfigs[demoId];
       if (!demoConfig) return {};
 
@@ -219,10 +213,7 @@ export const storybukMachine = setup({
       invoke: {
         src: 'loadDemoActors',
         input: ({ context }) => {
-          const storyConfigs = getStoryConfigs(
-            context.canvasWidth,
-            context.canvasHeight
-          );
+          const storyConfigs = getStoryConfigs();
           if (!context.selectedStoryId) {
             throw new Error('No story selected');
           }

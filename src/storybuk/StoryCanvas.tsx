@@ -1,13 +1,12 @@
 import { Stage, Layer } from 'react-konva';
 
 import { BackgroundRenderer } from './BackgroundRenderer';
-import { STORY_CANVAS } from './story-constants';
 
 import type { BackgroundConfig, StoryActorInstance } from './types';
 
 interface StoryCanvasProps {
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
   background: BackgroundConfig;
   actorInstances: StoryActorInstance[];
   resetCount?: number;
@@ -24,8 +23,8 @@ interface StoryCanvasProps {
  * Default size from STORY_CANVAS (configurable in story-constants.ts)
  */
 export function StoryCanvas({
-  width = STORY_CANVAS.width,
-  height = STORY_CANVAS.height,
+  width,
+  height,
   background,
   actorInstances,
   resetCount = 0,

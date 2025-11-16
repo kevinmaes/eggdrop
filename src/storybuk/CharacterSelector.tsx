@@ -63,9 +63,6 @@ function CharacterButton({
       }
     };
 
-    const img = new window.Image();
-    img.src = getImagePath();
-
     const frameData = getFrameData();
 
     // Clear canvas
@@ -80,6 +77,12 @@ function CharacterButton({
       ctx.fillText('...', 28, 28);
       return;
     }
+
+    const imagePath = getImagePath();
+    if (!imagePath) return;
+
+    const img = new window.Image();
+    img.src = imagePath;
 
     if (!frameData) return;
 
