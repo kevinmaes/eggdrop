@@ -64,6 +64,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -94,6 +95,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -124,6 +126,7 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -230,6 +233,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -260,6 +264,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -290,6 +295,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -320,6 +326,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -350,6 +357,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -380,6 +388,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -410,6 +419,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'horizontal',
       EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -443,6 +453,7 @@ const CHEF_STORIES: StoryConfig[] = [
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       CHEF_STORY_CANVAS_HEIGHT_PERCENT
@@ -468,6 +479,7 @@ const CHEF_STORIES: StoryConfig[] = [
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       CHEF_STORY_CANVAS_HEIGHT_PERCENT
@@ -493,6 +505,7 @@ const CHEF_STORIES: StoryConfig[] = [
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       CHEF_STORY_CANVAS_HEIGHT_PERCENT
@@ -518,6 +531,7 @@ const CHEF_STORIES: StoryConfig[] = [
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-bottom',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions(
       'vertical',
       CHEF_STORY_CANVAS_HEIGHT_PERCENT
@@ -558,6 +572,7 @@ const OTHER_STORIES: StoryConfig[] = [
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'horizontal-split-narrow',
+    statelyEmbedUrl: '',
     ...calculateStoryCanvasDimensions('horizontal', 20),
   },
 ];

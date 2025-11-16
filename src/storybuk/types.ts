@@ -47,12 +47,12 @@ export interface StoryConfig {
   actors: ActorConfig[];
   background: BackgroundConfig;
   title: string;
-  description?: string;
-  layoutMode?: LayoutMode;
-  splitOrientation?: SplitOrientation;
+  description: string;
+  layoutMode: LayoutMode;
+  splitOrientation: SplitOrientation;
   canvasWidth: number;
   canvasHeight: number;
-  statelyEmbedUrl?: string;
+  statelyEmbedUrl: string;
 }
 
 /**

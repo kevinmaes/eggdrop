@@ -86,8 +86,8 @@ export function Storybuk() {
     ? storyConfigs[selectedStoryId]
     : null;
 
-  const splitOrientation = currentStoryConfig?.splitOrientation || 'horizontal';
-  const statelyUrl = currentStoryConfig?.statelyEmbedUrl;
+  const splitOrientation = currentStoryConfig?.splitOrientation ?? 'horizontal';
+  const statelyUrl = currentStoryConfig?.statelyEmbedUrl ?? '';
 
   // Get dynamic dimensions based on split orientation
   const getLayoutDimensions = () => {
