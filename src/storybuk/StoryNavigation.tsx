@@ -265,7 +265,7 @@ export function StoryNavigation({
                           width: '100%',
                           padding: '6px 12px 6px 32px',
                           display: 'flex',
-                          alignItems: 'center',
+                          alignItems: 'flex-start',
                           gap: '8px',
                           border: 'none',
                           borderLeft: isSelected
