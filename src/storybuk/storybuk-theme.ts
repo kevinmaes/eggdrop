@@ -80,8 +80,8 @@ export const STORYBUK_COLORS = {
     info: '#2196F3',
   },
 
-  // Story demo background color
-  storyDemoBackground: '#2c5f7f',
+  // Story demo background color (lighter blue-gray for better UI integration while maintaining contrast for white sprites)
+  storyDemoBackground: '#5a8aa8',
 } as const;
 
 export const STORYBUK_LAYOUT = {
