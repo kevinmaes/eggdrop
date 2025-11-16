@@ -8,7 +8,10 @@
       "Bash(pnpm dev)",
       "Bash(cat:*)",
       "Bash(pnpm format:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(git mv:*)",
+      "Bash(tree:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
