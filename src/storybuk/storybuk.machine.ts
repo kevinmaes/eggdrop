@@ -69,13 +69,15 @@ export const storybukMachine = setup({
       error: string | null;
       resetCount: number;
       inspectorEnabled: boolean;
+      statelyTheme: 'light' | 'dark';
     },
     events: {} as
       | { type: 'Select story'; demoId: string }
       | { type: 'Change canvas width'; width: number }
       | { type: 'Play' }
       | { type: 'Reset' }
-      | { type: 'Toggle inspector' },
+      | { type: 'Toggle inspector' }
+      | { type: 'Toggle stately theme' },
   },
   actors: {
     loadDemoActors: loadDemoActorsActor,
@@ -171,6 +173,10 @@ export const storybukMachine = setup({
     closeInspector: () => {
       closeInspectorIfOpen();
     },
+    toggleStatelyTheme: assign({
+      statelyTheme: ({ context }) =>
+        context.statelyTheme === 'light' ? 'dark' : 'light',
+    }),
   },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QBEwFsD2BlALgVwgEsMA6ASQgBswBiLMagYxwAIJ0MBtABgF1FQABwyxCOYgDsBIAB6IAzAE55JACyqAHN0WrlARk3cNAGhABPRAFoDGkgFZ5WxQDY7G+QCZFdvQF9fpqiYuATEJAAyGACGRBJQLACCzBgATrA0EBgSYCSEEgBuGADWOUHY+ESkkTF58Uk4qbAIeYWMUeJZPLxd0sKiHVJIsoh62rbKqh4eehrOGqp2iqYWCNYatgDsCxpemnoeG87yzv6BHCGVEdGxdclpNGApKakkgpTtAGapaCRlF2HVG6JO5NFoYNoDLo9IZ9MSSaRyBAbTwkZyqbgLIxzDaKabLKwqHSLDR2bjTVRHDyzE4BEB-CphMosAAK7zMtToDDAzDYHGhQhEcKyCJGWJIG20Gw8zm4yKc+NWMxIyg2oxx8lUeg13g2pzp5wZpCZrKi7LiNAAwgALKJxMAsNoFKKwFgAd0IEBwVv5IFhAxFCFGaJIekW8jsbgj3G4+wVlnkWpI2kUWnkOO0bg8evpoSNHBZbI5zKieFgYB9fvhQ0RNg8JC0XlVqvmeiOCqlIcWEc1WsU3GcLmzBtzv3zJrNUBoACU4GAcBXBf7q4gtLYEw5NRGbBs4+iNuKPNxiaTW9p+0PgobR5gWSWyxAaOOF-0q6Aawc61K5lpDqoE0tzBGHFOymFw3G0XQ0QvcoR2NO9IGnWd5z4XpF1fYYEFUEMpSmPRFDw3QU3keQFQOewPApWVkUmbYs1pHNLjg0sEPoJhWHYTBnyFQY30QHw7FRHY7AOOxNDTACVjwutFC2fDHD0KViPmaD-jzG9i2Yh9rVtGAHVtfJnTdD0vS4pdeIQaVFE7UZcS1HZnFGOwFTcethIo4kNg0FM-Ho4dLgAUSeVJOTY3lOJQmE0OFZcEC0LC9CkxyEujFMFQUqzQ1A1wnEg3VfMvEdAueFJELLZD+Eil9ovMrU9GVDQNhxCN5G0Y5VB3QCEBautHFlLzW3UGzVH8WkJAwdh4CGBjiFQqqeIwyw-3rA5GtXI9owU3dvCTP8HDGaUyQ0FSrwoahZu4gN9hUDwWqOBxHDsOZWzjAwrMesl9mmLxRIjY6R0BWpgQaNJzrMjDDnGSlHAHdEGpejYBIjSlnA8Hx+wOeQ-sYsdCziUH0JrdqsIOP8WuI0MExe6UQwWHxD1WhMDCxxkx3giB8eqjC3CwhGKZxAdwxjBUlG4VE7Eagxv3EvKzgKgKgpSDn5sRHYMuOGMNVE2Y9GF-tUQSlMZVEqllBG3wgA */
@@ -185,6 +191,7 @@ export const storybukMachine = setup({
     error: null,
     resetCount: 0,
     inspectorEnabled: false,
+    statelyTheme: 'light',
   },
   initial: 'Idle',
   states: {
@@ -201,6 +208,9 @@ export const storybukMachine = setup({
             },
             'setLayoutModeAndDimensions',
           ],
+        },
+        'Toggle stately theme': {
+          actions: 'toggleStatelyTheme',
         },
       },
     },
@@ -315,6 +325,9 @@ export const storybukMachine = setup({
             'resetPlaybackState',
           ],
         },
+        'Toggle stately theme': {
+          actions: 'toggleStatelyTheme',
+        },
       },
     },
     'Demo Playing': {
@@ -374,6 +387,9 @@ export const storybukMachine = setup({
             'cleanupActors',
             'resetPlaybackState',
           ],
+        },
+        'Toggle stately theme': {
+          actions: 'toggleStatelyTheme',
         },
       },
     },

@@ -3,6 +3,7 @@ interface StatelyEmbedProps {
   height: number;
   demoTitle?: string;
   statelyUrl?: string;
+  theme?: 'light' | 'dark';
 }
 
 /**
@@ -10,20 +11,31 @@ interface StatelyEmbedProps {
  *
  * Displays an embedded Stately editor view showing the state chart.
  * The URL should be from stately.ai/registry/editor/...
+ * The theme parameter controls the color mode of the embed.
  */
 export function StatelyEmbed({
   width,
   height,
   demoTitle,
   statelyUrl,
+  theme = 'light',
 }: StatelyEmbedProps) {
+  // Append colorMode parameter to statelyUrl if URL exists
+  const urlWithTheme = statelyUrl
+    ? `${statelyUrl}${statelyUrl.includes('?') ? '&' : '?'}colorMode=${theme}`
+    : undefined;
+
+  // Dynamic colors based on theme
+  const backgroundColor = theme === 'light' ? '#ffffff' : '#1a1a1a';
+  const borderColor = theme === 'light' ? '#e0e0e0' : '#4a4a4a';
+
   return (
     <div
       style={{
         width,
         height,
-        backgroundColor: '#1a1a1a',
-        border: '2px solid #4a4a4a',
+        backgroundColor,
+        border: `2px solid ${borderColor}`,
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
@@ -49,9 +61,9 @@ export function StatelyEmbed({
           {demoTitle}
         </div>
       )}
-      {statelyUrl ? (
+      {urlWithTheme ? (
         <iframe
-          src={statelyUrl}
+          src={urlWithTheme}
           style={{
             width: '100%',
             height: '100%',

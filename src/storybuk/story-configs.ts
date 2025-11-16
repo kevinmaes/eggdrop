@@ -168,7 +168,7 @@ const EGG_STORIES: Omit<StoryConfig, 'actors'>[] &
       EGG_STORY_CANVAS_WIDTH_PERCENT
     ),
     statelyEmbedUrl:
-      'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893',
+      'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=67ee088f-7005-4919-a155-673965bfef40&mode=design',
   },
   {
     id: 'Egg Falling Rotating',

@@ -4,6 +4,7 @@ import '@fontsource/nunito-sans/600.css';
 import '@fontsource/nunito-sans/700.css';
 
 import { StatelyEmbed } from './components/StatelyEmbed';
+import { ThemeToggle } from './components/ThemeToggle';
 import { ControlPanel } from './ControlPanel';
 import InspectorToggle from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
@@ -44,6 +45,7 @@ export function Storybuk() {
     isPlaying,
     resetCount,
     inspectorEnabled,
+    statelyTheme,
   } = state.context;
 
   const isLoading = state.matches('Loading Actors');
@@ -75,7 +77,11 @@ export function Storybuk() {
     send({ type: 'Toggle inspector' });
   };
 
-  const storyConfigs = getStoryConfigs(canvasWidth, canvasHeight);
+  const handleToggleTheme = () => {
+    send({ type: 'Toggle stately theme' });
+  };
+
+  const storyConfigs = getStoryConfigs();
   const currentStoryConfig = selectedStoryId
     ? storyConfigs[selectedStoryId]
     : null;
@@ -166,6 +172,7 @@ export function Storybuk() {
               inspectorEnabled={inspectorEnabled}
               onToggle={handleToggleInspector}
             />
+            <ThemeToggle theme={statelyTheme} onToggle={handleToggleTheme} />
           </div>
         </div>
 
@@ -245,10 +252,8 @@ export function Storybuk() {
                         width={layoutDimensions.statelyCanvas.width}
                         height={layoutDimensions.statelyCanvas.height}
                         demoTitle={currentStoryConfig.title}
-                        statelyUrl={
-                          statelyUrl ||
-                          'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=101f821a-03c1-4af1-abbd-e54327548893'
-                        }
+                        statelyUrl={statelyUrl}
+                        theme={statelyTheme}
                       />
                     </div>
 
