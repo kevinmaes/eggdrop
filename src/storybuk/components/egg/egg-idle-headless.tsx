@@ -180,9 +180,9 @@ function EggIdleHeadless({
           About This Demo:
         </h3>
         <p style={{ margin: 0 }}>
-          This is the simplest egg state machine - just a single Idle state
-          with no transitions or animations. It demonstrates the basic actor
-          pattern and Konva integration for displaying sprites.
+          This is the simplest egg state machine - just a single Idle state with
+          no transitions or animations. It demonstrates the basic actor pattern
+          and Konva integration for displaying sprites.
         </p>
       </div>
     </div>

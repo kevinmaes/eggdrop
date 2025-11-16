@@ -272,9 +272,7 @@ export function StoryNavigation({
                           gap: '8px',
                           border: 'none',
                           borderLeft: '3px solid transparent',
-                          background: isSelected
-                            ? '#d0d7de'
-                            : 'transparent',
+                          background: isSelected ? '#d0d7de' : 'transparent',
                           cursor: 'pointer',
                           color: STORYBUK_COLORS.navigation.itemText,
                           fontSize: '13px',
