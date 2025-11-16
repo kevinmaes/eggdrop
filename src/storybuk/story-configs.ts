@@ -64,7 +64,8 @@ const HEN_STORIES: Omit<StoryConfig, 'actors'>[] &
       color: STORYBUK_COLORS.storyDemoBackground,
     },
     layoutMode: 'vertical-split-top',
-    statelyEmbedUrl: '',
+    statelyEmbedUrl:
+      'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=9e25a04f-4e68-4060-a287-61a5d4355c10',
     ...calculateStoryCanvasDimensions(
       'vertical',
       HEN_STORY_CANVAS_HEIGHT_PERCENT
