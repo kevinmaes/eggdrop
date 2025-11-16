@@ -5,7 +5,13 @@
       "Bash(pnpm lint)",
       "Bash(pnpm format)",
       "Bash(pnpm exec tsc:*)",
-      "Bash(pnpm dev)"
+      "Bash(pnpm dev)",
+      "Bash(cat:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm add:*)",
+      "Bash(git mv:*)",
+      "Bash(tree:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

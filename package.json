@@ -26,6 +26,7 @@
 		"version": "changeset version"
 	},
 	"dependencies": {
+		"@fontsource/nunito-sans": "^5.2.7",
 		"@statelyai/inspect": "^0.4.0",
 		"@xstate/react": "^6.0.0",
 		"fontfaceobserver": "^2.3.0",
