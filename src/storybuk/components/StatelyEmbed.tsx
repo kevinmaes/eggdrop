@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 interface StatelyEmbedProps {
   width: number;
   height: number;
@@ -20,14 +22,36 @@ export function StatelyEmbed({
   statelyUrl,
   theme = 'light',
 }: StatelyEmbedProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showOverlay, setShowOverlay] = useState(true);
+
   // Append colorMode parameter to statelyUrl if URL exists
   const urlWithTheme = statelyUrl
     ? `${statelyUrl}${statelyUrl.includes('?') ? '&' : '?'}colorMode=${theme}`
     : undefined;
 
   // Dynamic colors based on theme
-  const backgroundColor = theme === 'light' ? '#ffffff' : '#1a1a1a';
+  // Use #f6f7f7 for light mode to match Stately's default background
+  const backgroundColor = theme === 'light' ? '#f6f7f7' : '#1a1a1a';
   const borderColor = theme === 'light' ? '#e0e0e0' : '#4a4a4a';
+
+  // Reset loading state when URL changes
+  useEffect(() => {
+    setIsLoading(true);
+    setShowOverlay(true);
+  }, [urlWithTheme]);
+
+  // Handle iframe load with delay and fade-out
+  const handleIframeLoad = () => {
+    // Wait a bit to ensure content is fully rendered
+    setTimeout(() => {
+      setIsLoading(false);
+      // Start fade-out animation
+      setTimeout(() => {
+        setShowOverlay(false);
+      }, 300); // Duration of fade-out animation
+    }, 500); // Delay before starting fade
+  };
 
   return (
     <div
@@ -62,15 +86,41 @@ export function StatelyEmbed({
         </div>
       )}
       {urlWithTheme ? (
-        <iframe
-          src={urlWithTheme}
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-          }}
-          title="Stately Statechart"
-        />
+        <>
+          <iframe
+            key={`stately-embed-${theme}`}
+            src={urlWithTheme}
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+            }}
+            title="Stately Statechart"
+            onLoad={handleIframeLoad}
+          />
+          {showOverlay && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: theme === 'light' ? '#666' : '#999',
+                fontSize: '14px',
+                opacity: isLoading ? 1 : 0,
+                transition: 'opacity 300ms ease-out',
+                pointerEvents: isLoading ? 'auto' : 'none',
+              }}
+            >
+              Loading...
+            </div>
+          )}
+        </>
       ) : (
         <div
           style={{
