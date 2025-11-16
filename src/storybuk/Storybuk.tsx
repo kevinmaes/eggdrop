@@ -175,10 +175,13 @@ export function Storybuk() {
 
           {/* Right: Settings */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <InspectorToggle
-              inspectorEnabled={inspectorEnabled}
-              onToggle={handleToggleInspector}
-            />
+            {/* Inspector toggle (only for animated stories) */}
+            {currentStoryConfig?.type === 'animated' && (
+              <InspectorToggle
+                inspectorEnabled={inspectorEnabled}
+                onToggle={handleToggleInspector}
+              />
+            )}
             <ThemeToggle theme={statelyTheme} onToggle={handleToggleTheme} />
           </div>
         </div>
