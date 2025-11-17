@@ -3,15 +3,16 @@ import { Layer, Stage } from 'react-konva';
 import { AppActorContext } from './app.machine';
 import { BackgroundLayer } from './BackgroundLayer/BackgroundLayer';
 import { BetweenLevelsLayer } from './BetweenLevelsLayer/BetweenLevelsLayer';
-import { LOADING_MSG } from './constants';
 import { DevPanel } from './DevPanel/DevPanel';
+import { getBorderRadius } from './gameConfig';
 import { GameLevel } from './GameLevel/GameLevel';
-import './App.css';
+import { LoadingOverlay } from './LoadingOverlay/LoadingOverlay';
 import { MuteButton } from './MuteButton/MuteButton';
 import { TransparentButton } from './TransparentButton/TransparentButton';
+import './App.css';
 
 function App() {
-  const { isLoading, showError, showGamePlayLevel } =
+  const { isLoading, showError, showGamePlayLevel, loadingStatus } =
     AppActorContext.useSelector((state) => ({
       stateValue: state.value,
       showError: state.matches('Show Error'),
@@ -19,6 +20,7 @@ function App() {
       showGameIntro: state.matches('Intro'),
       showGamePlay: state.matches('Game Play'),
       showGamePlayLevel: state.hasTag('actively playing'),
+      loadingStatus: state.context.loadingStatus,
     }));
 
   if (showError) {
@@ -26,14 +28,16 @@ function App() {
   }
 
   if (isLoading) {
-    return <div>{LOADING_MSG}</div>;
+    return <LoadingOverlay status={loadingStatus} />;
   }
 
   return (
-    <KonvaStageAndBackground>
-      <BetweenLevelsLayer />
-      {showGamePlayLevel && <GameLevel />}
-    </KonvaStageAndBackground>
+    <div className="app-page">
+      <KonvaStageAndBackground>
+        <BetweenLevelsLayer />
+        {showGamePlayLevel && <GameLevel />}
+      </KonvaStageAndBackground>
+    </div>
   );
 }
 
@@ -47,35 +51,41 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <>
-      <Stage
-        width={gameConfig.stage.width}
-        height={gameConfig.stage.height}
-        style={{
-          border: '5px solid',
-          borderColor: '#98aace',
-        }}
-      >
-        {/* Background graphics layer - static (no events) */}
-        <BackgroundLayer />
-        {children}
-        {/* Dynamic App UI Layer */}
-        <Layer>
-          <MuteButton />
-          {showGameIntro && (
-            // Play button
-            <TransparentButton
-              x={0.5 * gameConfig.stage.width - 500}
-              y={0.5 * gameConfig.stage.height - 250}
-              width={1000}
-              height={500}
-              onClick={() => appActorRef.send({ type: 'Play' })}
-            />
-          )}
-        </Layer>
-      </Stage>
+    <div className="app-stage-wrapper">
+      <div className="app-stage-container">
+        <div className="app-stage-container-middle">
+          <div className="app-stage-container-inner">
+            <Stage
+              width={gameConfig.stage.width}
+              height={gameConfig.stage.height}
+              style={{
+                borderRadius: `${getBorderRadius()}px`,
+                overflow: 'hidden',
+              }}
+            >
+              {/* Background graphics layer - static (no events) */}
+              <BackgroundLayer />
+              {children}
+              {/* Dynamic App UI Layer */}
+              <Layer>
+                <MuteButton />
+                {showGameIntro && (
+                  // Play button
+                  <TransparentButton
+                    x={0.5 * gameConfig.stage.width - 500}
+                    y={0.5 * gameConfig.stage.height - 250}
+                    width={1000}
+                    height={500}
+                    onClick={() => appActorRef.send({ type: 'Play' })}
+                  />
+                )}
+              </Layer>
+            </Stage>
+          </div>
+        </div>
+      </div>
       <DevPanel />
-    </>
+    </div>
   );
 }
 

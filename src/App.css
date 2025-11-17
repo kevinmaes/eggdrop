@@ -1,5 +1,61 @@
+@import './styles/shared-borders.css';
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background-color: #0b1020;
+}
+
+.app-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  box-sizing: border-box;
+}
+
+.app-stage-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-stage-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--border-outer-padding);
+  border-radius: var(--border-radius-outer);
+  background: var(--border-outer-gradient);
+  outline: 1px solid var(--border-outline-color);
+  box-shadow: var(--border-box-shadow);
+}
+
+.app-stage-container-middle {
+  padding: var(--border-inner-thickness);
+  border-radius: var(--border-radius-middle);
+  background-color: var(--border-inner-color);
+}
+
+.app-stage-container-inner {
+  border-radius: var(--border-radius-inner);
+  overflow: hidden;
+}
+
+@media (max-height: 900px) {
+  .app-page {
+    justify-content: flex-start;
   }
 }

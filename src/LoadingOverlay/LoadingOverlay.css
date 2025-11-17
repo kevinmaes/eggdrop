@@ -1,0 +1,122 @@
+@import '../styles/shared-borders.css';
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0b1020;
+  color: #f8f9ff;
+  z-index: 9999;
+}
+
+.loading-overlay__content {
+  position: relative;
+  padding: var(--border-outer-padding);
+  border-radius: var(--border-radius-outer);
+  background: var(--border-outer-gradient);
+  outline: 1px solid var(--border-outline-color);
+  box-shadow: var(--border-box-shadow);
+}
+
+.loading-overlay__content-middle {
+  padding: var(--border-inner-thickness);
+  border-radius: var(--border-radius-middle);
+  background-color: var(--border-inner-color);
+}
+
+.loading-overlay__content-inner {
+  width: 1280px;
+  height: 720px;
+  padding: 2.5rem;
+  border-radius: var(--border-radius-inner);
+  background-color: rgba(13, 20, 40, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.loading-overlay__egg-container {
+  position: relative;
+  width: clamp(160px, 22vw, 240px);
+  aspect-ratio: 3 / 4;
+  animation: loading-overlay-rock 3s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+.loading-overlay__egg-fill-wrapper,
+.loading-overlay__egg-shell {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.loading-overlay__egg-fill-wrapper {
+  transform-origin: 50% 100%;
+}
+
+.loading-overlay__egg-fill {
+  width: 100%;
+  height: 100%;
+}
+
+.loading-overlay__egg-shell {
+  z-index: 1;
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-overlay__egg-container {
+    animation: none;
+  }
+}
+
+@keyframes loading-overlay-rock {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.loading-overlay__percentage {
+  font-family:
+    'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 1rem;
+  color: rgba(248, 249, 255, 0.9);
+  letter-spacing: 0.08em;
+}
+
+.loading-overlay__status {
+  font-family:
+    'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 0.875rem;
+  color: rgba(248, 249, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.loading-overlay__sr-message {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

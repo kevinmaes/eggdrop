@@ -1,0 +1,37 @@
+/* Shared border styling constants for loading overlay and game container */
+/* Generation-art inspired border aesthetic with dark outer and lighter inner border */
+
+:root {
+  /* Border dimensions - outer padding creates darker and thicker frame, inner is lighter and thinner */
+  --border-outer-padding: 40px;
+  --border-inner-thickness: 20px;
+
+  /* Border radius - single source of truth for all border radii */
+  /* Change this one value to update all borders (CSS and Konva elements) */
+  /* When base = 0, all corners are square. When base > 0, creates smooth concentric curves. */
+  --border-radius-base: 16px;
+
+  /* All radii use base value directly - nested divs create the concentric effect */
+  --border-radius-outer: var(--border-radius-base);
+  --border-radius-middle: var(--border-radius-base);
+  --border-radius-inner: var(--border-radius-base);
+  --border-radius-stage: var(--border-radius-base);
+
+  /* Border colors - outer is darker with subtle gradient, inner is slightly lighter solid */
+  --border-outer-color: #0b1020;
+  --border-outer-gradient: linear-gradient(
+    135deg,
+    #0f1528 0%,
+    #0b1020 50%,
+    #08091a 100%
+  );
+  --border-inner-color: #141e36;
+  --border-outline-color: #2a3a5a;
+  --border-glow-color: rgba(152, 170, 206, 0.3);
+  --border-glow-color-secondary: rgba(152, 170, 206, 0.15);
+
+  /* Shared box-shadow for subtle 3D effect and outer glow */
+  --border-box-shadow:
+    0 0 20px var(--border-glow-color),
+    0 0 40px var(--border-glow-color-secondary);
+}
