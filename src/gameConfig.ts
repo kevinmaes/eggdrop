@@ -271,7 +271,8 @@ export function getGameConfig(): GameConfig {
     return gameConfigInstance;
   }
 
-  return createGameConfig(isTestMode);
+  gameConfigInstance = createGameConfig(isTestMode);
+  return gameConfigInstance;
 }
 
 // Export a function to reset the config (useful for testing)
