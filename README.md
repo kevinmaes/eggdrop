@@ -7,7 +7,7 @@
 [![Konva](https://img.shields.io/badge/Konva-10.0.8-0DB7ED?style=flat-square&logo=konva)](https://konvajs.org)
 [![Howler](https://img.shields.io/badge/Howler-2.2.4-FF6600?style=flat-square)](https://howlerjs.com)
 
-[![Egg Drop Title](public/images/egg-drop-title.png)](http://eggdrop.kevinmaes.com)
+[![Egg Drop Title](public/images/eggdrop-title.png)](http://eggdrop.kevinmaes.com)
 
 🎮 [Play the Egg Drop game](http://eggdrop.kevinmaes.com)
 

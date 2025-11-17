@@ -12,7 +12,7 @@ export function IntroImage() {
     })
   );
 
-  const [titleImage] = useImage('images/egg-drop-title.png');
+  const [titleImage] = useImage('images/eggdrop-title.png');
   const borderRadius = getBorderRadius();
 
   if (!showGameIntro) {
