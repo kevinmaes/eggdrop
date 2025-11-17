@@ -9,6 +9,7 @@
  */
 
 import type { SplitOrientation } from './storybuk-theme';
+import { STORYBUK_LAYOUT } from './storybuk-theme';
 
 /**
  * Presentation Layout Modes
@@ -109,7 +110,7 @@ export function calculateStoryCanvasDimensions(
   } else {
     return {
       splitOrientation: 'vertical',
-      canvasWidth: STORY_CANVAS.MAX_WIDTH,
+      canvasWidth: STORYBUK_LAYOUT.contentArea.width,
       canvasHeight: Math.floor((STORY_CANVAS.MAX_HEIGHT * percent) / 100),
     };
   }
