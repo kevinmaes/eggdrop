@@ -145,6 +145,15 @@ export const STAGE_PADDING = {
 } as const;
 
 /**
+ * Egg landing position offset from bottom
+ *
+ * Distance from canvas bottom where eggs should land/splat.
+ * Used across multiple egg stories (splat, falling, etc.)
+ * Higher value = egg lands farther from bottom
+ */
+export const EGG_LANDING_Y_OFFSET = 100; // pixels from bottom
+
+/**
  * Edge margin (distance from canvas edge)
  */
 const EDGE_MARGIN = 50;
