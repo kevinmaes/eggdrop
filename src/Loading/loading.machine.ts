@@ -141,11 +141,16 @@ export const loadingMachine = setup({
     gameAssets: null,
     audioLoaded: false,
   },
-  output: ({ context }) => ({
-    status: context.status,
-    gameAssets: context.gameAssets as GameAssets,
-    audioLoaded: context.audioLoaded,
-  }),
+  output: ({ context }) => {
+    if (!context.gameAssets) {
+      throw new Error('Cannot complete loading: game assets not loaded');
+    }
+    return {
+      status: context.status,
+      gameAssets: context.gameAssets,
+      audioLoaded: context.audioLoaded,
+    };
+  },
   initial: 'Loading Fonts',
   states: {
     'Loading Fonts': {
