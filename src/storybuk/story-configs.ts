@@ -1,7 +1,4 @@
-
-
 // Import individual story configs
-
 
 import { storyConfig as chefBackAndForthConfig } from './stories/chef-back-and-forth/story-config';
 import { storyConfig as chefFacingDirectionConfig } from './stories/chef-facing-direction/story-config';
@@ -134,8 +131,8 @@ export function getStoryConfigs(): StoryConfigs {
     eggIdleConfig,
     eggFallingConfig,
     eggFallingRotatingConfig,
-    eggSplatConfig,
     eggFallLandOnlyConfig,
+    eggSplatConfig,
     eggLandHatchConfig,
     hatchedChickExitConfig,
     eggHatchJumpOnlyConfig,

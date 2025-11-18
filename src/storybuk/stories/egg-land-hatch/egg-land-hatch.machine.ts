@@ -11,8 +11,7 @@ import type { Direction, Position } from '../../../types';
  * - Waiting
  * - Falling (gravity + rotation)
  * - Landed (positions egg on ground)
- * - Hatching (300ms pause showing chick in shell)
- * - Done
+ * - Hatching (final state showing chick in shell)
  *
  * This demonstrates the basic hatch transition without jump animation.
  */
@@ -100,9 +99,6 @@ const eggLandHatchMachine = setup({
       return context.position.y + DEMO_CONFIG.eggHeight / 2 >= context.groundY;
     },
   },
-  delays: {
-    hatchingPauseDuration: DEMO_CONFIG.hatchingPauseDuration,
-  },
 }).createMachine({
   id: 'Egg-Land-Hatch',
   context: ({ input }) => {
@@ -164,11 +160,6 @@ const eggLandHatchMachine = setup({
       },
     },
     Hatching: {
-      after: {
-        hatchingPauseDuration: 'Done',
-      },
-    },
-    Done: {
       type: 'final',
     },
   },

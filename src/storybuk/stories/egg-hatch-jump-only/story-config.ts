@@ -4,8 +4,8 @@ import {
   type StoryConfig,
   EGG_STORY_CANVAS_WIDTH_PERCENT,
   getCenterX,
-  getFallingStartY,
   ACTOR_SIZE,
+  getGroundY,
 } from '../../story-config-constants';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
@@ -26,7 +26,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatch-jump-only',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getFallingStartY(canvasDimensions.canvasHeight),
+        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
       },
       id: 'egg-visual',
     },
@@ -36,7 +36,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatch-jump-only-headless',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getFallingStartY(canvasDimensions.canvasHeight),
+        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
       },
       id: 'egg-headless',
     },

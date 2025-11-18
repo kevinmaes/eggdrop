@@ -56,10 +56,11 @@ function EggHatchJumpOnly({
     currentState['Hatching Jump'] === 'Bouncing Down';
 
   const isHatched = currentState === 'Hatched';
+  const isDone = currentState === 'Done';
 
   // Sprite selection
   const useJumpingFrame = isJumpingUp || isBouncingDown;
-  const useStandingFrame = isHatched;
+  const useStandingFrame = isHatched || isDone;
 
   const [chickImage] = useImage('/images/chick.sprite.png');
   const chickRef = useRef<Konva.Image>(null);
