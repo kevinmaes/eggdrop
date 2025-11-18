@@ -136,23 +136,13 @@ export const ACTOR_SIZE = {
  * Stage padding/margins for animated content
  *
  * Creates visual breathing room within stage boundaries:
- * - BOTTOM_STAGE_PADDING: Distance from bottom edge where actors land/rest
- *   Currently set to 55px to account for egg landing position:
- *   - 25px visual padding from bottom edge
- *   - 30px egg radius (half of 60px egg height)
+ * - BOTTOM: Distance from bottom edge where actors land/rest
+ *   Set to 100px to provide comfortable spacing from bottom edge
+ *   for egg landing, hatching, and chick animations
  */
 export const STAGE_PADDING = {
-  BOTTOM: 55, // Bottom edge padding for landing positions
+  BOTTOM: 100, // Bottom edge padding for landing positions
 } as const;
-
-/**
- * Egg landing position offset from bottom
- *
- * Distance from canvas bottom where eggs should land/splat.
- * Used across multiple egg stories (splat, falling, etc.)
- * Higher value = egg lands farther from bottom
- */
-export const EGG_LANDING_Y_OFFSET = 100; // pixels from bottom
 
 /**
  * Edge margin (distance from canvas edge)
