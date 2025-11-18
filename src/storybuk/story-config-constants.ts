@@ -15,6 +15,10 @@ export {
   calculatePositioningForWidth,
   ACTOR_SIZE,
   calculateStoryCanvasDimensions,
+  getCenterX,
+  getCenterY,
+  getGroundY,
+  getFallingStartY,
 } from './story-constants';
 
 // Re-export from storybuk-theme

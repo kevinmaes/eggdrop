@@ -2,13 +2,18 @@ import {
   calculateStoryCanvasDimensions,
   STORYBUK_COLORS,
   type StoryConfig,
-  type ActorConfig,
   EGG_STORY_CANVAS_WIDTH_PERCENT,
+  getCenterX,
+  getFallingStartY,
+  ACTOR_SIZE,
 } from '../../story-config-constants';
 
-export const storyConfig: Omit<StoryConfig, 'actors'> & {
-  actors: Omit<ActorConfig, 'startPosition'>[];
-} = {
+const canvasDimensions = calculateStoryCanvasDimensions(
+  'horizontal',
+  EGG_STORY_CANVAS_WIDTH_PERCENT
+);
+
+export const storyConfig: StoryConfig = {
   id: 'Egg Land Hatch',
   type: 'animated',
   title: 'Egg - Land and Hatch',
@@ -19,12 +24,20 @@ export const storyConfig: Omit<StoryConfig, 'actors'> & {
       type: 'egg',
       machineVersion: 'land-hatch',
       componentVersion: 'land-hatch',
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
+        y: getFallingStartY(canvasDimensions.canvasHeight),
+      },
       id: 'egg-visual',
     },
     {
       type: 'egg',
       machineVersion: 'land-hatch-headless',
       componentVersion: 'land-hatch-headless',
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
+        y: getFallingStartY(canvasDimensions.canvasHeight),
+      },
       id: 'egg-headless',
     },
   ],
@@ -34,8 +47,5 @@ export const storyConfig: Omit<StoryConfig, 'actors'> & {
   },
   layoutMode: 'horizontal-split-narrow',
   statelyEmbedUrl: '',
-  ...calculateStoryCanvasDimensions(
-    'horizontal',
-    EGG_STORY_CANVAS_WIDTH_PERCENT
-  ),
+  ...canvasDimensions,
 };

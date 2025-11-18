@@ -3,7 +3,14 @@ import {
   STORYBUK_COLORS,
   type StoryConfig,
   CHEF_STORY_CANVAS_HEIGHT_PERCENT,
+  getCenterX,
+  ACTOR_SIZE,
 } from '../../story-config-constants';
+
+const canvasDimensions = calculateStoryCanvasDimensions(
+  'vertical',
+  CHEF_STORY_CANVAS_HEIGHT_PERCENT
+);
 
 export const storyConfig: StoryConfig = {
   id: 'Chef With Pauses',
@@ -16,7 +23,10 @@ export const storyConfig: StoryConfig = {
       type: 'chef',
       machineVersion: 'with-pauses',
       componentVersion: 'with-pauses',
-      startPosition: { x: 960, y: 36 },
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.chef.width, true),
+        y: 36,
+      },
       id: 'chef-visual',
     },
   ],
@@ -26,8 +36,5 @@ export const storyConfig: StoryConfig = {
   },
   layoutMode: 'vertical-split-bottom',
   statelyEmbedUrl: '',
-  ...calculateStoryCanvasDimensions(
-    'vertical',
-    CHEF_STORY_CANVAS_HEIGHT_PERCENT
-  ),
+  ...canvasDimensions,
 };

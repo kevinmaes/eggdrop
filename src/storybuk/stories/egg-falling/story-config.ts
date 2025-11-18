@@ -2,13 +2,18 @@ import {
   calculateStoryCanvasDimensions,
   STORYBUK_COLORS,
   type StoryConfig,
-  type ActorConfig,
   EGG_STORY_CANVAS_WIDTH_PERCENT,
+  getCenterX,
+  getFallingStartY,
+  ACTOR_SIZE,
 } from '../../story-config-constants';
 
-export const storyConfig: Omit<StoryConfig, 'actors'> & {
-  actors: Omit<ActorConfig, 'startPosition'>[];
-} = {
+const canvasDimensions = calculateStoryCanvasDimensions(
+  'horizontal',
+  EGG_STORY_CANVAS_WIDTH_PERCENT
+);
+
+export const storyConfig: StoryConfig = {
   id: 'Egg Falling',
   type: 'animated',
   title: 'Egg - Falling',
@@ -19,12 +24,20 @@ export const storyConfig: Omit<StoryConfig, 'actors'> & {
       type: 'egg',
       machineVersion: 'falling',
       componentVersion: 'falling',
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width),
+        y: getFallingStartY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height / 2,
+      },
       id: 'egg-visual',
     },
     {
       type: 'egg',
       machineVersion: 'falling-headless',
       componentVersion: 'falling-headless',
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width),
+        y: getFallingStartY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height / 2,
+      },
       id: 'egg-headless',
     },
   ],
@@ -33,10 +46,7 @@ export const storyConfig: Omit<StoryConfig, 'actors'> & {
     color: STORYBUK_COLORS.storyDemoBackground,
   },
   layoutMode: 'horizontal-split-narrow',
-  ...calculateStoryCanvasDimensions(
-    'horizontal',
-    EGG_STORY_CANVAS_WIDTH_PERCENT
-  ),
+  ...canvasDimensions,
   statelyEmbedUrl:
     'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=67ee088f-7005-4919-a155-673965bfef40&mode=design',
 };

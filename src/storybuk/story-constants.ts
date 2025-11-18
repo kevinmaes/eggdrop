@@ -180,6 +180,44 @@ export function calculatePositioningForWidth(
 }
 
 /**
+ * Position helper functions for story configs
+ * Use these to calculate consistent positions across stories
+ */
+
+/**
+ * Get horizontally centered X position for an actor
+ * For actors with offsetX (like rotated eggs), returns canvas center
+ * For actors without offset, returns left edge that centers the actor
+ */
+export function getCenterX(canvasWidth: number, actorWidth: number, usesOffset: boolean = false): number {
+  if (usesOffset) {
+    return Math.floor(canvasWidth / 2);
+  }
+  return Math.floor((canvasWidth - actorWidth) / 2);
+}
+
+/**
+ * Get Y position for actor centered vertically
+ */
+export function getCenterY(canvasHeight: number, actorHeight: number): number {
+  return Math.floor((canvasHeight - actorHeight) / 2);
+}
+
+/**
+ * Get Y position for actor on ground (using STAGE_PADDING.BOTTOM)
+ */
+export function getGroundY(canvasHeight: number): number {
+  return canvasHeight - STAGE_PADDING.BOTTOM;
+}
+
+/**
+ * Get start Y position for falling eggs (middle of canvas)
+ */
+export function getFallingStartY(canvasHeight: number): number {
+  return Math.floor(canvasHeight / 2);
+}
+
+/**
  * Hen story positioning (dynamically calculated)
  *
  * All positions automatically adjust based on STORY_CANVAS.width

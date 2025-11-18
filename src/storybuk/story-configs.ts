@@ -123,14 +123,12 @@ function applyPositionsToStory(
  * Get all story configs with dynamically calculated positions
  */
 export function getStoryConfigs(): StoryConfigs {
-  // Apply positions to hen and egg stories
+  // All stories now have positions defined in their config files
   const henStories = [
     henIdleConfig,
     henBackAndForthConfig,
     henWithPausesConfig,
-  ].map((story) =>
-    applyPositionsToStory(story, story.canvasWidth, story.canvasHeight, 'hen')
-  );
+  ];
 
   const eggStories = [
     eggIdleConfig,
@@ -142,21 +140,15 @@ export function getStoryConfigs(): StoryConfigs {
     hatchedChickExitConfig,
     eggHatchJumpOnlyConfig,
     eggHatchGameAccurateConfig,
-  ].map((story) =>
-    applyPositionsToStory(story, story.canvasWidth, story.canvasHeight, 'egg')
-  );
+  ];
 
-  // Apply positions to chef stories
   const chefStories = [
     chefIdleConfig,
     chefBackAndForthConfig,
     chefFacingDirectionConfig,
     chefWithPausesConfig,
-  ].map((story) =>
-    applyPositionsToStory(story, story.canvasWidth, story.canvasHeight, 'chef')
-  );
+  ];
 
-  // Other stories have static positions
   const otherStories = [eggCaughtPointsConfig];
 
   return {
