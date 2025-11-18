@@ -43,7 +43,7 @@ function applyPositionsToStory(
   story: any,
   canvasWidth: number,
   canvasHeight: number,
-  actorType: 'hen' | 'egg' | 'other'
+  actorType: 'hen' | 'egg' | 'chef' | 'other'
 ): StoryConfig {
   if (actorType === 'hen') {
     const henPos = calculatePositioningForWidth(
@@ -58,6 +58,20 @@ function applyPositionsToStory(
       actors: story.actors.map((actor: any) => ({
         ...actor,
         startPosition: { x: henPos.centerX, y: henPos.centerY },
+      })),
+    };
+  }
+
+  if (actorType === 'chef') {
+    // Chef sprite's visual center doesn't match geometric center
+    // Use canvas center directly without subtracting half the chef width
+    const chefCenterX = Math.floor(canvasWidth / 2);
+
+    return {
+      ...story,
+      actors: story.actors.map((actor: any) => ({
+        ...actor,
+        startPosition: { x: chefCenterX, y: 36 },
       })),
     };
   }
@@ -132,13 +146,17 @@ export function getStoryConfigs(): StoryConfigs {
     applyPositionsToStory(story, story.canvasWidth, story.canvasHeight, 'egg')
   );
 
-  // Chef and Other stories have static positions
+  // Apply positions to chef stories
   const chefStories = [
     chefIdleConfig,
     chefBackAndForthConfig,
     chefFacingDirectionConfig,
     chefWithPausesConfig,
-  ];
+  ].map((story) =>
+    applyPositionsToStory(story, story.canvasWidth, story.canvasHeight, 'chef')
+  );
+
+  // Other stories have static positions
   const otherStories = [eggCaughtPointsConfig];
 
   return {
