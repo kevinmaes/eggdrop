@@ -24,7 +24,11 @@ export const storyConfig: StoryConfig = {
       machineVersion: 'back-and-forth',
       componentVersion: 'back-and-forth',
       startPosition: {
-        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.chef.width, true),
+        x: getCenterX(
+          canvasDimensions.canvasWidth,
+          ACTOR_SIZE.chef.width,
+          true
+        ),
         y: 36,
       },
       id: 'chef-visual',
