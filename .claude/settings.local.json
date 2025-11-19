@@ -12,7 +12,8 @@
       "Bash(git mv:*)",
       "Bash(tree:*)",
       "Bash(git rm:*)",
-      "Bash(pnpm lint:*)"
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build)"
     ],
     "deny": [],
     "ask": []
