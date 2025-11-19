@@ -24,17 +24,17 @@ import type { Position } from '../../../types';
  */
 
 const DEMO_CONFIG = {
-  henWidth: 120,
-  henHeight: 120,
+  henWidth: 240, // 2x scale (was 120)
+  henHeight: 240, // 2x scale (was 120)
   defaultX: HEN_DEMO.centerX,
   defaultY: HEN_DEMO.centerY,
-  eggWidth: 30,
-  eggHeight: 30,
+  eggWidth: 60, // 2x scale (was 30)
+  eggHeight: 60, // 2x scale (was 30)
   // Hen position is top-left corner, so we need to offset to get to hen's center bottom
-  // Hen width is 120, so center X is at +60
-  // Hen height is 120, so bottom Y is at +120
-  eggOffsetX: 60 - 15, // Center hen (60) minus half egg width (15) = 45
-  eggOffsetY: 120 - 45, // Bottom of hen (120) minus 45 = 75
+  // Hen width is 240, so center X is at +120
+  // Hen height is 240, so bottom Y is at +240
+  eggOffsetX: 120 - 30, // Center hen (120) minus half egg width (30) = 90
+  eggOffsetY: 240 - 90, // Bottom of hen (240) minus 90 = 150
   eggFallSpeed: 3, // pixels per update
   eggRotationSpeed: 8, // degrees per update
   eggUpdateInterval: 16, // ms between updates (~60fps)

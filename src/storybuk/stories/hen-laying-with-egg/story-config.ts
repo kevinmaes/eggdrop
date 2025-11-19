@@ -17,20 +17,26 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 // Add 100 pixels to the canvas height
 const tallerCanvasHeight = canvasDimensions.canvasHeight + 100;
 
+// 2x scaled hen size for this story
+const SCALED_HEN_SIZE = {
+  width: ACTOR_SIZE.hen.width * 2,
+  height: ACTOR_SIZE.hen.height * 2,
+};
+
 export const storyConfig: StoryConfig = {
   id: 'Hen Laying With Egg',
   type: 'animated',
-  title: 'Hen - Laying with static egg',
+  title: 'Hen - Laying with static egg (2x scale)',
   description:
-    'Hen lays an egg that appears at the correct position (static, no falling yet)',
+    'Hen lays an egg at 2x scale - egg appears at correct position (static, no falling yet)',
   actors: [
     {
       type: 'hen',
       machineVersion: 'laying-with-egg',
       componentVersion: 'laying-with-egg',
       startPosition: {
-        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.hen.width),
-        y: getCenterY(tallerCanvasHeight, ACTOR_SIZE.hen.height),
+        x: getCenterX(canvasDimensions.canvasWidth, SCALED_HEN_SIZE.width),
+        y: getCenterY(tallerCanvasHeight, SCALED_HEN_SIZE.height),
       },
       id: 'hen-laying-with-egg',
     },
