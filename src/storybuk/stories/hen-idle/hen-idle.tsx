@@ -5,7 +5,7 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import henSpriteData from '../../../../public/images/hen.sprite.json';
+import henSpriteData from '../../../images/hen.sprite.json';
 
 import henIdleMachine from './hen-idle.machine';
 

@@ -5,7 +5,7 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import chefSpriteData from '../../../../public/images/chef.sprite.json';
+import chefSpriteData from '../../../images/chef.sprite.json';
 
 import chefFacingDirectionMachine from './chef-facing-direction.machine';
 

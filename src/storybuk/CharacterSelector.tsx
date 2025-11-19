@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-import chefSpriteData from '../../public/images/chef.sprite.json';
-import eggSpriteData from '../../public/images/egg.sprite.json';
-import henSpriteData from '../../public/images/hen.sprite.json';
+import chefSpriteData from '../images/chef.sprite.json';
+import eggSpriteData from '../images/egg.sprite.json';
+import henSpriteData from '../images/hen.sprite.json';
 
 import { STORYBUK_COLORS } from './storybuk-theme';
 
