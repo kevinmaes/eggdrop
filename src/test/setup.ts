@@ -91,7 +91,9 @@ const mockHowlInstance = {
   duration: vi.fn().mockReturnValue(1),
 };
 
-const mockHowl = vi.fn().mockImplementation(() => mockHowlInstance);
+const mockHowl = vi.fn(function MockHowl(this: unknown) {
+  return mockHowlInstance;
+});
 
 vi.mock('howler', () => ({
   Howler: mockHowler,

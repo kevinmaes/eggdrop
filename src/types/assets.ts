@@ -34,3 +34,17 @@ export interface GameAssets {
   chick: SpriteData;
   chef: SpriteData;
 }
+
+export const ASSET_MANIFEST = {
+  sprites: {
+    ui: 'images/ui.sprite.json',
+    hen: 'images/hen.sprite.json',
+    egg: 'images/egg.sprite.json',
+    chick: 'images/chick.sprite.json',
+    chef: 'images/chef.sprite.json',
+  },
+  fonts: {
+    arco: 'Arco',
+    jetBrainsMono: 'JetBrains Mono',
+  },
+} as const;

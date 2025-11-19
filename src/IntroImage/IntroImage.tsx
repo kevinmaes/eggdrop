@@ -2,6 +2,7 @@ import { Group, Image, Rect } from 'react-konva';
 import useImage from 'use-image';
 
 import { AppActorContext } from '../app.machine';
+import { getBorderRadius } from '../gameConfig';
 
 export function IntroImage() {
   const { gameConfig, showGameIntro } = AppActorContext.useSelector(
@@ -11,7 +12,8 @@ export function IntroImage() {
     })
   );
 
-  const [titleImage] = useImage('images/egg-drop-title.png');
+  const [titleImage] = useImage('images/eggdrop-title.png');
+  const borderRadius = getBorderRadius();
 
   if (!showGameIntro) {
     return null;
@@ -20,12 +22,13 @@ export function IntroImage() {
     <Group
       x={0.5 * gameConfig.stage.width - 500}
       y={0.5 * gameConfig.stage.height - 250}
+      listening={false}
     >
       {/* Border stroke */}
       <Rect
         width={1000}
         height={500}
-        cornerRadius={20}
+        cornerRadius={borderRadius}
         stroke={gameConfig.colors.primaryYellow}
         strokeWidth={10}
       />
@@ -37,7 +40,7 @@ export function IntroImage() {
         y={10}
         fill="#222d57"
         opacity={0.5}
-        cornerRadius={20}
+        cornerRadius={borderRadius}
       />
       {/* Main title image */}
       <Image image={titleImage} width={900} height={405} x={50} y={47} />

@@ -1,11 +1,10 @@
 import { Howler } from 'howler';
 
 import { createActorContext } from '@xstate/react';
-import FontFaceObserver from 'fontfaceobserver';
 import { nanoid } from 'nanoid';
-import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
+import { assign, setup, type ActorRefFrom } from 'xstate';
 
-import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID } from './constants';
+import { APP_ACTOR_ID, GAME_LEVEL_ACTOR_ID, LOADING_MSG } from './constants';
 import { type GameConfig } from './gameConfig';
 import {
   gameLevelMachine,
@@ -19,6 +18,7 @@ import {
   phenotypeConfig,
   type PhenotypeValuesForIndividual,
 } from './geneticAlgorithm/phenotype';
+import { loadingMachine, type LoadingStatus } from './Loading/loading.machine';
 import { setAppActorRef } from './test-api';
 
 import type { ChefActorRef } from './Chef/chef.machine';
@@ -28,7 +28,7 @@ import type { GameAssets } from './types/assets';
 
 export type AppActorRef = ActorRefFrom<typeof appMachine>;
 
-const appMachine = setup({
+export const appMachine = setup({
   types: {} as {
     input: {
       gameConfig: GameConfig;
@@ -40,6 +40,8 @@ const appMachine = setup({
       population: Hendividual[];
       gameConfig: GameConfig;
       gameAssets: GameAssets | null;
+      loadedAudio: boolean;
+      loadingStatus: LoadingStatus;
       gameScoreData: {
         gameScore: number;
         eggsCaught: {
@@ -58,8 +60,19 @@ const appMachine = setup({
         setAppActorRef(self as AppActorRef);
       }
     },
-    setLoadedGameAssets: assign({
-      gameAssets: (_, params: GameAssets) => params,
+    setLoadingStatus: assign({
+      loadingStatus: (_, params: LoadingStatus) => params,
+    }),
+    syncLoadingStatus: assign({
+      loadingStatus: ({ event, context }) => {
+        const next =
+          (
+            event as {
+              snapshot?: { context?: { status?: LoadingStatus } };
+            }
+          ).snapshot?.context?.status ?? context.loadingStatus;
+        return next;
+      },
     }),
     toggleMute: assign({
       isMuted: ({ context }) => {
@@ -191,31 +204,7 @@ const appMachine = setup({
     }),
   },
   actors: {
-    loadSprites: fromPromise<GameAssets>(async () => {
-      const henResult = await fetch('images/hen.sprite.json');
-      const henSpriteData = await henResult.json();
-      const eggResult = await fetch('images/egg.sprite.json');
-      const eggSpriteData = await eggResult.json();
-      const chickResult = await fetch('images/chick.sprite.json');
-      const chickSpriteData = await chickResult.json();
-      const chefResult = await fetch('images/chef.sprite.json');
-      const chefSpriteData = await chefResult.json();
-      const uiResult = await fetch('images/ui.sprite.json');
-      const uiSpriteData = await uiResult.json();
-
-      return {
-        ui: uiSpriteData,
-        hen: henSpriteData,
-        egg: eggSpriteData,
-        chick: chickSpriteData,
-        chef: chefSpriteData,
-      };
-    }),
-    loadFonts: fromPromise(() => {
-      const arcoFont = new FontFaceObserver('Arco');
-      const jetBrainsMonoFont = new FontFaceObserver('JetBrains Mono');
-      return Promise.all([arcoFont.load(), jetBrainsMonoFont.load()]);
-    }),
+    loadingMachine,
     gameLevelMachine,
   },
 }).createMachine({
@@ -265,6 +254,11 @@ const appMachine = setup({
       levelResultsHistory: [],
       population: initialPopulation,
       gameAssets: null,
+      loadedAudio: false,
+      loadingStatus: {
+        progress: 0,
+        message: LOADING_MSG,
+      },
       gameScoreData: {
         gameScore: 0,
         eggsCaught: {
@@ -285,33 +279,32 @@ const appMachine = setup({
   entry: 'setActorRefForTests',
   states: {
     Loading: {
-      initial: 'Loading Fonts',
-      states: {
-        'Loading Fonts': {
-          invoke: {
-            onDone: 'Loading Sprites',
-            onError: `#${APP_ACTOR_ID}.Show Error`,
-            src: 'loadFonts',
+      entry: assign({
+        loadingStatus: () => ({
+          progress: 0,
+          message: 'Initializing...',
+        }),
+      }),
+      invoke: {
+        src: 'loadingMachine',
+        id: 'Loading machine',
+        input: () => ({}),
+        onSnapshot: [
+          {
+            actions: 'syncLoadingStatus',
           },
+        ],
+        onDone: {
+          target: 'Intro',
+          actions: assign({
+            gameAssets: ({ event }) => event.output?.gameAssets ?? null,
+            loadedAudio: ({ event }) => event.output?.audioLoaded ?? false,
+            loadingStatus: ({ event }) =>
+              event.output?.status ?? { progress: 1, message: 'Ready!' },
+          }),
         },
-        'Loading Sprites': {
-          invoke: {
-            onDone: {
-              target: 'Done',
-              actions: {
-                type: 'setLoadedGameAssets',
-                params: ({ event }) => event.output,
-              },
-            },
-            onError: `#${APP_ACTOR_ID}.Show Error`,
-            src: 'loadSprites',
-          },
-        },
-        Done: {
-          type: 'final',
-        },
+        onError: 'Show Error',
       },
-      onDone: 'Intro',
     },
     Intro: {
       on: {
@@ -321,6 +314,13 @@ const appMachine = setup({
       },
     },
     'Show Error': {
+      entry: {
+        type: 'setLoadingStatus',
+        params: {
+          progress: 1,
+          message: 'Failed to load assets.',
+        },
+      },
       type: 'final',
     },
     'Game Play': {

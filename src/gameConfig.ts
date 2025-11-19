@@ -1,7 +1,12 @@
 /* global process */
 // This file contains the configuration for the game
 
+import { getBorderRadius } from './utils/styles';
+
 const POPULATION_SIZE = 40;
+
+// Re-export getBorderRadius for backward compatibility
+export { getBorderRadius };
 
 export interface GameConfig {
   isTestMode: boolean;
@@ -27,6 +32,7 @@ export interface GameConfig {
     secondaryOrange: string;
     primaryBlue: string;
     secondaryBlue: string;
+    borderBlueGray: string;
   };
   chef: {
     x: number;
@@ -150,6 +156,7 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
       secondaryOrange: '#c69334',
       primaryBlue: '#a5c4fa',
       secondaryBlue: '#455579',
+      borderBlueGray: '#98aace',
     },
     chef: {
       x: STAGE_DIMENSIONS.width / 2,
@@ -264,7 +271,8 @@ export function getGameConfig(): GameConfig {
     return gameConfigInstance;
   }
 
-  return createGameConfig(isTestMode);
+  gameConfigInstance = createGameConfig(isTestMode);
+  return gameConfigInstance;
 }
 
 // Export a function to reset the config (useful for testing)
