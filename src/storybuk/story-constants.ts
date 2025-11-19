@@ -8,8 +8,9 @@
  * Change STORY_CANVAS.width to adjust all stories (e.g., half width = 640).
  */
 
-import type { SplitOrientation } from './storybuk-theme';
 import { STORYBUK_LAYOUT } from './storybuk-theme';
+
+import type { SplitOrientation } from './storybuk-theme';
 
 /**
  * Presentation Layout Modes
@@ -189,7 +190,11 @@ export function calculatePositioningForWidth(
  * For actors with offsetX (like rotated eggs), returns canvas center
  * For actors without offset, returns left edge that centers the actor
  */
-export function getCenterX(canvasWidth: number, actorWidth: number, usesOffset: boolean = false): number {
+export function getCenterX(
+  canvasWidth: number,
+  actorWidth: number,
+  usesOffset: boolean = false
+): number {
   if (usesOffset) {
     return Math.floor(canvasWidth / 2);
   }
