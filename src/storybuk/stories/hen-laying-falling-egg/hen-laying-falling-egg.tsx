@@ -85,10 +85,11 @@ function HenLayingFallingEgg({
   useEffect(() => {
     if (isLaying) {
       // Cycle through laying frames in a predictable sequence
+      // Using back-left, back-right, and jump-2 (eyes closed - distinct)
+      // Skipping jump-1 (eyes open, similar to others)
       const layingFrames: HenFrameName[] = [
         'back-left.png',
         'back-right.png',
-        'jump-1.png',
         'jump-2.png',
       ];
       setFrameName(layingFrames[layingFrameIndexRef.current]);
@@ -136,11 +137,13 @@ function HenLayingFallingEgg({
       {showEgg && eggPosition && currentEggFrame && (
         <Image
           image={eggImage}
-          x={eggPosition.x}
-          y={eggPosition.y}
+          x={eggPosition.x + EGG_SIZE.width / 2}
+          y={eggPosition.y + EGG_SIZE.height / 2}
           width={EGG_SIZE.width}
           height={EGG_SIZE.height}
           rotation={eggRotation}
+          offsetX={EGG_SIZE.width / 2}
+          offsetY={EGG_SIZE.height / 2}
           crop={{
             x: currentEggFrame.x,
             y: currentEggFrame.y,

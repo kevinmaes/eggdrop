@@ -85,10 +85,11 @@ function HenLayingWithEgg({
   useEffect(() => {
     if (isLaying) {
       // Cycle through laying frames in a predictable sequence
+      // Using back-left, back-right, and jump-2 (eyes closed - distinct)
+      // Skipping jump-1 (eyes open, similar to others)
       const layingFrames: HenFrameName[] = [
         'back-left.png',
         'back-right.png',
-        'jump-1.png',
         'jump-2.png',
       ];
       setFrameName(layingFrames[layingFrameIndexRef.current]);
