@@ -92,7 +92,7 @@ function HenLayingWithEgg({
         'back-right.png',
         'jump-2.png',
       ];
-      setFrameName(layingFrames[layingFrameIndexRef.current]);
+      setFrameName(layingFrames[layingFrameIndexRef.current] as HenFrameName);
       // Advance to next frame for next laying cycle
       layingFrameIndexRef.current =
         (layingFrameIndexRef.current + 1) % layingFrames.length;
