@@ -76,12 +76,6 @@ const eggFallingMachine = setup({
 }).createMachine({
   id: 'Egg-Falling',
   context: ({ input }) => {
-    // Position egg centered in the story canvas
-    // Story canvas is 384px wide (20% of 1920px)
-    // Center the egg: (canvasWidth / 2) - (egg width / 2)
-    const canvasWidth = input.canvasWidth ?? 1920;
-    const eggCenterX = Math.floor((canvasWidth - DEMO_CONFIG.eggWidth) / 2);
-
     return {
       eggRef: { current: null },
       id: input.id,

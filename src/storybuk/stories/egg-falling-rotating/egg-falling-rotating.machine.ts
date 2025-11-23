@@ -89,12 +89,6 @@ const eggFallingRotatingMachine = setup({
 }).createMachine({
   id: 'Egg-Falling-Rotating',
   context: ({ input }) => {
-    // Position egg centered in the story canvas
-    // Story canvas is 384px wide (20% of 1920px)
-    // Since we use offsetX/offsetY for rotation, position.x IS the center point
-    const canvasWidth = input.canvasWidth ?? 1920;
-    const eggCenterX = Math.floor(canvasWidth / 2);
-
     return {
       eggRef: { current: null },
       id: input.id,

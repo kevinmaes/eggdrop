@@ -211,7 +211,6 @@ const eggHatchGameAccurateMachine = setup({
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    const eggCenterX = Math.floor(canvasWidth / 2);
     const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
 
     const chickExitDirection =

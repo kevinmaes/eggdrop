@@ -106,10 +106,7 @@ const eggSplatMachine = setup({
 }).createMachine({
   id: 'Egg-Splat',
   context: ({ input }) => {
-    const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    // Since we use offsetX/offsetY for rotation, position.x IS the center point
-    const eggCenterX = Math.floor(canvasWidth / 2);
     const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
 
     return {
