@@ -157,6 +157,8 @@ function calculatePositioning(actorWidth: number, actorHeight: number) {
   return {
     centerX: Math.floor(STORY_CANVAS.MAX_WIDTH / 2 - actorWidth / 2),
     centerY: Math.floor(STORY_CANVAS.MAX_HEIGHT / 2 - actorHeight / 2),
+    centerTopY: Math.floor(EDGE_MARGIN),
+    centerBottomY: STORY_CANVAS.MAX_HEIGHT - actorHeight - EDGE_MARGIN,
     leftEdge: EDGE_MARGIN,
     rightEdge: STORY_CANVAS.MAX_WIDTH - actorWidth - EDGE_MARGIN,
   };

@@ -1,8 +1,6 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { HEN_DEMO } from '../../story-constants';
-
 import type { Position } from '../../../types';
 
 /**
@@ -28,8 +26,6 @@ import type { Position } from '../../../types';
 const DEMO_CONFIG = {
   henWidth: 120,
   henHeight: 120,
-  defaultX: HEN_DEMO.centerX,
-  defaultY: HEN_DEMO.centerTopY,
   eggWidth: 30,
   eggHeight: 30,
   // Hen position is top-left corner, so we need to offset to get to hen's center bottom
@@ -107,10 +103,7 @@ const henLayingFallingEggMachine = setup({
   context: ({ input }) => ({
     henRef: { current: null },
     id: input.id,
-    position: input.startPosition || {
-      x: DEMO_CONFIG.defaultX,
-      y: DEMO_CONFIG.defaultY,
-    },
+    position: input.startPosition,
     canvasHeight: input.canvasHeight,
     eggPosition: null,
     eggRotation: 0,
