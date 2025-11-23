@@ -1,8 +1,6 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { HEN_DEMO } from '../../story-constants';
-
 import type { Position } from '../../../types';
 
 /**
@@ -21,14 +19,6 @@ import type { Position } from '../../../types';
  * - henRef management for Konva integration
  * - Minimal context (just position and ref)
  */
-
-// Configuration using shared constants
-const DEMO_CONFIG = {
-  henWidth: 120,
-  henHeight: 120,
-  defaultX: HEN_DEMO.centerX,
-  defaultY: HEN_DEMO.centerY,
-};
 
 const henIdleMachine = setup({
   types: {} as {
@@ -56,10 +46,7 @@ const henIdleMachine = setup({
   context: ({ input }) => ({
     henRef: { current: null },
     id: input.id,
-    position: input.startPosition || {
-      x: DEMO_CONFIG.defaultX,
-      y: DEMO_CONFIG.defaultY,
-    },
+    position: input.startPosition,
   }),
   output: ({ context }) => ({
     henId: context.id,

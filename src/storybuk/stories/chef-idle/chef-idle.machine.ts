@@ -1,8 +1,6 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { CHEF_DEMO } from '../../story-constants';
-
 import type { Position } from '../../../types';
 
 /**
@@ -11,13 +9,6 @@ import type { Position } from '../../../types';
  * Stationary chef displaying a single idle sprite.
  * Based on hen-idle pattern.
  */
-
-const DEMO_CONFIG = {
-  chefWidth: 100,
-  chefHeight: 100,
-  defaultX: CHEF_DEMO.centerX,
-  defaultY: CHEF_DEMO.centerY,
-};
 
 const chefIdleMachine = setup({
   types: {} as {
@@ -45,10 +36,7 @@ const chefIdleMachine = setup({
   context: ({ input }) => ({
     chefRef: { current: null },
     id: input.id,
-    position: input.startPosition || {
-      x: DEMO_CONFIG.defaultX,
-      y: DEMO_CONFIG.defaultY,
-    },
+    position: input.startPosition,
   }),
   output: ({ context }) => ({
     chefId: context.id,

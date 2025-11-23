@@ -115,10 +115,7 @@ const eggSplatMachine = setup({
     return {
       eggRef: { current: null },
       id: input.id,
-      position: input.startPosition || {
-        x: eggCenterX,
-        y: DEMO_CONFIG.startY,
-      },
+      position: input.startPosition,
       velocity: 0,
       rotation: 0,
       rotationDirection: input.rotationDirection ?? 1,

@@ -85,10 +85,7 @@ const eggFallingMachine = setup({
     return {
       eggRef: { current: null },
       id: input.id,
-      position: input.startPosition || {
-        x: eggCenterX,
-        y: DEMO_CONFIG.startY,
-      },
+      position: input.startPosition,
       velocity: 0, // Start with zero velocity
       canvasHeight: input.canvasHeight ?? 1080,
     };

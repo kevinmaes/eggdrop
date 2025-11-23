@@ -98,10 +98,7 @@ const eggFallingRotatingMachine = setup({
     return {
       eggRef: { current: null },
       id: input.id,
-      position: input.startPosition || {
-        x: eggCenterX,
-        y: DEMO_CONFIG.startY,
-      },
+      position: input.startPosition,
       velocity: 0, // Start with zero velocity
       rotation: 0, // Start with zero rotation
       rotationDirection: input.rotationDirection ?? 1, // Default clockwise

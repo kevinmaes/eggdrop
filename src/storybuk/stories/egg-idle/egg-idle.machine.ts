@@ -1,8 +1,6 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { EGG_DEMO } from '../../story-constants';
-
 import type { Position } from '../../../types';
 
 /**
@@ -21,14 +19,6 @@ import type { Position } from '../../../types';
  * - eggRef management for Konva integration
  * - Minimal context (just position and ref)
  */
-
-// Configuration using shared constants
-const DEMO_CONFIG = {
-  eggWidth: 60,
-  eggHeight: 60,
-  defaultX: EGG_DEMO.centerX,
-  defaultY: EGG_DEMO.centerY,
-};
 
 const eggIdleMachine = setup({
   types: {} as {
@@ -56,10 +46,7 @@ const eggIdleMachine = setup({
   context: ({ input }) => ({
     eggRef: { current: null },
     id: input.id,
-    position: input.startPosition || {
-      x: DEMO_CONFIG.defaultX,
-      y: DEMO_CONFIG.defaultY,
-    },
+    position: input.startPosition,
   }),
   output: ({ context }) => ({
     eggId: context.id,
