@@ -57,7 +57,9 @@ const chefWithPausesMachine = setup({
       leftEdge: number;
       rightEdge: number;
     };
-    events: { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> };
+    events:
+      | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
+      | { type: 'Play' };
   },
   guards: {
     'has reached destination': ({ context }) => {
@@ -197,9 +199,7 @@ const chefWithPausesMachine = setup({
   initial: 'Idle',
   states: {
     Idle: {
-      after: {
-        entranceDelay: 'Moving',
-      },
+      on: { Play: 'Moving' },
     },
     Moving: {
       entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],

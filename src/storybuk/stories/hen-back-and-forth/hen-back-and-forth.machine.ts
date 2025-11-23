@@ -92,7 +92,9 @@ const henBackAndForthMachine = setup({
       leftEdge: number;
       rightEdge: number;
     };
-    events: { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> };
+    events:
+      | { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
+      | { type: 'Play' };
   },
   guards: {
     'has reached destination': ({ context }) => {
@@ -238,7 +240,7 @@ const henBackAndForthMachine = setup({
 
   states: {
     Idle: {
-      after: { entranceDelay: 'Moving' },
+      on: { Play: 'Moving' },
     },
     Moving: {
       entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],

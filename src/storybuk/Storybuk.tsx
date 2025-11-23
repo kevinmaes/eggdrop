@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { useMachine } from '@xstate/react';
 import '@fontsource/nunito-sans/400.css';
 import '@fontsource/nunito-sans/600.css';
@@ -49,19 +51,34 @@ export function Storybuk() {
   } = state.context;
 
   const isLoading = state.matches('Loading Actors');
+  const isDemoReady = state.matches('Demo Ready');
+
+  // Start actors when they're loaded (so they're in Idle state, ready for Play event)
+  useEffect(() => {
+    if (isDemoReady && actorInstances.length > 0) {
+      actorInstances.forEach((instance) => {
+        if (
+          instance.actor &&
+          !instance.config.componentVersion?.includes('headless')
+        ) {
+          instance.actor.start();
+        }
+      });
+    }
+  }, [isDemoReady, actorInstances]);
 
   const handleSelectStory = (storyId: string) => {
     send({ type: 'Select story', demoId: storyId });
   };
 
   const handlePlay = () => {
-    // Start all visual (Konva) actors
+    // Send Play event to all visual (Konva) actors (they're already started in Idle state)
     actorInstances.forEach((instance) => {
       if (
         instance.actor &&
         !instance.config.componentVersion?.includes('headless')
       ) {
-        instance.actor.start();
+        instance.actor.send({ type: 'Play' });
       }
     });
 

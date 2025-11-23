@@ -53,7 +53,9 @@ const chefBackAndForthMachine = setup({
       leftEdge: number;
       rightEdge: number;
     };
-    events: { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> };
+    events:
+      | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
+      | { type: 'Play' };
   },
   guards: {
     'has reached destination': ({ context }) => {
@@ -183,11 +185,7 @@ const chefBackAndForthMachine = setup({
   initial: 'Idle',
   states: {
     Idle: {
-      after: {
-        [DEMO_CONFIG.entranceDelayMS]: {
-          target: 'Moving',
-        },
-      },
+      on: { Play: 'Moving' },
     },
     Moving: {
       entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
