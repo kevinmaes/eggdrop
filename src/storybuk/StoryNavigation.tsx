@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { ChevronRight, BookOpen } from 'lucide-react';
+import { ChevronRight, BookOpen, Link } from 'lucide-react';
 
 import chefSpriteData from '../images/chef.sprite.json';
 import eggSpriteData from '../images/egg.sprite.json';
@@ -305,7 +305,16 @@ export function StoryNavigation({
                             flexShrink: 0,
                           }}
                         />
-                        {story.title}
+                        <span style={{ flex: 1 }}>{story.title}</span>
+                        {story.statelyEmbedUrl && (
+                          <Link
+                            size={12}
+                            style={{
+                              color: STORYBUK_COLORS.sidebar.folderIcon,
+                              flexShrink: 0,
+                            }}
+                          />
+                        )}
                       </button>
                     );
                   })}
