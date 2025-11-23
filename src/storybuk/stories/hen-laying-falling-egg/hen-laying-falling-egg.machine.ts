@@ -29,7 +29,7 @@ const DEMO_CONFIG = {
   henWidth: 120,
   henHeight: 120,
   defaultX: HEN_DEMO.centerX,
-  defaultY: HEN_DEMO.centerY,
+  defaultY: HEN_DEMO.centerTopY,
   eggWidth: 30,
   eggHeight: 30,
   // Hen position is top-left corner, so we need to offset to get to hen's center bottom

@@ -17,6 +17,10 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 // Add 100 pixels to the canvas height
 const tallerCanvasHeight = canvasDimensions.canvasHeight + 100;
 
+// Use same Y position as other hen stories (centered in standard canvas height)
+// This positions the hen near the top, leaving room for the egg to fall
+const henY = getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height);
+
 export const storyConfig: StoryConfig = {
   id: 'Hen Laying Falling Egg',
   type: 'animated',
@@ -30,7 +34,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'laying-falling-egg',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.hen.width),
-        y: getCenterY(tallerCanvasHeight, ACTOR_SIZE.hen.height),
+        y: henY,
       },
       id: 'hen-laying-falling-egg',
     },
