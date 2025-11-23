@@ -55,7 +55,9 @@ const henLayingWithEggMachine = setup({
       eggRotation: number;
       showEgg: boolean;
     };
-    events: { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> };
+    events:
+      | { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
+      | { type: 'Play' };
   },
   actions: {
     setHenRef: assign({
@@ -122,8 +124,8 @@ const henLayingWithEggMachine = setup({
   states: {
     Idle: {
       entry: 'hideEgg',
-      after: {
-        1500: 'Preparing to lay',
+      on: {
+        Play: 'Preparing to lay',
       },
     },
     'Preparing to lay': {
@@ -139,8 +141,12 @@ const henLayingWithEggMachine = setup({
       },
     },
     'Done laying': {
+      entry: 'hideEgg',
+      always: 'Waiting',
+    },
+    Waiting: {
       after: {
-        200: 'Idle',
+        1500: 'Preparing to lay',
       },
     },
   },

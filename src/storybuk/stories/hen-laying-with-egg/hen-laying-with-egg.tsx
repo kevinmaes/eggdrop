@@ -65,7 +65,7 @@ function HenLayingWithEgg({
       isLaying: state?.hasTag('laying') ?? false,
       eggPosition: state?.context.eggPosition ?? null,
       eggRotation: state?.context.eggRotation ?? 0,
-      showEgg: state?.context.showEgg ?? false,
+      showEgg: state?.hasTag('laying') ?? false,
     })
   );
 
