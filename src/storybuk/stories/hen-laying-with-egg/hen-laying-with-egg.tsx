@@ -44,13 +44,13 @@ function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
 }
 
 const HEN_SIZE = {
-  width: 240, // 2x scale
-  height: 240, // 2x scale
+  width: 120,
+  height: 120,
 };
 
 const EGG_SIZE = {
-  width: 60, // 2x scale
-  height: 60, // 2x scale
+  width: 30,
+  height: 30,
 };
 
 function HenLayingWithEgg({

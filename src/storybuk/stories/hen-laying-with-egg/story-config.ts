@@ -8,35 +8,25 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
-// Taller canvas for this story (100px taller than default hen stories)
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   HEN_STORY_CANVAS_HEIGHT_PERCENT
 );
 
-// Add 100 pixels to the canvas height
-const tallerCanvasHeight = canvasDimensions.canvasHeight + 100;
-
-// 2x scaled hen size for this story
-const SCALED_HEN_SIZE = {
-  width: ACTOR_SIZE.hen.width * 2,
-  height: ACTOR_SIZE.hen.height * 2,
-};
-
 export const storyConfig: StoryConfig = {
   id: 'Hen Laying With Egg',
   type: 'animated',
-  title: 'Hen - Laying with static egg (2x scale)',
+  title: 'Hen - Laying with static egg',
   description:
-    'Hen lays an egg at 2x scale - egg appears at correct position (static, no falling yet)',
+    'Hen lays an egg - egg appears at correct position (static, no falling yet)',
   actors: [
     {
       type: 'hen',
       machineVersion: 'laying-with-egg',
       componentVersion: 'laying-with-egg',
       startPosition: {
-        x: getCenterX(canvasDimensions.canvasWidth, SCALED_HEN_SIZE.width),
-        y: getCenterY(tallerCanvasHeight, SCALED_HEN_SIZE.height),
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.hen.width),
+        y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-laying-with-egg',
     },
@@ -48,7 +38,5 @@ export const storyConfig: StoryConfig = {
   layoutMode: 'vertical-split-top',
   statelyEmbedUrl:
     'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=9e25a04f-4e68-4060-a287-61a5d4355c10',
-  canvasWidth: canvasDimensions.canvasWidth,
-  canvasHeight: tallerCanvasHeight,
-  splitOrientation: canvasDimensions.splitOrientation,
+  ...canvasDimensions,
 };

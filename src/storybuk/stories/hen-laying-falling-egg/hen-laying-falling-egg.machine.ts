@@ -32,7 +32,7 @@ const DEMO_CONFIG = {
   // Hen width is 120, so center X is at +60
   // Hen height is 120, so bottom Y is at +120
   eggOffsetX: 60 - 15, // Center hen (60) minus half egg width (15) = 45
-  eggOffsetY: 120 - 45 + 15, // Bottom of hen (120) minus 45 + 15 lower = 90
+  eggOffsetY: 120 - 22, // Bottom of hen (120) minus 22 = 98
   eggFallSpeed: 3, // pixels per update
   eggRotationSpeed: 8, // degrees per update
   eggUpdateInterval: 16, // ms between updates (~60fps)
