@@ -16,7 +16,7 @@ import { HEN_DEMO, STORY_CANVAS } from '../../story-constants';
  * - Random pause duration between 1000-2000ms
  *
  * SAME as back-and-forth version:
- * - State names: Offscreen, Moving, Done Moving, Reached Destination
+ * - State names: Idle, Moving, Done Moving, Reached Destination
  * - Action names: pickNewTargetPosition, createTweenToTargetPosition, etc.
  * - Tween actor invocation pattern
  * - Position management structure
@@ -240,10 +240,10 @@ const henWithPausesMachine = setup({
       },
     },
   },
-  initial: 'Offscreen',
+  initial: 'Idle',
 
   states: {
-    Offscreen: {
+    Idle: {
       after: { entranceDelay: 'Moving' },
     },
     Moving: {

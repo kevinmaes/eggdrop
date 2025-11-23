@@ -194,9 +194,9 @@ const chefWithPausesMachine = setup({
       },
     },
   },
-  initial: 'Offscreen',
+  initial: 'Idle',
   states: {
-    Offscreen: {
+    Idle: {
       after: {
         entranceDelay: 'Moving',
       },

@@ -208,10 +208,10 @@ const henWithPausesHeadlessMachine = setup({
   states: {
     Ready: {
       on: {
-        Start: 'Offscreen',
+        Start: 'Idle',
       },
     },
-    Offscreen: {
+    Idle: {
       after: {
         [DEMO_CONFIG.entranceDelayMS]: {
           target: 'Moving',

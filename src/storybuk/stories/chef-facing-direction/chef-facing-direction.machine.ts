@@ -181,9 +181,9 @@ const chefFacingDirectionMachine = setup({
       },
     },
   },
-  initial: 'Offscreen',
+  initial: 'Idle',
   states: {
-    Offscreen: {
+    Idle: {
       after: {
         [DEMO_CONFIG.entranceDelayMS]: {
           target: 'Moving',
