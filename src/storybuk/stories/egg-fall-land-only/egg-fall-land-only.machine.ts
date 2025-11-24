@@ -50,7 +50,7 @@ export const eggFallLandOnlyMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
+      | { type: 'Play' }
       | { type: 'Update' };
   },
   actions: {
@@ -124,7 +124,7 @@ export const eggFallLandOnlyMachine = setup({
   states: {
     Waiting: {
       on: {
-        Start: 'Falling',
+        Play: 'Falling',
       },
     },
     Falling: {

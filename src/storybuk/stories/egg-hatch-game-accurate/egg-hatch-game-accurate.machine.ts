@@ -71,7 +71,7 @@ export const eggHatchGameAccurateMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
+      | { type: 'Play' }
       | { type: 'Update' };
   },
   actions: {
@@ -249,7 +249,7 @@ export const eggHatchGameAccurateMachine = setup({
   states: {
     Waiting: {
       on: {
-        Start: 'Falling',
+        Play: 'Falling',
       },
     },
     Falling: {

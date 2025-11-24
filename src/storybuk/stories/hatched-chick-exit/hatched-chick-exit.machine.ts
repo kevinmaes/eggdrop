@@ -49,7 +49,7 @@ export const hatchedChickExitMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
+      | { type: 'Play' }
       | { type: 'Update' };
   },
   actions: {
@@ -132,7 +132,7 @@ export const hatchedChickExitMachine = setup({
   states: {
     Waiting: {
       on: {
-        Start: 'Hatched',
+        Play: 'Hatched',
       },
     },
     Hatched: {

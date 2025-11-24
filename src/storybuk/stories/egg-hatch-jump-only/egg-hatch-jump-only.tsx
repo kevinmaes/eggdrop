@@ -66,27 +66,12 @@ export function EggHatchJumpOnly({
   const chickRef = useRef<Konva.Image>(null);
   const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
-  const hasStartedRef = useRef(false);
 
   useEffect(() => {
     if (isImageRef(chickRef)) {
       actorRef.send({ type: 'Set eggRef', eggRef: chickRef });
     }
   }, [actorRef, chickRef]);
-
-  useEffect(() => {
-    const subscription = actorRef.subscribe((snapshot) => {
-      if (!hasStartedRef.current && snapshot.status === 'active') {
-        hasStartedRef.current = true;
-        actorRef.send({ type: 'Start' });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-      hasStartedRef.current = false;
-    };
-  }, [actorRef]);
 
   useEffect(() => {
     const needsAnimation = isJumpingUp || isBouncingDown;

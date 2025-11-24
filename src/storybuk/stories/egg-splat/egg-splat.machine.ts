@@ -61,7 +61,7 @@ export const eggSplatMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
+      | { type: 'Play' }
       | { type: 'Update' };
   },
   actions: {
@@ -135,7 +135,7 @@ export const eggSplatMachine = setup({
   states: {
     Waiting: {
       on: {
-        Start: 'Falling',
+        Play: 'Falling',
       },
     },
     Falling: {

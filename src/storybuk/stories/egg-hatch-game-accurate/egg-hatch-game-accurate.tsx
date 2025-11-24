@@ -98,7 +98,6 @@ export function EggHatchGameAccurate({
   const eggRef = useRef<Konva.Image>(null);
   const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
-  const hasStartedRef = useRef(false);
 
   // Animation frame for running chick (alternates between 1 and 2)
   const [chickRunFrame, setChickRunFrame] = useState(1);
@@ -109,21 +108,6 @@ export function EggHatchGameAccurate({
       actorRef.send({ type: 'Set eggRef', eggRef });
     }
   }, [actorRef, eggRef]);
-
-  // Listen for when actor is started
-  useEffect(() => {
-    const subscription = actorRef.subscribe((snapshot) => {
-      if (!hasStartedRef.current && snapshot.status === 'active') {
-        hasStartedRef.current = true;
-        actorRef.send({ type: 'Start' });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-      hasStartedRef.current = false;
-    };
-  }, [actorRef]);
 
   // Animation loop for states that need continuous updates
   useEffect(() => {

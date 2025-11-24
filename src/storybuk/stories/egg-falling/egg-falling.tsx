@@ -46,30 +46,12 @@ export function EggFalling({
   const eggRef = useRef<Konva.Image>(null);
   const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
-  const hasStartedRef = useRef(false);
 
   useEffect(() => {
     if (isImageRef(eggRef)) {
       actorRef.send({ type: 'Set eggRef', eggRef });
     }
   }, [actorRef, eggRef]);
-
-  // Listen for when actor is started by Storybuk (.start() is called)
-  // and send the Start event to transition from Waiting to Falling
-  useEffect(() => {
-    const subscription = actorRef.subscribe((snapshot) => {
-      // When actor transitions to active and we haven't sent Start yet
-      if (!hasStartedRef.current && snapshot.status === 'active') {
-        hasStartedRef.current = true;
-        actorRef.send({ type: 'Start' });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-      hasStartedRef.current = false;
-    };
-  }, [actorRef]);
 
   // Animation loop with frame rate limiting (60 FPS)
   // Only runs when in Falling state

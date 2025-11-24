@@ -53,7 +53,7 @@ export const eggLandHatchMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
+      | { type: 'Play' }
       | { type: 'Update' };
   },
   actions: {
@@ -133,7 +133,7 @@ export const eggLandHatchMachine = setup({
   states: {
     Waiting: {
       on: {
-        Start: 'Falling',
+        Play: 'Falling',
       },
     },
     Falling: {

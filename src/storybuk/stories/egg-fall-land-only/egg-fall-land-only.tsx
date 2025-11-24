@@ -54,27 +54,12 @@ export function EggFallLandOnly({
   const eggRef = useRef<Konva.Image>(null);
   const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
-  const hasStartedRef = useRef(false);
 
   useEffect(() => {
     if (isImageRef(eggRef)) {
       actorRef.send({ type: 'Set eggRef', eggRef });
     }
   }, [actorRef, eggRef]);
-
-  useEffect(() => {
-    const subscription = actorRef.subscribe((snapshot) => {
-      if (!hasStartedRef.current && snapshot.status === 'active') {
-        hasStartedRef.current = true;
-        actorRef.send({ type: 'Start' });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-      hasStartedRef.current = false;
-    };
-  }, [actorRef]);
 
   useEffect(() => {
     if (!isFalling) {

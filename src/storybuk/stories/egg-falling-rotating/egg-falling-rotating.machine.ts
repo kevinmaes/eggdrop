@@ -58,7 +58,7 @@ export const eggFallingRotatingMachine = setup({
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
       | { type: 'Update' }
-      | { type: 'Start' };
+      | { type: 'Play' };
   },
   actions: {
     setEggRef: assign({
@@ -116,7 +116,7 @@ export const eggFallingRotatingMachine = setup({
       // Egg is visible but not falling yet
       // Waits for Play button to be clicked
       on: {
-        Start: 'Falling',
+        Play: 'Falling',
       },
     },
     Falling: {

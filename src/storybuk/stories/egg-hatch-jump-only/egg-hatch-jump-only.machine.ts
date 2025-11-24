@@ -50,7 +50,7 @@ export const eggHatchJumpOnlyMachine = setup({
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Start' }
+      | { type: 'Play' }
       | { type: 'Update' };
   },
   actions: {
@@ -155,7 +155,7 @@ export const eggHatchJumpOnlyMachine = setup({
   states: {
     Waiting: {
       on: {
-        Start: 'Hatching',
+        Play: 'Hatching',
       },
     },
     Hatching: {
