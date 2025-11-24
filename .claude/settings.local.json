@@ -13,7 +13,8 @@
       "Bash(tree:*)",
       "Bash(git rm:*)",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm build)"
+      "Bash(pnpm build)",
+      "Bash(pnpm tsc:*)"
     ],
     "deny": [],
     "ask": []
