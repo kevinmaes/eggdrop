@@ -205,8 +205,8 @@ function EggSprite({
     <Image
       ref={eggRef}
       image={eggImage}
-      x={position.x + EGG_SIZE.width / 2}
-      y={position.y + EGG_SIZE.height / 2}
+      x={position.x}
+      y={position.y}
       width={EGG_SIZE.width}
       height={EGG_SIZE.height}
       offsetX={EGG_SIZE.width / 2}
