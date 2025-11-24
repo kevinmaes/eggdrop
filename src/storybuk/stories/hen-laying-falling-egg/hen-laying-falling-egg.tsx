@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
@@ -8,150 +8,204 @@ import useImage from 'use-image';
 import eggSpriteData from '../../../images/egg.sprite.json';
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import { henLayingFallingEggMachine } from './hen-laying-falling-egg.machine';
-
+import type { henLayingFallingEggMachine } from './hen-laying-falling-egg.machine';
+import type { eggMachine } from './egg.machine';
+import type { henMachine } from './hen.machine';
 import type { ActorRefFrom } from 'xstate';
 
 /**
  * Hen Laying Falling Egg Component
  *
- * Displays a hen that lays an actual egg which falls and spins.
- * Combines hen state transitions with egg falling animation.
+ * Renders the orchestrator's child actors (stationary hen and falling eggs).
+ * Demonstrates multi-actor pattern with:
+ * - One hen actor that cycles through laying states
+ * - Multiple egg actors that fall with gravity and rotation
  *
- * States:
- * - Idle: Shows forward.png (normal hen facing forward), no egg
- * - Laying: Cycles through laying frames (back-left, back-right, jump-1, jump-2)
- * - Egg falling: Hen returns to idle while egg drops and rotates
- *
- * Perfect for demonstrating:
- * - State-based object spawning
- * - Coordinated multi-element animation
- * - Physics simulation (falling + rotation)
+ * The orchestrator spawns actors and manages their lifecycle.
  */
 
-type HenFrameName =
-  | 'forward.png'
-  | 'back-left.png'
-  | 'back-right.png'
-  | 'jump-1.png'
-  | 'jump-2.png';
+const HEN_SIZE = { width: 120, height: 120 };
+const EGG_SIZE = { width: 30, height: 30 };
 
-function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
-  if (imageRef) {
-    return true;
-  }
-  return false;
+type HenFrameName = keyof typeof henSpriteData.frames;
+
+// Laying poses cycle through different frames each time
+const LAYING_POSES: HenFrameName[] = [
+  'back-left.png',
+  'back-right.png',
+  'jump-2.png',
+];
+
+// Sub-component for rendering the hen
+function HenSprite({
+  actorRef,
+}: {
+  actorRef: ActorRefFrom<typeof henMachine>;
+}) {
+  const { position, isLaying } = useSelector(actorRef, (state) => ({
+    position: state?.context.position ?? { x: 0, y: 0 },
+    isLaying: state?.hasTag('laying') ?? false,
+  }));
+
+  const [henImage] = useImage('/images/hen.sprite.png');
+  const henRef = useRef<Konva.Image>(null);
+  const [frameName, setFrameName] = useState<HenFrameName>('forward.png');
+  const layingFrameIndexRef = useRef(0);
+
+  useEffect(() => {
+    if (henRef.current) {
+      actorRef.send({
+        type: 'Set henRef',
+        henRef: henRef as React.RefObject<Konva.Image>,
+      });
+    }
+  }, [actorRef]);
+
+  useEffect(() => {
+    if (isLaying) {
+      // Cycle through laying poses
+      const pose = LAYING_POSES[layingFrameIndexRef.current];
+      if (pose) {
+        setFrameName(pose);
+        layingFrameIndexRef.current =
+          (layingFrameIndexRef.current + 1) % LAYING_POSES.length;
+      }
+    } else {
+      setFrameName('forward.png');
+    }
+  }, [isLaying]);
+
+  const frameData = henSpriteData.frames[frameName]?.frame;
+  if (!frameData) return null;
+
+  return (
+    <Image
+      ref={henRef}
+      image={henImage}
+      x={position.x}
+      y={position.y}
+      width={HEN_SIZE.width}
+      height={HEN_SIZE.height}
+      crop={{
+        x: frameData.x,
+        y: frameData.y,
+        width: frameData.w,
+        height: frameData.h,
+      }}
+    />
+  );
 }
 
-const HEN_SIZE = {
-  width: 120,
-  height: 120,
-};
+// Sub-component for rendering a falling egg
+function EggSprite({
+  actorRef,
+}: {
+  actorRef: ActorRefFrom<typeof eggMachine>;
+}) {
+  const { position, rotation, isDone } = useSelector(actorRef, (state) => ({
+    position: state?.context.position ?? { x: 0, y: 0 },
+    rotation: state?.context.rotation ?? 0,
+    isDone: state?.matches('Done') ?? false,
+  }));
 
-const EGG_SIZE = {
-  width: 30,
-  height: 30,
-};
+  const [eggImage] = useImage('/images/egg.sprite.png');
+  const eggRef = useRef<Konva.Image>(null);
+  const animationFrameRef = useRef<number>(0);
+  const lastUpdateRef = useRef<number>(0);
 
+  useEffect(() => {
+    if (eggRef.current) {
+      actorRef.send({
+        type: 'Set eggRef',
+        eggRef: eggRef as React.RefObject<Konva.Image>,
+      });
+    }
+  }, [actorRef]);
+
+  // Animation loop for falling
+  useEffect(() => {
+    if (isDone) return;
+
+    const targetFPS = 60;
+    const frameTime = 1000 / targetFPS;
+
+    const animate = (timestamp: number) => {
+      const elapsed = timestamp - lastUpdateRef.current;
+
+      if (elapsed >= frameTime) {
+        actorRef.send({ type: 'Update' });
+        lastUpdateRef.current = timestamp;
+      }
+
+      animationFrameRef.current = window.requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = window.requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [actorRef, isDone]);
+
+  if (isDone) return null;
+
+  // Use gold egg for this demo
+  const frameName = 'egg-gold.png';
+  const frameData =
+    eggSpriteData.frames[frameName as keyof typeof eggSpriteData.frames]?.frame;
+  if (!frameData) return null;
+
+  return (
+    <Image
+      ref={eggRef}
+      image={eggImage}
+      x={position.x + EGG_SIZE.width / 2}
+      y={position.y + EGG_SIZE.height / 2}
+      width={EGG_SIZE.width}
+      height={EGG_SIZE.height}
+      offsetX={EGG_SIZE.width / 2}
+      offsetY={EGG_SIZE.height / 2}
+      rotation={rotation}
+      crop={{
+        x: frameData.x,
+        y: frameData.y,
+        width: frameData.w,
+        height: frameData.h,
+      }}
+    />
+  );
+}
+
+// Main component that renders the orchestrator's children
 export function HenLayingFallingEgg({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof henLayingFallingEggMachine>;
 }) {
-  const { position, isLaying, eggPosition, eggRotation, showEgg } = useSelector(
-    actorRef,
-    (state) => ({
-      position: state?.context.position ?? { x: 0, y: 0 },
-      isLaying: state?.hasTag('laying') ?? false,
-      eggPosition: state?.context.eggPosition ?? null,
-      eggRotation: state?.context.eggRotation ?? 0,
-      showEgg: state?.context.showEgg ?? false,
-    })
-  );
+  const { henActorRef, eggActorRefs } = useSelector(actorRef, (state) => ({
+    henActorRef: state?.context.henActorRef ?? null,
+    eggActorRefs: state?.context.eggActorRefs ?? [],
+  }));
 
-  const [henImage] = useImage('/images/hen.sprite.png');
-  const [eggImage] = useImage('/images/egg.sprite.png');
-
-  const henRef = useRef<Konva.Image>(null);
-  useEffect(() => {
-    if (isImageRef(henRef)) {
-      actorRef.send({ type: 'Set henRef', henRef });
-    }
-  }, [actorRef, henRef]);
-
-  const [frameName, setFrameName] = useState<HenFrameName>('forward.png');
-  const layingFrameIndexRef = useRef(0);
-
-  useEffect(() => {
-    if (isLaying) {
-      // Cycle through laying frames in a predictable sequence
-      // Using back-left, back-right, and jump-2 (eyes closed - distinct)
-      // Skipping jump-1 (eyes open, similar to others)
-      const layingFrames: HenFrameName[] = [
-        'back-left.png',
-        'back-right.png',
-        'jump-2.png',
-      ];
-      setFrameName(layingFrames[layingFrameIndexRef.current] as HenFrameName);
-      // Advance to next frame for next laying cycle
-      layingFrameIndexRef.current =
-        (layingFrameIndexRef.current + 1) % layingFrames.length;
-    } else {
-      // Default idle state
-      setFrameName('forward.png');
-    }
-  }, [isLaying]);
-
-  if (!position) {
-    return null;
-  }
-
-  const currentHenFrame = henSpriteData.frames[frameName]?.frame;
-  if (!currentHenFrame) {
-    return null;
-  }
-
-  // Always use gold egg for this demo
-  const eggFrameName = 'egg-gold.png';
-  const currentEggFrame = eggSpriteData.frames[eggFrameName]?.frame;
+  // Track eggs with stable keys
+  const [eggKeys] = useState(() => new Map<string, string>());
 
   return (
     <>
-      {/* Hen */}
-      <Image
-        ref={henRef}
-        image={henImage}
-        x={position.x}
-        y={position.y}
-        width={HEN_SIZE.width}
-        height={HEN_SIZE.height}
-        crop={{
-          x: currentHenFrame.x,
-          y: currentHenFrame.y,
-          width: currentHenFrame.w,
-          height: currentHenFrame.h,
-        }}
-      />
+      {/* Render hen */}
+      {henActorRef && <HenSprite actorRef={henActorRef} />}
 
-      {/* Egg (only shown when spawned) */}
-      {showEgg && eggPosition && currentEggFrame && (
-        <Image
-          image={eggImage}
-          x={eggPosition.x + EGG_SIZE.width / 2}
-          y={eggPosition.y + EGG_SIZE.height / 2}
-          width={EGG_SIZE.width}
-          height={EGG_SIZE.height}
-          rotation={eggRotation}
-          offsetX={EGG_SIZE.width / 2}
-          offsetY={EGG_SIZE.height / 2}
-          crop={{
-            x: currentEggFrame.x,
-            y: currentEggFrame.y,
-            width: currentEggFrame.w,
-            height: currentEggFrame.h,
-          }}
-        />
-      )}
+      {/* Render all spawned eggs */}
+      {eggActorRefs.map((eggRef) => {
+        const eggId = eggRef.getSnapshot().context.id;
+        // Ensure stable key for each egg
+        if (!eggKeys.has(eggId)) {
+          eggKeys.set(eggId, eggId);
+        }
+        return <EggSprite key={eggKeys.get(eggId)} actorRef={eggRef} />;
+      })}
     </>
   );
 }

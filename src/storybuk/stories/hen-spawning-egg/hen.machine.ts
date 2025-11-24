@@ -19,13 +19,14 @@ import type { Position } from '../../../types';
 const DEMO_CONFIG = {
   henWidth: 120,
   henHeight: 120,
+  eggWidth: 30,
   moveSpeed: 5, // Faster movement
   moveUpdateInterval: 16, // ~60fps
   layingDelay: 3000, // ms between egg laying (longer to show more walking)
   layingDuration: 500, // ms hen stays in laying state
 };
 
-export const storyHenMachine = setup({
+export const henMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -81,9 +82,9 @@ export const storyHenMachine = setup({
       type: 'Lay an egg',
       henId: context.id,
       henPosition: {
-        // Egg spawns at hen's center-bottom
-        x: context.position.x + DEMO_CONFIG.henWidth / 2,
-        y: context.position.y + DEMO_CONFIG.henHeight - 20,
+        // Egg spawns at hen's center-bottom, offset down 15px
+        x: context.position.x + DEMO_CONFIG.henWidth / 2 - DEMO_CONFIG.eggWidth / 2,
+        y: context.position.y + DEMO_CONFIG.henHeight - 20 + 15,
       },
       eggColor: 'white' as const,
     })),
@@ -148,4 +149,4 @@ export const storyHenMachine = setup({
   },
 });
 
-export type StoryHenActor = typeof storyHenMachine;
+export type HenActor = typeof henMachine;

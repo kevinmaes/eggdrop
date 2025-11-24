@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
 import { assign, setup, type ActorRefFrom } from 'xstate';
 
-import { storyEggMachine } from './story-egg.machine';
-import { storyHenMachine } from './story-hen.machine';
+import { eggMachine } from './egg.machine';
+import { henMachine } from './hen.machine';
 
 import type { Position } from '../../../types';
 
@@ -33,8 +33,8 @@ export const henSpawningEggMachine = setup({
       canvasWidth: number;
       canvasHeight: number;
       henStartPosition: Position;
-      henActorRef: ActorRefFrom<typeof storyHenMachine> | null;
-      eggActorRefs: ActorRefFrom<typeof storyEggMachine>[];
+      henActorRef: ActorRefFrom<typeof henMachine> | null;
+      eggActorRefs: ActorRefFrom<typeof eggMachine>[];
     };
     events:
       | { type: 'Play' }
@@ -51,7 +51,7 @@ export const henSpawningEggMachine = setup({
     spawnHen: assign({
       henActorRef: ({ context, spawn }) => {
         const henId = `hen-${nanoid(6)}`;
-        return spawn(storyHenMachine, {
+        return spawn(henMachine, {
           systemId: henId,
           input: {
             id: henId,
@@ -74,7 +74,7 @@ export const henSpawningEggMachine = setup({
         if (event.type !== 'Lay an egg') return context.eggActorRefs;
 
         const eggId = `egg-${nanoid(6)}`;
-        const newEgg = spawn(storyEggMachine, {
+        const newEgg = spawn(eggMachine, {
           systemId: eggId,
           input: {
             id: eggId,

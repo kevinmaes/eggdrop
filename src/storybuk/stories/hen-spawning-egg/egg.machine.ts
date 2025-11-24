@@ -23,7 +23,7 @@ const DEMO_CONFIG = {
   rotationSpeed: 3,
 };
 
-export const storyEggMachine = setup({
+export const eggMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -125,4 +125,4 @@ export const storyEggMachine = setup({
   },
 });
 
-export type StoryEggActor = typeof storyEggMachine;
+export type EggActor = typeof eggMachine;

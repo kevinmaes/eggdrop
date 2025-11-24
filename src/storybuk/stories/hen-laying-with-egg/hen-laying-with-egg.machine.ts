@@ -1,40 +1,22 @@
-import Konva from 'konva';
-import { assign, setup } from 'xstate';
+import { nanoid } from 'nanoid';
+import { assign, setup, type ActorRefFrom } from 'xstate';
+
+import { eggMachine } from './egg.machine';
+import { henMachine } from './hen.machine';
 
 import type { Position } from '../../../types';
 
 /**
- * Hen Laying With Egg Machine
+ * Hen-Egg Orchestrator Machine (Static Egg Version)
  *
- * Demonstrates a hen laying an actual egg that drops and spins.
- * The hen cycles through states while an egg appears and falls off screen.
+ * Demonstrates the actor model pattern with a stationary hen and static eggs:
  *
- * Features:
- * - Idle state (forward-facing sprite)
- * - Egg-laying state (back-facing sprite showing backside of hen)
- * - Spawns egg at hen's position during laying
- * - Egg falls and rotates until off screen
- *
- * Demonstrates:
- * - State-based object spawning
- * - Combined animation (hen states + egg physics)
- * - Timing and coordination between elements
+ * 1. Orchestrator spawns hen as a child actor
+ * 2. Hen sends "Lay an egg" events to parent (orchestrator) via sendParent()
+ * 3. Orchestrator receives event and spawns static egg actors
+ * 4. Eggs appear for 2 seconds then complete (no falling physics)
+ * 5. Orchestrator tracks egg refs and cleans up when eggs complete
  */
-
-const DEMO_CONFIG = {
-  henWidth: 120,
-  henHeight: 120,
-  eggWidth: 30,
-  eggHeight: 30,
-  // Hen position is top-left corner, so we need to offset to get to hen's center bottom
-  // Hen width is 120, so center X is at +60
-  // Hen height is 120, so bottom Y is at +120
-  eggOffsetX: 60 - 15, // Center hen (60) minus half egg width (15) = 45
-  eggOffsetY: 120 - 46, // Bottom of hen (120) minus 22 = 98
-  eggFallSpeed: 3, // pixels per update
-  eggRotationSpeed: 8, // degrees per update
-  eggUpdateInterval: 16, // ms between updates (~60fps)
-};
 
 export const henLayingWithEggMachine = setup({
   types: {} as {
@@ -43,111 +25,126 @@ export const henLayingWithEggMachine = setup({
       startPosition: Position;
       canvasHeight: number;
     };
-    output: {
-      henId: string;
-    };
     context: {
-      henRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
-      position: Position;
       canvasHeight: number;
-      eggPosition: Position | null;
-      eggRotation: number;
-      showEgg: boolean;
+      henStartPosition: Position;
+      henActorRef: ActorRefFrom<typeof henMachine> | null;
+      eggActorRefs: ActorRefFrom<typeof eggMachine>[];
     };
     events:
-      | { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
-      | { type: 'Play' };
+      | { type: 'Play' }
+      | { type: 'Reset' }
+      | {
+          type: 'Lay an egg';
+          henId: string;
+          henPosition: Position;
+          eggColor: 'white' | 'gold' | 'black';
+        };
   },
   actions: {
-    setHenRef: assign({
-      henRef: (_, params: React.RefObject<Konva.Image>) => params,
-    }),
-    spawnEgg: assign(({ context }) => ({
-      eggPosition: {
-        x: context.position.x + DEMO_CONFIG.eggOffsetX,
-        y: context.position.y + DEMO_CONFIG.eggOffsetY,
+    // Spawn the hen actor as a child (starts in Idle, facing forward)
+    spawnHen: assign({
+      henActorRef: ({ context, spawn }) => {
+        const henId = `hen-${nanoid(6)}`;
+        return spawn(henMachine, {
+          systemId: henId,
+          input: {
+            id: henId,
+            startPosition: context.henStartPosition,
+            canvasHeight: context.canvasHeight,
+          },
+        });
       },
-      eggRotation: 0,
-      showEgg: true,
-    })),
-    updateEggPosition: assign(({ context }) => {
-      if (!context.eggPosition) return {};
-      return {
-        eggPosition: {
-          x: context.eggPosition.x,
-          y: context.eggPosition.y + DEMO_CONFIG.eggFallSpeed,
-        },
-        eggRotation: context.eggRotation + DEMO_CONFIG.eggRotationSpeed,
-      };
     }),
-    hideEgg: assign({
-      showEgg: false,
-      eggPosition: null,
-      eggRotation: 0,
-    }),
-  },
-  guards: {
-    eggOffScreen: ({ context }) => {
-      if (!context.eggPosition) return false;
-      return (
-        context.eggPosition.y > context.canvasHeight + DEMO_CONFIG.eggHeight
-      );
+    // Send Play to the hen to start the laying cycle
+    playHen: ({ context }) => {
+      if (context.henActorRef) {
+        context.henActorRef.send({ type: 'Play' });
+      }
     },
-  },
-  delays: {
-    eggUpdateInterval: DEMO_CONFIG.eggUpdateInterval,
+    // Spawn a new static egg actor when hen lays
+    spawnEgg: assign({
+      eggActorRefs: ({ context, spawn, event }) => {
+        if (event.type !== 'Lay an egg') return context.eggActorRefs;
+
+        const eggId = `egg-${nanoid(6)}`;
+        const newEgg = spawn(eggMachine, {
+          systemId: eggId,
+          input: {
+            id: eggId,
+            position: event.henPosition,
+            color: event.eggColor,
+          },
+        });
+
+        return [...context.eggActorRefs, newEgg];
+      },
+    }),
+    // Remove completed egg actors
+    cleanupDoneEggs: assign({
+      eggActorRefs: ({ context }) => {
+        return context.eggActorRefs.filter(
+          (eggRef) => eggRef.getSnapshot().status !== 'done'
+        );
+      },
+    }),
+    // Stop all actors for reset
+    stopAllActors: ({ context }) => {
+      if (context.henActorRef) {
+        context.henActorRef.stop();
+      }
+      for (const eggRef of context.eggActorRefs) {
+        eggRef.stop();
+      }
+    },
+    // Clear all actor refs
+    clearActorRefs: assign({
+      henActorRef: null,
+      eggActorRefs: [],
+    }),
   },
 }).createMachine({
-  id: 'Hen-Laying-With-Egg',
+  id: 'Hen-Egg-Orchestrator',
   context: ({ input }) => ({
-    henRef: { current: null },
     id: input.id,
-    position: input.startPosition,
     canvasHeight: input.canvasHeight,
-    eggPosition: null,
-    eggRotation: 0,
-    showEgg: false,
+    henStartPosition: input.startPosition,
+    henActorRef: null,
+    eggActorRefs: [],
   }),
-  output: ({ context }) => ({
-    henId: context.id,
-  }),
-  on: {
-    'Set henRef': {
-      actions: {
-        type: 'setHenRef',
-        params: ({ event }) => event.henRef,
-      },
-    },
-  },
   initial: 'Idle',
   states: {
     Idle: {
-      entry: 'hideEgg',
+      entry: 'spawnHen',
       on: {
-        Play: 'Preparing to lay',
+        Play: {
+          target: 'Running',
+          actions: ['playHen'],
+        },
       },
     },
-    'Preparing to lay': {
-      after: {
-        200: 'Laying egg',
+    Running: {
+      on: {
+        // Receive "Lay an egg" from hen child via sendParent()
+        'Lay an egg': {
+          actions: 'spawnEgg',
+        },
+        Reset: {
+          target: 'Idle',
+          actions: ['stopAllActors', 'clearActorRefs'],
+        },
       },
-    },
-    'Laying egg': {
-      tags: 'laying',
-      entry: 'spawnEgg',
-      after: {
-        2000: 'Done laying',
-      },
-    },
-    'Done laying': {
-      entry: 'hideEgg',
-      always: 'Waiting',
-    },
-    Waiting: {
-      after: {
-        1500: 'Preparing to lay',
+      // Clean up completed eggs
+      always: {
+        actions: 'cleanupDoneEggs',
+        guard: ({ context }) =>
+          context.eggActorRefs.some(
+            (ref) => ref.getSnapshot().status === 'done'
+          ),
       },
     },
   },
 });
+
+export type HenLayingWithEggMachine = typeof henLayingWithEggMachine;

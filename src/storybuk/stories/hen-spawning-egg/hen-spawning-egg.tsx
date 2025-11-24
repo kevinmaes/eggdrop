@@ -9,8 +9,8 @@ import eggSpriteData from '../../../images/egg.sprite.json';
 import henSpriteData from '../../../images/hen.sprite.json';
 
 import type { henSpawningEggMachine } from './hen-spawning-egg.machine';
-import type { storyEggMachine } from './story-egg.machine';
-import type { storyHenMachine } from './story-hen.machine';
+import type { eggMachine } from './egg.machine';
+import type { henMachine } from './hen.machine';
 import type { ActorRefFrom } from 'xstate';
 
 /**
@@ -40,7 +40,7 @@ const LAYING_POSES_RIGHT: HenFrameName[] = ['back-right.png', 'jump-2.png'];
 function HenSprite({
   actorRef,
 }: {
-  actorRef: ActorRefFrom<typeof storyHenMachine>;
+  actorRef: ActorRefFrom<typeof henMachine>;
 }) {
   const { position, isMoving, isLaying, direction, eggsLaid } = useSelector(
     actorRef,
@@ -75,7 +75,10 @@ function HenSprite({
       const layingPoses =
         direction === 1 ? LAYING_POSES_RIGHT : LAYING_POSES_LEFT;
       const poseIndex = eggsLaid % layingPoses.length;
-      setFrameName(layingPoses[poseIndex]);
+      const pose = layingPoses[poseIndex];
+      if (pose) {
+        setFrameName(pose);
+      }
     } else if (isMoving) {
       // Walking animation
       const walkDirection = direction === 1 ? 'right' : 'left';
@@ -87,16 +90,19 @@ function HenSprite({
       ];
 
       // Set first frame immediately
-      setFrameName(walkFrameNames[0]);
+      const firstFrame = walkFrameNames[0];
+      if (firstFrame) {
+        setFrameName(firstFrame);
+      }
 
       // Cycle through walk frames
       interval = setInterval(() => {
         setFrameName((prevFrameName) => {
           const index = walkFrameNames.indexOf(prevFrameName);
           if (index === -1 || index === walkFrameNames.length - 1) {
-            return walkFrameNames[0];
+            return walkFrameNames[0] ?? 'forward.png';
           }
-          return walkFrameNames[index + 1];
+          return walkFrameNames[index + 1] ?? 'forward.png';
         });
       }, 100); // Animation speed
     } else {
@@ -135,7 +141,7 @@ function HenSprite({
 function EggSprite({
   actorRef,
 }: {
-  actorRef: ActorRefFrom<typeof storyEggMachine>;
+  actorRef: ActorRefFrom<typeof eggMachine>;
 }) {
   const { position, rotation, color, isDone } = useSelector(
     actorRef,
@@ -199,8 +205,8 @@ function EggSprite({
     <Image
       ref={eggRef}
       image={eggImage}
-      x={position.x}
-      y={position.y}
+      x={position.x + EGG_SIZE.width / 2}
+      y={position.y + EGG_SIZE.height / 2}
       width={EGG_SIZE.width}
       height={EGG_SIZE.height}
       offsetX={EGG_SIZE.width / 2}
