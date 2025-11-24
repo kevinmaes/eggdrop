@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ChevronRight, BookOpen, Link } from 'lucide-react';
 
 import chefSpriteData from '../images/chef.sprite.json';
+import chickSpriteData from '../images/chick.sprite.json';
 import eggSpriteData from '../images/egg.sprite.json';
 import henSpriteData from '../images/hen.sprite.json';
 
@@ -29,12 +30,14 @@ interface StoryNavigationProps {
   onSelectStory: (storyId: string) => void;
 }
 
-interface CharacterIconProps {
-  character: CharacterType;
+interface SpriteIconProps {
+  imagePath: string;
+  frameData: { x: number; y: number; w: number; h: number };
   size?: number;
 }
 
-function CharacterIcon({ character, size = 20 }: CharacterIconProps) {
+// Single sprite icon component
+function SpriteIcon({ imagePath, frameData, size = 18 }: SpriteIconProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -44,64 +47,21 @@ function CharacterIcon({ character, size = 20 }: CharacterIconProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const getImagePath = () => {
-      switch (character) {
-        case 'Hen':
-          return '/images/hen.sprite.png';
-        case 'Egg':
-          return '/images/egg.sprite.png';
-        case 'Chef':
-          return '/images/chef.sprite.png';
-        case 'Other':
-          return null; // Will render text instead
-      }
-    };
-
-    const getFrameData = () => {
-      switch (character) {
-        case 'Hen':
-          return henSpriteData.frames['forward.png']?.frame;
-        case 'Egg':
-          return eggSpriteData.frames['egg-white.png']?.frame;
-        case 'Chef':
-          return chefSpriteData.frames['chef-leg-1.png']?.frame;
-        case 'Other':
-          return null;
-      }
-    };
-
-    const imagePath = getImagePath();
-    if (!imagePath) {
-      // Render text for "Other"
-      ctx.fillStyle = STORYBUK_COLORS.sidebar.folderIcon;
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('...', size / 2, size / 2);
-      return;
-    }
-
     const img = new window.Image();
     img.src = imagePath;
-
-    const frameData = getFrameData();
-    if (!frameData) return;
 
     img.onload = () => {
       ctx.clearRect(0, 0, size, size);
 
-      // Calculate scale to fit frame in canvas
       const baseScale = Math.min(size / frameData.w, size / frameData.h);
-      const scale = character === 'Egg' ? baseScale * 0.6 : baseScale;
+      const scale = baseScale;
 
       const scaledWidth = frameData.w * scale;
       const scaledHeight = frameData.h * scale;
 
-      // Center the image
       const x = (size - scaledWidth) / 2;
       const y = (size - scaledHeight) / 2;
 
-      // Draw the sprite frame
       ctx.drawImage(
         img,
         frameData.x,
@@ -114,7 +74,7 @@ function CharacterIcon({ character, size = 20 }: CharacterIconProps) {
         scaledHeight
       );
     };
-  }, [character, size]);
+  }, [imagePath, frameData, size]);
 
   return (
     <canvas
@@ -127,6 +87,65 @@ function CharacterIcon({ character, size = 20 }: CharacterIconProps) {
       }}
     />
   );
+}
+
+interface CharacterLabelProps {
+  character: CharacterType;
+}
+
+// Renders interleaved icon + text labels like: [egg] Egg + [chick] Chick
+function CharacterLabel({ character }: CharacterLabelProps) {
+  const henFrame = henSpriteData.frames['forward.png']?.frame;
+  const eggFrame = eggSpriteData.frames['egg-white.png']?.frame;
+  const chickFrame = chickSpriteData.frames['chick-run-right-1.png']?.frame;
+  const chefFrame = chefSpriteData.frames['chef-leg-1.png']?.frame;
+
+  const labelStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  };
+
+  switch (character) {
+    case 'Hen':
+      if (!henFrame || !eggFrame) return <span>Hen + Egg</span>;
+      return (
+        <span style={labelStyle}>
+          <SpriteIcon imagePath="/images/hen.sprite.png" frameData={henFrame} />
+          <span>Hen +</span>
+          <SpriteIcon imagePath="/images/egg.sprite.png" frameData={eggFrame} />
+          <span>Egg</span>
+        </span>
+      );
+    case 'Egg':
+      if (!eggFrame || !chickFrame) return <span>Egg + Chick</span>;
+      return (
+        <span style={labelStyle}>
+          <SpriteIcon imagePath="/images/egg.sprite.png" frameData={eggFrame} />
+          <span>Egg +</span>
+          <SpriteIcon
+            imagePath="/images/chick.sprite.png"
+            frameData={chickFrame}
+          />
+          <span>Chick</span>
+        </span>
+      );
+    case 'Chef':
+      if (!chefFrame || !eggFrame) return <span>Chef + Egg</span>;
+      return (
+        <span style={labelStyle}>
+          <SpriteIcon
+            imagePath="/images/chef.sprite.png"
+            frameData={chefFrame}
+          />
+          <span>Chef +</span>
+          <SpriteIcon imagePath="/images/egg.sprite.png" frameData={eggFrame} />
+          <span>Egg</span>
+        </span>
+      );
+    case 'Other':
+      return <span>Other</span>;
+  }
 }
 
 export function StoryNavigation({
@@ -247,11 +266,8 @@ export function StoryNavigation({
                   }}
                 />
 
-                {/* Character Icon */}
-                <CharacterIcon character={character} size={20} />
-
-                {/* Character Name */}
-                <span>{character}</span>
+                {/* Character Label with interleaved icons and text */}
+                <CharacterLabel character={character} />
               </button>
 
               {/* Story List */}

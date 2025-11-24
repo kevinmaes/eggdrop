@@ -209,8 +209,7 @@ export function EggLandHatchExit({
 
   // Show chick standing (hatched, brief pause)
   if (showChickStanding) {
-    const chickFrameData =
-      chickSpriteData.frames['chick-forward-1.png']?.frame;
+    const chickFrameData = chickSpriteData.frames['chick-forward-1.png']?.frame;
     if (!chickFrameData) return null;
 
     return (
