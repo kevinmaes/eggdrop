@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import eggIdleMachine from './egg-idle.machine';
+import { eggIdleMachine } from './egg-idle.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -35,7 +35,7 @@ const EGG_SIZE = {
   height: 60,
 };
 
-function EggIdle({
+export function EggIdle({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggIdleMachine>;
@@ -81,5 +81,3 @@ function EggIdle({
     />
   );
 }
-
-export default EggIdle;

@@ -21,7 +21,7 @@ const DEMO_CONFIG = {
   defaultY: HEN_DEMO.centerY,
 };
 
-const henIdleHeadlessMachine = setup({
+export const henIdleHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -67,5 +67,3 @@ const henIdleHeadlessMachine = setup({
     },
   },
 });
-
-export default henIdleHeadlessMachine;

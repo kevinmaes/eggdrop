@@ -28,7 +28,7 @@ const DEMO_CONFIG = {
   hatchingPauseDuration: 300,
 };
 
-const eggLandHatchMachine = setup({
+export const eggLandHatchMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -161,5 +161,4 @@ const eggLandHatchMachine = setup({
   },
 });
 
-export default eggLandHatchMachine;
 export type EggLandHatchActorRef = ActorRefFrom<typeof eggLandHatchMachine>;

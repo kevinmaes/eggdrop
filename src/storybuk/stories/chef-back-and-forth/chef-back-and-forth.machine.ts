@@ -25,7 +25,7 @@ const DEMO_CONFIG = {
 
 type Destination = 'left-edge' | 'right-edge';
 
-const chefBackAndForthMachine = setup({
+export const chefBackAndForthMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -228,5 +228,3 @@ const chefBackAndForthMachine = setup({
     chefId: context.id,
   }),
 });
-
-export default chefBackAndForthMachine;

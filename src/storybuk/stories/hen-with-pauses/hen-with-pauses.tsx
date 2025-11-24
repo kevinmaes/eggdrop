@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import henWithPausesMachine from './hen-with-pauses.machine';
+import { henWithPausesMachine } from './hen-with-pauses.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -52,7 +52,7 @@ const HEN_SIZE = {
   height: 120,
 };
 
-function HenWithPauses({
+export function HenWithPauses({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof henWithPausesMachine>;
@@ -146,5 +146,3 @@ function HenWithPauses({
     />
   );
 }
-
-export default HenWithPauses;

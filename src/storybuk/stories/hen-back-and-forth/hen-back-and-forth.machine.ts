@@ -64,7 +64,7 @@ function getInitialState(canvasWidth: number) {
   };
 }
 
-const henBackAndForthMachine = setup({
+export const henBackAndForthMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -279,5 +279,3 @@ const henBackAndForthMachine = setup({
     },
   },
 });
-
-export default henBackAndForthMachine;

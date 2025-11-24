@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import eggFallLandOnlyMachine from './egg-fall-land-only.machine';
+import { eggFallLandOnlyMachine } from './egg-fall-land-only.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -34,7 +34,7 @@ const EGG_SIZE = {
   height: 60,
 };
 
-function EggFallLandOnly({
+export function EggFallLandOnly({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggFallLandOnlyMachine>;
@@ -131,5 +131,3 @@ function EggFallLandOnly({
     />
   );
 }
-
-export default EggFallLandOnly;

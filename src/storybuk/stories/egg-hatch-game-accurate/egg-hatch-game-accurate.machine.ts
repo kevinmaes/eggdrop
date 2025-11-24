@@ -39,7 +39,7 @@ const DEMO_CONFIG = {
   exitSpeed: 10, // Pixels per frame for exiting
 };
 
-const eggHatchGameAccurateMachine = setup({
+export const eggHatchGameAccurateMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -339,7 +339,6 @@ const eggHatchGameAccurateMachine = setup({
   },
 });
 
-export default eggHatchGameAccurateMachine;
 export type EggHatchGameAccurateActorRef = ActorRefFrom<
   typeof eggHatchGameAccurateMachine
 >;

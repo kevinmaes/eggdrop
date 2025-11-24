@@ -5,7 +5,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggHatchGameAccurateHeadlessMachine from './egg-hatch-game-accurate-headless.machine';
+import { eggHatchGameAccurateHeadlessMachine } from './egg-hatch-game-accurate-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -34,7 +34,7 @@ interface EggHatchGameAccurateHeadlessProps {
   canvasHeight: number;
 }
 
-function EggHatchGameAccurateHeadless({
+export function EggHatchGameAccurateHeadless({
   config,
   resetCount,
   shouldStart,
@@ -314,5 +314,3 @@ function EggHatchGameAccurateHeadless({
     </div>
   );
 }
-
-export default EggHatchGameAccurateHeadless;

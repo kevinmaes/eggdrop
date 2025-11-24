@@ -32,7 +32,7 @@ const DEMO_CONFIG = {
   exitSpeed: 10,
 };
 
-const eggHatchGameAccurateHeadlessMachine = setup({
+export const eggHatchGameAccurateHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -314,7 +314,6 @@ const eggHatchGameAccurateHeadlessMachine = setup({
   },
 });
 
-export default eggHatchGameAccurateHeadlessMachine;
 export type EggHatchGameAccurateHeadlessActorRef = ActorRefFrom<
   typeof eggHatchGameAccurateHeadlessMachine
 >;

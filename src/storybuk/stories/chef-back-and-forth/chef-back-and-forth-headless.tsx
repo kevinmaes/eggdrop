@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import chefBackAndForthHeadlessMachine from './chef-back-and-forth-headless.machine';
+import { chefBackAndForthHeadlessMachine } from './chef-back-and-forth-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -25,7 +25,7 @@ interface ChefBackAndForthHeadlessProps {
   canvasHeight: number;
 }
 
-function ChefBackAndForthHeadless({
+export function ChefBackAndForthHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -292,5 +292,3 @@ function StateField({
     </div>
   );
 }
-
-export default ChefBackAndForthHeadless;

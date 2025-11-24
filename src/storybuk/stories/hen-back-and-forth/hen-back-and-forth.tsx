@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import henBackAndForthMachine from './hen-back-and-forth.machine';
+import { henBackAndForthMachine } from './hen-back-and-forth.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -53,7 +53,7 @@ const HEN_SIZE = {
   height: 120,
 };
 
-function HenBackAndForth({
+export function HenBackAndForth({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof henBackAndForthMachine>;
@@ -146,5 +146,3 @@ function HenBackAndForth({
     />
   );
 }
-
-export default HenBackAndForth;

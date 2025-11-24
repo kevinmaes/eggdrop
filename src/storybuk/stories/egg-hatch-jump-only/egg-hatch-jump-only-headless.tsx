@@ -5,7 +5,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggHatchJumpOnlyHeadlessMachine from './egg-hatch-jump-only-headless.machine';
+import { eggHatchJumpOnlyHeadlessMachine } from './egg-hatch-jump-only-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -24,7 +24,7 @@ interface EggHatchJumpOnlyHeadlessProps {
   canvasHeight: number;
 }
 
-function EggHatchJumpOnlyHeadless({
+export function EggHatchJumpOnlyHeadless({
   config,
   resetCount,
   shouldStart,
@@ -262,5 +262,3 @@ function EggHatchJumpOnlyHeadless({
     </div>
   );
 }
-
-export default EggHatchJumpOnlyHeadless;

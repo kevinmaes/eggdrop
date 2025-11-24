@@ -8,7 +8,7 @@ import useImage from 'use-image';
 import chickSpriteData from '../../../images/chick.sprite.json';
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import eggHatchGameAccurateMachine from './egg-hatch-game-accurate.machine';
+import { eggHatchGameAccurateMachine } from './egg-hatch-game-accurate.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -46,7 +46,7 @@ const CHICK_SIZE = {
   height: 60,
 };
 
-function EggHatchGameAccurate({
+export function EggHatchGameAccurate({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggHatchGameAccurateMachine>;
@@ -239,5 +239,3 @@ function EggHatchGameAccurate({
 
   return null;
 }
-
-export default EggHatchGameAccurate;

@@ -23,7 +23,7 @@ const DEMO_CONFIG = {
   rotationSpeed: 5,
 };
 
-const eggFallLandOnlyHeadlessMachine = setup({
+export const eggFallLandOnlyHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -138,7 +138,6 @@ const eggFallLandOnlyHeadlessMachine = setup({
   },
 });
 
-export default eggFallLandOnlyHeadlessMachine;
 export type EggFallLandOnlyHeadlessActorRef = ActorRefFrom<
   typeof eggFallLandOnlyHeadlessMachine
 >;

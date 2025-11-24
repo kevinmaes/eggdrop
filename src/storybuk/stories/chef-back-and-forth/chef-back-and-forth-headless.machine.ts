@@ -52,7 +52,7 @@ function getInitialState(canvasWidth: number) {
   };
 }
 
-const chefBackAndForthHeadlessMachine = setup({
+export const chefBackAndForthHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -244,5 +244,3 @@ const chefBackAndForthHeadlessMachine = setup({
     chefId: context.id,
   }),
 });
-
-export default chefBackAndForthHeadlessMachine;

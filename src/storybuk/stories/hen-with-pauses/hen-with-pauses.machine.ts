@@ -62,7 +62,7 @@ function getInitialState(canvasWidth: number) {
   };
 }
 
-const henWithPausesMachine = setup({
+export const henWithPausesMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -285,5 +285,3 @@ const henWithPausesMachine = setup({
     },
   },
 });
-
-export default henWithPausesMachine;

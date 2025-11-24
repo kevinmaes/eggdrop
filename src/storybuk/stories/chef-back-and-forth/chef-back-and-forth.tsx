@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import chefSpriteData from '../../../images/chef.sprite.json';
 
-import chefBackAndForthMachine from './chef-back-and-forth.machine';
+import { chefBackAndForthMachine } from './chef-back-and-forth.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -31,7 +31,7 @@ const CHEF_SIZE = {
   height: 344,
 };
 
-function ChefBackAndForth({
+export function ChefBackAndForth({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof chefBackAndForthMachine>;
@@ -128,5 +128,3 @@ function ChefBackAndForth({
     />
   );
 }
-
-export default ChefBackAndForth;

@@ -18,7 +18,7 @@ import type { ActorRefFrom } from 'xstate';
  * Loops the animation every 2 seconds for story purposes.
  */
 
-function EggCaughtPointsDemo({
+export function EggCaughtPointsDemo({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggCaughtPointsMachine>;
@@ -105,5 +105,3 @@ function EggCaughtPointsDemo({
     />
   );
 }
-
-export default EggCaughtPointsDemo;

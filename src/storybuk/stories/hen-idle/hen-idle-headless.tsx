@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import henIdleHeadlessMachine from './hen-idle-headless.machine';
+import { henIdleHeadlessMachine } from './hen-idle-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -28,7 +28,7 @@ interface HenIdleHeadlessProps {
   canvasHeight: number;
 }
 
-function HenIdleHeadless({
+export function HenIdleHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -229,5 +229,3 @@ function StateField({
     </div>
   );
 }
-
-export default HenIdleHeadless;

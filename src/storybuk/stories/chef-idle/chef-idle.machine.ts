@@ -10,7 +10,7 @@ import type { Position } from '../../../types';
  * Based on hen-idle pattern.
  */
 
-const chefIdleMachine = setup({
+export const chefIdleMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -54,5 +54,3 @@ const chefIdleMachine = setup({
     Idle: {},
   },
 });
-
-export default chefIdleMachine;

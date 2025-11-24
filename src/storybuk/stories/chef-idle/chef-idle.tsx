@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import chefSpriteData from '../../../images/chef.sprite.json';
 
-import chefIdleMachine from './chef-idle.machine';
+import { chefIdleMachine } from './chef-idle.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -30,7 +30,7 @@ const CHEF_SIZE = {
   height: 344,
 };
 
-function ChefIdle({
+export function ChefIdle({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof chefIdleMachine>;
@@ -81,5 +81,3 @@ function ChefIdle({
     />
   );
 }
-
-export default ChefIdle;

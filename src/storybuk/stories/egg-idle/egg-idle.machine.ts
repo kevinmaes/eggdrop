@@ -20,7 +20,7 @@ import type { Position } from '../../../types';
  * - Minimal context (just position and ref)
  */
 
-const eggIdleMachine = setup({
+export const eggIdleMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -67,5 +67,3 @@ const eggIdleMachine = setup({
     },
   },
 });
-
-export default eggIdleMachine;

@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggSplatHeadlessMachine from './egg-splat-headless.machine';
+import { eggSplatHeadlessMachine } from './egg-splat-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -30,7 +30,7 @@ interface EggSplatHeadlessProps {
   canvasHeight: number;
 }
 
-function EggSplatHeadless({
+export function EggSplatHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -347,5 +347,3 @@ function StateField({
     </div>
   );
 }
-
-export default EggSplatHeadless;

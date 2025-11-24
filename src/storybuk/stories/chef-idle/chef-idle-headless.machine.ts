@@ -21,7 +21,7 @@ const DEMO_CONFIG = {
   defaultY: CHEF_DEMO.centerY,
 };
 
-const chefIdleHeadlessMachine = setup({
+export const chefIdleHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -67,5 +67,3 @@ const chefIdleHeadlessMachine = setup({
     },
   },
 });
-
-export default chefIdleHeadlessMachine;

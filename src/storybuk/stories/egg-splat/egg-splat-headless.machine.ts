@@ -39,7 +39,7 @@ const DEMO_CONFIG = {
   rotationSpeed: 5, // Degrees per frame
 };
 
-const eggSplatHeadlessMachine = setup({
+export const eggSplatHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -155,7 +155,6 @@ const eggSplatHeadlessMachine = setup({
   },
 });
 
-export default eggSplatHeadlessMachine;
 export type EggSplatHeadlessActorRef = ActorRefFrom<
   typeof eggSplatHeadlessMachine
 >;

@@ -6,7 +6,7 @@
  * When closed, headless actors are destroyed and the inspector window closes.
  */
 
-function InspectorToggle({
+export function InspectorToggle({
   inspectorEnabled,
   onToggle,
 }: {
@@ -42,5 +42,3 @@ function InspectorToggle({
     </button>
   );
 }
-
-export default InspectorToggle;

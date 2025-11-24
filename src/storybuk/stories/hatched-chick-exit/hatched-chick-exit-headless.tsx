@@ -5,7 +5,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import hatchedChickExitHeadlessMachine from './hatched-chick-exit-headless.machine';
+import { hatchedChickExitHeadlessMachine } from './hatched-chick-exit-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -24,7 +24,7 @@ interface HatchedChickExitHeadlessProps {
   canvasHeight: number;
 }
 
-function HatchedChickExitHeadless({
+export function HatchedChickExitHeadless({
   config,
   resetCount,
   shouldStart,
@@ -223,5 +223,3 @@ function HatchedChickExitHeadless({
     </div>
   );
 }
-
-export default HatchedChickExitHeadless;

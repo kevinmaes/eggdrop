@@ -8,7 +8,7 @@ import useImage from 'use-image';
 import chickSpriteData from '../../../images/chick.sprite.json';
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import eggLandHatchMachine from './egg-land-hatch.machine';
+import { eggLandHatchMachine } from './egg-land-hatch.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -41,7 +41,7 @@ const CHICK_SIZE = {
   height: 60,
 };
 
-function EggLandHatch({
+export function EggLandHatch({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggLandHatchMachine>;
@@ -175,5 +175,3 @@ function EggLandHatch({
 
   return null;
 }
-
-export default EggLandHatch;

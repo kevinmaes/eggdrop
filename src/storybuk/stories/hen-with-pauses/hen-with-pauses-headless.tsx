@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import henWithPausesHeadlessMachine from './hen-with-pauses-headless.machine';
+import { henWithPausesHeadlessMachine } from './hen-with-pauses-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -28,7 +28,7 @@ interface HenWithPausesHeadlessProps {
   canvasHeight: number;
 }
 
-function HenWithPausesHeadless({
+export function HenWithPausesHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -305,5 +305,3 @@ function StateField({
     </div>
   );
 }
-
-export default HenWithPausesHeadless;

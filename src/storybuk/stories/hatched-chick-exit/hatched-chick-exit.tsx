@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import chickSpriteData from '../../../images/chick.sprite.json';
 
-import hatchedChickExitMachine from './hatched-chick-exit.machine';
+import { hatchedChickExitMachine } from './hatched-chick-exit.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -34,7 +34,7 @@ const CHICK_SIZE = {
   height: 60,
 };
 
-function HatchedChickExit({
+export function HatchedChickExit({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof hatchedChickExitMachine>;
@@ -153,5 +153,3 @@ function HatchedChickExit({
     />
   );
 }
-
-export default HatchedChickExit;

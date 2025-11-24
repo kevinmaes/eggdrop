@@ -32,7 +32,7 @@ const DEMO_CONFIG = {
   maxVelocity: 8, // Terminal velocity to prevent falling too fast
 };
 
-const eggFallingHeadlessMachine = setup({
+export const eggFallingHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -107,5 +107,3 @@ const eggFallingHeadlessMachine = setup({
     },
   },
 });
-
-export default eggFallingHeadlessMachine;

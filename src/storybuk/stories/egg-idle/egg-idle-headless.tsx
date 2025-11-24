@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggIdleHeadlessMachine from './egg-idle-headless.machine';
+import { eggIdleHeadlessMachine } from './egg-idle-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -30,7 +30,7 @@ interface EggIdleHeadlessProps {
   canvasHeight: number;
 }
 
-function EggIdleHeadless({
+export function EggIdleHeadless({
   config,
   resetCount = 0,
   canvasWidth,
@@ -216,5 +216,3 @@ function StateField({
     </div>
   );
 }
-
-export default EggIdleHeadless;

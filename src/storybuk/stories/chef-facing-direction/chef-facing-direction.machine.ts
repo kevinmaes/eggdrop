@@ -26,7 +26,7 @@ const DEMO_CONFIG = {
 
 type Destination = 'left-edge' | 'right-edge';
 
-const chefFacingDirectionMachine = setup({
+export const chefFacingDirectionMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -229,5 +229,3 @@ const chefFacingDirectionMachine = setup({
     chefId: context.id,
   }),
 });
-
-export default chefFacingDirectionMachine;

@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import eggFallingRotatingMachine from './egg-falling-rotating.machine';
+import { eggFallingRotatingMachine } from './egg-falling-rotating.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -31,7 +31,7 @@ const EGG_SIZE = {
   height: 60,
 };
 
-function EggFallingRotating({
+export function EggFallingRotating({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggFallingRotatingMachine>;
@@ -132,5 +132,3 @@ function EggFallingRotating({
     />
   );
 }
-
-export default EggFallingRotating;

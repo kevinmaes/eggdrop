@@ -20,7 +20,7 @@ import type { Position } from '../../../types';
  * - Minimal context (just position and ref)
  */
 
-const henIdleMachine = setup({
+export const henIdleMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -67,5 +67,3 @@ const henIdleMachine = setup({
     },
   },
 });
-
-export default henIdleMachine;

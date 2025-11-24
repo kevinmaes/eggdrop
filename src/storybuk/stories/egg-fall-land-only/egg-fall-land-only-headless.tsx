@@ -5,7 +5,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggFallLandOnlyHeadlessMachine from './egg-fall-land-only-headless.machine';
+import { eggFallLandOnlyHeadlessMachine } from './egg-fall-land-only-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -24,7 +24,7 @@ interface EggFallLandOnlyHeadlessProps {
   canvasHeight: number;
 }
 
-function EggFallLandOnlyHeadless({
+export function EggFallLandOnlyHeadless({
   config,
   resetCount,
   shouldStart,
@@ -245,5 +245,3 @@ function EggFallLandOnlyHeadless({
     </div>
   );
 }
-
-export default EggFallLandOnlyHeadless;

@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggFallingRotatingHeadlessMachine from './egg-falling-rotating-headless.machine';
+import { eggFallingRotatingHeadlessMachine } from './egg-falling-rotating-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -30,7 +30,7 @@ interface EggFallingRotatingHeadlessProps {
   canvasHeight: number;
 }
 
-function EggFallingRotatingHeadless({
+export function EggFallingRotatingHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -334,5 +334,3 @@ function StateField({
     </div>
   );
 }
-
-export default EggFallingRotatingHeadless;

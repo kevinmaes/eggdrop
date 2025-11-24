@@ -36,7 +36,7 @@ const DEMO_CONFIG = {
   eggUpdateInterval: 16, // ms between updates (~60fps)
 };
 
-const henLayingWithEggMachine = setup({
+export const henLayingWithEggMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -151,5 +151,3 @@ const henLayingWithEggMachine = setup({
     },
   },
 });
-
-export default henLayingWithEggMachine;

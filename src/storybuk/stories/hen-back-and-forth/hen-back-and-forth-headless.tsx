@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import henBackAndForthHeadlessMachine from './hen-back-and-forth-headless.machine';
+import { henBackAndForthHeadlessMachine } from './hen-back-and-forth-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -30,7 +30,7 @@ interface HenBackAndForthHeadlessProps {
   canvasHeight: number;
 }
 
-function HenBackAndForthHeadless({
+export function HenBackAndForthHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -303,5 +303,3 @@ function StateField({
     </div>
   );
 }
-
-export default HenBackAndForthHeadless;

@@ -4,4 +4,8 @@
  * Re-exports the main eggCaughtPointsMachine for use in storybuk.
  */
 
-export { eggCaughtPointsMachine as default } from '../../../EggCaughtPoints/eggCaughtPoints.machine';
+import { eggCaughtPointsMachine } from '../../../EggCaughtPoints/eggCaughtPoints.machine';
+
+// Re-export with the naming convention expected by ActorFactory
+// type: 'egg-caught-points', machineVersion: 'demo' -> 'eggCaughtPointsDemoMachine'
+export { eggCaughtPointsMachine as eggCaughtPointsDemoMachine };

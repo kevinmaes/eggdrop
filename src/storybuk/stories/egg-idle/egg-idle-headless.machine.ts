@@ -30,7 +30,7 @@ const DEMO_CONFIG = {
   defaultY: EGG_DEMO.centerY,
 };
 
-const eggIdleHeadlessMachine = setup({
+export const eggIdleHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -71,5 +71,3 @@ const eggIdleHeadlessMachine = setup({
     },
   },
 });
-
-export default eggIdleHeadlessMachine;

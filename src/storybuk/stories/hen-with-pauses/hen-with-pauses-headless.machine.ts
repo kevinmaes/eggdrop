@@ -56,7 +56,7 @@ function getInitialState(canvasWidth: number) {
   };
 }
 
-const henWithPausesHeadlessMachine = setup({
+export const henWithPausesHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -270,5 +270,3 @@ const henWithPausesHeadlessMachine = setup({
     henId: context.id,
   }),
 });
-
-export default henWithPausesHeadlessMachine;

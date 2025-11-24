@@ -50,20 +50,39 @@ export async function createDemoActor(
     `./stories/${storyFolder}/${type}-${componentVersion}.tsx`
   );
 
-  // Extract the machine and component
-  const machine = machineModule.default || machineModule[`${type}Machine`];
-  const Component =
-    componentModule.default || componentModule[`${type}Component`];
+  // Build the expected named export names
+  // Machine: camelCase like "henIdleMachine", "eggFallingRotatingMachine"
+  // Component: PascalCase like "HenIdle", "EggFallingRotating"
+  const toCamelCase = (str: string) =>
+    str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+  const toPascalCase = (str: string) => {
+    const camel = toCamelCase(str);
+    return camel.charAt(0).toUpperCase() + camel.slice(1);
+  };
+
+  // Machine name: {type}{Version}Machine in camelCase
+  // e.g., "hen" + "idle" = "henIdleMachine"
+  // e.g., "hen" + "laying-falling-egg" = "henLayingFallingEggMachine"
+  const machineName = `${toCamelCase(type)}${toPascalCase(machineVersion)}Machine`;
+
+  // Component name: {Type}{Version} in PascalCase
+  // e.g., "hen" + "idle" = "HenIdle"
+  // e.g., "hen" + "laying-falling-egg" = "HenLayingFallingEgg"
+  const componentName = `${toPascalCase(type)}${toPascalCase(componentVersion)}`;
+
+  // Extract the machine and component using named exports
+  const machine = machineModule[machineName];
+  const Component = componentModule[componentName];
 
   if (!machine) {
     throw new Error(
-      `Machine not found for ${type}-${machineVersion}. Ensure the module exports a default or named export.`
+      `Machine not found for ${type}-${machineVersion}. Expected named export "${machineName}". Available exports: ${Object.keys(machineModule).join(', ')}`
     );
   }
 
   if (!Component) {
     throw new Error(
-      `Component not found for ${type}-${componentVersion}. Ensure the module exports a default or named export.`
+      `Component not found for ${type}-${componentVersion}. Expected named export "${componentName}". Available exports: ${Object.keys(componentModule).join(', ')}`
     );
   }
 

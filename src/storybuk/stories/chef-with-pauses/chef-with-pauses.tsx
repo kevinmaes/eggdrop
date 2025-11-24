@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import chefSpriteData from '../../../images/chef.sprite.json';
 
-import chefWithPausesMachine from './chef-with-pauses.machine';
+import { chefWithPausesMachine } from './chef-with-pauses.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -32,7 +32,7 @@ const CHEF_SIZE = {
   height: 344,
 };
 
-function ChefWithPauses({
+export function ChefWithPauses({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof chefWithPausesMachine>;
@@ -126,5 +126,3 @@ function ChefWithPauses({
     />
   );
 }
-
-export default ChefWithPauses;

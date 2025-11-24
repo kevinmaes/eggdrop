@@ -21,7 +21,7 @@ import type { Position } from '../../../types';
  * - henRef management for Konva integration
  */
 
-const henEggLayingMachine = setup({
+export const henEggLayingMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -86,5 +86,3 @@ const henEggLayingMachine = setup({
     },
   },
 });
-
-export default henEggLayingMachine;

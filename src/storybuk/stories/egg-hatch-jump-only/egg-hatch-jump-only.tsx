@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import chickSpriteData from '../../../images/chick.sprite.json';
 
-import eggHatchJumpOnlyMachine from './egg-hatch-jump-only.machine';
+import { eggHatchJumpOnlyMachine } from './egg-hatch-jump-only.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -36,7 +36,7 @@ const CHICK_SIZE = {
   height: 60,
 };
 
-function EggHatchJumpOnly({
+export function EggHatchJumpOnly({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggHatchJumpOnlyMachine>;
@@ -154,5 +154,3 @@ function EggHatchJumpOnly({
     />
   );
 }
-
-export default EggHatchJumpOnly;

@@ -33,7 +33,7 @@ const DEMO_CONFIG = {
   rotationSpeed: 5, // Degrees per frame
 };
 
-const eggFallingRotatingHeadlessMachine = setup({
+export const eggFallingRotatingHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -120,5 +120,3 @@ const eggFallingRotatingHeadlessMachine = setup({
     },
   },
 });
-
-export default eggFallingRotatingHeadlessMachine;

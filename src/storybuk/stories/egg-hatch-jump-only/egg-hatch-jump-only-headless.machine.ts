@@ -25,7 +25,7 @@ const DEMO_CONFIG = {
   hatchedPauseDuration: 500,
 };
 
-const eggHatchJumpOnlyHeadlessMachine = setup({
+export const eggHatchJumpOnlyHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -193,7 +193,6 @@ const eggHatchJumpOnlyHeadlessMachine = setup({
   },
 });
 
-export default eggHatchJumpOnlyHeadlessMachine;
 export type EggHatchJumpOnlyHeadlessActorRef = ActorRefFrom<
   typeof eggHatchJumpOnlyHeadlessMachine
 >;

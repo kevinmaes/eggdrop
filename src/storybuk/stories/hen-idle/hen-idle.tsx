@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import henIdleMachine from './hen-idle.machine';
+import { henIdleMachine } from './hen-idle.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -36,7 +36,7 @@ const HEN_SIZE = {
   height: 120,
 };
 
-function HenIdle({
+export function HenIdle({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof henIdleMachine>;
@@ -82,5 +82,3 @@ function HenIdle({
     />
   );
 }
-
-export default HenIdle;

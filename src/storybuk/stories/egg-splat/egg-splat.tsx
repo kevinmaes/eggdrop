@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import eggSplatMachine from './egg-splat.machine';
+import { eggSplatMachine } from './egg-splat.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -38,7 +38,7 @@ const BROKEN_EGG_SIZE = {
   height: 60,
 };
 
-function EggSplat({
+export function EggSplat({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof eggSplatMachine>;
@@ -159,5 +159,3 @@ function EggSplat({
     />
   );
 }
-
-export default EggSplat;

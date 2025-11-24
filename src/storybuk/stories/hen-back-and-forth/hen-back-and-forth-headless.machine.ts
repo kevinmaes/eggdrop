@@ -53,7 +53,7 @@ function getInitialState(canvasWidth: number) {
   };
 }
 
-const henBackAndForthHeadlessMachine = setup({
+export const henBackAndForthHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -250,5 +250,3 @@ const henBackAndForthHeadlessMachine = setup({
     henId: context.id,
   }),
 });
-
-export default henBackAndForthHeadlessMachine;

@@ -29,7 +29,7 @@ const DEMO_CONFIG = {
 
 type Destination = 'left-edge' | 'right-edge';
 
-const chefWithPausesMachine = setup({
+export const chefWithPausesMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -243,5 +243,3 @@ const chefWithPausesMachine = setup({
     chefId: context.id,
   }),
 });
-
-export default chefWithPausesMachine;

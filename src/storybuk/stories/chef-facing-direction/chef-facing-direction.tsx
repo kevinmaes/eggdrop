@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import chefSpriteData from '../../../images/chef.sprite.json';
 
-import chefFacingDirectionMachine from './chef-facing-direction.machine';
+import { chefFacingDirectionMachine } from './chef-facing-direction.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -32,7 +32,7 @@ const CHEF_SIZE = {
   height: 344,
 };
 
-function ChefFacingDirection({
+export function ChefFacingDirection({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof chefFacingDirectionMachine>;
@@ -126,5 +126,3 @@ function ChefFacingDirection({
     />
   );
 }
-
-export default ChefFacingDirection;

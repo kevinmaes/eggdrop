@@ -8,7 +8,7 @@ import useImage from 'use-image';
 import eggSpriteData from '../../../images/egg.sprite.json';
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import henLayingFallingEggMachine from './hen-laying-falling-egg.machine';
+import { henLayingFallingEggMachine } from './hen-laying-falling-egg.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -53,7 +53,7 @@ const EGG_SIZE = {
   height: 30,
 };
 
-function HenLayingFallingEgg({
+export function HenLayingFallingEgg({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof henLayingFallingEggMachine>;
@@ -155,5 +155,3 @@ function HenLayingFallingEgg({
     </>
   );
 }
-
-export default HenLayingFallingEgg;

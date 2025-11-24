@@ -8,7 +8,7 @@ import '@fontsource/nunito-sans/700.css';
 import { StatelyEmbed } from './components/StatelyEmbed';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ControlPanel } from './ControlPanel';
-import InspectorToggle from './InspectorToggle';
+import { InspectorToggle } from './InspectorToggle';
 import { getStoryConfigs } from './story-configs';
 import {
   STORYBUK_COLORS,

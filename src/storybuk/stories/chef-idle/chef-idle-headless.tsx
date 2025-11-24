@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import chefIdleHeadlessMachine from './chef-idle-headless.machine';
+import { chefIdleHeadlessMachine } from './chef-idle-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -25,7 +25,7 @@ interface ChefIdleHeadlessProps {
   canvasHeight: number;
 }
 
-function ChefIdleHeadless({
+export function ChefIdleHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
@@ -223,5 +223,3 @@ function ChefIdleHeadless({
     </div>
   );
 }
-
-export default ChefIdleHeadless;

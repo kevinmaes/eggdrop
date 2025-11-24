@@ -21,7 +21,7 @@ const DEMO_CONFIG = {
   exitDuration: 1000,
 };
 
-const hatchedChickExitHeadlessMachine = setup({
+export const hatchedChickExitHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -142,7 +142,6 @@ const hatchedChickExitHeadlessMachine = setup({
   },
 });
 
-export default hatchedChickExitHeadlessMachine;
 export type HatchedChickExitHeadlessActorRef = ActorRefFrom<
   typeof hatchedChickExitHeadlessMachine
 >;

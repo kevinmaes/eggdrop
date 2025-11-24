@@ -7,7 +7,7 @@ import useImage from 'use-image';
 
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import henEggLayingMachine from './hen-egg-laying.machine';
+import { henEggLayingMachine } from './hen-egg-laying.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -51,7 +51,7 @@ const HEN_SIZE = {
   height: 120,
 };
 
-function HenEggLaying({
+export function HenEggLaying({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof henEggLayingMachine>;
@@ -119,5 +119,3 @@ function HenEggLaying({
     />
   );
 }
-
-export default HenEggLaying;

@@ -5,7 +5,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import eggLandHatchHeadlessMachine from './egg-land-hatch-headless.machine';
+import { eggLandHatchHeadlessMachine } from './egg-land-hatch-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -24,7 +24,7 @@ interface EggLandHatchHeadlessProps {
   canvasHeight: number;
 }
 
-function EggLandHatchHeadless({
+export function EggLandHatchHeadless({
   config,
   resetCount,
   shouldStart,
@@ -226,5 +226,3 @@ function EggLandHatchHeadless({
     </div>
   );
 }
-
-export default EggLandHatchHeadless;
