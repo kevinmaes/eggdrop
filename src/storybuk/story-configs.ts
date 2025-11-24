@@ -12,6 +12,7 @@ import { storyConfig as eggHatchGameAccurateConfig } from './stories/egg-hatch-g
 import { storyConfig as eggHatchJumpOnlyConfig } from './stories/egg-hatch-jump-only/story-config';
 import { storyConfig as eggIdleConfig } from './stories/egg-idle/story-config';
 import { storyConfig as eggLandHatchConfig } from './stories/egg-land-hatch/story-config';
+import { storyConfig as eggLandHatchExitConfig } from './stories/egg-land-hatch-exit/story-config';
 import { storyConfig as eggSplatConfig } from './stories/egg-splat/story-config';
 import { storyConfig as hatchedChickExitConfig } from './stories/hatched-chick-exit/story-config';
 import { storyConfig as henBackAndForthConfig } from './stories/hen-back-and-forth/story-config';
@@ -44,6 +45,7 @@ export function getStoryConfigs(): StoryConfigs {
     eggFallLandOnlyConfig,
     eggSplatConfig,
     eggLandHatchConfig,
+    eggLandHatchExitConfig,
     hatchedChickExitConfig,
     eggHatchJumpOnlyConfig,
     eggHatchGameAccurateConfig,
