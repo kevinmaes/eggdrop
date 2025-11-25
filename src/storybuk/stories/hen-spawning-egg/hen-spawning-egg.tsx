@@ -8,8 +8,8 @@ import useImage from 'use-image';
 import eggSpriteData from '../../../images/egg.sprite.json';
 import henSpriteData from '../../../images/hen.sprite.json';
 
-import type { henSpawningEggMachine } from './hen-spawning-egg.machine';
 import type { eggMachine } from './egg.machine';
+import type { henSpawningEggMachine } from './hen-spawning-egg.machine';
 import type { henMachine } from './hen.machine';
 import type { ActorRefFrom } from 'xstate';
 
