@@ -51,7 +51,10 @@ export const henMachine = setup({
       henId: context.id,
       henPosition: {
         // Egg center-point position (hen's horizontal center, butt Y position)
-        x: context.position.x + DEMO_CONFIG.henWidth / 2 - DEMO_CONFIG.eggWidth / 2,
+        x:
+          context.position.x +
+          DEMO_CONFIG.henWidth / 2 -
+          DEMO_CONFIG.eggWidth / 2,
         y: context.position.y + DEMO_CONFIG.henHeight - 46,
       },
       eggColor: 'white' as const,

@@ -16,6 +16,7 @@ import { storyConfig as eggLandHatchExitConfig } from './stories/egg-land-hatch-
 import { storyConfig as eggSplatConfig } from './stories/egg-splat/story-config';
 import { storyConfig as hatchedChickExitConfig } from './stories/hatched-chick-exit/story-config';
 import { storyConfig as henBackAndForthConfig } from './stories/hen-back-and-forth/story-config';
+import { storyConfig as henChefCatchConfig } from './stories/hen-chef-catch/story-config';
 import { storyConfig as henEggLayingConfig } from './stories/hen-egg-laying/story-config';
 import { storyConfig as henIdleConfig } from './stories/hen-idle/story-config';
 import { storyConfig as henLayingFallingEggConfig } from './stories/hen-laying-falling-egg/story-config';
@@ -58,6 +59,7 @@ export function getStoryConfigs(): StoryConfigs {
     chefBackAndForthConfig,
     chefFacingDirectionConfig,
     chefWithPausesConfig,
+    henChefCatchConfig,
   ];
 
   const otherStories = [eggCaughtPointsConfig];

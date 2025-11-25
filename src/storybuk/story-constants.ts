@@ -8,6 +8,8 @@
  * Change STORY_CANVAS.width to adjust all stories (e.g., half width = 640).
  */
 
+import { getGameConfig } from '../gameConfig';
+
 import { STORYBUK_LAYOUT } from './storybuk-theme';
 
 import type { SplitOrientation } from './storybuk-theme';
@@ -131,6 +133,23 @@ export const ACTOR_SIZE = {
   hen: { width: 120, height: 120 },
   chef: { width: 344, height: 344 }, // Actual sprite size
   egg: { width: 60, height: 60 },
+} as const;
+
+/**
+ * Chef pot positioning - using actual game config values
+ */
+const gameConfig = getGameConfig();
+export const CHEF_POT_OFFSET = {
+  // Distance from chef left edge to pot center (chef width / 2)
+  centerX: gameConfig.chef.width / 2,
+  // Pot rim position relative to chef (from game config)
+  offsetX: gameConfig.chef.potRim.offsetX,
+  offsetY: gameConfig.chef.potRim.offsetY,
+  // Pot rim dimensions (from game config)
+  rimWidth: gameConfig.chef.potRim.width,
+  rimHeight: gameConfig.chef.potRim.height,
+  // Collision detection radius (from game config)
+  catchRadius: gameConfig.chef.potRim.radiusX,
 } as const;
 
 /**

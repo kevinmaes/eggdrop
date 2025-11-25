@@ -14,6 +14,7 @@ export const CHEF_STORY_CANVAS_HEIGHT_PERCENT = 37;
 export {
   calculatePositioningForWidth,
   ACTOR_SIZE,
+  CHEF_POT_OFFSET,
   calculateStoryCanvasDimensions,
   getCenterX,
   getCenterY,
