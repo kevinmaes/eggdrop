@@ -5,6 +5,7 @@ import '@fontsource/nunito-sans/400.css';
 import '@fontsource/nunito-sans/600.css';
 import '@fontsource/nunito-sans/700.css';
 
+import { ColorPicker } from './components/ColorPicker';
 import { StatelyEmbed } from './components/StatelyEmbed';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ControlPanel } from './ControlPanel';
@@ -48,6 +49,7 @@ export function Storybuk() {
     resetCount,
     inspectorEnabled,
     statelyTheme,
+    backgroundColor,
   } = state.context;
 
   const isLoading = state.matches('Loading Actors');
@@ -96,6 +98,10 @@ export function Storybuk() {
 
   const handleToggleTheme = () => {
     send({ type: 'Toggle stately theme' });
+  };
+
+  const handleChangeBackgroundColor = (color: string) => {
+    send({ type: 'Change background color', color });
   };
 
   const storyConfigs = getStoryConfigs();
@@ -230,6 +236,10 @@ export function Storybuk() {
                 onToggle={handleToggleInspector}
               />
             )}
+            <ColorPicker
+              color={backgroundColor}
+              onChange={handleChangeBackgroundColor}
+            />
             <ThemeToggle theme={statelyTheme} onToggle={handleToggleTheme} />
           </div>
         </div>
@@ -284,14 +294,16 @@ export function Storybuk() {
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          backgroundColor:
-                            STORYBUK_COLORS.content.canvasBackground,
+                          backgroundColor: backgroundColor,
                         }}
                       >
                         <StoryCanvas
                           width={layoutDimensions.storyCanvas.width}
                           height={layoutDimensions.storyCanvas.height}
-                          background={currentStoryConfig.background}
+                          background={{
+                            ...currentStoryConfig.background,
+                            color: backgroundColor,
+                          }}
                           actorInstances={visualActors}
                           resetCount={resetCount}
                         />
