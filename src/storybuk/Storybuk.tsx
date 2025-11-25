@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useMachine } from '@xstate/react';
 import '@fontsource/nunito-sans/400.css';
@@ -71,7 +71,7 @@ export function Storybuk() {
     send({ type: 'Select story', demoId: storyId });
   };
 
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     // Send Play event to all visual (Konva) actors (they're already started in Idle state)
     actorInstances.forEach((instance) => {
       if (
@@ -84,11 +84,11 @@ export function Storybuk() {
 
     // Update isPlaying state to start headless actors
     send({ type: 'Play' });
-  };
+  }, [actorInstances, send]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     send({ type: 'Reset' });
-  };
+  }, [send]);
 
   const handleToggleInspector = () => {
     send({ type: 'Toggle inspector' });
@@ -102,6 +102,37 @@ export function Storybuk() {
   const currentStoryConfig = selectedStoryId
     ? storyConfigs[selectedStoryId]
     : null;
+
+  // Keyboard shortcuts:
+  // - Command+Enter (Mac) or Ctrl+Enter (Windows/Linux) to play
+  // - Escape to reset when playing
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const isCommandOrCtrl = event.metaKey || event.ctrlKey;
+      const isEnter = event.key === 'Enter';
+      const isEscape = event.key === 'Escape';
+
+      // Play with Command/Ctrl+Enter
+      if (
+        isCommandOrCtrl &&
+        isEnter &&
+        currentStoryConfig?.type === 'animated' &&
+        !isPlaying
+      ) {
+        event.preventDefault();
+        handlePlay();
+      }
+
+      // Reset with Escape (only when playing)
+      if (isEscape && currentStoryConfig?.type === 'animated' && isPlaying) {
+        event.preventDefault();
+        handleReset();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentStoryConfig, isPlaying, handlePlay, handleReset]);
 
   const splitOrientation = currentStoryConfig?.splitOrientation ?? 'horizontal';
   const statelyUrl = currentStoryConfig?.statelyEmbedUrl ?? '';

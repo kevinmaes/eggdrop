@@ -29,6 +29,7 @@ export function ControlPanel({
       <button
         onClick={onPlay}
         disabled={isPlaying}
+        title="Play animation (⌘+Enter)"
         style={{
           padding: '6px 12px',
           cursor: isPlaying ? 'not-allowed' : 'pointer',
@@ -49,6 +50,7 @@ export function ControlPanel({
       </button>
       <button
         onClick={onReset}
+        title="Reset animation (Esc when playing)"
         style={{
           padding: '6px 12px',
           cursor: 'pointer',
