@@ -28,17 +28,25 @@ export const chefMachine = setup({
     };
     context: {
       chefRef: React.RefObject<Konva.Image> | { current: null };
+      chefPotRimHitRef: React.RefObject<Konva.Ellipse> | { current: null };
       id: string;
       position: Position;
       isCatching: boolean;
     };
     events:
       | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Image> }
+      | {
+          type: 'Set chefPotRimHitRef';
+          chefPotRimHitRef: React.RefObject<Konva.Ellipse>;
+        }
       | { type: 'Catch'; eggColor: 'white' | 'gold' };
   },
   actions: {
     setChefRef: assign({
       chefRef: (_, params: React.RefObject<Konva.Image>) => params,
+    }),
+    setChefPotRimHitRef: assign({
+      chefPotRimHitRef: (_, params: React.RefObject<Konva.Ellipse>) => params,
     }),
     setIsCatching: assign({
       isCatching: true,
@@ -54,6 +62,7 @@ export const chefMachine = setup({
   id: 'Chef-Stationary',
   context: ({ input }) => ({
     chefRef: { current: null },
+    chefPotRimHitRef: { current: null },
     id: input.id,
     position: input.startPosition,
     isCatching: false,
@@ -66,6 +75,12 @@ export const chefMachine = setup({
       actions: {
         type: 'setChefRef',
         params: ({ event }) => event.chefRef,
+      },
+    },
+    'Set chefPotRimHitRef': {
+      actions: {
+        type: 'setChefPotRimHitRef',
+        params: ({ event }) => event.chefPotRimHitRef,
       },
     },
   },

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useSelector } from '@xstate/react';
 import { Group } from 'react-konva';
@@ -6,9 +6,10 @@ import { Group } from 'react-konva';
 import { Chef } from './chef';
 import { Egg } from './egg';
 import { Hen } from './hen';
-import type { henChefCatchMachine } from './hen-chef-catch.machine';
 
+import type Konva from 'konva';
 import type { ActorRefFrom } from 'xstate';
+import type { henChefCatchMachine } from './hen-chef-catch.machine';
 
 /**
  * Hen-Chef-Catch Orchestrator Component
@@ -38,13 +39,29 @@ export function HenChefCatch({
   // Track eggs with stable keys for React rendering
   const [eggKeys] = useState(() => new Map<string, string>());
 
+  // Memoize the callback to prevent re-renders
+  const handlePotRimHitRefReady = useCallback(
+    (ref: React.RefObject<Konva.Ellipse>) => {
+      actorRef.send({
+        type: 'Set chefPotRimHitRef',
+        chefPotRimHitRef: ref,
+      });
+    },
+    [actorRef]
+  );
+
   return (
     <Group>
       {/* Render hen */}
       {henActorRef && <Hen actorRef={henActorRef} />}
 
       {/* Render chef */}
-      {chefActorRef && <Chef actorRef={chefActorRef} />}
+      {chefActorRef && (
+        <Chef
+          actorRef={chefActorRef}
+          onPotRimHitRefReady={handlePotRimHitRefReady}
+        />
+      )}
 
       {/* Render all spawned eggs */}
       {eggActorRefs.map((eggRef) => {

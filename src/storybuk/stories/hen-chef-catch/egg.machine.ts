@@ -114,14 +114,8 @@ export const eggMachine = setup({
       },
     },
   },
-  initial: 'Idle',
+  initial: 'Falling',
   states: {
-    Idle: {
-      always: {
-        guard: ({ context }) => context.eggRef.current !== null,
-        target: 'Falling',
-      },
-    },
     Falling: {
       on: {
         Update: [

@@ -1,13 +1,14 @@
+import { type RefObject } from 'react';
+
 import { nanoid } from 'nanoid';
 import { assign, sendTo, setup, type ActorRefFrom } from 'xstate';
-
-import { CHEF_POT_OFFSET } from '../../story-config-constants';
 
 import { chefMachine } from './chef.machine';
 import { eggMachine } from './egg.machine';
 import { henMachine } from './hen.machine';
 
 import type { Position } from '../../../types';
+import type Konva from 'konva';
 
 /**
  * Hen-Chef-Catch Orchestrator Machine
@@ -21,6 +22,17 @@ import type { Position } from '../../../types';
  * 6. On collision: notifies egg and chef via sendTo()
  * 7. Orchestrator cleans up completed eggs
  */
+
+function isEllipseRef(
+  ref: unknown
+): ref is RefObject<Konva.Ellipse> & { current: Konva.Ellipse } {
+  return (
+    ref !== null &&
+    typeof ref === 'object' &&
+    'current' in ref &&
+    ref.current !== null
+  );
+}
 
 export const henChefCatchMachine = setup({
   types: {} as {
@@ -38,11 +50,16 @@ export const henChefCatchMachine = setup({
       chefStartPosition: Position;
       henActorRef: ActorRefFrom<typeof henMachine> | null;
       chefActorRef: ActorRefFrom<typeof chefMachine> | null;
+      chefPotRimHitRef: RefObject<Konva.Ellipse> | null;
       eggActorRefs: ActorRefFrom<typeof eggMachine>[];
     };
     events:
       | { type: 'Play' }
       | { type: 'Reset' }
+      | {
+          type: 'Set chefPotRimHitRef';
+          chefPotRimHitRef: RefObject<Konva.Ellipse>;
+        }
       | {
           type: 'Lay an egg';
           henId: string;
@@ -57,6 +74,10 @@ export const henChefCatchMachine = setup({
         };
   },
   actions: {
+    // Store the chef pot rim hit ref
+    setChefPotRimHitRef: assign({
+      chefPotRimHitRef: (_, params: RefObject<Konva.Ellipse>) => params,
+    }),
     // Spawn the hen actor
     spawnHen: assign({
       henActorRef: ({ context, spawn }) => {
@@ -116,13 +137,14 @@ export const henChefCatchMachine = setup({
       { type: 'Catch' }
     ),
     // Tell chef it caught an egg
-    tellChefHeCaught: sendTo(
-      'chefMachine',
-      (_, params: { eggColor: 'white' | 'gold' }) => ({
-        type: 'Catch',
-        eggColor: params.eggColor,
-      })
-    ),
+    tellChefHeCaught: ({ context }, params: { eggColor: 'white' | 'gold' }) => {
+      if (context.chefActorRef) {
+        context.chefActorRef.send({
+          type: 'Catch',
+          eggColor: params.eggColor,
+        });
+      }
+    },
     // Remove completed egg actors
     cleanupDoneEggs: assign({
       eggActorRefs: ({ context }) => {
@@ -147,26 +169,32 @@ export const henChefCatchMachine = setup({
     clearActorRefs: assign({
       henActorRef: null,
       chefActorRef: null,
+      chefPotRimHitRef: null,
       eggActorRefs: [],
     }),
   },
   guards: {
-    // Test collision between egg and chef's pot rim
+    // Test collision between egg and chef's pot rim using actual hit box
     testPotRimHit: ({ context, event }) => {
       if (event.type !== 'Egg position updated') return false;
+      if (!isEllipseRef(context.chefPotRimHitRef)) return false;
+
+      const {
+        x: potRimHitX,
+        y: potRimHitY,
+        width: potRimHitWidth,
+        height: potRimHitHeight,
+      } = context.chefPotRimHitRef.current.getClientRect();
 
       const eggPos = event.position;
-      // Pot center is at canvas center (since we positioned chef correctly)
-      const potCenterX = context.canvasWidth / 2;
-      // Pot rim Y uses offsetY from game config (negative value means above chef position)
-      const potRimY = context.chefStartPosition.y + CHEF_POT_OFFSET.offsetY;
 
-      // Check if egg center is within catch radius of pot rim
-      const dx = eggPos.x - potCenterX;
-      const dy = eggPos.y - potRimY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      return distance < CHEF_POT_OFFSET.catchRadius;
+      // Check if egg position is within pot rim hit box
+      return (
+        eggPos.x >= potRimHitX &&
+        eggPos.x <= potRimHitX + potRimHitWidth &&
+        eggPos.y >= potRimHitY &&
+        eggPos.y <= potRimHitY + potRimHitHeight
+      );
     },
   },
 }).createMachine({
@@ -174,8 +202,7 @@ export const henChefCatchMachine = setup({
   context: ({ input }) => {
     // Calculate chef position at ground level
     // Center the pot (not the chef sprite) under the hen
-    // Use CHEF_POT_OFFSET.centerX (172px) which is the distance from chef left edge to pot center
-    const chefX = Math.floor(input.canvasWidth / 2 - CHEF_POT_OFFSET.centerX);
+    const chefX = Math.floor(input.canvasWidth / 2 - 40);
     const chefY = input.canvasHeight - 100 - 344; // Ground Y - chef height
 
     return {
@@ -186,10 +213,19 @@ export const henChefCatchMachine = setup({
       chefStartPosition: { x: chefX, y: chefY },
       henActorRef: null,
       chefActorRef: null,
+      chefPotRimHitRef: null,
       eggActorRefs: [],
     };
   },
   initial: 'Idle',
+  on: {
+    'Set chefPotRimHitRef': {
+      actions: {
+        type: 'setChefPotRimHitRef',
+        params: ({ event }) => event.chefPotRimHitRef,
+      },
+    },
+  },
   states: {
     Idle: {
       entry: ['spawnHen', 'spawnChef'],

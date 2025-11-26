@@ -19,11 +19,8 @@ import type { ActorRefFrom } from 'xstate';
  * Supports white and gold egg colors.
  */
 
-function isImageRef(imageRef: unknown): imageRef is RefObject<Konva.Image> {
-  if (imageRef) {
-    return true;
-  }
-  return false;
+function isRefObject(ref: unknown): ref is RefObject<Konva.Image> {
+  return ref !== null && typeof ref === 'object' && 'current' in ref;
 }
 
 const EGG_SIZE = {
@@ -52,11 +49,12 @@ export function Egg({
   const animationFrameRef = useRef<number>(0);
   const lastUpdateRef = useRef<number>(0);
 
+  // Send ref to machine on mount - the machine will check when ref.current is populated
   useEffect(() => {
-    if (isImageRef(eggRef)) {
+    if (isRefObject(eggRef)) {
       actorRef.send({ type: 'Set eggRef', eggRef });
     }
-  }, [actorRef, eggRef]);
+  }, [actorRef]);
 
   // Animation loop with frame rate limiting (60 FPS)
   useEffect(() => {
