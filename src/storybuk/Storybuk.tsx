@@ -372,7 +372,7 @@ export function Storybuk() {
                   color: '#666',
                 }}
               >
-                Select a story to begin
+                How do you like them eggs!?
               </div>
             </div>
           )}
