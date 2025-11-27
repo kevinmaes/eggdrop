@@ -5,11 +5,11 @@
  * Based on the main eggCaughtPointsMachine but simplified for story demos.
  */
 
-import { assign, setup } from 'xstate';
 import Konva from 'konva';
+import { assign, setup } from 'xstate';
 
-import type { Position } from '../../../types';
 import type { EggColor } from '../../../Egg/egg.machine';
+import type { Position } from '../../../types';
 
 export const eggCaughtPointsDemoMachine = setup({
   types: {} as {

@@ -9,8 +9,8 @@ import uiSpriteData from '../../../../public/images/ui.sprite.json';
 import { eggCaughtPointsMachine } from '../../../EggCaughtPoints/eggCaughtPoints.machine';
 import { isImageRef } from '../../../types';
 
-import type { ActorRefFrom } from 'xstate';
 import type { EggColor } from '../../../Egg/egg.machine';
+import type { ActorRefFrom } from 'xstate';
 
 /**
  * Egg Caught Points Story Component
