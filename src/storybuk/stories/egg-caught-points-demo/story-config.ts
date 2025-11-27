@@ -13,25 +13,15 @@ export const storyConfig: StoryConfig = {
   type: 'animated',
   title: 'Other - Egg Caught Points',
   description:
-    'Points animation that appears when catching an egg - loops every 2 seconds',
+    'Points animation alternating between +1 and +10 - loops every 2 seconds',
   actors: [
     {
       type: 'egg-caught-points',
       machineVersion: 'demo',
       componentVersion: 'demo',
-      startPosition: { x: 192, y: 640 }, // centerX, centerY + 100
-      id: 'egg-caught-points-white',
-      eggColor: 'white',
-      machine: eggCaughtPointsDemoMachine,
-      Component: EggCaughtPointsDemo,
-    },
-    {
-      type: 'egg-caught-points',
-      machineVersion: 'demo',
-      componentVersion: 'demo',
-      startPosition: { x: 192, y: 440 }, // centerX, centerY - 100
-      id: 'egg-caught-points-gold',
-      eggColor: 'gold',
+      startPosition: { x: 192, y: 540 }, // centerX, centerY
+      id: 'egg-caught-points-alternating',
+      eggColor: 'white', // Starts with white, will alternate
       machine: eggCaughtPointsDemoMachine,
       Component: EggCaughtPointsDemo,
     },

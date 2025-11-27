@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useSelector } from '@xstate/react';
 import Konva from 'konva';
@@ -10,12 +10,13 @@ import { eggCaughtPointsMachine } from '../../../EggCaughtPoints/eggCaughtPoints
 import { isImageRef } from '../../../types';
 
 import type { ActorRefFrom } from 'xstate';
+import type { EggColor } from '../../../Egg/egg.machine';
 
 /**
  * Egg Caught Points Story Component
  *
  * Displays animated points text that fades upward when an egg is caught.
- * Loops the animation every 2 seconds for story purposes.
+ * Alternates between +1 and +10 graphics every 2 seconds for story purposes.
  */
 
 export function EggCaughtPointsDemo({
@@ -23,12 +24,13 @@ export function EggCaughtPointsDemo({
 }: {
   actorRef: ActorRefFrom<typeof eggCaughtPointsMachine>;
 }) {
-  const { position, eggColor } = useSelector(actorRef, (state) => ({
+  const { position, isAnimating } = useSelector(actorRef, (state) => ({
     position: state?.context.position ?? { x: 0, y: 0 },
-    eggColor: state?.context.eggColor ?? 'white',
+    isAnimating: state?.matches('Animating') ?? false,
   }));
 
   const [uiImage] = useImage('/images/ui.sprite.png');
+  const [currentEggColor, setCurrentEggColor] = useState<EggColor>('white');
 
   const eggCaughtPointsRef = useRef<Konva.Image>(null);
 
@@ -42,9 +44,20 @@ export function EggCaughtPointsDemo({
     }
   }, [actorRef, eggCaughtPointsRef]);
 
-  // Loop the animation every 2 seconds for story purposes
+  // Reset to white when not animating
   useEffect(() => {
-    if (!isImageRef(eggCaughtPointsRef) || !eggCaughtPointsRef.current) {
+    if (!isAnimating) {
+      setCurrentEggColor('white');
+    }
+  }, [isAnimating]);
+
+  // Loop the animation every 2 seconds when animating, alternating between white and gold
+  useEffect(() => {
+    if (
+      !isAnimating ||
+      !isImageRef(eggCaughtPointsRef) ||
+      !eggCaughtPointsRef.current
+    ) {
       return;
     }
 
@@ -72,15 +85,31 @@ export function EggCaughtPointsDemo({
     // Start first animation immediately
     animatePoints();
 
-    // Loop every 2 seconds
-    const interval = setInterval(animatePoints, 2000);
+    // Loop animation every 2 seconds
+    const animationInterval = setInterval(animatePoints, 2000);
+
+    let colorSwitchInterval: ReturnType<typeof setInterval> | null = null;
+
+    // Alternate color after first animation completes (1.5s), then start interval for every 2s
+    const colorSwitchTimeout = setTimeout(() => {
+      setCurrentEggColor((prev) => (prev === 'white' ? 'gold' : 'white'));
+
+      // Now start the interval for subsequent color switches
+      colorSwitchInterval = setInterval(() => {
+        setCurrentEggColor((prev) => (prev === 'white' ? 'gold' : 'white'));
+      }, 2000);
+    }, 1500);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(animationInterval);
+      clearTimeout(colorSwitchTimeout);
+      if (colorSwitchInterval) {
+        clearInterval(colorSwitchInterval);
+      }
     };
-  }, [position, eggCaughtPointsRef]);
+  }, [position, eggCaughtPointsRef, isAnimating]);
 
-  const imageKey = eggColor === 'gold' ? '10-points.png' : '1-point.png';
+  const imageKey = currentEggColor === 'gold' ? '10-points.png' : '1-point.png';
   const currentFrame = uiSpriteData.frames[imageKey]?.frame;
 
   if (!currentFrame) {
