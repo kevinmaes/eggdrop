@@ -9,10 +9,10 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { eggSplatMachine } from './egg-splat.machine';
 import { EggSplat } from './egg-splat';
-import { eggSplatHeadlessMachine } from './egg-splat-headless.machine';
 import { EggSplatHeadless } from './egg-splat-headless';
+import { eggSplatHeadlessMachine } from './egg-splat-headless.machine';
+import { eggSplatMachine } from './egg-splat.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',

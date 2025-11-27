@@ -9,8 +9,8 @@ import eggSpriteData from '../../../images/egg.sprite.json';
 import henSpriteData from '../../../images/hen.sprite.json';
 
 import type { eggMachine } from './egg.machine';
-import type { storyMachine } from './story.machine';
 import type { henMachine } from './hen.machine';
+import type { storyMachine } from './story.machine';
 import type { ActorRefFrom } from 'xstate';
 
 /**

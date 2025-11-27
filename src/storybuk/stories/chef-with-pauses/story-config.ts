@@ -8,8 +8,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { chefWithPausesMachine } from './chef-with-pauses.machine';
 import { ChefWithPauses } from './chef-with-pauses';
+import { chefWithPausesMachine } from './chef-with-pauses.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',

@@ -7,9 +7,9 @@ import { Chef } from './chef';
 import { Egg } from './egg';
 import { Hen } from './hen';
 
+import type { storyMachine } from './story.machine';
 import type Konva from 'konva';
 import type { ActorRefFrom } from 'xstate';
-import type { storyMachine } from './story.machine';
 
 /**
  * Hen-Chef-Catch Orchestrator Component

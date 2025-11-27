@@ -8,8 +8,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { storyMachine } from './story.machine';
 import { HenSpawningEgg } from './hen-spawning-egg';
+import { storyMachine } from './story.machine';
 
 // Use standard hen story canvas but add extra height for egg falling
 const canvasDimensions = calculateStoryCanvasDimensions(

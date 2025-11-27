@@ -8,8 +8,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { chefFacingDirectionMachine } from './chef-facing-direction.machine';
 import { ChefFacingDirection } from './chef-facing-direction';
+import { chefFacingDirectionMachine } from './chef-facing-direction.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',

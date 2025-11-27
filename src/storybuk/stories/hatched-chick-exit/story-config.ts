@@ -9,10 +9,10 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { hatchedChickExitMachine } from './hatched-chick-exit.machine';
 import { HatchedChickExit } from './hatched-chick-exit';
-import { hatchedChickExitHeadlessMachine } from './hatched-chick-exit-headless.machine';
 import { HatchedChickExitHeadless } from './hatched-chick-exit-headless';
+import { hatchedChickExitHeadlessMachine } from './hatched-chick-exit-headless.machine';
+import { hatchedChickExitMachine } from './hatched-chick-exit.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',

@@ -9,8 +9,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { eggLandHatchExitMachine } from './egg-land-hatch-exit.machine';
 import { EggLandHatchExit } from './egg-land-hatch-exit';
+import { eggLandHatchExitMachine } from './egg-land-hatch-exit.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',

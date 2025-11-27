@@ -9,8 +9,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { henLayingFallingEggMachine } from './hen-laying-falling-egg.machine';
 import { HenLayingFallingEgg } from './hen-laying-falling-egg';
+import { henLayingFallingEggMachine } from './hen-laying-falling-egg.machine';
 
 // Taller canvas for this story (100px taller than default hen stories)
 const canvasDimensions = calculateStoryCanvasDimensions(

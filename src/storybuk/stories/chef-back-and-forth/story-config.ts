@@ -8,8 +8,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { chefBackAndForthMachine } from './chef-back-and-forth.machine';
 import { ChefBackAndForth } from './chef-back-and-forth';
+import { chefBackAndForthMachine } from './chef-back-and-forth.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',

@@ -8,8 +8,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { chefIdleMachine } from './chef-idle.machine';
 import { ChefIdle } from './chef-idle';
+import { chefIdleMachine } from './chef-idle.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',

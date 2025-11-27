@@ -5,8 +5,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { eggCaughtPointsDemoMachine } from './egg-caught-points-demo.machine';
 import { EggCaughtPointsDemo } from './egg-caught-points-demo';
+import { eggCaughtPointsDemoMachine } from './egg-caught-points-demo.machine';
 
 export const storyConfig: StoryConfig = {
   id: '23',

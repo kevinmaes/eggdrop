@@ -9,8 +9,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { henEggLayingMachine } from './hen-egg-laying.machine';
 import { HenEggLaying } from './hen-egg-laying';
+import { henEggLayingMachine } from './hen-egg-laying.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',

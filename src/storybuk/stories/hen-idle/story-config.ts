@@ -9,10 +9,10 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { henIdleMachine } from './hen-idle.machine';
 import { HenIdle } from './hen-idle';
-import { henIdleHeadlessMachine } from './hen-idle-headless.machine';
 import { HenIdleHeadless } from './hen-idle-headless';
+import { henIdleHeadlessMachine } from './hen-idle-headless.machine';
+import { henIdleMachine } from './hen-idle.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',

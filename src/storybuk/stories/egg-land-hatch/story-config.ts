@@ -9,10 +9,10 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { eggLandHatchMachine } from './egg-land-hatch.machine';
 import { EggLandHatch } from './egg-land-hatch';
-import { eggLandHatchHeadlessMachine } from './egg-land-hatch-headless.machine';
 import { EggLandHatchHeadless } from './egg-land-hatch-headless';
+import { eggLandHatchHeadlessMachine } from './egg-land-hatch-headless.machine';
+import { eggLandHatchMachine } from './egg-land-hatch.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',

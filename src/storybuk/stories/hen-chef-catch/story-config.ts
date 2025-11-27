@@ -6,8 +6,8 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { storyMachine } from './story.machine';
 import { HenChefCatch } from './hen-chef-catch';
+import { storyMachine } from './story.machine';
 
 /**
  * Hen-Chef-Catch Story Configuration
