@@ -12,6 +12,7 @@ import { storyConfig as eggHatchGameAccurateConfig } from './stories/egg-hatch-g
 import { storyConfig as eggHatchJumpOnlyConfig } from './stories/egg-hatch-jump-only/story-config';
 import { storyConfig as eggIdleConfig } from './stories/egg-idle/story-config';
 import { storyConfig as eggLandHatchConfig } from './stories/egg-land-hatch/story-config';
+import { storyConfig as eggLandHatchStandingConfig } from './stories/egg-land-hatch-standing/story-config';
 import { storyConfig as eggLandHatchExitConfig } from './stories/egg-land-hatch-exit/story-config';
 import { storyConfig as eggSplatConfig } from './stories/egg-splat/story-config';
 import { storyConfig as hatchedChickExitConfig } from './stories/hatched-chick-exit/story-config';
@@ -24,52 +25,60 @@ import { storyConfig as henLayingWithEggConfig } from './stories/hen-laying-with
 import { storyConfig as henSpawningEggConfig } from './stories/hen-spawning-egg/story-config';
 import { storyConfig as henWithPausesConfig } from './stories/hen-with-pauses/story-config';
 
-import type { StoryConfigs } from './types';
+import type { StoryConfig, StoryConfigs } from './types';
 
 /**
- * Get all story configs with dynamically calculated positions
+ * Ordered array of all stories - this is the source of truth for display order
+ */
+const henStories = [
+  henIdleConfig,
+  henBackAndForthConfig,
+  henWithPausesConfig,
+  henEggLayingConfig,
+  henLayingWithEggConfig,
+  henLayingFallingEggConfig,
+  henSpawningEggConfig,
+];
+
+const eggStories = [
+  eggIdleConfig,
+  eggFallingConfig,
+  eggFallingRotatingConfig,
+  eggFallLandOnlyConfig,
+  eggSplatConfig,
+  eggLandHatchConfig,
+  eggLandHatchStandingConfig,
+  eggLandHatchExitConfig,
+  hatchedChickExitConfig,
+  eggHatchJumpOnlyConfig,
+  eggHatchGameAccurateConfig,
+];
+
+const chefStories = [
+  chefIdleConfig,
+  chefBackAndForthConfig,
+  chefFacingDirectionConfig,
+  chefWithPausesConfig,
+  henChefCatchConfig,
+];
+
+const otherStories = [eggCaughtPointsConfig];
+
+/**
+ * Ordered array of all stories - use this for display order
+ */
+export const allStoriesOrdered: StoryConfig[] = [
+  ...henStories,
+  ...eggStories,
+  ...chefStories,
+  ...otherStories,
+];
+
+/**
+ * Get all story configs as a Record for ID-based lookups
  */
 export function getStoryConfigs(): StoryConfigs {
-  // All stories now have positions defined in their config files
-  const henStories = [
-    henIdleConfig,
-    henBackAndForthConfig,
-    henWithPausesConfig,
-    henEggLayingConfig,
-    henLayingWithEggConfig,
-    henLayingFallingEggConfig,
-    henSpawningEggConfig,
-  ];
-
-  const eggStories = [
-    eggIdleConfig,
-    eggFallingConfig,
-    eggFallingRotatingConfig,
-    eggFallLandOnlyConfig,
-    eggSplatConfig,
-    eggLandHatchConfig,
-    eggLandHatchExitConfig,
-    hatchedChickExitConfig,
-    eggHatchJumpOnlyConfig,
-    eggHatchGameAccurateConfig,
-  ];
-
-  const chefStories = [
-    chefIdleConfig,
-    chefBackAndForthConfig,
-    chefFacingDirectionConfig,
-    chefWithPausesConfig,
-    henChefCatchConfig,
-  ];
-
-  const otherStories = [eggCaughtPointsConfig];
-
-  return {
-    ...Object.fromEntries(henStories.map((d) => [d.id, d])),
-    ...Object.fromEntries(eggStories.map((d) => [d.id, d])),
-    ...Object.fromEntries(chefStories.map((d) => [d.id, d])),
-    ...Object.fromEntries(otherStories.map((d) => [d.id, d])),
-  };
+  return Object.fromEntries(allStoriesOrdered.map((d) => [d.id, d]));
 }
 
 /**

@@ -7,6 +7,7 @@ import chickSpriteData from '../images/chick.sprite.json';
 import eggSpriteData from '../images/egg.sprite.json';
 import henSpriteData from '../images/hen.sprite.json';
 
+import { allStoriesOrdered } from './story-configs';
 import { STORYBUK_COLORS, STORYBUK_LAYOUT } from './storybuk-theme';
 
 import type { StoryConfigs } from './types';
@@ -155,9 +156,9 @@ export function StoryNavigation({
 }: StoryNavigationProps) {
   const characters: CharacterType[] = ['Hen', 'Egg', 'Chef', 'Other'];
 
-  // Group stories by character
+  // Group stories by character, maintaining the order from allStoriesOrdered
   const getStoriesByCharacter = (character: CharacterType) => {
-    return Object.values(storyConfigs).filter((story) =>
+    return allStoriesOrdered.filter((story) =>
       story.title.startsWith(character)
     );
   };
