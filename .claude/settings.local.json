@@ -14,7 +14,8 @@
       "Bash(git rm:*)",
       "Bash(pnpm lint:*)",
       "Bash(pnpm build)",
-      "Bash(pnpm tsc:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

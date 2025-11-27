@@ -4,7 +4,7 @@ import {
   type StoryConfig,
   EGG_STORY_CANVAS_WIDTH_PERCENT,
   getCenterX,
-  getFallingStartY,
+  getGroundY,
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
@@ -16,7 +16,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 export const storyConfig: StoryConfig = {
   id: '15',
   type: 'animated',
-  title: 'Hatched Chick - Exit',
+  title: 'Egg - Hatched Chick Exit',
   description:
     'Incremental demo: chick in shell transitions to running off - Shows exit animation without jump - Visual story + headless inspector',
   actors: [
@@ -26,7 +26,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatched-chick-exit',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getFallingStartY(canvasDimensions.canvasHeight),
+        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
       },
       id: 'egg-visual',
     },
@@ -36,7 +36,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatched-chick-exit-headless',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getFallingStartY(canvasDimensions.canvasHeight),
+        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
       },
       id: 'egg-headless',
     },

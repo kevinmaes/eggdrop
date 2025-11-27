@@ -28,9 +28,10 @@ import { storyConfig as henWithPausesConfig } from './stories/hen-with-pauses/st
 import type { StoryConfig, StoryConfigs } from './types';
 
 /**
- * Ordered array of all stories - this is the source of truth for display order
+ * Ordered arrays of stories by character type - this is the source of truth for display order
+ * Each array explicitly defines which stories belong to each character group
  */
-const henStories = [
+export const henStories: StoryConfig[] = [
   henIdleConfig,
   henBackAndForthConfig,
   henWithPausesConfig,
@@ -40,7 +41,7 @@ const henStories = [
   henSpawningEggConfig,
 ];
 
-const eggStories = [
+export const eggStories: StoryConfig[] = [
   eggIdleConfig,
   eggFallingConfig,
   eggFallingRotatingConfig,
@@ -54,7 +55,7 @@ const eggStories = [
   eggHatchGameAccurateConfig,
 ];
 
-const chefStories = [
+export const chefStories: StoryConfig[] = [
   chefIdleConfig,
   chefBackAndForthConfig,
   chefFacingDirectionConfig,
@@ -62,7 +63,7 @@ const chefStories = [
   henChefCatchConfig,
 ];
 
-const otherStories = [eggCaughtPointsConfig];
+export const otherStories: StoryConfig[] = [eggCaughtPointsConfig];
 
 /**
  * Ordered array of all stories - use this for display order

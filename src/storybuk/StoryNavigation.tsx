@@ -7,7 +7,12 @@ import chickSpriteData from '../images/chick.sprite.json';
 import eggSpriteData from '../images/egg.sprite.json';
 import henSpriteData from '../images/hen.sprite.json';
 
-import { allStoriesOrdered } from './story-configs';
+import {
+  henStories,
+  eggStories,
+  chefStories,
+  otherStories,
+} from './story-configs';
 import { STORYBUK_COLORS, STORYBUK_LAYOUT } from './storybuk-theme';
 
 import type { StoryConfigs } from './types';
@@ -156,11 +161,18 @@ export function StoryNavigation({
 }: StoryNavigationProps) {
   const characters: CharacterType[] = ['Hen', 'Egg', 'Chef', 'Other'];
 
-  // Group stories by character, maintaining the order from allStoriesOrdered
+  // Map character types to their explicit story arrays
   const getStoriesByCharacter = (character: CharacterType) => {
-    return allStoriesOrdered.filter((story) =>
-      story.title.startsWith(character)
-    );
+    switch (character) {
+      case 'Hen':
+        return henStories;
+      case 'Egg':
+        return eggStories;
+      case 'Chef':
+        return chefStories;
+      case 'Other':
+        return otherStories;
+    }
   };
 
   // Track which folders are expanded
