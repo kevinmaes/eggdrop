@@ -14,6 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 
 export const storyConfig: StoryConfig = {
   id: 'Chef Back And Forth',
+  storyId: '19',
   type: 'animated',
   title: 'Chef - Moving',
   description:

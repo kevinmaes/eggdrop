@@ -23,6 +23,7 @@ const henY = getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height);
 
 export const storyConfig: StoryConfig = {
   id: 'Hen Laying Falling Egg',
+  storyId: '06',
   type: 'animated',
   title: 'Hen - Laying with falling egg',
   description:

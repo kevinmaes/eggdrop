@@ -15,6 +15,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 
 export const storyConfig: StoryConfig = {
   id: 'Egg Hatch Jump Only',
+  storyId: '16',
   type: 'animated',
   title: 'Chick - Hatching + Jump Animation',
   description:

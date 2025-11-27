@@ -25,6 +25,7 @@ const henY = 100;
 
 export const storyConfig: StoryConfig = {
   id: 'Chef - Catch Egg',
+  storyId: '22',
   type: 'animated',
   title: 'Chef - Catch Egg',
   description:

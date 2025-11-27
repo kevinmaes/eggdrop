@@ -15,6 +15,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 
 export const storyConfig: StoryConfig = {
   id: 'Egg Falling Rotating',
+  storyId: '10',
   type: 'animated',
   title: 'Egg - Falling + Rotating',
   description:

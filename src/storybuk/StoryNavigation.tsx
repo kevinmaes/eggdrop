@@ -321,7 +321,9 @@ export function StoryNavigation({
                             flexShrink: 0,
                           }}
                         />
-                        <span style={{ flex: 1 }}>{story.title}</span>
+                        <span style={{ flex: 1 }}>
+                          [{story.storyId}] {story.title}
+                        </span>
                         {story.statelyEmbedUrl && (
                           <Link
                             size={12}

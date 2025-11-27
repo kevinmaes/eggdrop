@@ -15,6 +15,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 
 export const storyConfig: StoryConfig = {
   id: 'EggIdle',
+  storyId: '08',
   type: 'static',
   title: 'Egg - Idle',
   description: 'Shows a stationary egg for reference',

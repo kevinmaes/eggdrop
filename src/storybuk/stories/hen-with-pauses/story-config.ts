@@ -15,6 +15,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 
 export const storyConfig: StoryConfig = {
   id: 'Hen With Pauses',
+  storyId: '03',
   type: 'animated',
   title: 'Hen - With Pauses',
   description:

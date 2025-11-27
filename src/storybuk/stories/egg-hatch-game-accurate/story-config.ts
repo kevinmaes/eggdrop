@@ -15,6 +15,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 
 export const storyConfig: StoryConfig = {
   id: 'Egg Hatch Game Accurate',
+  storyId: '17',
   type: 'animated',
   title: 'Egg - Complete Hatching (Game-Accurate)',
   description:
