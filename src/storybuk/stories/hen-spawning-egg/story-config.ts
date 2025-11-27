@@ -27,7 +27,7 @@ const henY = 20;
 export const storyConfig: StoryConfig = {
   id: '07',
   type: 'animated',
-  title: 'Hen - Spawning Egg (Multi-Actor)',
+  title: 'Hen - Spawning Egg',
   description:
     'Demonstrates the actor model: Hen sends "Lay an egg" to parent orchestrator via sendParent(), orchestrator spawns egg actors dynamically using spawn(). Shows true parent-child actor communication.',
   actors: [
