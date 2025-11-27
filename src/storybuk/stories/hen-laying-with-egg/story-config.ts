@@ -8,6 +8,10 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { henLayingWithEggMachine } from './hen-laying-with-egg.machine';
+import { HenLayingWithEgg } from './hen-laying-with-egg';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -29,6 +33,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-laying-with-egg',
+      machine: henLayingWithEggMachine,
+      Component: HenLayingWithEgg,
     },
   ],
   background: {

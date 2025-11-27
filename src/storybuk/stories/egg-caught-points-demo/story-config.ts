@@ -4,6 +4,10 @@ import {
   type StoryConfig,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { eggCaughtPointsDemoMachine } from './egg-caught-points-demo.machine';
+import { EggCaughtPointsDemo } from './egg-caught-points-demo';
+
 export const storyConfig: StoryConfig = {
   id: '23',
   type: 'animated',
@@ -18,6 +22,8 @@ export const storyConfig: StoryConfig = {
       startPosition: { x: 192, y: 640 }, // centerX, centerY + 100
       id: 'egg-caught-points-white',
       eggColor: 'white',
+      machine: eggCaughtPointsDemoMachine,
+      Component: EggCaughtPointsDemo,
     },
     {
       type: 'egg-caught-points',
@@ -26,6 +32,8 @@ export const storyConfig: StoryConfig = {
       startPosition: { x: 192, y: 440 }, // centerX, centerY - 100
       id: 'egg-caught-points-gold',
       eggColor: 'gold',
+      machine: eggCaughtPointsDemoMachine,
+      Component: EggCaughtPointsDemo,
     },
   ],
   background: {

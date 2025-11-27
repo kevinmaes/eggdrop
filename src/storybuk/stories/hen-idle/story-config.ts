@@ -8,6 +8,12 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { henIdleMachine } from './hen-idle.machine';
+import { HenIdle } from './hen-idle';
+import { henIdleHeadlessMachine } from './hen-idle-headless.machine';
+import { HenIdleHeadless } from './hen-idle-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -29,6 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-visual',
+      machine: henIdleMachine,
+      Component: HenIdle,
     },
     {
       type: 'hen',
@@ -39,6 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-headless',
+      machine: henIdleHeadlessMachine,
+      Component: HenIdleHeadless,
     },
   ],
   background: {

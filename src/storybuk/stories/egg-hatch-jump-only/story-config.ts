@@ -8,6 +8,12 @@ import {
   getGroundY,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { eggHatchJumpOnlyMachine } from './egg-hatch-jump-only.machine';
+import { EggHatchJumpOnly } from './egg-hatch-jump-only';
+import { eggHatchJumpOnlyHeadlessMachine } from './egg-hatch-jump-only-headless.machine';
+import { EggHatchJumpOnlyHeadless } from './egg-hatch-jump-only-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
   EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -29,6 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
       },
       id: 'egg-visual',
+      machine: eggHatchJumpOnlyMachine,
+      Component: EggHatchJumpOnly,
     },
     {
       type: 'egg',
@@ -39,6 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
       },
       id: 'egg-headless',
+      machine: eggHatchJumpOnlyHeadlessMachine,
+      Component: EggHatchJumpOnlyHeadless,
     },
   ],
   background: {

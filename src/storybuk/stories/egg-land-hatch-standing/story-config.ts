@@ -8,6 +8,10 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { eggLandHatchStandingMachine } from './egg-land-hatch-standing.machine';
+import { EggLandHatchStanding } from './egg-land-hatch-standing';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
   EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -29,6 +33,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-land-hatch-standing',
+      machine: eggLandHatchStandingMachine,
+      Component: EggLandHatchStanding,
     },
   ],
   background: {

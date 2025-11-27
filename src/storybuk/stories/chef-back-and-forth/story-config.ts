@@ -7,6 +7,10 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { chefBackAndForthMachine } from './chef-back-and-forth.machine';
+import { ChefBackAndForth } from './chef-back-and-forth';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   CHEF_STORY_CANVAS_HEIGHT_PERCENT
@@ -32,6 +36,8 @@ export const storyConfig: StoryConfig = {
         y: 36,
       },
       id: 'chef-visual',
+      machine: chefBackAndForthMachine,
+      Component: ChefBackAndForth,
     },
   ],
   background: {

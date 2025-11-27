@@ -8,6 +8,12 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { eggFallingRotatingMachine } from './egg-falling-rotating.machine';
+import { EggFallingRotating } from './egg-falling-rotating';
+import { eggFallingRotatingHeadlessMachine } from './egg-falling-rotating-headless.machine';
+import { EggFallingRotatingHeadless } from './egg-falling-rotating-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
   EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -29,6 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-visual',
+      machine: eggFallingRotatingMachine,
+      Component: EggFallingRotating,
     },
     {
       type: 'egg',
@@ -39,6 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-headless',
+      machine: eggFallingRotatingHeadlessMachine,
+      Component: EggFallingRotatingHeadless,
     },
   ],
   background: {

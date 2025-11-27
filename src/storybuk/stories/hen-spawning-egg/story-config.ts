@@ -7,6 +7,10 @@ import {
   getCenterX,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { storyMachine } from './story.machine';
+import { HenSpawningEgg } from './hen-spawning-egg';
+
 // Use standard hen story canvas but add extra height for egg falling
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
@@ -36,6 +40,8 @@ export const storyConfig: StoryConfig = {
         y: henY,
       },
       id: 'hen-egg-orchestrator',
+      machine: storyMachine,
+      Component: HenSpawningEgg,
     },
   ],
   background: {

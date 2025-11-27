@@ -8,6 +8,12 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { henWithPausesMachine } from './hen-with-pauses.machine';
+import { HenWithPauses } from './hen-with-pauses';
+import { henWithPausesHeadlessMachine } from './hen-with-pauses-headless.machine';
+import { HenWithPausesHeadless } from './hen-with-pauses-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -29,6 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-visual',
+      machine: henWithPausesMachine,
+      Component: HenWithPauses,
     },
     {
       type: 'hen',
@@ -39,6 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-headless',
+      machine: henWithPausesHeadlessMachine,
+      Component: HenWithPausesHeadless,
     },
   ],
   background: {

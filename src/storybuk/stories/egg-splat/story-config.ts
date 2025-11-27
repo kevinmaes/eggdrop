@@ -8,6 +8,12 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { eggSplatMachine } from './egg-splat.machine';
+import { EggSplat } from './egg-splat';
+import { eggSplatHeadlessMachine } from './egg-splat-headless.machine';
+import { EggSplatHeadless } from './egg-splat-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
   EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -29,6 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-visual',
+      machine: eggSplatMachine,
+      Component: EggSplat,
     },
     {
       type: 'egg',
@@ -39,6 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-headless',
+      machine: eggSplatHeadlessMachine,
+      Component: EggSplatHeadless,
     },
   ],
   background: {

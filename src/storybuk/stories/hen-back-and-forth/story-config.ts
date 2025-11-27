@@ -8,6 +8,12 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { henBackAndForthMachine } from './hen-back-and-forth.machine';
+import { HenBackAndForth } from './hen-back-and-forth';
+import { henBackAndForthHeadlessMachine } from './hen-back-and-forth-headless.machine';
+import { HenBackAndForthHeadless } from './hen-back-and-forth-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   HEN_STORY_CANVAS_HEIGHT_PERCENT
@@ -29,6 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-visual',
+      machine: henBackAndForthMachine,
+      Component: HenBackAndForth,
     },
     {
       type: 'hen',
@@ -39,6 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.hen.height),
       },
       id: 'hen-headless',
+      machine: henBackAndForthHeadlessMachine,
+      Component: HenBackAndForthHeadless,
     },
   ],
   background: {

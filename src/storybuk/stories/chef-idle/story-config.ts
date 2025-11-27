@@ -7,6 +7,10 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { chefIdleMachine } from './chef-idle.machine';
+import { ChefIdle } from './chef-idle';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
   CHEF_STORY_CANVAS_HEIGHT_PERCENT
@@ -32,6 +36,8 @@ export const storyConfig: StoryConfig = {
         y: 36,
       },
       id: 'chef-visual',
+      machine: chefIdleMachine,
+      Component: ChefIdle,
     },
   ],
   background: {

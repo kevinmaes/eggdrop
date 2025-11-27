@@ -5,6 +5,10 @@ import {
   getCenterX,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { storyMachine } from './story.machine';
+import { HenChefCatch } from './hen-chef-catch';
+
 /**
  * Hen-Chef-Catch Story Configuration
  *
@@ -36,6 +40,8 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'chef-catch',
       startPosition: { x: henX, y: henY },
       id: 'hen-chef-catch-orchestrator',
+      machine: storyMachine,
+      Component: HenChefCatch,
     },
   ],
   background: {

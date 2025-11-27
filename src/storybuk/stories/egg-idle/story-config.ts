@@ -8,6 +8,12 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
+// Explicit imports - no pattern matching!
+import { eggIdleMachine } from './egg-idle.machine';
+import { EggIdle } from './egg-idle';
+import { eggIdleHeadlessMachine } from './egg-idle-headless.machine';
+import { EggIdleHeadless } from './egg-idle-headless';
+
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
   EGG_STORY_CANVAS_WIDTH_PERCENT
@@ -28,6 +34,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.egg.height),
       },
       id: 'egg-visual',
+      machine: eggIdleMachine,
+      Component: EggIdle,
     },
     {
       type: 'egg',
@@ -38,6 +46,8 @@ export const storyConfig: StoryConfig = {
         y: getCenterY(canvasDimensions.canvasHeight, ACTOR_SIZE.egg.height),
       },
       id: 'egg-headless',
+      machine: eggIdleHeadlessMachine,
+      Component: EggIdleHeadless,
     },
   ],
   background: {
