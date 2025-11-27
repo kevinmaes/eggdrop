@@ -9,7 +9,7 @@ import eggSpriteData from '../../../images/egg.sprite.json';
 import henSpriteData from '../../../images/hen.sprite.json';
 
 import type { eggMachine } from './egg.machine';
-import type { henSpawningEggMachine } from './hen-spawning-egg.machine';
+import type { storyMachine } from './story.machine';
 import type { henMachine } from './hen.machine';
 import type { ActorRefFrom } from 'xstate';
 
@@ -226,7 +226,7 @@ function EggSprite({
 export function HenSpawningEgg({
   actorRef,
 }: {
-  actorRef: ActorRefFrom<typeof henSpawningEggMachine>;
+  actorRef: ActorRefFrom<typeof storyMachine>;
 }) {
   const { henActorRef, eggActorRefs, isRunning } = useSelector(
     actorRef,

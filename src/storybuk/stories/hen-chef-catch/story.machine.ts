@@ -34,7 +34,7 @@ function isEllipseRef(
   );
 }
 
-export const henChefCatchMachine = setup({
+export const storyMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -273,4 +273,4 @@ export const henChefCatchMachine = setup({
   },
 });
 
-export type HenChefCatchMachine = typeof henChefCatchMachine;
+export type StoryMachine = typeof storyMachine;

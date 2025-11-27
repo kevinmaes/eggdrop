@@ -4,7 +4,7 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import { henChefCatchHeadlessMachine } from './hen-chef-catch-headless.machine';
+import { storyHeadlessMachine } from './story-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
@@ -39,7 +39,7 @@ export function HenChefCatchHeadless({
     const { inspect } = getSharedInspector();
 
     const actorId = `${config.id || 'hen-chef-catch-headless'}-${resetCount}`;
-    const newActor = createActor(henChefCatchHeadlessMachine as any, {
+    const newActor = createActor(storyHeadlessMachine as any, {
       id: actorId,
       input: {
         startPosition: config.startPosition,

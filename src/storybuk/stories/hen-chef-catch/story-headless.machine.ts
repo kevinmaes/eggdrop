@@ -45,7 +45,7 @@ const createHeadlessChefMachine = () =>
     },
   });
 
-export const henChefCatchHeadlessMachine = setup({
+export const storyHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -122,4 +122,4 @@ export const henChefCatchHeadlessMachine = setup({
   },
 });
 
-export type HenChefCatchHeadlessMachine = typeof henChefCatchHeadlessMachine;
+export type StoryHeadlessMachine = typeof storyHeadlessMachine;

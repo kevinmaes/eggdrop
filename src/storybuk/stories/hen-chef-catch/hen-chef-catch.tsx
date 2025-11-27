@@ -9,7 +9,7 @@ import { Hen } from './hen';
 
 import type Konva from 'konva';
 import type { ActorRefFrom } from 'xstate';
-import type { henChefCatchMachine } from './hen-chef-catch.machine';
+import type { storyMachine } from './story.machine';
 
 /**
  * Hen-Chef-Catch Orchestrator Component
@@ -25,7 +25,7 @@ import type { henChefCatchMachine } from './hen-chef-catch.machine';
 export function HenChefCatch({
   actorRef,
 }: {
-  actorRef: ActorRefFrom<typeof henChefCatchMachine>;
+  actorRef: ActorRefFrom<typeof storyMachine>;
 }) {
   const { henActorRef, chefActorRef, eggActorRefs } = useSelector(
     actorRef,

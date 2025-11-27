@@ -20,7 +20,7 @@ import type { Position } from '../../../types';
  * simplified for educational demonstration.
  */
 
-export const henSpawningEggMachine = setup({
+export const storyMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -157,4 +157,4 @@ export const henSpawningEggMachine = setup({
   },
 });
 
-export type HenSpawningEggMachine = typeof henSpawningEggMachine;
+export type StoryMachine = typeof storyMachine;
