@@ -40,10 +40,16 @@ export async function createDemoActor(
   // Determine story folder name from type and machine version
   // Remove '-headless' suffix to get base story folder
   const baseMachineVersion = machineVersion.replace('-headless', '');
-  const storyFolder =
-    type === 'egg-caught-points'
-      ? 'egg-caught-points-demo'
-      : `${type}-${baseMachineVersion}`;
+
+  // Special folder name mappings for non-standard cases
+  let storyFolder: string;
+  if (type === 'egg-caught-points') {
+    storyFolder = 'egg-caught-points-demo';
+  } else if (machineVersion.startsWith('hatched-chick-exit')) {
+    storyFolder = 'hatched-chick-exit';
+  } else {
+    storyFolder = `${type}-${baseMachineVersion}`;
+  }
 
   // Orchestrator stories use story.machine.ts instead of {type}-{version}.machine.ts
   const orchestratorStories = ['spawning-egg', 'chef-catch'];
@@ -61,6 +67,11 @@ export async function createDemoActor(
     } else {
       machineModule = await import(`./stories/${storyFolder}/story.machine.ts`);
     }
+  } else if (machineVersion.startsWith('hatched-chick-exit')) {
+    // Special case: hatched-chick-exit uses its own naming convention
+    machineModule = await import(
+      `./stories/${storyFolder}/${machineVersion}.machine.ts`
+    );
   } else {
     machineModule = await import(
       `./stories/${storyFolder}/${type}-${machineVersion}.machine.ts`
@@ -68,9 +79,17 @@ export async function createDemoActor(
   }
 
   // Dynamically import the versioned component
-  const componentModule = await import(
-    `./stories/${storyFolder}/${type}-${componentVersion}.tsx`
-  );
+  let componentModule;
+  if (componentVersion.startsWith('hatched-chick-exit')) {
+    // Special case: hatched-chick-exit uses its own naming convention
+    componentModule = await import(
+      `./stories/${storyFolder}/${componentVersion}.tsx`
+    );
+  } else {
+    componentModule = await import(
+      `./stories/${storyFolder}/${type}-${componentVersion}.tsx`
+    );
+  }
 
   // Build the expected named export names
   // Machine: camelCase like "henIdleMachine", "eggFallingRotatingMachine"
@@ -86,16 +105,30 @@ export async function createDemoActor(
   // e.g., "hen" + "idle" = "henIdleMachine"
   // e.g., "hen" + "laying-falling-egg" = "henLayingFallingEggMachine"
   // Orchestrator stories export "storyMachine" or "storyHeadlessMachine"
-  const machineName = isOrchestrator
-    ? isHeadlessVersion
-      ? 'storyHeadlessMachine'
-      : 'storyMachine'
-    : `${toCamelCase(type)}${toPascalCase(machineVersion)}Machine`;
+  // Special case: hatched-chick-exit exports without 'egg' prefix
+  let machineName: string;
+  if (isOrchestrator) {
+    machineName = isHeadlessVersion ? 'storyHeadlessMachine' : 'storyMachine';
+  } else if (machineVersion.startsWith('hatched-chick-exit')) {
+    machineName = isHeadlessVersion
+      ? 'hatchedChickExitHeadlessMachine'
+      : 'hatchedChickExitMachine';
+  } else {
+    machineName = `${toCamelCase(type)}${toPascalCase(machineVersion)}Machine`;
+  }
 
   // Component name: {Type}{Version} in PascalCase
   // e.g., "hen" + "idle" = "HenIdle"
   // e.g., "hen" + "laying-falling-egg" = "HenLayingFallingEgg"
-  const componentName = `${toPascalCase(type)}${toPascalCase(componentVersion)}`;
+  // Special case: hatched-chick-exit exports without 'Egg' prefix
+  let componentName: string;
+  if (componentVersion.startsWith('hatched-chick-exit')) {
+    componentName = isHeadlessVersion
+      ? 'HatchedChickExitHeadless'
+      : 'HatchedChickExit';
+  } else {
+    componentName = `${toPascalCase(type)}${toPascalCase(componentVersion)}`;
+  }
 
   // Extract the machine and component using named exports
   const machine = machineModule[machineName];
