@@ -49,8 +49,8 @@ export const eggStories: StoryConfig[] = [
   eggSplatConfig,
   eggLandHatchConfig,
   eggLandHatchStandingConfig,
-  eggLandHatchExitConfig,
-  hatchedChickExitConfig,
+  hatchedChickExitConfig, // 13B - before 14
+  eggLandHatchExitConfig, // 14
   eggHatchJumpOnlyConfig,
   eggHatchGameAccurateConfig,
 ];
