@@ -48,11 +48,11 @@ export const eggStories: StoryConfig[] = [
   eggFallLandOnlyConfig,
   eggSplatConfig,
   eggLandHatchConfig,
-  eggLandHatchStandingConfig,
-  hatchedChickExitConfig, // 13B - before 14
-  eggLandHatchExitConfig, // 14
-  eggHatchJumpOnlyConfig,
-  eggHatchGameAccurateConfig,
+  eggLandHatchStandingConfig, // 14
+  hatchedChickExitConfig, // 15
+  eggLandHatchExitConfig, // 16
+  eggHatchJumpOnlyConfig, // 17
+  eggHatchGameAccurateConfig, // 18
 ];
 
 export const chefStories: StoryConfig[] = [
