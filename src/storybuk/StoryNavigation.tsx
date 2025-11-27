@@ -158,7 +158,7 @@ export function StoryNavigation({
   // Group stories by character
   const getStoriesByCharacter = (character: CharacterType) => {
     return Object.values(storyConfigs).filter((story) =>
-      story.id.startsWith(character)
+      story.title.startsWith(character)
     );
   };
 
@@ -170,14 +170,17 @@ export function StoryNavigation({
   // Auto-expand folder containing selected story
   useEffect(() => {
     if (selectedStoryId) {
-      const character = characters.find((char) =>
-        selectedStoryId.startsWith(char)
-      );
-      if (character && !expandedFolders.has(character)) {
-        setExpandedFolders(new Set([...expandedFolders, character]));
+      const selectedStory = storyConfigs[selectedStoryId];
+      if (selectedStory) {
+        const character = characters.find((char) =>
+          selectedStory.title.startsWith(char)
+        );
+        if (character && !expandedFolders.has(character)) {
+          setExpandedFolders(new Set([...expandedFolders, character]));
+        }
       }
     }
-  }, [selectedStoryId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedStoryId, storyConfigs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleFolder = (character: CharacterType) => {
     const newExpanded = new Set(expandedFolders);

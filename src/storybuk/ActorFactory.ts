@@ -7,10 +7,15 @@ import type { ActorConfig, StoryActorInstance } from './types';
  *
  * Imports are resolved at runtime using Vite's dynamic import:
  * - Machine: `./stories/{storyFolder}/{type}-{machineVersion}.machine.ts`
+ *   - Exception: Orchestrator stories use `story.machine.ts` or `story-headless.machine.ts`
  * - Component: `./stories/{storyFolder}/{type}-{componentVersion}.tsx`
  *
  * Story folder is determined by combining type and version:
  * - hen-idle, egg-falling, chef-back-and-forth, etc.
+ *
+ * Orchestrator stories (spawning-egg, chef-catch) use standardized naming:
+ * - Machine file: `story.machine.ts` (or `story-headless.machine.ts`)
+ * - Machine export: `storyMachine` (or `storyHeadlessMachine`)
  *
  * @param config - Actor configuration specifying type and versions
  * @param canvasWidth - Canvas width (from story config)
@@ -40,10 +45,27 @@ export async function createDemoActor(
       ? 'egg-caught-points-demo'
       : `${type}-${baseMachineVersion}`;
 
+  // Orchestrator stories use story.machine.ts instead of {type}-{version}.machine.ts
+  const orchestratorStories = ['spawning-egg', 'chef-catch'];
+  const isOrchestrator = orchestratorStories.includes(baseMachineVersion);
+  const isHeadlessVersion = machineVersion.includes('-headless');
+
   // Dynamically import the versioned machine
-  const machineModule = await import(
-    `./stories/${storyFolder}/${type}-${machineVersion}.machine.ts`
-  );
+  // Vite requires the file extension in the static part of the import
+  let machineModule;
+  if (isOrchestrator) {
+    if (isHeadlessVersion) {
+      machineModule = await import(
+        `./stories/${storyFolder}/story-headless.machine.ts`
+      );
+    } else {
+      machineModule = await import(`./stories/${storyFolder}/story.machine.ts`);
+    }
+  } else {
+    machineModule = await import(
+      `./stories/${storyFolder}/${type}-${machineVersion}.machine.ts`
+    );
+  }
 
   // Dynamically import the versioned component
   const componentModule = await import(
@@ -63,7 +85,12 @@ export async function createDemoActor(
   // Machine name: {type}{Version}Machine in camelCase
   // e.g., "hen" + "idle" = "henIdleMachine"
   // e.g., "hen" + "laying-falling-egg" = "henLayingFallingEggMachine"
-  const machineName = `${toCamelCase(type)}${toPascalCase(machineVersion)}Machine`;
+  // Orchestrator stories export "storyMachine" or "storyHeadlessMachine"
+  const machineName = isOrchestrator
+    ? isHeadlessVersion
+      ? 'storyHeadlessMachine'
+      : 'storyMachine'
+    : `${toCamelCase(type)}${toPascalCase(machineVersion)}Machine`;
 
   // Component name: {Type}{Version} in PascalCase
   // e.g., "hen" + "idle" = "HenIdle"
