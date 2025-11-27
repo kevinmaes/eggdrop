@@ -21,8 +21,7 @@ const canvasWidth = canvasDimensions.canvasWidth;
 const henY = 20;
 
 export const storyConfig: StoryConfig = {
-  id: 'Hen Spawning Egg',
-  storyId: '07',
+  id: '07',
   type: 'animated',
   title: 'Hen - Spawning Egg (Multi-Actor)',
   description:

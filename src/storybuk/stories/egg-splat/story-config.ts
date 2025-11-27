@@ -14,8 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Egg Splat',
-  storyId: '12',
+  id: '12',
   type: 'animated',
   title: 'Egg - Splat',
   description:

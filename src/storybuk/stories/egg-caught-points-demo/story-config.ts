@@ -5,8 +5,7 @@ import {
 } from '../../story-config-constants';
 
 export const storyConfig: StoryConfig = {
-  id: 'Other Egg Caught Points',
-  storyId: '23',
+  id: '23',
   type: 'animated',
   title: 'Other - Egg Caught Points',
   description:

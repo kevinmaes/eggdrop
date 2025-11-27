@@ -14,8 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Egg Complete Lifecycle',
-  storyId: '17',
+  id: '17',
   type: 'animated',
   title: 'Egg - Complete Lifecycle',
   description:

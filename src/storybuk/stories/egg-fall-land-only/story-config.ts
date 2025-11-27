@@ -14,8 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Egg Fall Land Only',
-  storyId: '11',
+  id: '11',
   type: 'animated',
   title: 'Egg - Falling and Landing',
   description:

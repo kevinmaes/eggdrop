@@ -322,7 +322,7 @@ export function StoryNavigation({
                           }}
                         />
                         <span style={{ flex: 1 }}>
-                          [{story.storyId}] {story.title}
+                          [{story.id}] {story.title}
                         </span>
                         {story.statelyEmbedUrl && (
                           <Link

@@ -14,8 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Hen Idle',
-  storyId: '01',
+  id: '01',
   type: 'static',
   title: 'Hen - Idle',
   description:

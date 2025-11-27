@@ -14,8 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Hen Back And Forth',
-  storyId: '02',
+  id: '02',
   type: 'animated',
   title: 'Hen - Back and Forth',
   description:

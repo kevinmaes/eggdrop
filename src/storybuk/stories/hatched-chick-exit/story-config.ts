@@ -14,8 +14,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Hatched Chick Exit',
-  storyId: '15',
+  id: '15',
   type: 'animated',
   title: 'Hatched Chick - Exit',
   description:

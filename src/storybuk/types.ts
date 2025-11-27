@@ -43,7 +43,6 @@ export type StoryType = 'static' | 'animated';
  */
 export interface StoryConfig {
   id: string;
-  storyId: string;
   type: StoryType;
   actors: ActorConfig[];
   background: BackgroundConfig;
