@@ -17,7 +17,7 @@ export const storyConfig: StoryConfig = {
   id: 'Egg Hatch Jump Only',
   storyId: '16',
   type: 'animated',
-  title: 'Chick - Hatching + Jump Animation',
+  title: 'Chick - Hatch + Jump',
   description:
     'Demonstrates inserting jump: egg lands, hatches, JUMPS, then exits - Shows how jump animation fits between hatch and exit - Visual story + headless inspector',
   actors: [

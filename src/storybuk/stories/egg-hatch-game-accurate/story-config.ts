@@ -14,10 +14,10 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: 'Egg Hatch Game Accurate',
+  id: 'Egg Complete Lifecycle',
   storyId: '17',
   type: 'animated',
-  title: 'Egg - Complete Hatching (Game-Accurate)',
+  title: 'Egg - Complete Lifecycle',
   description:
     'Full sequence matching real game: falls, hatches (300ms), jumps and bounces, pauses (500ms), runs off - Visual story + headless inspector',
   actors: [
