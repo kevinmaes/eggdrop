@@ -29,6 +29,9 @@ export interface ActorConfig {
   startPosition: Position;
   id?: string;
   eggColor?: string; // For egg-caught-points
+  // Explicit machine and component references (eliminates pattern matching)
+  machine?: any; // XState machine definition
+  Component?: React.ComponentType<any>; // React component
 }
 
 /**

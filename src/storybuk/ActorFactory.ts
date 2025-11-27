@@ -37,6 +37,43 @@ export async function createDemoActor(
 ): Promise<StoryActorInstance> {
   const { type, machineVersion, componentVersion, startPosition } = config;
 
+  // If machine and component are explicitly provided, use them directly (no pattern matching!)
+  if (config.machine && config.Component) {
+    const machine = config.machine;
+    const Component = config.Component;
+    const isHeadless = componentVersion.includes('headless');
+
+    let actor;
+    if (isHeadless) {
+      actor = null as any;
+    } else {
+      let input: any;
+      if (type === 'egg-caught-points') {
+        input = {
+          eggCaughtPointsId: config.id || `${type}-${Date.now()}`,
+          eggColor: (config as any).eggColor || 'white',
+          position: startPosition,
+        };
+      } else {
+        input = {
+          startPosition,
+          id: config.id || `${type}-${Date.now()}`,
+          canvasWidth,
+          canvasHeight,
+        };
+      }
+      actor = createActor(machine, { input });
+    }
+
+    return {
+      actor,
+      Component,
+      config,
+    };
+  }
+
+  // LEGACY: Fall back to pattern-based dynamic imports
+  // TODO: Remove this once all stories use explicit machine/component references
   // Determine story folder name from type and machine version
   // Remove '-headless' suffix to get base story folder
   const baseMachineVersion = machineVersion.replace('-headless', '');
