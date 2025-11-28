@@ -79,7 +79,7 @@ export function HenBackAndForth({
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
-    const [animationIntervalMinMS, animationIntervalMaxMS] = [50, 750];
+    const [animationIntervalMinMS, animationIntervalMaxMS] = [40, 200];
 
     if (isMoving && movingDirection !== 'none') {
       const walkFrameNames: HenFrameName[] = [
@@ -97,7 +97,7 @@ export function HenBackAndForth({
       // Calculate interval based on tween speed
       const intervalMS = Math.max(
         animationIntervalMinMS,
-        animationIntervalMaxMS - absoluteTweenSpeed * 100
+        animationIntervalMaxMS - absoluteTweenSpeed * 20
       );
 
       interval = setInterval(() => {
