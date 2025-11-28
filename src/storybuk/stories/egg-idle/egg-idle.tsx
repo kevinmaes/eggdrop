@@ -58,26 +58,65 @@ export function EggIdle({
     return null;
   }
 
-  // Use the white egg sprite
-  const currentFrame = eggSpriteData.frames['egg-white.png']?.frame;
-  if (!currentFrame) {
+  // Three static eggs vertically stacked at full size
+  // White egg on top, gold in middle, black on bottom
+  const verticalSpacing = 150; // Space between eggs
+
+  const whiteFrame = eggSpriteData.frames['egg-white.png']?.frame;
+  const goldFrame = eggSpriteData.frames['egg-gold.png']?.frame;
+  const blackFrame = eggSpriteData.frames['egg-black.png']?.frame;
+
+  if (!whiteFrame || !goldFrame || !blackFrame) {
     return null;
   }
 
   return (
-    <Image
-      ref={eggRef}
-      image={image}
-      x={position.x}
-      y={position.y}
-      width={EGG_SIZE.width}
-      height={EGG_SIZE.height}
-      crop={{
-        x: currentFrame.x,
-        y: currentFrame.y,
-        width: currentFrame.w,
-        height: currentFrame.h,
-      }}
-    />
+    <>
+      {/* White egg - top */}
+      <Image
+        image={image}
+        x={position.x}
+        y={position.y - verticalSpacing}
+        width={EGG_SIZE.width}
+        height={EGG_SIZE.height}
+        crop={{
+          x: whiteFrame.x,
+          y: whiteFrame.y,
+          width: whiteFrame.w,
+          height: whiteFrame.h,
+        }}
+      />
+
+      {/* Gold egg - middle (at original position) */}
+      <Image
+        ref={eggRef}
+        image={image}
+        x={position.x}
+        y={position.y}
+        width={EGG_SIZE.width}
+        height={EGG_SIZE.height}
+        crop={{
+          x: goldFrame.x,
+          y: goldFrame.y,
+          width: goldFrame.w,
+          height: goldFrame.h,
+        }}
+      />
+
+      {/* Black egg - bottom */}
+      <Image
+        image={image}
+        x={position.x}
+        y={position.y + verticalSpacing}
+        width={EGG_SIZE.width}
+        height={EGG_SIZE.height}
+        crop={{
+          x: blackFrame.x,
+          y: blackFrame.y,
+          width: blackFrame.w,
+          height: blackFrame.h,
+        }}
+      />
+    </>
   );
 }
