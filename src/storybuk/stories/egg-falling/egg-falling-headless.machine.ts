@@ -67,6 +67,12 @@ export const eggFallingHeadlessMachine = setup({
       },
     }),
   },
+  guards: {
+    isOffScreen: ({ context }) => {
+      // Check if entire egg (including top edge) has passed bottom of canvas
+      return context.position.y - DEMO_CONFIG.eggHeight > context.canvasHeight;
+    },
+  },
 }).createMachine({
   id: 'Egg-Falling-Headless',
   context: ({ input }) => {
@@ -100,10 +106,19 @@ export const eggFallingHeadlessMachine = setup({
     },
     Falling: {
       on: {
-        Update: {
-          actions: 'updatePosition',
-        },
+        Update: [
+          {
+            guard: 'isOffScreen',
+            target: 'OffScreen',
+          },
+          {
+            actions: 'updatePosition',
+          },
+        ],
       },
+    },
+    OffScreen: {
+      type: 'final',
     },
   },
 });

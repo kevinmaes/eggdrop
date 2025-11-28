@@ -86,6 +86,12 @@ export const eggFallingRotatingMachine = setup({
       },
     }),
   },
+  guards: {
+    isOffScreen: ({ context }) => {
+      // Check if entire egg (including top edge) has passed bottom of canvas
+      return context.position.y - DEMO_CONFIG.eggHeight > context.canvasHeight;
+    },
+  },
 }).createMachine({
   id: 'Egg-Falling-Rotating',
   context: ({ input }) => {
@@ -121,10 +127,19 @@ export const eggFallingRotatingMachine = setup({
     },
     Falling: {
       on: {
-        Update: {
-          actions: 'updatePositionAndRotation',
-        },
+        Update: [
+          {
+            guard: 'isOffScreen',
+            target: 'OffScreen',
+          },
+          {
+            actions: 'updatePositionAndRotation',
+          },
+        ],
       },
+    },
+    OffScreen: {
+      type: 'final',
     },
   },
 });
