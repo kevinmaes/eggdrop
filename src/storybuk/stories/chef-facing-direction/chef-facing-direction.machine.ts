@@ -45,7 +45,6 @@ export const chefFacingDirectionMachine = setup({
       targetPosition: Position;
       currentTweenDirection: Direction['value'];
       movingDirection: Direction['label'];
-      currentTween: Konva.Tween | null;
       currentTweenDurationMS: number;
       currentTweenSpeed: number;
       currentTweenStartTime: number;
@@ -87,7 +86,7 @@ export const chefFacingDirectionMachine = setup({
       };
     }),
     createTweenToTargetPosition: assign(({ context }) => {
-      const { targetPosition, chefRef } = context;
+      const { targetPosition } = context;
       const xDistance = targetPosition.x - context.position.x;
       const direction: Direction['value'] = xDistance > 0 ? 1 : -1;
       const movingDirection: Direction['label'] =
@@ -101,16 +100,6 @@ export const chefFacingDirectionMachine = setup({
         DEMO_CONFIG.baseTweenDurationSeconds *
         (1 - relativeDistance * DEMO_CONFIG.speed);
 
-      let tween: Konva.Tween | null = null;
-      if (isImageRef(chefRef) && chefRef.current) {
-        tween = new Konva.Tween({
-          node: chefRef.current,
-          duration: duration,
-          x: targetPosition.x,
-        });
-        tween.play();
-      }
-
       const totalSpeed = xDistance / duration;
       const speedPerFrame = totalSpeed / 240;
 
@@ -119,7 +108,6 @@ export const chefFacingDirectionMachine = setup({
         currentTweenDurationMS: duration * 1000,
         currentTweenStartTime: new Date().getTime(),
         currentTweenDirection: direction,
-        currentTween: tween,
         movingDirection: movingDirection,
       };
     }),
@@ -132,7 +120,6 @@ export const chefFacingDirectionMachine = setup({
       currentTweenDirection: 0,
       currentTweenDurationMS: 0,
       currentTweenStartTime: 0,
-      currentTween: null,
       movingDirection: 'none',
     }),
     flipDestination: assign({
@@ -165,7 +152,6 @@ export const chefFacingDirectionMachine = setup({
       targetPosition: position,
       currentTweenDirection: 0,
       movingDirection: 'right',
-      currentTween: null,
       currentTweenDurationMS: 0,
       currentTweenSpeed: 0,
       currentTweenStartTime: 0,
@@ -190,14 +176,27 @@ export const chefFacingDirectionMachine = setup({
     },
     Moving: {
       entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
-      exit: 'cleanupTween',
       invoke: {
         id: 'tweenActor',
         src: 'tweenActor',
-        input: ({ context }) => ({
-          node: isImageRef(context.chefRef) ? context.chefRef.current : null,
-          tween: context.currentTween,
-        }),
+        input: ({ context }) => {
+          if (!isImageRef(context.chefRef)) {
+            throw new Error('Chef ref is not set');
+          }
+
+          // Create tween on-demand using metadata from context
+          const tween = new Konva.Tween({
+            node: context.chefRef.current,
+            duration: context.currentTweenDurationMS / 1000, // Convert MS to seconds
+            x: context.targetPosition.x,
+            easing: Konva.Easings.EaseInOut,
+          });
+
+          return {
+            node: context.chefRef.current,
+            tween,
+          };
+        },
         onDone: {
           target: 'Done Moving',
           actions: {

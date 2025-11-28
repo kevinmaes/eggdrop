@@ -81,7 +81,6 @@ export const henWithPausesMachine = setup({
       targetPosition: Position;
       currentTweenDirection: Direction['value'];
       movingDirection: Direction['label'];
-      currentTween: Konva.Tween | null;
       currentTweenDurationMS: number;
       currentTweenSpeed: number;
       currentTweenStartTime: number;
@@ -151,20 +150,11 @@ export const henWithPausesMachine = setup({
       }
       context.henRef.current.setPosition(context.position);
 
-      const tween = new Konva.Tween({
-        node: context.henRef.current,
-        duration,
-        x: targetPosition.x,
-        y: targetPosition.y,
-        easing: Konva.Easings.EaseInOut,
-      });
-
       return {
         currentTweenSpeed: speedPerFrame,
         currentTweenDurationMS: duration * 1000,
         currentTweenStartTime: new Date().getTime(),
         currentTweenDirection: direction,
-        currentTween: tween,
         movingDirection: movingDirection,
       };
     }),
@@ -177,7 +167,6 @@ export const henWithPausesMachine = setup({
       currentTweenDirection: 0,
       currentTweenDurationMS: 0,
       currentTweenStartTime: 0,
-      currentTween: null,
       movingDirection: 'none',
     }),
     flipDestination: assign({
@@ -224,7 +213,6 @@ export const henWithPausesMachine = setup({
       currentTweenStartTime: 0,
       currentTweenDirection: 0,
       movingDirection: 'none',
-      currentTween: null,
       canvasWidth,
       canvasHeight,
       leftEdge,
@@ -250,13 +238,27 @@ export const henWithPausesMachine = setup({
     },
     Moving: {
       entry: ['pickNewTargetPosition', 'createTweenToTargetPosition'],
-      exit: 'cleanupTween',
       invoke: {
         src: 'henMovingActor',
-        input: ({ context }) => ({
-          node: context.henRef.current,
-          tween: context.currentTween,
-        }),
+        input: ({ context }) => {
+          if (!isImageRef(context.henRef)) {
+            throw new Error('Hen ref is not set');
+          }
+
+          // Create tween on-demand using metadata from context
+          const tween = new Konva.Tween({
+            node: context.henRef.current,
+            duration: context.currentTweenDurationMS / 1000, // Convert MS to seconds
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            easing: Konva.Easings.EaseInOut,
+          });
+
+          return {
+            node: context.henRef.current,
+            tween,
+          };
+        },
         onDone: {
           target: 'Done Moving',
           actions: {
