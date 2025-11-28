@@ -17,7 +17,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: '20',
+  id: '21',
   type: 'animated',
   title: 'Chef - Face Forward',
   description:

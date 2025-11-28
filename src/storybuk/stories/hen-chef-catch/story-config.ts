@@ -28,7 +28,7 @@ const henX = getCenterX(canvasDimensions.canvasWidth, 120);
 const henY = 100;
 
 export const storyConfig: StoryConfig = {
-  id: '22',
+  id: '23',
   type: 'animated',
   title: 'Chef - Catch Egg',
   description:

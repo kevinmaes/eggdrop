@@ -17,7 +17,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: '19',
+  id: '20',
   type: 'animated',
   title: 'Chef - Moving',
   description:
