@@ -5,8 +5,8 @@ import Konva from 'konva';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
 
-import uiSpriteData from '../../../../public/images/ui.sprite.json';
 import { eggCaughtPointsMachine } from '../../../EggCaughtPoints/eggCaughtPoints.machine';
+import uiSpriteData from '../../../images/ui.sprite.json';
 import { isImageRef } from '../../../types';
 
 import type { EggColor } from '../../../Egg/egg.machine';
