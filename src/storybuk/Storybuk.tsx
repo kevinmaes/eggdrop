@@ -368,7 +368,7 @@ export function Storybuk() {
               />
               <div
                 style={{
-                  fontSize: '1.5rem',
+                  fontSize: '2.5rem',
                   color: '#666',
                 }}
               >
