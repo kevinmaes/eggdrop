@@ -31,10 +31,8 @@ export const storyConfig: StoryConfig = {
       machineVersion: 'falling',
       componentVersion: 'falling',
       startPosition: {
-        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width),
-        y:
-          getFallingStartY(canvasDimensions.canvasHeight) -
-          ACTOR_SIZE.egg.height / 2,
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
+        y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-visual',
       machine: eggFallingMachine,
@@ -45,10 +43,8 @@ export const storyConfig: StoryConfig = {
       machineVersion: 'falling-headless',
       componentVersion: 'falling-headless',
       startPosition: {
-        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width),
-        y:
-          getFallingStartY(canvasDimensions.canvasHeight) -
-          ACTOR_SIZE.egg.height / 2,
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
+        y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-headless',
       machine: eggFallingHeadlessMachine,

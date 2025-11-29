@@ -1,7 +1,6 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { EGG_ROTATION } from '../../../constants';
 import { tweenActor } from '../../../tweenActor';
 import { isImageRef } from '../../../types';
 
@@ -123,7 +122,6 @@ export const eggFallingMachine = setup({
             duration: context.currentTweenDurationMS / 1000,
             x: context.targetPosition.x,
             y: context.targetPosition.y,
-            rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
           });
 
           return { node: context.eggRef.current, tween };
