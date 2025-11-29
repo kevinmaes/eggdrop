@@ -1,37 +1,35 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import type { Direction, Position } from '../../../types';
+import { EGG_ROTATION } from '../../../constants';
+import { tweenActor } from '../../../tweenActor';
+import { isImageRef } from '../../../types';
+
+import type { Position } from '../../../types';
 
 /**
- * Egg Falling with Rotation Machine
+ * Egg Falling with Rotation Machine - Using Invoked TweenActor Pattern
  *
- * Demonstrates a falling egg with gravity acceleration AND rotation.
- * The egg starts at the top and falls straight down while rotating,
- * just like in the actual game.
+ * Demonstrates a falling egg with rotation using the same pattern as the real game.
+ * The egg starts at the top and falls straight down while rotating clockwise.
  *
- * Features:
- * - Gravity acceleration (velocity increases over time)
- * - Continuous rotation while falling
- * - Continuous falling motion using RAF loop
- * - Falls straight down (no horizontal movement)
- * - Positioned on left 20% of screen
+ * Pattern (matching real game):
+ * - Declares tweenActor as an invokable actor
+ * - Creates Konva.Tween on entry to Falling state
+ * - Invokes tweenActor to play the tween
+ * - Tween completes and transitions to OffScreen
  *
  * Physics:
- * - Gravity: 0.15 pixels/frame^2
- * - Initial velocity: 0
- * - Terminal velocity: 8 pixels/frame
- * - Rotation speed: 5 degrees per frame
+ * - Konva.Tween handles the animation
+ * - Duration-based (not velocity-based like RAF pattern)
+ * - Includes rotation for visual interest
  */
 
 // Configuration using shared constants
 const DEMO_CONFIG = {
   eggWidth: 60,
   eggHeight: 60,
-  gravity: 0.15, // Acceleration in pixels per frame
-  startY: 100, // Starting Y position (where hen would be)
-  maxVelocity: 8, // Terminal velocity to prevent falling too fast
-  rotationSpeed: 5, // Degrees per frame
+  fallingDuration: 3, // Duration in seconds for the fall
 };
 
 export const eggFallingRotatingMachine = setup({
@@ -41,7 +39,6 @@ export const eggFallingRotatingMachine = setup({
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
-      rotationDirection?: Direction['value'];
     };
     output: {
       eggId: string;
@@ -50,59 +47,47 @@ export const eggFallingRotatingMachine = setup({
       eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: Direction['value'];
+      targetPosition: Position;
       canvasHeight: number;
+      currentTweenDurationMS: number;
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
-      | { type: 'Update' }
       | { type: 'Play' };
   },
-  actions: {
-    setEggRef: assign({
-      eggRef: (_, params: React.RefObject<Konva.Image>) => params,
-    }),
-    updatePositionAndRotation: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        // Apply gravity but cap at max velocity (terminal velocity)
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-      rotation: ({ context }) => {
-        // Rotate the egg continuously
-        return (
-          context.rotation +
-          context.rotationDirection * DEMO_CONFIG.rotationSpeed
-        );
-      },
-    }),
+  actors: {
+    fallingTweenActor: tweenActor,
   },
-  guards: {
-    isOffScreen: ({ context }) => {
-      // Check if entire egg (including top edge) has passed bottom of canvas
-      return context.position.y - DEMO_CONFIG.eggHeight > context.canvasHeight;
-    },
+  actions: {
+    setEggRef: assign(({ context }, params: React.RefObject<Konva.Image>) => {
+      // Set the node position immediately when ref is attached
+      if (isImageRef(params)) {
+        params.current.setPosition(context.position);
+      }
+      return { eggRef: params };
+    }),
+    prepareTweenMetadata: assign({
+      targetPosition: ({ context }) => ({
+        x: context.position.x,
+        y: context.canvasHeight + DEMO_CONFIG.eggHeight,
+      }),
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
+    }),
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
+    }),
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QFEpQLQDECGAbXAlgHYYBKA9gC7aXFQDEAymJQARhqlgBmA2gAwBdRKAAO5WAVrkiIkAA9EAZgCsSgHRKAjAE4lAFgBMWgGwAOHfzMmlAGhABPROi0r1hwya0eTvw-wCTQwBfYPtUDBx8OnQKaloSdQBJCFwwegAFXGwHAWEkEHFJaVkCxQQtJX51HS1+FTNDWu0dAHZ2+ycEYxN1MzNWhqVWxu0DfVDwtCw8QhJYqho6dSi5hggZMHViADdyAGstiJno+bilxNW6BF3yAGMlmTy8uSKpAhk5cv0dNzN9JRjRr8VQ6fSdRC6P5mfgmfg6EyWX4DFShMIgIjkCBwOTHK5nRYJKCvCTvT5lZxaCEIPTuFSWf78VpWGH8LSTEB42Yxc5E5KpMAk4ofUqgb6tak9dStRH1fRDQGWEwcrmnMiE5b44kFN4lL6IDwaLT-AaAob6fQmCWOSEw9QW+GefQyjwy1oq6ZahbxZYAeW43EYdwATmAwKLCqS9RSEK0tPp1PUmWDBh5TJLXOoVMYenGLP5+BM0UA */
   id: 'Egg-Falling-Rotating',
   context: ({ input }) => {
     return {
       eggRef: { current: null },
       id: input.id,
       position: input.startPosition,
-      velocity: 0, // Start with zero velocity
-      rotation: 0, // Start with zero rotation
-      rotationDirection: input.rotationDirection ?? 1, // Default clockwise
+      targetPosition: input.startPosition,
       canvasHeight: input.canvasHeight ?? 1080,
+      currentTweenDurationMS: 0,
     };
   },
   output: ({ context }) => ({
@@ -116,26 +101,40 @@ export const eggFallingRotatingMachine = setup({
       },
     },
   },
-  initial: 'Waiting',
+  initial: 'Idle',
   states: {
-    Waiting: {
-      // Egg is visible but not falling yet
-      // Waits for Play button to be clicked
+    Idle: {
       on: {
         Play: 'Falling',
       },
     },
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'isOffScreen',
-            target: 'OffScreen',
+      entry: 'prepareTweenMetadata',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          if (!isImageRef(context.eggRef)) {
+            throw new Error('Egg ref is not set');
+          }
+
+          // Disposable tween - only exists for the duration of this actor
+          const tween = new Konva.Tween({
+            node: context.eggRef.current,
+            duration: context.currentTweenDurationMS / 1000,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
+          });
+
+          return { node: context.eggRef.current, tween };
+        },
+        onDone: {
+          target: 'OffScreen',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
+        },
       },
     },
     OffScreen: {
