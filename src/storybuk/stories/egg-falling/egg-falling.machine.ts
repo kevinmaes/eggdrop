@@ -1,34 +1,36 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
+import { EGG_ROTATION } from '../../../constants';
+import { tweenActor } from '../../../tweenActor';
+import { isImageRef } from '../../../types';
+
 import type { Position } from '../../../types';
 
 /**
- * Egg Falling Machine - Simple Gravity Physics
+ * Egg Falling Machine - Using Invoked TweenActor Pattern
  *
- * Demonstrates a falling egg with gravity acceleration.
+ * Demonstrates a falling egg using the same invoked actor pattern as the real game.
  * The egg starts at the top (roughly where a hen would be)
- * and falls straight down until it exits the bottom of the screen.
+ * and falls straight down to the bottom of the screen.
  *
- * Features:
- * - Gravity acceleration (velocity increases over time)
- * - Continuous falling motion using RAF loop
- * - Falls straight down (no horizontal movement)
- * - Positioned on left 20% of screen
+ * Pattern (matching real game):
+ * - Declares tweenActor as an invokable actor
+ * - Creates Konva.Tween on entry to Falling state
+ * - Invokes tweenActor to play the tween
+ * - Tween completes and transitions to OffScreen
  *
  * Physics:
- * - Gravity: 0.5 pixels/frame^2
- * - Initial velocity: 0
- * - Terminal velocity: none (keeps accelerating)
+ * - Konva.Tween handles the animation
+ * - Duration-based (not velocity-based like RAF pattern)
+ * - Includes rotation for visual interest
  */
 
 // Configuration using shared constants
 const DEMO_CONFIG = {
   eggWidth: 60,
   eggHeight: 60,
-  gravity: 0.15, // Acceleration in pixels per frame (reduced for smoother fall)
-  startY: 100, // Starting Y position (where hen would be)
-  maxVelocity: 8, // Terminal velocity to prevent falling too fast
+  fallingDuration: 3, // Duration in seconds for the fall
 };
 
 export const eggFallingMachine = setup({
@@ -46,38 +48,35 @@ export const eggFallingMachine = setup({
       eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       position: Position;
-      velocity: number;
+      targetPosition: Position;
       canvasHeight: number;
+      currentTweenDurationMS: number;
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
-      | { type: 'Update' }
       | { type: 'Play' };
   },
-  actions: {
-    setEggRef: assign({
-      eggRef: (_, params: React.RefObject<Konva.Image>) => params,
-    }),
-    updatePosition: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        // Apply gravity but cap at max velocity (terminal velocity)
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-    }),
+  actors: {
+    fallingTweenActor: tweenActor,
   },
-  guards: {
-    isOffScreen: ({ context }) => {
-      // Check if entire egg (including top edge) has passed bottom of canvas
-      return context.position.y - DEMO_CONFIG.eggHeight > context.canvasHeight;
-    },
+  actions: {
+    setEggRef: assign(({ context }, params: React.RefObject<Konva.Image>) => {
+      // Set the node position immediately when ref is attached
+      if (isImageRef(params)) {
+        params.current.setPosition(context.position);
+      }
+      return { eggRef: params };
+    }),
+    prepareTweenMetadata: assign({
+      targetPosition: ({ context }) => ({
+        x: context.position.x,
+        y: context.canvasHeight + DEMO_CONFIG.eggHeight,
+      }),
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
+    }),
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
+    }),
   },
 }).createMachine({
   id: 'Egg-Falling',
@@ -86,8 +85,9 @@ export const eggFallingMachine = setup({
       eggRef: { current: null },
       id: input.id,
       position: input.startPosition,
-      velocity: 0, // Start with zero velocity
+      targetPosition: input.startPosition,
       canvasHeight: input.canvasHeight ?? 1080,
+      currentTweenDurationMS: 0,
     };
   },
   output: ({ context }) => ({
@@ -101,26 +101,40 @@ export const eggFallingMachine = setup({
       },
     },
   },
-  initial: 'Waiting',
+  initial: 'Idle',
   states: {
-    Waiting: {
-      // Egg is visible but not falling yet
-      // Waits for Play button to be clicked
+    Idle: {
       on: {
         Play: 'Falling',
       },
     },
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'isOffScreen',
-            target: 'OffScreen',
+      entry: 'prepareTweenMetadata',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          if (!isImageRef(context.eggRef)) {
+            throw new Error('Egg ref is not set');
+          }
+
+          // Disposable tween - only exists for the duration of this actor
+          const tween = new Konva.Tween({
+            node: context.eggRef.current,
+            duration: context.currentTweenDurationMS / 1000,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
+          });
+
+          return { node: context.eggRef.current, tween };
+        },
+        onDone: {
+          target: 'OffScreen',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePosition',
-          },
-        ],
+        },
       },
     },
     OffScreen: {

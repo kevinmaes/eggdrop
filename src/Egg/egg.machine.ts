@@ -8,6 +8,7 @@ import {
   type ActorRefFrom,
 } from 'xstate';
 
+import { EGG_ROTATION } from '../constants';
 import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
@@ -289,7 +290,10 @@ export const eggMachine = setup({
                   duration: context.gameConfig.egg.fallingDuration,
                   x: context.targetPosition.x,
                   y: context.targetPosition.y,
-                  rotation: Math.random() > 0.5 ? 720 : -720,
+                  rotation:
+                    Math.random() > 0.5
+                      ? EGG_ROTATION.CLOCKWISE_TWO_SPINS
+                      : EGG_ROTATION.COUNTER_CLOCKWISE_TWO_SPINS,
                   onUpdate: () => {
                     if (
                       self.getSnapshot().status === 'active' &&
