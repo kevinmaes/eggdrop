@@ -22,7 +22,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 export const storyConfig: StoryConfig = {
   id: '12',
   type: 'animated',
-  title: 'Egg - Splat',
+  title: 'Egg - Falling + Breaking',
   description:
     'Egg falls and splats on the ground, showing broken egg sprite - Visual story + headless inspector',
   actors: [
