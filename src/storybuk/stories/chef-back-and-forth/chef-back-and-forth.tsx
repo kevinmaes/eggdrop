@@ -59,7 +59,7 @@ export function ChefBackAndForth({
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     // Chef needs faster foot animation than hen (only 2 frames vs 4)
-    const [animationIntervalMinMS, animationIntervalMaxMS] = [80, 200];
+    const [animationIntervalMinMS, animationIntervalMaxMS] = [120, 300];
 
     if (isMoving && movingDirection !== 'none') {
       // Chef only has 2 walking frames (leg-1 and leg-2), no directional variants
