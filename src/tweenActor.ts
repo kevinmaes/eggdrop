@@ -3,13 +3,10 @@ import { fromPromise } from 'xstate';
 
 import type { Position, RequireAtLeastOne } from './types';
 
-// Derive EasingType from Konva.Easings
-export type EasingType = keyof typeof Konva.Easings;
-
 // Base interface for tween configuration options
 export interface TweenConfigBase {
   durationMS: number;
-  easing?: EasingType;
+  easing?: keyof typeof Konva.Easings;
   onUpdate?: (position: Position) => void;
 }
 
