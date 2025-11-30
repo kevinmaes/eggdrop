@@ -515,10 +515,12 @@ export const gameLevelMachine = setup({
       const eggLeadingEdgeYPos =
         params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
 
+      // Exclude eggs that haven't yet fallen down to the pot rim
       if (eggLeadingEdgeYPos < potRimHitY) {
         return false;
       }
 
+      // Check if the egg is within the pot rim hit box
       return (
         params.x >= potRimHitX &&
         params.x <= potRimHitX + potRimHitWidth &&
