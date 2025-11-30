@@ -9,7 +9,7 @@ import { EggCaughtPointsDemo } from './egg-caught-points-demo';
 import { eggCaughtPointsDemoMachine } from './egg-caught-points-demo.machine';
 
 export const storyConfig: StoryConfig = {
-  id: '24',
+  id: '25',
   type: 'animated',
   title: 'Other - Egg Caught Points',
   description:

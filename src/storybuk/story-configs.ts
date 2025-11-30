@@ -1,6 +1,7 @@
 // Import individual story configs
 
 import { storyConfig as chefBackAndForthConfig } from './stories/chef-back-and-forth/story-config';
+import { storyConfig as chefCatchWithPointsConfig } from './stories/chef-catch-with-points/story-config';
 import { storyConfig as chefFacingDirectionConfig } from './stories/chef-facing-direction/story-config';
 import { storyConfig as chefIdleConfig } from './stories/chef-idle/story-config';
 import { storyConfig as chefWithPausesConfig } from './stories/chef-with-pauses/story-config';
@@ -59,6 +60,7 @@ export const chefStories: StoryConfig[] = [
   chefFacingDirectionConfig,
   chefWithPausesConfig,
   henChefCatchConfig,
+  chefCatchWithPointsConfig,
 ];
 
 export const otherStories: StoryConfig[] = [eggCaughtPointsConfig];

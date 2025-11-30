@@ -6,17 +6,19 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { HenChefCatch } from './hen-chef-catch';
+import { ChefCatchWithPoints } from './chef-catch-with-points';
 import { storyMachine } from './story.machine';
 
 /**
- * Hen-Chef-Catch Story Configuration
+ * Chef-Catch-With-Points Story Configuration
  *
  * A coordinated multi-actor story demonstrating:
  * - Stationary hen laying eggs (alternating white/gold)
  * - Eggs falling with rotation
  * - Chef catching eggs with collision detection
- * - Full actor orchestration pattern
+ * - Steam animation when catching
+ * - Points spawning (+1 for white, +10 for gold)
+ * - Full actor orchestration with visual feedback
  */
 
 // Use narrow horizontal split for side-stage layout
@@ -28,20 +30,20 @@ const henX = getCenterX(canvasDimensions.canvasWidth, 120);
 const henY = 100;
 
 export const storyConfig: StoryConfig = {
-  id: '23',
+  id: '24',
   type: 'animated',
-  title: 'Chef - Catch Egg',
+  title: 'Chef - Catch with Points',
   description:
-    'Visual hit testing: Red ellipse shows pot rim collision area, turns yellow when egg hits. No steam animation or points.',
+    'Full catch experience: Chef catches eggs with steam animation and points spawning (+1 for white, +10 for gold). Demonstrates complete collision detection with visual feedback.',
   actors: [
     {
       type: 'hen', // ActorFactory uses type for dynamic imports
       machineVersion: 'chef-catch',
       componentVersion: 'chef-catch',
       startPosition: { x: henX, y: henY },
-      id: 'hen-chef-catch-orchestrator',
+      id: 'chef-catch-with-points-orchestrator',
       machine: storyMachine,
-      Component: HenChefCatch,
+      Component: ChefCatchWithPoints,
     },
   ],
   background: {

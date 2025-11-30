@@ -5,6 +5,7 @@ import { Group } from 'react-konva';
 
 import { Chef } from './chef';
 import { Egg } from './egg';
+import { EggCaughtPoints } from './egg-caught-points';
 import { Hen } from './hen';
 
 import type { storyMachine } from './story.machine';
@@ -12,27 +13,28 @@ import type Konva from 'konva';
 import type { ActorRefFrom } from 'xstate';
 
 /**
- * Hen-Chef-Catch Orchestrator Component
+ * Chef-Catch-With-Points Orchestrator Component
  *
  * Renders all child actors spawned by the orchestrator:
  * - Hen (stationary, laying eggs)
- * - Chef (stationary, catching eggs)
+ * - Chef (stationary, catching eggs with steam animation)
  * - Eggs (falling with rotation)
+ * - Points (+1 for white, +10 for gold)
  *
- * Demonstrates coordinated multi-actor rendering.
+ * Demonstrates coordinated multi-actor rendering with visual feedback.
  */
 
-export function HenChefCatch({
+export function ChefCatchWithPoints({
   actorRef,
 }: {
   actorRef: ActorRefFrom<typeof storyMachine>;
 }) {
-  const { henActorRef, chefActorRef, eggActorRefs, potRimHitAreaColor } =
+  const { henActorRef, chefActorRef, eggActorRefs, eggCaughtPointsActorRefs } =
     useSelector(actorRef, (state) => ({
       henActorRef: state?.context.henActorRef ?? null,
       chefActorRef: state?.context.chefActorRef ?? null,
       eggActorRefs: state?.context.eggActorRefs ?? [],
-      potRimHitAreaColor: state?.context.potRimHitAreaColor ?? 'red',
+      eggCaughtPointsActorRefs: state?.context.eggCaughtPointsActorRefs ?? [],
     }));
 
   // Track eggs with stable keys for React rendering
@@ -59,7 +61,6 @@ export function HenChefCatch({
         <Chef
           actorRef={chefActorRef}
           onPotRimHitRefReady={handlePotRimHitRefReady}
-          hitAreaFill={potRimHitAreaColor}
         />
       )}
 
@@ -72,6 +73,11 @@ export function HenChefCatch({
         }
         return <Egg key={eggKeys.get(eggId)} actorRef={eggRef} />;
       })}
+
+      {/* Render all spawned points animations */}
+      {eggCaughtPointsActorRefs.map((actorRef) => (
+        <EggCaughtPoints key={actorRef.id} actorRef={actorRef} />
+      ))}
     </Group>
   );
 }
