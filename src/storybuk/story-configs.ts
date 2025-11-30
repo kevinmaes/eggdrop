@@ -13,9 +13,8 @@ import { storyConfig as eggHatchJumpOnlyConfig } from './stories/egg-hatch-jump-
 import { storyConfig as eggIdleConfig } from './stories/egg-idle/story-config';
 import { storyConfig as eggLandHatchConfig } from './stories/egg-land-hatch/story-config';
 import { storyConfig as eggLandHatchExitConfig } from './stories/egg-land-hatch-exit/story-config';
-import { storyConfig as eggLandHatchStandingConfig } from './stories/egg-land-hatch-standing/story-config';
 import { storyConfig as eggSplatConfig } from './stories/egg-splat/story-config';
-import { storyConfig as hatchedChickExitConfig } from './stories/hatched-chick-exit/story-config';
+import { storyConfig as hatchedStandExitConfig } from './stories/hatched-stand-exit/story-config';
 import { storyConfig as henBackAndForthConfig } from './stories/hen-back-and-forth/story-config';
 import { storyConfig as henChefCatchConfig } from './stories/hen-chef-catch/story-config';
 import { storyConfig as henEggLayingConfig } from './stories/hen-egg-laying/story-config';
@@ -48,11 +47,10 @@ export const eggStories: StoryConfig[] = [
   eggFallLandOnlyConfig,
   eggSplatConfig,
   eggLandHatchConfig,
-  eggLandHatchStandingConfig, // 14
-  hatchedChickExitConfig, // 15
-  eggLandHatchExitConfig, // 16
-  eggHatchJumpOnlyConfig, // 17
-  eggHatchGameAccurateConfig, // 18
+  hatchedStandExitConfig, // 14
+  eggLandHatchExitConfig, // 15
+  eggHatchJumpOnlyConfig, // 16
+  eggHatchGameAccurateConfig, // 17
 ];
 
 export const chefStories: StoryConfig[] = [

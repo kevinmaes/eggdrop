@@ -8,11 +8,10 @@ import {
   ACTOR_SIZE,
 } from '../../story-config-constants';
 
-// Explicit imports - no pattern matching!
-import { HatchedChickExit } from './hatched-chick-exit';
-import { HatchedChickExitHeadless } from './hatched-chick-exit-headless';
-import { hatchedChickExitHeadlessMachine } from './hatched-chick-exit-headless.machine';
-import { hatchedChickExitMachine } from './hatched-chick-exit.machine';
+import { HatchedStandExit } from './hatched-stand-exit';
+import { HatchedStandExitHeadless } from './hatched-stand-exit-headless';
+import { hatchedStandExitHeadlessMachine } from './hatched-stand-exit-headless.machine';
+import { hatchedStandExitMachine } from './hatched-stand-exit.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
@@ -20,37 +19,37 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: '15',
+  id: '14',
   type: 'animated',
-  title: 'Egg - Hatched Chick Exit',
+  title: 'Egg - Hatched, Stand, Exit',
   description:
-    'Incremental demo: chick in shell transitions to running off - Shows exit animation without jump - Visual story + headless inspector',
+    'Chick sequence: starts hatched in shell on ground → standing alone → runs off screen - Visual story + headless inspector',
   actors: [
     {
       type: 'egg',
-      machineVersion: 'hatched-chick-exit',
-      componentVersion: 'hatched-chick-exit',
+      machineVersion: 'hatched-stand-exit',
+      componentVersion: 'hatched-stand-exit',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
         y:
           getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height / 2,
       },
       id: 'egg-visual',
-      machine: hatchedChickExitMachine,
-      Component: HatchedChickExit,
+      machine: hatchedStandExitMachine,
+      Component: HatchedStandExit,
     },
     {
       type: 'egg',
-      machineVersion: 'hatched-chick-exit-headless',
-      componentVersion: 'hatched-chick-exit-headless',
+      machineVersion: 'hatched-stand-exit-headless',
+      componentVersion: 'hatched-stand-exit-headless',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
         y:
           getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height / 2,
       },
       id: 'egg-headless',
-      machine: hatchedChickExitHeadlessMachine,
-      Component: HatchedChickExitHeadless,
+      machine: hatchedStandExitHeadlessMachine,
+      Component: HatchedStandExitHeadless,
     },
   ],
   background: {

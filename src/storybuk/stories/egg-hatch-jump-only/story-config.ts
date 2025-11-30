@@ -20,7 +20,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 );
 
 export const storyConfig: StoryConfig = {
-  id: '17',
+  id: '16',
   type: 'animated',
   title: 'Egg - Hatch and Jump',
   description:
@@ -32,7 +32,10 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatch-jump-only',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
+        y:
+          getGroundY(canvasDimensions.canvasHeight) -
+          ACTOR_SIZE.egg.height +
+          25,
       },
       id: 'egg-visual',
       machine: eggHatchJumpOnlyMachine,
