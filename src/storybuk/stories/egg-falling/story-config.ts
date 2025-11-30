@@ -58,5 +58,5 @@ export const storyConfig: StoryConfig = {
   layoutMode: 'horizontal-split-narrow',
   ...canvasDimensions,
   statelyEmbedUrl:
-    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?machineId=67ee088f-7005-4919-a155-673965bfef40&mode=design',
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=0106f180-7815-457d-9f28-cf4b11e9d858',
 };
