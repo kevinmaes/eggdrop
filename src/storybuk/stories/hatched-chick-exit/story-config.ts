@@ -32,7 +32,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatched-chick-exit',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
+        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height / 2,
       },
       id: 'egg-visual',
       machine: hatchedChickExitMachine,
@@ -44,7 +44,7 @@ export const storyConfig: StoryConfig = {
       componentVersion: 'hatched-chick-exit-headless',
       startPosition: {
         x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
-        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height,
+        y: getGroundY(canvasDimensions.canvasHeight) - ACTOR_SIZE.egg.height / 2,
       },
       id: 'egg-headless',
       machine: hatchedChickExitHeadlessMachine,
