@@ -8,7 +8,6 @@ import {
   type ActorRefFrom,
 } from 'xstate';
 
-import { EGG_ROTATION } from '../constants';
 import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
