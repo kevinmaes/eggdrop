@@ -1,24 +1,28 @@
 import Konva from 'konva';
 import { fromPromise } from 'xstate';
 
-import type { Position } from './types';
+import type { Position, RequireAtLeastOne } from './types';
 
 // Derive EasingType from Konva.Easings
 export type EasingType = keyof typeof Konva.Easings;
 
-// Require at least one target property to ensure the tween animates something
-type TweenTargets =
-  | { x: number; y?: number; rotation?: number; opacity?: number }
-  | { y: number; x?: number; rotation?: number; opacity?: number }
-  | { rotation: number; x?: number; y?: number; opacity?: number }
-  | { opacity: number; x?: number; y?: number; rotation?: number };
-
-// Use type intersection instead of interface extension for union types
-export type TweenConfig = TweenTargets & {
+// Base interface for tween configuration options
+export interface TweenConfigBase {
   durationMS: number;
   easing?: EasingType;
   onUpdate?: (position: Position) => void;
-};
+}
+
+// Target properties interface (all optional in base)
+interface TweenTargets {
+  x?: number;
+  y?: number;
+  rotation?: number;
+  opacity?: number;
+}
+
+// TweenConfig: base config with at least one target property required
+export type TweenConfig = TweenConfigBase & RequireAtLeastOne<TweenTargets>;
 
 /**
  * Creates and plays a Konva tween based on the provided configuration.
