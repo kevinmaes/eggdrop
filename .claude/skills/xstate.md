@@ -69,16 +69,17 @@ Store these in context for sprite sync and calculations:
 
 ```typescript
 context: {
-  currentTweenDurationMS: number;     // Duration in MS
-  currentTweenSpeed: number;          // Speed per frame for sprite sync
-  currentTweenStartTime: number;      // Start timestamp
-  currentTweenDirection: Direction;   // -1 or 1
+  currentTweenDurationMS: number; // Duration in MS
+  currentTweenSpeed: number; // Speed per frame for sprite sync
+  currentTweenStartTime: number; // Start timestamp
+  currentTweenDirection: Direction; // -1 or 1
   movingDirection: 'left' | 'right' | 'none';
   targetPosition: Position;
 }
 ```
 
 **Conventions:**
+
 - Duration: Calculate in seconds, store in milliseconds
 - Speed: Per-frame for sprite synchronization
 - Position: Set node position in entry action before creating tween
