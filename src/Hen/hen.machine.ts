@@ -2,7 +2,7 @@ import Konva from 'konva';
 import { and, assign, sendParent, setup } from 'xstate';
 
 import { type GameConfig } from '../gameConfig';
-import { tweenActor, type TweenConfig } from '../tweenActor';
+import { tweenActor } from '../tweenActor';
 import { isImageRef, type Direction, type Position } from '../types';
 import { getRandomNumber } from '../utils';
 
@@ -64,7 +64,6 @@ export const henMachine = setup({
       currentTweenDirection: Direction['value'];
       movingDirection: Direction['label'];
       eggsLaid: number;
-      tweenConfig: TweenConfig | null;
       gamePaused: boolean;
     };
     events:
@@ -161,7 +160,7 @@ export const henMachine = setup({
         targetPosition,
       };
     }),
-    createTweenConfig: assign(({ context }) => {
+    prepareTweenMetadata: assign(({ context }) => {
       const { targetPosition } = context;
       const totalDistance = context.gameConfig.stage.width;
       const xDistance = targetPosition.x - context.position.x;
@@ -189,19 +188,11 @@ export const henMachine = setup({
       }
       context.henRef.current.setPosition(context.position);
 
-      const tweenConfig: TweenConfig = {
-        duration,
-        x: targetPosition.x,
-        y: targetPosition.y,
-        easing: 'EaseInOut',
-      };
-
       return {
         currentTweenSpeed: speedPerFrame,
         currentTweenDurationMS: duration * 1000,
         currentTweenStartTime: new Date().getTime(),
         currentTweenDirection: direction,
-        tweenConfig,
         movingDirection: movingDirection,
       };
     }),
@@ -214,7 +205,6 @@ export const henMachine = setup({
       currentTweenDirection: 0,
       currentTweenDurationMS: 0,
       currentTweenStartTime: 0,
-      tweenConfig: null,
       movingDirection: 'none',
     }),
   },
@@ -238,8 +228,8 @@ export const henMachine = setup({
     animationEasingEggLayingBufferMS: ({ context }) =>
       context.animationEasingEggLayingBufferMS,
     getRandomMidTweenDelay: ({ context }) => {
-      if (!context.tweenConfig) {
-        throw new Error('No tween config');
+      if (context.currentTweenDurationMS === 0) {
+        throw new Error('No active tween');
       }
       const currentTime = new Date().getTime();
       const elapsedTime = currentTime - context.currentTweenStartTime;
@@ -281,7 +271,6 @@ export const henMachine = setup({
       movingDirection: 'none',
       eggsLaid: 0,
       gamePaused: false,
-      tweenConfig: null,
     };
   },
   output: ({ context }) => ({
@@ -306,13 +295,18 @@ export const henMachine = setup({
       after: { getRandomStartDelay: 'Moving' },
     },
     Moving: {
-      entry: ['pickNewTargetPosition', 'createTweenConfig'],
+      entry: ['pickNewTargetPosition', 'prepareTweenMetadata'],
       exit: 'cleanupTween',
       invoke: {
         src: 'henMovingActor',
         input: ({ context }) => ({
           node: context.henRef.current,
-          config: context.tweenConfig!,
+          config: {
+            duration: context.currentTweenDurationMS / 1000,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            easing: 'EaseInOut' as const,
+          },
         }),
         onDone: {
           target: 'Done Moving',
