@@ -76,7 +76,7 @@ export const eggCaughtPointsMachine = setup({
               x: context.position.x,
               y: context.position.y - 120,
               opacity: 0,
-              duration: 1.5,
+              durationMS: 1_500,
               easing: 'EaseOut',
             },
           };

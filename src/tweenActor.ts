@@ -15,7 +15,7 @@ type TweenTargets =
 
 // Use type intersection instead of interface extension for union types
 export type TweenConfig = TweenTargets & {
-  duration: number;
+  durationMS: number;
   easing?: EasingType;
   onUpdate?: (position: Position) => void;
 };
@@ -40,11 +40,12 @@ export const tweenActor = fromPromise<
       return reject('Node does not exist');
     }
 
-    const { duration, easing, onUpdate, ...targets } = input.config;
+    const { durationMS, easing, onUpdate, ...targets } = input.config;
 
+    // Convert milliseconds to seconds for Konva.Tween
     const tween = new Konva.Tween({
       node: input.node,
-      duration,
+      duration: durationMS / 1_000,
       ...targets,
       ...(easing && { easing: Konva.Easings[easing] }),
       onUpdate: () => {

@@ -74,7 +74,7 @@ export interface GameConfig {
   };
   egg: {
     fallingSpeed: number;
-    fallingDuration: number;
+    fallingDurationMS: number;
     points: {
       white: number;
       gold: number;
@@ -209,9 +209,8 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
     },
     egg: {
       fallingSpeed: eggFallingSpeed,
-      // Create a var EGG_FALLING_DURATION that is a number from 1 to 5 where 1 is the same as eggFallingSpeed equal to 0.5
-      // and 5 is the same as eggFallingSpeed equal to 0.1
-      fallingDuration: 5 - 4 * eggFallingSpeed,
+      // Falling duration in milliseconds (1_000ms to 5_000ms based on speed)
+      fallingDurationMS: (5 - 4 * eggFallingSpeed) * 1_000,
       points: {
         white: 1,
         gold: 10,

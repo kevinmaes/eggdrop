@@ -302,7 +302,7 @@ export const henMachine = setup({
         input: ({ context }) => ({
           node: context.henRef.current,
           config: {
-            duration: context.currentTweenDurationMS / 1000,
+            durationMS: context.currentTweenDurationMS,
             x: context.targetPosition.x,
             y: context.targetPosition.y,
             easing: 'EaseInOut' as const,

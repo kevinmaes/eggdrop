@@ -281,7 +281,7 @@ export const eggMachine = setup({
             input: ({ context, self }) => ({
               node: context.eggRef.current,
               config: {
-                duration: context.gameConfig.egg.fallingDuration,
+                durationMS: context.gameConfig.egg.fallingDurationMS,
                 x: context.targetPosition.x,
                 y: context.targetPosition.y,
                 rotation: Math.random() > 0.5 ? 720 : -720,
@@ -373,7 +373,7 @@ export const eggMachine = setup({
             input: ({ context }) => ({
               node: context.eggRef.current,
               config: {
-                duration: 0.4,
+                durationMS: 400,
                 x: context.position.x,
                 y: context.position.y - 70,
                 easing: 'EaseOut',
@@ -388,7 +388,7 @@ export const eggMachine = setup({
             input: ({ context }) => ({
               node: context.eggRef.current,
               config: {
-                duration: 0.4,
+                durationMS: 400,
                 y: context.eggRef.current!.y() + 70,
                 easing: 'BounceEaseOut',
               },
@@ -422,7 +422,7 @@ export const eggMachine = setup({
         input: ({ context }) => ({
           node: context.eggRef.current,
           config: {
-            duration: 1,
+            durationMS: 1_000,
             x: context.targetPosition.x,
             y: context.targetPosition.y,
           },
