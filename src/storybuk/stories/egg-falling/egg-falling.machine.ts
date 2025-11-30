@@ -66,7 +66,7 @@ export const eggFallingMachine = setup({
       }
       return { eggRef: params };
     }),
-    prepareTweenMetadata: assign({
+    setTweenProperties: assign({
       targetPosition: ({ context }) => ({
         x: context.position.x,
         y: context.canvasHeight + DEMO_CONFIG.eggHeight,
@@ -108,7 +108,7 @@ export const eggFallingMachine = setup({
       },
     },
     Falling: {
-      entry: 'prepareTweenMetadata',
+      entry: 'setTweenProperties',
       invoke: {
         src: 'fallingTweenActor',
         input: ({ context }) => {
