@@ -70,17 +70,15 @@ export const eggCaughtPointsMachine = setup({
           if (!isImageRef(context.eggCaughtPointsRef)) {
             throw new Error('eggCaughtPointsRef is not set');
           }
-          const tween = new Konva.Tween({
-            node: context.eggCaughtPointsRef.current,
-            x: context.position.x,
-            y: context.position.y - 120,
-            opacity: 0,
-            duration: 1.5,
-            easing: Konva.Easings.EaseOut,
-          });
           return {
             node: context.eggCaughtPointsRef.current,
-            tween,
+            config: {
+              x: context.position.x,
+              y: context.position.y - 120,
+              opacity: 0,
+              duration: 1.5,
+              easing: 'EaseOut',
+            },
           };
         },
         onDone: 'Done',
