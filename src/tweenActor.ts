@@ -1,34 +1,71 @@
 import Konva from 'konva';
 import { fromPromise } from 'xstate';
 
-import type { Position } from './types';
+import type { Position, RequireAtLeastOne } from './types';
+
+// Base interface for tween configuration options
+export interface TweenConfigBase {
+  durationMS: number;
+  easing?: keyof typeof Konva.Easings;
+  onUpdate?: (position: Position) => void;
+}
+
+// Target properties interface (all optional in base)
+interface TweenTargets {
+  x?: number;
+  y?: number;
+  rotation?: number;
+  opacity?: number;
+}
+
+// TweenConfig: base config with at least one target property required
+export type TweenConfig = TweenConfigBase & RequireAtLeastOne<TweenTargets>;
 
 /**
- * Takes any node and its pre-existing tween and plays the tween
- * Any tween callbacks may have already been attached to the tween
- * outside of this actor.
+ * Creates and plays a Konva tween based on the provided configuration.
+ * The tween is created internally from the config, encapsulating tween
+ * instantiation within the actor.
  *
  * When finished, the tween is destroyed and the node's final coordinates
- * are passed to the promises's resolve function
+ * are passed to the promise's resolve function.
  */
 export const tweenActor = fromPromise<
   Position,
   {
-    node: React.RefObject<any>['current'] | null;
-    tween: Konva.Tween | null;
+    node: Konva.Node | null;
+    config: TweenConfig;
   }
 >(({ input }) => {
   return new Promise((resolve, reject) => {
-    if (!input.node || !input.tween) {
-      return reject('Node or tween does not exist');
+    if (!input.node) {
+      return reject('Node does not exist');
     }
-    input.tween.play();
-    input.tween.onFinish = () => {
-      input.tween?.destroy();
-      resolve({
-        x: input.node.x(),
-        y: input.node.y(),
-      });
-    };
+
+    const { durationMS, easing, onUpdate, ...targets } = input.config;
+
+    // Convert milliseconds to seconds for Konva.Tween
+    const tween = new Konva.Tween({
+      node: input.node,
+      duration: durationMS / 1_000,
+      ...targets,
+      ...(easing && { easing: Konva.Easings[easing] }),
+      onUpdate: () => {
+        if (onUpdate && input.node) {
+          onUpdate({
+            x: input.node.x(),
+            y: input.node.y(),
+          });
+        }
+      },
+      onFinish: () => {
+        tween.destroy();
+        resolve({
+          x: input.node!.x(),
+          y: input.node!.y(),
+        });
+      },
+    });
+
+    tween.play();
   });
 });

@@ -66,8 +66,6 @@ export const eggMachine = setup({
       resultStatus: EggResultStatus;
       gamePaused: boolean;
       hatchRate: number;
-      currentTween: Konva.Tween | null;
-      currentAnimation: Konva.Animation | null;
     };
     events:
       | {
@@ -209,8 +207,6 @@ export const eggMachine = setup({
       resultStatus: null,
       gamePaused: false,
       hatchRate: input.hatchRate,
-      currentTween: null,
-      currentAnimation: null,
     };
   },
   output: ({ context }) => {
@@ -279,40 +275,25 @@ export const eggMachine = setup({
           ],
         },
         'Straight Down': {
-          entry: [
-            'setNewTargetPosition',
-            assign({
-              currentTween: ({ context, self }) => {
-                if (!isImageRef(context.eggRef)) return null;
-                return new Konva.Tween({
-                  node: context.eggRef.current,
-                  duration: context.gameConfig.egg.fallingDuration,
-                  x: context.targetPosition.x,
-                  y: context.targetPosition.y,
-                  rotation: Math.random() > 0.5 ? 720 : -720,
-                  onUpdate: () => {
-                    if (
-                      self.getSnapshot().status === 'active' &&
-                      isImageRef(context.eggRef)
-                    ) {
-                      self.send({
-                        type: 'Notify of animation position',
-                        position: {
-                          x: context.eggRef.current.x(),
-                          y: context.eggRef.current.y(),
-                        },
-                      });
-                    }
-                  },
-                });
-              },
-            }),
-          ],
+          entry: ['setNewTargetPosition'],
           invoke: {
             src: 'staticFallingActor',
-            input: ({ context }) => ({
+            input: ({ context, self }) => ({
               node: context.eggRef.current,
-              tween: context.currentTween,
+              config: {
+                durationMS: context.gameConfig.egg.fallingDurationMS,
+                x: context.targetPosition.x,
+                y: context.targetPosition.y,
+                rotation: Math.random() > 0.5 ? 720 : -720,
+                onUpdate: (position: Position) => {
+                  if (self.getSnapshot().status === 'active') {
+                    self.send({
+                      type: 'Notify of animation position',
+                      position,
+                    });
+                  }
+                },
+              },
             }),
             onDone: {
               target: 'Done Falling',
@@ -391,13 +372,12 @@ export const eggMachine = setup({
             src: 'hatchingAnimation',
             input: ({ context }) => ({
               node: context.eggRef.current,
-              tween: new Konva.Tween({
-                node: context.eggRef.current!,
-                duration: 0.4,
+              config: {
+                durationMS: 400,
                 x: context.position.x,
                 y: context.position.y - 70,
-                easing: Konva.Easings.EaseOut,
-              }),
+                easing: 'EaseOut',
+              },
             }),
             onDone: 'Bouncing Down',
           },
@@ -407,12 +387,11 @@ export const eggMachine = setup({
             src: 'hatchingAnimation',
             input: ({ context }) => ({
               node: context.eggRef.current,
-              tween: new Konva.Tween({
-                node: context.eggRef.current!,
+              config: {
+                durationMS: 400,
                 y: context.eggRef.current!.y() + 70,
-                duration: 0.4,
-                easing: Konva.Easings.BounceEaseOut,
-              }),
+                easing: 'BounceEaseOut',
+              },
             }),
             onDone: 'Animation Done',
           },
@@ -442,12 +421,11 @@ export const eggMachine = setup({
         src: 'chickExitingStageActor',
         input: ({ context }) => ({
           node: context.eggRef.current,
-          tween: new Konva.Tween({
-            node: context.eggRef.current!,
-            duration: 1,
+          config: {
+            durationMS: 1_000,
             x: context.targetPosition.x,
             y: context.targetPosition.y,
-          }),
+          },
         }),
         onDone: 'Done',
       },
