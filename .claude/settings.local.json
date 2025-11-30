@@ -1,21 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm test)",
-      "Bash(pnpm lint)",
-      "Bash(pnpm format)",
-      "Bash(pnpm exec tsc:*)",
-      "Bash(pnpm dev)",
       "Bash(cat:*)",
-      "Bash(pnpm format:*)",
-      "Bash(pnpm add:*)",
+      "Bash(git add:*)",
       "Bash(git mv:*)",
-      "Bash(tree:*)",
       "Bash(git rm:*)",
-      "Bash(pnpm lint:*)",
+      "Bash(node -e:*)",
+      "Bash(pnpm add:*)",
       "Bash(pnpm build)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm exec tsc:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm format)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm test)",
       "Bash(pnpm tsc:*)",
-      "Bash(git add:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
