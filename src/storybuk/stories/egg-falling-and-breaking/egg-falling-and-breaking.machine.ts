@@ -5,7 +5,7 @@ import { STAGE_PADDING } from '../../story-constants';
 import type { Direction, Position } from '../../../types';
 
 /**
- * Egg Splat Machine - Simplified Demo
+ * Egg Falling and Breaking Machine - Simplified Demo
  *
  * Based on the real egg.machine.ts but with complexities stripped out.
  * Demonstrates a simple falling and splatting animation.
@@ -37,7 +37,7 @@ const DEMO_CONFIG = {
   rotationSpeed: 5, // Degrees per frame
 };
 
-export const eggSplatMachine = setup({
+export const eggFallingAndBreakingMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -104,7 +104,7 @@ export const eggSplatMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Egg-Splat',
+  id: 'Egg-Falling-And-Breaking',
   context: ({ input }) => {
     const canvasHeight = input.canvasHeight ?? 1080;
     const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
@@ -163,4 +163,6 @@ export const eggSplatMachine = setup({
   },
 });
 
-export type EggSplatActorRef = ActorRefFrom<typeof eggSplatMachine>;
+export type EggFallingAndBreakingActorRef = ActorRefFrom<
+  typeof eggFallingAndBreakingMachine
+>;

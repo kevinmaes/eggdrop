@@ -9,10 +9,10 @@ import {
 } from '../../story-config-constants';
 
 // Explicit imports - no pattern matching!
-import { EggSplat } from './egg-splat';
-import { EggSplatHeadless } from './egg-splat-headless';
-import { eggSplatHeadlessMachine } from './egg-splat-headless.machine';
-import { eggSplatMachine } from './egg-splat.machine';
+import { EggFallingAndBreaking } from './egg-falling-and-breaking';
+import { EggFallingAndBreakingHeadless } from './egg-falling-and-breaking-headless';
+import { eggFallingAndBreakingHeadlessMachine } from './egg-falling-and-breaking-headless.machine';
+import { eggFallingAndBreakingMachine } from './egg-falling-and-breaking.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'horizontal',
@@ -35,8 +35,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-visual',
-      machine: eggSplatMachine,
-      Component: EggSplat,
+      machine: eggFallingAndBreakingMachine,
+      Component: EggFallingAndBreaking,
     },
     {
       type: 'egg',
@@ -47,8 +47,8 @@ export const storyConfig: StoryConfig = {
         y: getFallingStartY(canvasDimensions.canvasHeight),
       },
       id: 'egg-headless',
-      machine: eggSplatHeadlessMachine,
-      Component: EggSplatHeadless,
+      machine: eggFallingAndBreakingHeadlessMachine,
+      Component: EggFallingAndBreakingHeadless,
     },
   ],
   background: {

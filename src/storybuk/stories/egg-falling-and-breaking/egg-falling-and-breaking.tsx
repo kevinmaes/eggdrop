@@ -7,12 +7,12 @@ import useImage from 'use-image';
 
 import eggSpriteData from '../../../images/egg.sprite.json';
 
-import { eggSplatMachine } from './egg-splat.machine';
+import { eggFallingAndBreakingMachine } from './egg-falling-and-breaking.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
 /**
- * Egg Splat Component
+ * Egg Falling and Breaking Component
  *
  * Displays an egg that falls and splats on the ground.
  * Uses window.requestAnimationFrame to continuously update position.
@@ -38,10 +38,10 @@ const BROKEN_EGG_SIZE = {
   height: 60,
 };
 
-export function EggSplat({
+export function EggFallingAndBreaking({
   actorRef,
 }: {
-  actorRef: ActorRefFrom<typeof eggSplatMachine>;
+  actorRef: ActorRefFrom<typeof eggFallingAndBreakingMachine>;
 }) {
   const { position, rotation, currentState } = useSelector(
     actorRef,

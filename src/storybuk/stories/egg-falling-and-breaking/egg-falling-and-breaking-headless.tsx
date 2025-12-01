@@ -4,14 +4,14 @@ import { createActor } from 'xstate';
 
 import { getSharedInspector } from '../../utils/shared-inspector';
 
-import { eggSplatHeadlessMachine } from './egg-splat-headless.machine';
+import { eggFallingAndBreakingHeadlessMachine } from './egg-falling-and-breaking-headless.machine';
 
 import type { ActorConfig } from '../../types';
 
 /**
- * Headless Egg Splat Component with Inspector
+ * Headless Egg Falling and Breaking Component with Inspector
  *
- * This component uses the same state machine as the visual egg splat demo
+ * This component uses the same state machine as the visual egg falling and breaking demo
  * but displays state information as text instead of Konva graphics.
  * This allows the Stately Inspector to work without serialization issues.
  *
@@ -22,7 +22,7 @@ import type { ActorConfig } from '../../types';
  * that switching stories updates the same inspector window.
  */
 
-interface EggSplatHeadlessProps {
+interface EggFallingAndBreakingHeadlessProps {
   config: ActorConfig;
   resetCount?: number;
   shouldStart?: boolean;
@@ -30,13 +30,13 @@ interface EggSplatHeadlessProps {
   canvasHeight: number;
 }
 
-export function EggSplatHeadless({
+export function EggFallingAndBreakingHeadless({
   config,
   resetCount = 0,
   shouldStart = false,
   canvasWidth,
   canvasHeight,
-}: EggSplatHeadlessProps) {
+}: EggFallingAndBreakingHeadlessProps) {
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
   const [hasStarted, setHasStarted] = useState(false);
@@ -50,8 +50,8 @@ export function EggSplatHeadless({
     // Create and immediately start the actor with inspection
     // Starting the actor connects it to inspector but machine stays in initial state
     // Include resetCount in ID to ensure each instance is unique for inspector
-    const actorId = `${config.id || 'egg-splat-headless'}-${resetCount}`;
-    const newActor = createActor(eggSplatHeadlessMachine as any, {
+    const actorId = `${config.id || 'egg-falling-and-breaking-headless'}-${resetCount}`;
+    const newActor = createActor(eggFallingAndBreakingHeadlessMachine as any, {
       id: actorId, // XState actor ID for inspector
       input: {
         startPosition: config.startPosition,
@@ -121,7 +121,7 @@ export function EggSplatHeadless({
     return (
       <div style={{ padding: '40px', fontFamily: 'monospace' }}>
         <h1 style={{ color: '#4ec9b0', marginBottom: '10px' }}>
-          Egg Splat (Headless Inspector Mode)
+          Egg Falling and Breaking (Headless Inspector Mode)
         </h1>
         <p style={{ color: '#808080', marginBottom: '20px' }}>
           Ready to start. Click Play to begin synchronized playback.
@@ -144,7 +144,7 @@ export function EggSplatHeadless({
       }}
     >
       <h1 style={{ color: '#4ec9b0', marginBottom: '10px' }}>
-        Egg Splat (Headless Inspector Mode)
+        Egg Falling and Breaking (Headless Inspector Mode)
       </h1>
       <p style={{ color: '#808080', marginBottom: '30px' }}>
         Text-based visualization for inspector integration

@@ -5,9 +5,9 @@ import { STAGE_PADDING } from '../../story-constants';
 import type { Direction, Position } from '../../../types';
 
 /**
- * Headless Egg Splat Machine - Simplified Demo
+ * Headless Egg Falling and Breaking Machine - Simplified Demo
  *
- * This is a version of egg-splat.machine.ts with all React ref dependencies removed.
+ * This is a version of egg-falling-and-breaking.machine.ts with all React ref dependencies removed.
  * It maintains the same state structure and logic but uses pure data for position updates.
  *
  * Purpose: Enable Stately Inspector integration without serialization issues.
@@ -39,7 +39,7 @@ const DEMO_CONFIG = {
   rotationSpeed: 5, // Degrees per frame
 };
 
-export const eggSplatHeadlessMachine = setup({
+export const eggFallingAndBreakingHeadlessMachine = setup({
   types: {} as {
     input: {
       id: string;
@@ -99,7 +99,7 @@ export const eggSplatHeadlessMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Egg-Splat-Headless',
+  id: 'Egg-Falling-And-Breaking-Headless',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
@@ -155,6 +155,6 @@ export const eggSplatHeadlessMachine = setup({
   },
 });
 
-export type EggSplatHeadlessActorRef = ActorRefFrom<
-  typeof eggSplatHeadlessMachine
+export type EggFallingAndBreakingHeadlessActorRef = ActorRefFrom<
+  typeof eggFallingAndBreakingHeadlessMachine
 >;
