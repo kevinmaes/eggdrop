@@ -12,7 +12,7 @@ import { eggFallLandOnlyMachine } from './egg-fall-land-only.machine';
 import type { ActorRefFrom } from 'xstate';
 
 /**
- * Falling and Landing Only Component
+ * Falling + Landing Only Component
  *
  * Focuses on falling physics and landing detection:
  * - White egg falls with rotation

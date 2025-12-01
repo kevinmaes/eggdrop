@@ -10,7 +10,7 @@ import { eggFallLandOnlyHeadlessMachine } from './egg-fall-land-only-headless.ma
 import type { ActorConfig } from '../../types';
 
 /**
- * Headless Falling and Landing Only Component
+ * Headless Falling + Landing Only Component
  *
  * Displays state information for the falling and landing demo.
  * Focuses on physics and landing detection in isolation.
@@ -141,7 +141,7 @@ export function EggFallLandOnlyHeadless({
           color: '#ffffff',
         }}
       >
-        Falling and Landing Only - Headless Actor
+        Falling + Landing Only - Headless Actor
       </h2>
 
       <div

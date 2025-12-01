@@ -22,7 +22,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 export const storyConfig: StoryConfig = {
   id: '11',
   type: 'animated',
-  title: 'Egg - Falling and Landing',
+  title: 'Egg - Falling + Landing',
   description:
     'Incremental demo: egg falls with rotation and lands - Shows physics and landing detection - Visual story + headless inspector',
   actors: [
@@ -56,6 +56,7 @@ export const storyConfig: StoryConfig = {
     color: STORYBUK_COLORS.storyDemoBackground,
   },
   layoutMode: 'horizontal-split-narrow',
-  statelyEmbedUrl: '',
+  statelyEmbedUrl:
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=8841e748-63ed-4ca8-b99d-10b051da7d0d',
   ...canvasDimensions,
 };

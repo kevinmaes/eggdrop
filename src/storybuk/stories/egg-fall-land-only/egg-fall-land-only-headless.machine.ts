@@ -5,7 +5,7 @@ import { STAGE_PADDING } from '../../story-constants';
 import type { Direction, Position } from '../../../types';
 
 /**
- * Headless Falling and Landing Only Demo
+ * Headless Falling + Landing Only Demo
  *
  * Inspector-compatible version focusing on falling and landing:
  * - Waiting
