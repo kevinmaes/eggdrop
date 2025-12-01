@@ -76,6 +76,7 @@ export const eggMachine = setup({
     },
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QDECGAbdBLAdlAtAKJRQDEAymAC4AEYJASmAGYDaADALqKgAOA9rCxUs-HDxAAPRACYAjDIB07dgFYA7DIAc6uQE49AFj1aANCACeiLYcXrDc1avYA2Q-YDM7dVoC+v8zRMXAJiKEUg7DxSAFVeCFQqMA5uJBABIRExCWkEeSUNJx05dkcZVRcPcys8rXZFDzktCsaPF1VDG39AjCjQkgjekNj4xOS5VL5BYVFxNNz8xS0XZqLVEtUDdWrEDw91BpcmxpaKw1V-AJAcfgg4CUiQohIJDJns+cQ3BtV9mT05IYHNtLIh9HJFDJ1Ox9np1C4Vh4ZJVuiBHnhnuF0VBXtMsnNQLk5Aofn8AUC5CCalC9HYVN5-k0HL9UdjMYoACJiMC4zKzHKIQwIxSGGEyGTnNrqaFQnZ5Hwi1TiwweTqNQxQi6XIA */
   id: 'Falling-Egg',
   context: ({ input }) => ({
     eggRef: { current: null },

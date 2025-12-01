@@ -106,6 +106,7 @@ export const henLayingFallingEggMachine = setup({
     }),
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QAkwDsC0BRKUMHkAnAYwAs4AXQgQwoHtCA6ASQgBswBiABTeoE8A2gAYAuolAAHOrACWFWXTQSQAD0QAOAKyMAjAE4ALMN2GATGa0A2MwHYNAGhD9E+3Y0Naj+s8I0bhYTMNKwBfUKdUTBw8IjJKGnomACUAVzQ0WTQoTgAZAQACajQCsFwRcSQQaTkFJRV1BDNdW0Z9W1MrfQBmLVstXqtHZ1d3T29ff0DgsIiQKOxcAhJyWCpaBkY0jKyc5LgwCgqVGvlFZSrG7qt3fX1tQ11hLT9fXScXBF0NfUZu+26gUM3XMd1sZnCkXQi1iKwSGxS6Uy2U4xyqpzqF1AjReZkYWjM7SePw05gJVg+iEefzshKe3QZNzMIPCczQdAgcBUCxiy3ia0SDBOMjO9UuiAwBlaII0thuwLcnm0lIQGE8jAeWgGgN0Ni0hn0kPm0N5cVW6ySLHYYGFtXODQlpl+Mrlpm6iq0ypGCH0wkYJmEPistnaRn83SNPKWZvhlu2yKgttFWLUiG6pI1wWMVmDwReIRVul03T+nm6utsfmEhnlrNCQA */
   id: 'Hen-Egg-Orchestrator',
   context: ({ input }) => ({
     id: input.id,
