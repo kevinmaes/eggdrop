@@ -40,7 +40,6 @@ export function EggFallingAndBreakingHeadless({
   const [actor, setActor] = useState<any>(null);
   const [state, setState] = useState<any>(null);
   const [hasStarted, setHasStarted] = useState(false);
-  const animationFrameRef = useRef<number | null>(null);
 
   // Create actor with shared inspector - start actor but don't trigger animation yet
   useEffect(() => {
@@ -73,9 +72,6 @@ export function EggFallingAndBreakingHeadless({
     setActor(newActor);
 
     return () => {
-      if (animationFrameRef.current !== null) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
       newActor.stop();
     };
   }, [config, resetCount, canvasWidth, canvasHeight]);
@@ -87,27 +83,6 @@ export function EggFallingAndBreakingHeadless({
       setHasStarted(true);
     }
   }, [shouldStart, actor, hasStarted]);
-
-  // Animation loop - send Update events on each frame (only when falling)
-  useEffect(() => {
-    if (!actor || !hasStarted || !state) return;
-
-    const currentState = String(state.value);
-    if (currentState !== 'Falling') return;
-
-    const animate = () => {
-      actor.send({ type: 'Update' });
-      animationFrameRef.current = window.requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current !== null) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [actor, hasStarted, state]);
 
   if (!actor) {
     return (
@@ -178,16 +153,6 @@ export function EggFallingAndBreakingHeadless({
             value={Math.round(context.position.y)}
             highlight={currentState === 'Falling'}
           />
-          <StateField
-            label="Velocity"
-            value={context.velocity.toFixed(2)}
-            highlight={currentState === 'Falling'}
-          />
-          <StateField
-            label="Rotation"
-            value={`${Math.round(context.rotation)}°`}
-            highlight={currentState === 'Falling'}
-          />
         </div>
 
         {/* Position Information */}
@@ -212,19 +177,15 @@ export function EggFallingAndBreakingHeadless({
             label="Current Y"
             value={Math.round(context.position.y)}
           />
+          <StateField
+            label="Target Y"
+            value={Math.round(context.targetPosition.y)}
+          />
           <StateField label="Ground Y" value={context.groundY} />
           <StateField label="Canvas Height" value={context.canvasHeight} />
-          <StateField
-            label="Rotation Direction"
-            value={
-              context.rotationDirection === 1
-                ? 'Clockwise'
-                : 'Counter-clockwise'
-            }
-          />
         </div>
 
-        {/* Physics Information */}
+        {/* Animation Information */}
         <div
           style={{
             backgroundColor: '#252526',
@@ -236,15 +197,12 @@ export function EggFallingAndBreakingHeadless({
           <h2
             style={{ color: '#4fc1ff', fontSize: '18px', marginBottom: '15px' }}
           >
-            Physics Data
+            Animation Settings
           </h2>
-          <StateField
-            label="Current Velocity"
-            value={`${context.velocity.toFixed(2)} px/frame`}
-          />
-          <StateField label="Gravity" value="0.15 px/frame²" />
-          <StateField label="Max Velocity" value="8 px/frame" />
-          <StateField label="Rotation Speed" value="5°/frame" />
+          <StateField label="Falling Duration" value="3 seconds" />
+          <StateField label="Rotation" value="720° or -720° (random)" />
+          <StateField label="Animation Type" value="Tween-based" />
+          <StateField label="Uses RAF" value="No" />
         </div>
 
         {/* Progress Information */}
@@ -263,10 +221,6 @@ export function EggFallingAndBreakingHeadless({
           </h2>
           <StateField label="Actor ID" value={context.id} />
           <StateField
-            label="At Terminal Velocity"
-            value={context.velocity >= 8 ? 'Yes' : 'No'}
-          />
-          <StateField
             label="Has Landed"
             value={
               currentState === 'Landed' || currentState === 'Splatting'
@@ -277,10 +231,6 @@ export function EggFallingAndBreakingHeadless({
           <StateField
             label="Is Splatted"
             value={currentState === 'Splatting' ? 'Yes' : 'No'}
-          />
-          <StateField
-            label="Rotations"
-            value={`${(Math.abs(context.rotation) / 360).toFixed(1)}`}
           />
         </div>
       </div>
@@ -302,18 +252,16 @@ export function EggFallingAndBreakingHeadless({
             The Stately Inspector should open in a separate window automatically
           </li>
           <li>
-            Watch the state transitions in real-time as the egg falls, rotates,
-            and splats
+            Watch the state transitions in real-time as the egg falls with tween
+            animation, rotates, and splats
           </li>
           <li>States: Waiting → Falling → Landed → Splatting</li>
+          <li>The falling animation uses Konva.Tween (no RAF loop needed)</li>
           <li>
-            Context values update every frame during falling (position,
-            velocity, rotation)
+            Observe the smooth tween-based falling and transition to splatting
+            state
           </li>
-          <li>
-            Observe the landing detection and transition to splatting state
-          </li>
-          <li>Watch rotation accumulate while falling</li>
+          <li>Rotation is handled by the tween actor (720° or -720° random)</li>
           <li>Splat remains visible indefinitely in Splatting state</li>
         </ol>
       </div>

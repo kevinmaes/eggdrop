@@ -1,15 +1,19 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
 import { STAGE_PADDING } from '../../story-constants';
+import {
+  tweenActorHeadless,
+  type TweenConfigHeadless,
+} from '../../tweenActorHeadless';
 
-import type { Direction, Position } from '../../../types';
+import type { Position } from '../../../types';
 
 /**
- * Headless Egg Land and Hatch Demo
+ * Headless Egg Land and Hatch Demo - Using Tween Actor Pattern
  *
  * Inspector-compatible version showing egg landing and hatching:
  * - Waiting
- * - Falling (gravity + rotation)
+ * - Falling (tween-based with rotation)
  * - Landed (positions egg on ground)
  * - Hatching (300ms pause showing chick in shell)
  * - Done
@@ -20,10 +24,7 @@ const DEMO_CONFIG = {
   eggHeight: 60,
   chickWidth: 60,
   chickHeight: 60,
-  gravity: 0.15,
-  startY: 100,
-  maxVelocity: 8,
-  rotationSpeed: 5,
+  fallingDuration: 3,
   hatchingPauseDuration: 300,
 };
 
@@ -34,7 +35,6 @@ export const eggLandHatchHeadlessMachine = setup({
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
-      rotationDirection?: Direction['value'];
     };
     output: {
       eggId: string;
@@ -42,42 +42,27 @@ export const eggLandHatchHeadlessMachine = setup({
     context: {
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: Direction['value'];
+      targetPosition: Position;
       canvasWidth: number;
       canvasHeight: number;
       groundY: number;
+      currentTweenDurationMS: number;
     };
-    events: { type: 'Start' } | { type: 'Update' };
+    events: { type: 'Start' };
+  },
+  actors: {
+    fallingTweenActor: tweenActorHeadless,
   },
   actions: {
-    updatePositionAndRotation: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-      rotation: ({ context }) => {
-        return (
-          context.rotation +
-          context.rotationDirection * DEMO_CONFIG.rotationSpeed
-        );
-      },
-    }),
-    positionEggOnGround: assign({
-      position: ({ context }) => ({
+    setTweenProperties: assign({
+      targetPosition: ({ context }) => ({
         x: context.position.x,
         y: context.groundY - DEMO_CONFIG.eggHeight / 2,
       }),
-      velocity: 0,
-      rotation: 0,
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
+    }),
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
     }),
     positionChickOnGround: assign({
       position: ({ context }) => ({
@@ -85,11 +70,6 @@ export const eggLandHatchHeadlessMachine = setup({
         y: context.groundY - DEMO_CONFIG.chickHeight / 2,
       }),
     }),
-  },
-  guards: {
-    hasLanded: ({ context }) => {
-      return context.position.y + DEMO_CONFIG.eggHeight / 2 >= context.groundY;
-    },
   },
   delays: {
     hatchingPauseDuration: DEMO_CONFIG.hatchingPauseDuration,
@@ -99,21 +79,16 @@ export const eggLandHatchHeadlessMachine = setup({
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    const eggCenterX = Math.floor(canvasWidth / 2);
     const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
 
     return {
       id: input.id,
-      position: input.startPosition || {
-        x: eggCenterX,
-        y: DEMO_CONFIG.startY,
-      },
-      velocity: 0,
-      rotation: 0,
-      rotationDirection: input.rotationDirection ?? 1,
+      position: input.startPosition,
+      targetPosition: { x: 0, y: 0 },
       canvasWidth,
       canvasHeight,
       groundY,
+      currentTweenDurationMS: 0,
     };
   },
   output: ({ context }) => ({
@@ -127,22 +102,32 @@ export const eggLandHatchHeadlessMachine = setup({
       },
     },
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'hasLanded',
-            target: 'Landed',
+      entry: 'setTweenProperties',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          const config: TweenConfigHeadless = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: Math.random() > 0.5 ? 720 : -720,
+          };
+
+          return { config };
+        },
+        onDone: {
+          target: 'Landed',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
+        },
       },
     },
     Landed: {
       always: {
         target: 'Hatching',
-        actions: ['positionEggOnGround', 'positionChickOnGround'],
+        actions: 'positionChickOnGround',
       },
     },
     Hatching: {

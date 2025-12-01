@@ -1,18 +1,21 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
+import Konva from 'konva';
 
 import { STAGE_PADDING } from '../../story-constants';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
+import { isImageRef } from '../../../types';
 
-import type { Direction, Position } from '../../../types';
+import type { Position } from '../../../types';
 
 /**
- * Egg Falling and Breaking Machine - Simplified Demo
+ * Egg Falling and Breaking Machine - Using Tween Actor Pattern
  *
  * Based on the real egg.machine.ts but with complexities stripped out.
- * Demonstrates a simple falling and splatting animation.
+ * Demonstrates a simple falling and splatting animation using tween actor.
  *
  * States:
  * - Waiting: Initial state before falling starts
- * - Falling: Egg falls with gravity
+ * - Falling: Egg falls with tween animation and rotation
  * - Landed: Transition state when egg hits ground
  * - Splatting: Shows broken egg sprite (stays in this state)
  *
@@ -31,10 +34,7 @@ const DEMO_CONFIG = {
   eggHeight: 60,
   brokenEggWidth: 90, // Splat is wider
   brokenEggHeight: 60,
-  gravity: 0.15,
-  startY: 100,
-  maxVelocity: 8,
-  rotationSpeed: 5, // Degrees per frame
+  fallingDuration: 3, // seconds
 };
 
 export const eggFallingAndBreakingMachine = setup({
@@ -44,49 +44,39 @@ export const eggFallingAndBreakingMachine = setup({
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
-      rotationDirection?: Direction['value'];
     };
     output: {
       eggId: string;
     };
     context: {
-      eggRef: { current: null };
+      eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: Direction['value'];
+      targetPosition: Position;
       canvasHeight: number;
-      groundY: number; // Y position where egg hits ground
+      groundY: number;
+      currentTweenDurationMS: number;
     };
     events:
       | { type: 'Set eggRef'; eggRef: React.RefObject<any> }
-      | { type: 'Play' }
-      | { type: 'Update' };
+      | { type: 'Play' };
+  },
+  actors: {
+    fallingTweenActor: tweenActor,
   },
   actions: {
     setEggRef: assign({
       eggRef: (_, params: React.RefObject<any>) => params,
     }),
-    updatePositionAndRotation: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-      rotation: ({ context }) => {
-        // Rotate the egg continuously while falling
-        return (
-          context.rotation +
-          context.rotationDirection * DEMO_CONFIG.rotationSpeed
-        );
-      },
+    setTweenProperties: assign({
+      targetPosition: ({ context }) => ({
+        x: context.position.x,
+        y: context.groundY - DEMO_CONFIG.eggHeight / 2,
+      }),
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
+    }),
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
     }),
     splatOnFloor: assign({
       position: ({ context }) => ({
@@ -95,13 +85,7 @@ export const eggFallingAndBreakingMachine = setup({
         x: context.position.x - DEMO_CONFIG.brokenEggWidth / 2,
         y: context.groundY - DEMO_CONFIG.brokenEggHeight,
       }),
-      velocity: 0, // Stop all movement
     }),
-  },
-  guards: {
-    hasLanded: ({ context }) => {
-      return context.position.y + DEMO_CONFIG.eggHeight >= context.groundY;
-    },
   },
 }).createMachine({
   id: 'Egg-Falling-And-Breaking',
@@ -113,11 +97,10 @@ export const eggFallingAndBreakingMachine = setup({
       eggRef: { current: null },
       id: input.id,
       position: input.startPosition,
-      velocity: 0,
-      rotation: 0,
-      rotationDirection: input.rotationDirection ?? 1,
+      targetPosition: { x: 0, y: 0 },
       canvasHeight,
       groundY,
+      currentTweenDurationMS: 0,
     };
   },
   output: ({ context }) => ({
@@ -139,16 +122,30 @@ export const eggFallingAndBreakingMachine = setup({
       },
     },
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'hasLanded',
-            target: 'Landed',
+      entry: 'setTweenProperties',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          if (!isImageRef(context.eggRef)) {
+            throw new Error('Egg ref is not set');
+          }
+
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: Math.random() > 0.5 ? 720 : -720,
+          };
+
+          return { node: context.eggRef.current, config };
+        },
+        onDone: {
+          target: 'Landed',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
+        },
       },
     },
     Landed: {

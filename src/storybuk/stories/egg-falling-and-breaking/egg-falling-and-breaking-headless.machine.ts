@@ -1,20 +1,24 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
 
 import { STAGE_PADDING } from '../../story-constants';
+import {
+  tweenActorHeadless,
+  type TweenConfigHeadless,
+} from '../../tweenActorHeadless';
 
-import type { Direction, Position } from '../../../types';
+import type { Position } from '../../../types';
 
 /**
- * Headless Egg Falling and Breaking Machine - Simplified Demo
+ * Headless Egg Falling and Breaking Machine - Using Tween Actor Pattern
  *
  * This is a version of egg-falling-and-breaking.machine.ts with all React ref dependencies removed.
- * It maintains the same state structure and logic but uses pure data for position updates.
+ * It maintains the same state structure and logic but uses tween actor for animation.
  *
  * Purpose: Enable Stately Inspector integration without serialization issues.
  *
  * States:
  * - Waiting: Initial state before falling starts
- * - Falling: Egg falls with gravity
+ * - Falling: Egg falls with tween animation and rotation
  * - Landed: Transition state when egg hits ground
  * - Splatting: Shows broken egg sprite (stays in this state)
  *
@@ -33,10 +37,7 @@ const DEMO_CONFIG = {
   eggHeight: 60,
   brokenEggWidth: 90, // Splat is wider
   brokenEggHeight: 60,
-  gravity: 0.15,
-  startY: 100,
-  maxVelocity: 8,
-  rotationSpeed: 5, // Degrees per frame
+  fallingDuration: 3, // seconds
 };
 
 export const eggFallingAndBreakingHeadlessMachine = setup({
@@ -46,7 +47,6 @@ export const eggFallingAndBreakingHeadlessMachine = setup({
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
-      rotationDirection?: Direction['value'];
     };
     output: {
       eggId: string;
@@ -54,34 +54,26 @@ export const eggFallingAndBreakingHeadlessMachine = setup({
     context: {
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: Direction['value'];
+      targetPosition: Position;
       canvasHeight: number;
-      groundY: number; // Y position where egg hits ground
+      groundY: number;
+      currentTweenDurationMS: number;
     };
-    events: { type: 'Start' } | { type: 'Update' };
+    events: { type: 'Start' };
+  },
+  actors: {
+    fallingTweenActor: tweenActorHeadless,
   },
   actions: {
-    updatePositionAndRotation: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-      rotation: ({ context }) => {
-        // Rotate the egg continuously while falling
-        return (
-          context.rotation +
-          context.rotationDirection * DEMO_CONFIG.rotationSpeed
-        );
-      },
+    setTweenProperties: assign({
+      targetPosition: ({ context }) => ({
+        x: context.position.x,
+        y: context.groundY - DEMO_CONFIG.eggHeight / 2,
+      }),
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
+    }),
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
     }),
     splatOnFloor: assign({
       position: ({ context }) => ({
@@ -90,34 +82,21 @@ export const eggFallingAndBreakingHeadlessMachine = setup({
         x: context.position.x - DEMO_CONFIG.brokenEggWidth / 2,
         y: context.groundY - DEMO_CONFIG.brokenEggHeight,
       }),
-      velocity: 0, // Stop all movement
     }),
-  },
-  guards: {
-    hasLanded: ({ context }) => {
-      return context.position.y + DEMO_CONFIG.eggHeight >= context.groundY;
-    },
   },
 }).createMachine({
   id: 'Egg-Falling-And-Breaking-Headless',
   context: ({ input }) => {
-    const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
-    // Since we use offsetX/offsetY for rotation, position.x IS the center point
-    const eggCenterX = Math.floor(canvasWidth / 2);
     const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
 
     return {
       id: input.id,
-      position: input.startPosition || {
-        x: eggCenterX,
-        y: DEMO_CONFIG.startY,
-      },
-      velocity: 0,
-      rotation: 0,
-      rotationDirection: input.rotationDirection ?? 1,
+      position: input.startPosition,
+      targetPosition: { x: 0, y: 0 },
       canvasHeight,
       groundY,
+      currentTweenDurationMS: 0,
     };
   },
   output: ({ context }) => ({
@@ -131,16 +110,26 @@ export const eggFallingAndBreakingHeadlessMachine = setup({
       },
     },
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'hasLanded',
-            target: 'Landed',
+      entry: 'setTweenProperties',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          const config: TweenConfigHeadless = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: Math.random() > 0.5 ? 720 : -720,
+          };
+
+          return { config };
+        },
+        onDone: {
+          target: 'Landed',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
+        },
       },
     },
     Landed: {

@@ -12,12 +12,14 @@ import { eggFallLandOnlyMachine } from './egg-fall-land-only.machine';
 import type { ActorRefFrom } from 'xstate';
 
 /**
- * Falling + Landing Only Component
+ * Falling + Landing Only Component - Using Tween Actor Pattern
  *
- * Focuses on falling physics and landing detection:
- * - White egg falls with rotation
- * - Lands on ground (stops rotating)
+ * Demonstrates tween-based falling animation:
+ * - White egg falls with rotation (handled by tween actor)
+ * - Lands on ground
  * - Done
+ *
+ * No requestAnimationFrame needed - tween actor handles the animation.
  */
 
 function isImageRef(
@@ -39,55 +41,18 @@ export function EggFallLandOnly({
 }: {
   actorRef: ActorRefFrom<typeof eggFallLandOnlyMachine>;
 }) {
-  const { position, rotation, currentState } = useSelector(
-    actorRef,
-    (state) => ({
-      position: state?.context.position ?? { x: 0, y: 0 },
-      rotation: state?.context.rotation ?? 0,
-      currentState: state?.value ?? 'Waiting',
-    })
-  );
-
-  const isFalling = currentState === 'Falling';
+  const { position } = useSelector(actorRef, (state) => ({
+    position: state?.context.position ?? { x: 0, y: 0 },
+  }));
 
   const [eggImage] = useImage('/images/egg.sprite.png');
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>(0);
-  const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
     if (isImageRef(eggRef)) {
       actorRef.send({ type: 'Set eggRef', eggRef });
     }
   }, [actorRef, eggRef]);
-
-  useEffect(() => {
-    if (!isFalling) {
-      return;
-    }
-
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - lastUpdateRef.current;
-
-      if (elapsed >= frameTime) {
-        actorRef.send({ type: 'Update' });
-        lastUpdateRef.current = timestamp;
-      }
-
-      animationFrameRef.current = window.requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [actorRef, isFalling]);
 
   if (!position) {
     return null;
@@ -106,7 +71,6 @@ export function EggFallLandOnly({
       height={EGG_SIZE.height}
       offsetX={EGG_SIZE.width / 2}
       offsetY={EGG_SIZE.height / 2}
-      rotation={rotation}
       crop={{
         x: currentFrame.x,
         y: currentFrame.y,

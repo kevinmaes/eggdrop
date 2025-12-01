@@ -38,14 +38,10 @@ export function EggLandHatchHeadless({
         startPosition: config.startPosition,
         canvasWidth,
         canvasHeight,
-        rotationDirection: 1,
       },
       inspect: getSharedInspector().inspect,
     })
   );
-
-  const animationFrameRef = useRef<number>(0);
-  const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
     const actor = actorRef.current;
@@ -65,36 +61,6 @@ export function EggLandHatchHeadless({
   const snapshot = useSelector(actorRef.current, (state) => state);
   const context = snapshot.context;
   const currentState = snapshot.value;
-
-  const needsAnimation = currentState === 'Falling';
-
-  useEffect(() => {
-    if (!needsAnimation) {
-      return;
-    }
-
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - lastUpdateRef.current;
-
-      if (elapsed >= frameTime) {
-        actorRef.current.send({ type: 'Update' });
-        lastUpdateRef.current = timestamp;
-      }
-
-      animationFrameRef.current = window.requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [needsAnimation]);
 
   function StateField({
     label,
@@ -194,10 +160,9 @@ export function EggLandHatchHeadless({
             label="Current Y"
             value={Math.round(context.position.y)}
           />
-          <StateField label="Velocity" value={context.velocity.toFixed(2)} />
           <StateField
-            label="Rotation"
-            value={`${Math.round(context.rotation)}°`}
+            label="Target Y"
+            value={Math.round(context.targetPosition.y)}
           />
           <StateField label="Ground Y" value={context.groundY} />
         </div>
@@ -217,10 +182,11 @@ export function EggLandHatchHeadless({
         </h3>
         <div style={{ lineHeight: '1.8', color: '#cccccc' }}>
           <div>1. Waiting (initial position)</div>
-          <div>2. Falling (gravity + rotation)</div>
+          <div>2. Falling (tween-based with rotation)</div>
           <div>3. Landed (positioned on ground)</div>
           <div>4. Hatching (300ms pause, shows chick in shell)</div>
           <div>5. Done (final)</div>
+          <div>• Animation: Tween-based (no RAF)</div>
         </div>
       </div>
     </div>
