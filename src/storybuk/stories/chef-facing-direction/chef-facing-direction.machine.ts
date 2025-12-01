@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { tweenActor } from '../../../tweenActor';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
 import { isImageRef, type Direction, type Position } from '../../../types';
 import { CHEF_DEMO, STORY_CANVAS } from '../../story-constants';
 
@@ -184,13 +184,15 @@ export const chefFacingDirectionMachine = setup({
             throw new Error('Chef ref is not set');
           }
 
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            easing: 'EaseInOut',
+          };
+
           return {
             node: context.chefRef.current,
-            config: {
-              durationMS: context.currentTweenDurationMS,
-              x: context.targetPosition.x,
-              easing: 'EaseInOut' as const,
-            },
+            config,
           };
         },
         onDone: {

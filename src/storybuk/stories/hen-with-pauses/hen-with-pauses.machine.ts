@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { tweenActor } from '../../../tweenActor';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
 import { isImageRef, type Direction, type Position } from '../../../types';
 import { HEN_DEMO, STORY_CANVAS } from '../../story-constants';
 
@@ -245,14 +245,16 @@ export const henWithPausesMachine = setup({
             throw new Error('Hen ref is not set');
           }
 
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            easing: 'EaseInOut',
+          };
+
           return {
             node: context.henRef.current,
-            config: {
-              durationMS: context.currentTweenDurationMS,
-              x: context.targetPosition.x,
-              y: context.targetPosition.y,
-              easing: 'EaseInOut' as const,
-            },
+            config,
           };
         },
         onDone: {

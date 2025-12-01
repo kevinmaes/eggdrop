@@ -2,7 +2,7 @@ import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
 import { EGG_ROTATION } from '../../../constants';
-import { tweenActor } from '../../../tweenActor';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
 import { isImageRef } from '../../../types';
 
 import type { Position } from '../../../types';
@@ -117,14 +117,16 @@ export const eggFallingRotatingMachine = setup({
             throw new Error('Egg ref is not set');
           }
 
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
+          };
+
           return {
             node: context.eggRef.current,
-            config: {
-              durationMS: context.currentTweenDurationMS,
-              x: context.targetPosition.x,
-              y: context.targetPosition.y,
-              rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
-            },
+            config,
           };
         },
         onDone: {

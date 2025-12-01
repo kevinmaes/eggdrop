@@ -1,10 +1,12 @@
 import { assign, setup } from 'xstate';
 
 import { CHEF_DEMO, STORY_CANVAS } from '../../story-constants';
-import { tweenActorHeadless } from '../../tweenActorHeadless';
+import {
+  tweenActorHeadless,
+  type TweenConfigHeadless,
+} from '../../tweenActorHeadless';
 
 import type { Direction, Position } from '../../../types';
-import type { DoneActorEvent, OutputFrom } from 'xstate';
 
 /**
  * Headless Chef Machine - Back and Forth Movement
@@ -202,19 +204,19 @@ export const chefBackAndForthHeadlessMachine = setup({
       invoke: {
         id: 'tweenActorHeadless',
         src: 'tweenActorHeadless',
-        input: ({ context }) => ({
-          currentTweenSpeed: context.currentTweenSpeed,
-          currentTweenDurationMS: context.currentTweenDurationMS,
-          currentTweenStartTime: context.currentTweenStartTime,
-          tweenDirection: context.currentTweenDirection,
-          targetPosition: context.targetPosition,
-        }),
+        input: ({ context }) => {
+          const config: TweenConfigHeadless = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+          };
+
+          return { config };
+        },
         onDone: {
           target: 'Done Moving',
           actions: assign({
-            position: ({ event }) =>
-              (event as DoneActorEvent<OutputFrom<typeof tweenActorHeadless>>)
-                .output.lastPosition,
+            position: ({ event }) => event.output,
           }),
         },
       },

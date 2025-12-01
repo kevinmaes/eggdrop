@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { assign, sendParent, setup } from 'xstate';
 
+import type { EggColor } from '../../../Egg/egg.machine';
 import type { Position } from '../../../types';
 
 /**
@@ -21,8 +22,6 @@ const DEMO_CONFIG = {
   rotationSpeed: 5,
 };
 
-export type EggColor = 'white' | 'gold' | 'black';
-
 export const eggMachine = setup({
   types: {} as {
     input: {
@@ -30,7 +29,7 @@ export const eggMachine = setup({
       position: Position;
       canvasHeight: number;
       rotationDirection?: 1 | -1;
-      color: 'white' | 'gold' | 'black';
+      color: EggColor;
     };
     output: {
       eggId: string;
@@ -43,7 +42,7 @@ export const eggMachine = setup({
       rotation: number;
       rotationDirection: 1 | -1;
       canvasHeight: number;
-      color: 'white' | 'gold' | 'black';
+      color: EggColor;
       resultStatus: 'Caught' | 'Offscreen';
     };
     events:
