@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { tweenActor } from '../../../tweenActor';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
 import { isImageRef } from '../../../types';
 
 import type { Position } from '../../../types';
@@ -116,15 +116,14 @@ export const eggFallingMachine = setup({
             throw new Error('Egg ref is not set');
           }
 
-          // Disposable tween - only exists for the duration of this actor
-          const tween = new Konva.Tween({
+          return {
             node: context.eggRef.current,
-            duration: context.currentTweenDurationMS / 1000,
-            x: context.targetPosition.x,
-            y: context.targetPosition.y,
-          });
-
-          return { node: context.eggRef.current, tween };
+            config: {
+              durationMS: context.currentTweenDurationMS,
+              x: context.targetPosition.x,
+              y: context.targetPosition.y,
+            } satisfies TweenConfig,
+          };
         },
         onDone: {
           target: 'OffScreen',

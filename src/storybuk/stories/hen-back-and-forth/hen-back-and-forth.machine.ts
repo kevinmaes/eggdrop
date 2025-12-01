@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
-import { tweenActor } from '../../../tweenActor';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
 import { isImageRef, type Direction, type Position } from '../../../types';
 import { HEN_DEMO, STORY_CANVAS } from '../../story-constants';
 
@@ -239,18 +239,14 @@ export const henBackAndForthMachine = setup({
             throw new Error('Hen ref is not set');
           }
 
-          // Create tween on-demand using metadata from context
-          const tween = new Konva.Tween({
-            node: context.henRef.current,
-            duration: context.currentTweenDurationMS / 1000, // Convert MS to seconds
-            x: context.targetPosition.x,
-            y: context.targetPosition.y,
-            easing: Konva.Easings.EaseInOut,
-          });
-
           return {
             node: context.henRef.current,
-            tween,
+            config: {
+              durationMS: context.currentTweenDurationMS,
+              x: context.targetPosition.x,
+              y: context.targetPosition.y,
+              easing: 'EaseInOut',
+            } satisfies TweenConfig,
           };
         },
         onDone: {

@@ -1,6 +1,23 @@
 import { fromPromise } from 'xstate';
 
-import type { Position } from '../types';
+import type { Position, RequireAtLeastOne } from '../types';
+
+// Base interface for headless tween configuration options
+export interface TweenConfigHeadlessBase {
+  durationMS: number;
+}
+
+// Target properties interface (all optional in base)
+interface TweenTargets {
+  x?: number;
+  y?: number;
+  rotation?: number;
+  opacity?: number;
+}
+
+// TweenConfigHeadless: base config with at least one target property required
+export type TweenConfigHeadless = TweenConfigHeadlessBase &
+  RequireAtLeastOne<TweenTargets>;
 
 /**
  * Headless Tween Actor
@@ -11,24 +28,26 @@ import type { Position } from '../types';
  *
  * Purpose: Enable state machine visualization in Stately Inspector
  * without Konva serialization issues.
+ *
+ * Accepts a TweenConfigHeadless object (matching the pattern of the
+ * real tweenActor's TweenConfig) for consistency across the codebase.
  */
 export const tweenActorHeadless = fromPromise<
-  { lastPosition: Position },
+  Position,
   {
-    currentTweenSpeed: number;
-    currentTweenDurationMS: number;
-    currentTweenStartTime: number;
-    tweenDirection: number;
-    targetPosition: Position;
+    config: TweenConfigHeadless;
   }
 >(({ input }) => {
   return new Promise((resolve) => {
+    const { durationMS, x, y } = input.config;
+
     // Simulate the tween duration
     setTimeout(() => {
-      // Return the target position as the "last position"
+      // Return the target position
       resolve({
-        lastPosition: input.targetPosition,
+        x: x ?? 0,
+        y: y ?? 0,
       });
-    }, input.currentTweenDurationMS);
+    }, durationMS);
   });
 });
