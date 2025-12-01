@@ -1,5 +1,6 @@
 import { assign, fromPromise, setup, type ActorRefFrom } from 'xstate';
 
+import { sounds } from '../sounds';
 import { ASSET_MANIFEST, type GameAssets } from '../types/assets';
 
 export type LoadingStatus = {
@@ -78,8 +79,7 @@ export const loadingMachine = setup({
     }),
     loadAudio: fromPromise(async () => {
       await loadWithMinimumDelay(async () => {
-        const { sounds } = await import('../sounds');
-        const entries = Object.values(sounds ?? {});
+        const entries = Object.values(sounds);
 
         await Promise.all(
           entries.map((sound) => {
