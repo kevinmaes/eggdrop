@@ -4,9 +4,10 @@ import { nanoid } from 'nanoid';
 import { assign, sendTo, setup, type ActorRefFrom } from 'xstate';
 
 import { eggCaughtPointsMachine } from '../../../EggCaughtPoints/eggCaughtPoints.machine';
+import type { EggColor } from '../../../Egg/egg.machine';
 
 import { chefMachine } from './chef.machine';
-import { eggMachine, type EggColor } from './egg.machine';
+import { eggMachine } from './egg.machine';
 import { henMachine } from './hen.machine';
 
 import type { Position } from '../../../types';
@@ -187,7 +188,10 @@ export const storyMachine = setup({
           }),
         ];
       },
-      caughtEggIds: ({ context }, params: { eggId: string }) => {
+      caughtEggIds: (
+        { context },
+        params: { eggId: string; eggColor: EggColor; position: Position }
+      ) => {
         const newSet = new Set(context.caughtEggIds);
         newSet.add(params.eggId);
         return newSet;

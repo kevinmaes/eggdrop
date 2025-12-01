@@ -239,14 +239,16 @@ export const henBackAndForthMachine = setup({
             throw new Error('Hen ref is not set');
           }
 
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            easing: 'EaseInOut',
+          };
+
           return {
             node: context.henRef.current,
-            config: {
-              durationMS: context.currentTweenDurationMS,
-              x: context.targetPosition.x,
-              y: context.targetPosition.y,
-              easing: 'EaseInOut',
-            } satisfies TweenConfig,
+            config,
           };
         },
         onDone: {

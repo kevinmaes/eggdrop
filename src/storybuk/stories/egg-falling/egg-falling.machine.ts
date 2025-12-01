@@ -116,13 +116,15 @@ export const eggFallingMachine = setup({
             throw new Error('Egg ref is not set');
           }
 
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+          };
+
           return {
             node: context.eggRef.current,
-            config: {
-              durationMS: context.currentTweenDurationMS,
-              x: context.targetPosition.x,
-              y: context.targetPosition.y,
-            } satisfies TweenConfig,
+            config,
           };
         },
         onDone: {

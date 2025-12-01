@@ -184,13 +184,15 @@ export const chefFacingDirectionMachine = setup({
             throw new Error('Chef ref is not set');
           }
 
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            easing: 'EaseInOut',
+          };
+
           return {
             node: context.chefRef.current,
-            config: {
-              durationMS: context.currentTweenDurationMS,
-              x: context.targetPosition.x,
-              easing: 'EaseInOut',
-            } satisfies TweenConfig,
+            config,
           };
         },
         onDone: {

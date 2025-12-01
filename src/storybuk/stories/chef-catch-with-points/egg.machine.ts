@@ -1,9 +1,8 @@
 import Konva from 'konva';
 import { assign, sendParent, setup } from 'xstate';
 
+import type { EggColor } from '../../../Egg/egg.machine';
 import type { Position } from '../../../types';
-
-export type EggColor = 'white' | 'gold' | 'black';
 
 /**
  * Falling Egg Machine - With Position Notifications
