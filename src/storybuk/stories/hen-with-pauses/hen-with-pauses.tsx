@@ -60,7 +60,7 @@ export function HenWithPauses({
   const { position, isMoving, movingDirection, absoluteTweenSpeed } =
     useSelector(actorRef, (state) => ({
       position: state?.context.position ?? { x: 0, y: 0 },
-      isMoving: state?.matches('Moving') ?? false,
+      isMoving: state?.value === 'Moving',
       movingDirection: state?.context.movingDirection ?? 'none',
       absoluteTweenSpeed: Math.abs(state?.context.currentTweenSpeed ?? 0),
     }));

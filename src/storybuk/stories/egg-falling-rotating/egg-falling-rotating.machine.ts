@@ -117,16 +117,15 @@ export const eggFallingRotatingMachine = setup({
             throw new Error('Egg ref is not set');
           }
 
-          // Disposable tween - only exists for the duration of this actor
-          const tween = new Konva.Tween({
+          return {
             node: context.eggRef.current,
-            duration: context.currentTweenDurationMS / 1000,
-            x: context.targetPosition.x,
-            y: context.targetPosition.y,
-            rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
-          });
-
-          return { node: context.eggRef.current, tween };
+            config: {
+              durationMS: context.currentTweenDurationMS,
+              x: context.targetPosition.x,
+              y: context.targetPosition.y,
+              rotation: EGG_ROTATION.CLOCKWISE_TWO_SPINS,
+            },
+          };
         },
         onDone: {
           target: 'OffScreen',

@@ -187,7 +187,10 @@ export const storyMachine = setup({
           }),
         ];
       },
-      caughtEggIds: ({ context }, params: { eggId: string }) => {
+      caughtEggIds: (
+        { context },
+        params: { eggId: string; eggColor: EggColor; position: Position }
+      ) => {
         const newSet = new Set(context.caughtEggIds);
         newSet.add(params.eggId);
         return newSet;

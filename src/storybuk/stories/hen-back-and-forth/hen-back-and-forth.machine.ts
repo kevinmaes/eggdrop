@@ -239,18 +239,14 @@ export const henBackAndForthMachine = setup({
             throw new Error('Hen ref is not set');
           }
 
-          // Create tween on-demand using metadata from context
-          const tween = new Konva.Tween({
-            node: context.henRef.current,
-            duration: context.currentTweenDurationMS / 1000, // Convert MS to seconds
-            x: context.targetPosition.x,
-            y: context.targetPosition.y,
-            easing: Konva.Easings.EaseInOut,
-          });
-
           return {
             node: context.henRef.current,
-            tween,
+            config: {
+              durationMS: context.currentTweenDurationMS,
+              x: context.targetPosition.x,
+              y: context.targetPosition.y,
+              easing: 'EaseInOut' as const,
+            },
           };
         },
         onDone: {

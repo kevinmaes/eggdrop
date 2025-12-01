@@ -197,17 +197,13 @@ export const chefWithPausesMachine = setup({
             throw new Error('Chef ref is not set');
           }
 
-          // Create tween on-demand using metadata from context
-          const tween = new Konva.Tween({
-            node: context.chefRef.current,
-            duration: context.currentTweenDurationMS / 1000, // Convert MS to seconds
-            x: context.targetPosition.x,
-            easing: Konva.Easings.EaseInOut,
-          });
-
           return {
             node: context.chefRef.current,
-            tween,
+            config: {
+              durationMS: context.currentTweenDurationMS,
+              x: context.targetPosition.x,
+              easing: 'EaseInOut' as const,
+            },
           };
         },
         onDone: {

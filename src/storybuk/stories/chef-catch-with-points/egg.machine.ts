@@ -21,6 +21,8 @@ const DEMO_CONFIG = {
   rotationSpeed: 5,
 };
 
+export type EggColor = 'white' | 'gold' | 'black';
+
 export const eggMachine = setup({
   types: {} as {
     input: {
