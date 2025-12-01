@@ -388,6 +388,4 @@ export type EggDropGameActorRef =
   | GameLevelActorRef
   | EggActorRef;
 
-export const AppActorContext: ReturnType<
-  typeof createActorContext<typeof appMachine>
-> = createActorContext(appMachine);
+export const AppActorContext = createActorContext(appMachine);
