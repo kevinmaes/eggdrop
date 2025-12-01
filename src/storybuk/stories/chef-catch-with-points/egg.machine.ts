@@ -3,6 +3,8 @@ import { assign, sendParent, setup } from 'xstate';
 
 import type { Position } from '../../../types';
 
+export type EggColor = 'white' | 'gold' | 'black';
+
 /**
  * Falling Egg Machine - With Position Notifications
  *
@@ -28,7 +30,7 @@ export const eggMachine = setup({
       position: Position;
       canvasHeight: number;
       rotationDirection?: 1 | -1;
-      color: 'white' | 'gold' | 'black';
+      color: EggColor;
     };
     output: {
       eggId: string;
@@ -41,7 +43,7 @@ export const eggMachine = setup({
       rotation: number;
       rotationDirection: 1 | -1;
       canvasHeight: number;
-      color: 'white' | 'gold' | 'black';
+      color: EggColor;
       resultStatus: 'Caught' | 'Offscreen';
     };
     events:
