@@ -1,11 +1,27 @@
 name: Playwright Tests
+
 on:
   push:
-    branches: [dev]
-  pull_request:
-    branches: [dev]
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
 jobs:
+  detect-changes:
+    name: Detect Changes
+    uses: ./.github/workflows/detect-changes.yml
+
   test:
+    name: Playwright E2E Tests
+    needs: detect-changes
+    if: |
+      (github.event_name == 'push' && (needs.detect-changes.outputs.e2e-tests == 'true' || needs.detect-changes.outputs.app == 'true')) ||
+      github.event_name == 'workflow_dispatch'
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -22,9 +38,329 @@ jobs:
         run: pnpm playwright install --with-deps
       - name: Run Playwright tests
         run: pnpm test:e2e
-      - uses: actions/upload-artifact@v4
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      - name: Upload JSON test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-json-report
+          path: test-results.json
+          retention-days: 30
+
+  skip-reporter:
+    name: E2E Tests Status
+    needs: detect-changes
+    if: |
+      github.event_name == 'push' &&
+      needs.detect-changes.outputs.e2e-tests != 'true' &&
+      needs.detect-changes.outputs.app != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report skip status
+        run: echo "E2E tests skipped - no app or test changes detected"
+
+  create-failure-issue:
+    name: Create GitHub Issue on Failure
+    needs: test
+    if: failure() && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      issue_url: ${{ steps.create-issue.outputs.issue_url }}
+      issue_number: ${{ steps.create-issue.outputs.issue_number }}
+      total_tests: ${{ steps.test-results.outputs.total_tests }}
+      failed_tests: ${{ steps.test-results.outputs.failed_tests }}
+      failure_summary: ${{ steps.test-results.outputs.failure_summary }}
+
+    steps:
+      - name: Download JSON test results
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-json-report
+          path: ./
+
+      - name: Parse test results
+        id: test-results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let testResults = {
+              total: 0,
+              failed: 0,
+              failures: []
+            };
+
+            try {
+              if (!fs.existsSync('test-results.json')) {
+                core.warning('Test results file not found - artifact may not have been uploaded');
+                throw new Error('test-results.json not found');
+              }
+
+              const resultsFile = fs.readFileSync('test-results.json', 'utf8');
+              const results = JSON.parse(resultsFile);
+
+              if (results.suites) {
+                results.suites.forEach(suite => {
+                  function processSuite(s) {
+                    if (s.specs) {
+                      s.specs.forEach(spec => {
+                        spec.tests.forEach(test => {
+                          testResults.total++;
+                          const testResult = test.results[0];
+                          if (testResult.status === 'failed' || testResult.status === 'timedOut') {
+                            testResults.failed++;
+                            const errorMessage = testResult.error?.message || 'No error message';
+                            const shortError = errorMessage.split('\n')[0].substring(0, 200);
+                            testResults.failures.push({
+                              title: spec.title,
+                              file: spec.file?.replace(/^.*\/tests\//, 'tests/') || 'unknown',
+                              error: shortError,
+                              fullError: errorMessage.substring(0, 500)
+                            });
+                          }
+                        });
+                      });
+                    }
+                    if (s.suites) {
+                      s.suites.forEach(processSuite);
+                    }
+                  }
+                  processSuite(suite);
+                });
+              }
+            } catch (error) {
+              core.warning(`Failed to parse test results: ${error.message}`);
+              testResults = { total: 'unknown', failed: 'unknown', failures: [] };
+            }
+
+            let summary = '';
+            const failuresToShow = testResults.failures.slice(0, 3);
+            failuresToShow.forEach((f, idx) => {
+              summary += `${idx + 1}. ${f.title}\n   ${f.error}\n`;
+            });
+            if (testResults.failures.length > 3) {
+              summary += `... and ${testResults.failures.length - 3} more failure(s)\n`;
+            }
+            if (summary === '') {
+              summary = 'No failure details available. Check workflow logs.';
+            }
+
+            core.setOutput('total_tests', testResults.total.toString());
+            core.setOutput('failed_tests', testResults.failed.toString());
+            core.setOutput('failure_summary', summary);
+            core.setOutput('failures_json', JSON.stringify(testResults.failures));
+
+      - name: Get PR information
+        id: pr-info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commits = await github.rest.repos.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              per_page: 1
+            });
+
+            const commit = commits.data[0];
+            const commitMessage = commit.commit.message;
+
+            const prMatch = commitMessage.match(/Merge pull request #(\d+)/);
+
+            if (prMatch) {
+              const prNumber = prMatch[1];
+              const pr = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+
+              return {
+                prNumber: prNumber,
+                prTitle: pr.data.title,
+                prUrl: pr.data.html_url,
+                prAuthor: pr.data.user.login,
+                prAssignees: pr.data.assignees.map(a => a.login)
+              };
+            }
+
+            return {
+              prNumber: null,
+              prTitle: null,
+              prUrl: null,
+              prAuthor: commit.author?.login || 'unknown',
+              prAssignees: []
+            };
+
+      - name: Create issue
+        id: create-issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }};
+            const branch = '${{ github.ref_name }}';
+            const sha = '${{ github.sha }}';
+            const actor = '${{ github.actor }}';
+            const runUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+
+            const totalTests = '${{ steps.test-results.outputs.total_tests }}';
+            const failedTests = '${{ steps.test-results.outputs.failed_tests }}';
+            const failuresJson = '${{ steps.test-results.outputs.failures_json }}';
+            let failures = [];
+            try {
+              failures = JSON.parse(failuresJson);
+            } catch (e) {
+              core.warning('Failed to parse failures JSON');
+            }
+
+            let title = `E2E Tests Failed After Merge to ${branch}`;
+
+            let body = `## E2E Test Failure\n\n`;
+            body += `The E2E tests failed after a merge to the \`${branch}\` branch.\n\n`;
+
+            if (totalTests !== 'unknown' && failedTests !== 'unknown') {
+              const passedTests = parseInt(totalTests) - parseInt(failedTests);
+              const passRate = totalTests > 0 ? ((passedTests / totalTests) * 100).toFixed(1) : '0.0';
+              body += `### Test Results Summary\n\n`;
+              body += `- **Total tests:** ${totalTests}\n`;
+              body += `- **Failed tests:** ${failedTests}\n`;
+              body += `- **Passed tests:** ${passedTests}\n`;
+              body += `- **Pass rate:** ${passRate}%\n\n`;
+
+              if (failures.length > 0) {
+                body += `### Failed Tests\n\n`;
+                const failuresToShow = failures.slice(0, 5);
+                failuresToShow.forEach((failure, idx) => {
+                  body += `#### ${idx + 1}. ${failure.title}\n\n`;
+                  body += `**File:** \`${failure.file}\`\n\n`;
+                  body += `**Error:**\n\`\`\`\n${failure.fullError}\n\`\`\`\n\n`;
+                });
+
+                if (failures.length > 5) {
+                  body += `_... and ${failures.length - 5} more failed test(s). See workflow logs for full details._\n\n`;
+                }
+              }
+            } else {
+              body += `### Test Results Summary\n\n`;
+              body += `> **Note:** Detailed test results are not available. The test artifact may not have been uploaded due to workflow failure before completion.\n\n`;
+              body += `Please check the [workflow run logs](${runUrl}) for details.\n\n`;
+            }
+
+            body += `### Details\n\n`;
+            body += `- **Branch:** ${branch}\n`;
+            body += `- **Commit:** [${sha.substring(0, 7)}](${{ github.server_url }}/${{ github.repository }}/commit/${sha})\n`;
+            body += `- **Triggered by:** @${actor}\n`;
+
+            if (prInfo.prNumber) {
+              body += `- **Pull Request:** #${prInfo.prNumber} - ${prInfo.prTitle}\n`;
+              body += `- **PR Link:** ${prInfo.prUrl}\n`;
+              body += `- **PR Author:** @${prInfo.prAuthor}\n`;
+              if (prInfo.prAssignees.length > 0) {
+                body += `- **PR Assignees:** ${prInfo.prAssignees.map(a => '@' + a).join(', ')}\n`;
+              }
+            } else {
+              body += `- **Author:** ${prInfo.prAuthor}\n`;
+            }
+
+            body += `\n### Logs\n\n`;
+            body += `[View workflow run logs](${runUrl})\n\n`;
+            body += `### Action Required\n\n`;
+            body += `Please investigate the test failures and fix the underlying issues.\n`;
+
+            let assignees = [];
+            if (prInfo.prAuthor && prInfo.prAuthor !== 'GitHub' && prInfo.prAuthor !== 'unknown') {
+              assignees.push(prInfo.prAuthor);
+            } else if (prInfo.prAssignees.length > 0) {
+              assignees = prInfo.prAssignees;
+            }
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['bug', 'e2e-failure'],
+              assignees: assignees.length > 0 ? assignees : undefined
+            });
+
+            core.notice(`Created issue #${issue.data.number}: ${issue.data.html_url}`);
+
+            core.setOutput('issue_url', issue.data.html_url);
+            core.setOutput('issue_number', issue.data.number.toString());
+
+  # INACTIVE: Slack notification placeholder for future personal Slack integration
+  # Uncomment and configure SLACK_WEBHOOK_URL secret when ready
+  # notify-slack:
+  #   name: Notify Slack on Failure
+  #   needs: create-failure-issue
+  #   if: always() && needs.create-failure-issue.result == 'success' && github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Send Slack notification
+  #       uses: slackapi/slack-github-action@v1
+  #       with:
+  #         payload: |
+  #           {
+  #             "text": "E2E Tests Failed After Merge",
+  #             "blocks": [
+  #               {
+  #                 "type": "header",
+  #                 "text": {
+  #                   "type": "plain_text",
+  #                   "text": "E2E Tests Failed After Merge"
+  #                 }
+  #               },
+  #               {
+  #                 "type": "section",
+  #                 "fields": [
+  #                   {
+  #                     "type": "mrkdwn",
+  #                     "text": "*Branch:*\n${{ github.ref_name }}"
+  #                   },
+  #                   {
+  #                     "type": "mrkdwn",
+  #                     "text": "*Commit:*\n<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
+  #                   },
+  #                   {
+  #                     "type": "mrkdwn",
+  #                     "text": "*Workflow Run:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>"
+  #                   }
+  #                 ]
+  #               },
+  #               {
+  #                 "type": "section",
+  #                 "fields": [
+  #                   {
+  #                     "type": "mrkdwn",
+  #                     "text": "*GitHub Issue:*\n<${{ needs.create-failure-issue.outputs.issue_url }}|#${{ needs.create-failure-issue.outputs.issue_number }}>"
+  #                   },
+  #                   {
+  #                     "type": "mrkdwn",
+  #                     "text": "*Test Results:*\n${{ needs.create-failure-issue.outputs.failed_tests }}/${{ needs.create-failure-issue.outputs.total_tests }} tests failed"
+  #                   }
+  #                 ]
+  #               },
+  #               {
+  #                 "type": "section",
+  #                 "text": {
+  #                   "type": "mrkdwn",
+  #                   "text": "*Failed Tests:*\n```${{ needs.create-failure-issue.outputs.failure_summary }}```"
+  #                 }
+  #               }
+  #             ]
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
