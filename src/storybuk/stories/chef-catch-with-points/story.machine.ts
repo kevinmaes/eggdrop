@@ -4,12 +4,12 @@ import { nanoid } from 'nanoid';
 import { assign, sendTo, setup, type ActorRefFrom } from 'xstate';
 
 import { eggCaughtPointsMachine } from '../../../EggCaughtPoints/eggCaughtPoints.machine';
-import type { EggColor } from '../../../Egg/egg.machine';
 
 import { chefMachine } from './chef.machine';
 import { eggMachine } from './egg.machine';
 import { henMachine } from './hen.machine';
 
+import type { EggColor } from '../../../Egg/egg.machine';
 import type { Position } from '../../../types';
 import type Konva from 'konva';
 
