@@ -210,13 +210,15 @@ export const henBackAndForthHeadlessMachine = setup({
       invoke: {
         id: 'tweenActorHeadless',
         src: 'tweenActorHeadless',
-        input: ({ context }) => ({
-          config: {
+        input: ({ context }) => {
+          const config: TweenConfigHeadless = {
             durationMS: context.currentTweenDurationMS,
             x: context.targetPosition.x,
             y: context.targetPosition.y,
-          } satisfies TweenConfigHeadless,
-        }),
+          };
+
+          return { config };
+        },
         onDone: {
           target: 'Done Moving',
           actions: assign({
