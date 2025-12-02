@@ -130,7 +130,7 @@ export const chefBackAndForthMachine = setup({
     tweenActor: tweenActor,
   },
 }).createMachine({
-  id: 'Chef-Back-And-Forth',
+  id: 'Chef - Back and Forth',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? DEMO_CONFIG.stageWidth;
     const canvasHeight = input.canvasHeight ?? DEMO_CONFIG.stageHeight;
