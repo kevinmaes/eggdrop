@@ -1,6 +1,9 @@
 import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
+import { isImageRef } from '../../../types';
+
 import type { Position } from '../../../types';
 
 /**
@@ -11,6 +14,7 @@ import type { Position } from '../../../types';
  *
  * This demonstrates:
  * - Actor lifecycle (spawned → active → done)
+ * - Tween-based animation (no RAF loop)
  * - Output on completion (returns eggId for parent cleanup)
  * - Independent state management per spawned actor
  */
@@ -18,9 +22,7 @@ import type { Position } from '../../../types';
 const DEMO_CONFIG = {
   eggWidth: 30,
   eggHeight: 30,
-  gravity: 0.3,
-  maxVelocity: 10,
-  rotationSpeed: 3,
+  fallingDuration: 2, // Duration in seconds for the fall
 };
 
 export const eggMachine = setup({
@@ -39,42 +41,34 @@ export const eggMachine = setup({
       eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: 1 | -1;
+      targetPosition: Position;
       canvasHeight: number;
-      groundY: number;
+      currentTweenDurationMS: number;
       color: 'white' | 'gold' | 'black';
     };
-    events:
-      | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
-      | { type: 'Update' };
+    events: { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> };
+  },
+  actors: {
+    fallingTweenActor: tweenActor,
   },
   actions: {
-    setEggRef: assign({
-      eggRef: (_, params: React.RefObject<Konva.Image>) => params,
+    setEggRef: assign(({ context }, params: React.RefObject<Konva.Image>) => {
+      // Set the node position immediately when ref is attached
+      if (isImageRef(params)) {
+        params.current.setPosition(context.position);
+      }
+      return { eggRef: params };
     }),
-    updatePositionAndRotation: assign(({ context }) => {
-      const newVelocity = Math.min(
-        context.velocity + DEMO_CONFIG.gravity,
-        DEMO_CONFIG.maxVelocity
-      );
-      const newY = context.position.y + newVelocity;
-      const newRotation =
-        context.rotation +
-        context.rotationDirection * DEMO_CONFIG.rotationSpeed;
-
-      return {
-        position: { x: context.position.x, y: newY },
-        velocity: newVelocity,
-        rotation: newRotation,
-      };
+    setTweenProperties: assign({
+      targetPosition: ({ context }) => ({
+        x: context.position.x,
+        y: context.canvasHeight + DEMO_CONFIG.eggHeight,
+      }),
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
     }),
-  },
-  guards: {
-    isOffScreen: ({ context }) => {
-      return context.position.y > context.canvasHeight + DEMO_CONFIG.eggHeight;
-    },
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
+    }),
   },
 }).createMachine({
   id: 'Story-Egg',
@@ -83,40 +77,57 @@ export const eggMachine = setup({
       eggRef: { current: null },
       id: input.id,
       position: input.position,
-      velocity: 0,
-      rotation: 0,
-      rotationDirection:
-        input.rotationDirection ?? (Math.random() < 0.5 ? -1 : 1),
+      targetPosition: input.position,
       canvasHeight: input.canvasHeight,
-      groundY: input.canvasHeight, // Not used, but kept for type compatibility
+      currentTweenDurationMS: 0,
       color: input.color,
     };
   },
   output: ({ context }) => ({
     eggId: context.id,
   }),
-  on: {
-    'Set eggRef': {
-      actions: {
-        type: 'setEggRef',
-        params: ({ event }) => event.eggRef,
+  // Egg starts in Idle, transitions to Falling once eggRef is set
+  initial: 'Idle',
+  states: {
+    Idle: {
+      on: {
+        'Set eggRef': {
+          target: 'Falling',
+          actions: {
+            type: 'setEggRef',
+            params: ({ event }) => event.eggRef,
+          },
+        },
       },
     },
-  },
-  // Egg starts falling immediately when spawned and continues until off-screen
-  initial: 'Falling',
-  states: {
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'isOffScreen',
-            target: 'Done',
+      entry: 'setTweenProperties',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          if (!isImageRef(context.eggRef)) {
+            throw new Error('Egg ref is not set');
+          }
+
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: Math.random() > 0.5 ? 720 : -720,
+          };
+
+          return {
+            node: context.eggRef.current,
+            config,
+          };
+        },
+        onDone: {
+          target: 'Done',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
+        },
       },
     },
     Done: {

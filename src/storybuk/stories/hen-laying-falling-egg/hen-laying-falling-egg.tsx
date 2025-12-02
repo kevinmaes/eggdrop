@@ -102,16 +102,13 @@ function EggSprite({
 }: {
   actorRef: ActorRefFrom<typeof eggMachine>;
 }) {
-  const { position, rotation, isDone } = useSelector(actorRef, (state) => ({
+  const { position, isDone } = useSelector(actorRef, (state) => ({
     position: state?.context.position ?? { x: 0, y: 0 },
-    rotation: state?.context.rotation ?? 0,
     isDone: state?.matches('Done') ?? false,
   }));
 
   const [eggImage] = useImage('/images/egg.sprite.png');
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>(0);
-  const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
     if (eggRef.current) {
@@ -121,33 +118,6 @@ function EggSprite({
       });
     }
   }, [actorRef]);
-
-  // Animation loop for falling
-  useEffect(() => {
-    if (isDone) return;
-
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - lastUpdateRef.current;
-
-      if (elapsed >= frameTime) {
-        actorRef.send({ type: 'Update' });
-        lastUpdateRef.current = timestamp;
-      }
-
-      animationFrameRef.current = window.requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [actorRef, isDone]);
 
   if (isDone) return null;
 
@@ -167,7 +137,6 @@ function EggSprite({
       height={EGG_SIZE.height}
       offsetX={EGG_SIZE.width / 2}
       offsetY={EGG_SIZE.height / 2}
-      rotation={rotation}
       crop={{
         x: frameData.x,
         y: frameData.y,
