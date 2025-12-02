@@ -194,47 +194,13 @@ export function HenSpawningEgg({
 }: {
   actorRef: ActorRefFrom<typeof storyMachine>;
 }) {
-  const { henActorRef, eggActorRefs, isRunning } = useSelector(
-    actorRef,
-    (state) => ({
-      henActorRef: state?.context.henActorRef ?? null,
-      eggActorRefs: state?.context.eggActorRefs ?? [],
-      isRunning: state?.matches('Running') ?? false,
-    })
-  );
+  const { henActorRef, eggActorRefs } = useSelector(actorRef, (state) => ({
+    henActorRef: state?.context.henActorRef ?? null,
+    eggActorRefs: state?.context.eggActorRefs ?? [],
+  }));
 
   // Track eggs with stable keys
   const [eggKeys] = useState(() => new Map<string, string>());
-
-  // Animation loop for hen movement
-  const animationFrameRef = useRef<number>(0);
-  const lastUpdateRef = useRef<number>(0);
-
-  useEffect(() => {
-    if (!isRunning || !henActorRef) return;
-
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - lastUpdateRef.current;
-
-      if (elapsed >= frameTime) {
-        henActorRef.send({ type: 'Update' });
-        lastUpdateRef.current = timestamp;
-      }
-
-      animationFrameRef.current = window.requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [henActorRef, isRunning]);
 
   return (
     <>

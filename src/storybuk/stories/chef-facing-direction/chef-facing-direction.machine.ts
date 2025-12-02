@@ -131,7 +131,7 @@ export const chefFacingDirectionMachine = setup({
     tweenActor: tweenActor,
   },
 }).createMachine({
-  id: 'Chef-Facing-Direction',
+  id: 'Chef - Move + Pivot',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? DEMO_CONFIG.stageWidth;
     const canvasHeight = input.canvasHeight ?? DEMO_CONFIG.stageHeight;
