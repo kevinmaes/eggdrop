@@ -1,15 +1,18 @@
 import { setup, assign, type ActorRefFrom } from 'xstate';
+import Konva from 'konva';
 
 import { STAGE_PADDING } from '../../story-constants';
+import { tweenActor, type TweenConfig } from '../../../tweenActor';
+import { isImageRef } from '../../../types';
 
 import type { Direction, Position } from '../../../types';
 
 /**
- * Egg Land, Hatch, and Exit Demo
+ * Egg Land, Hatch, and Exit Demo - Using Tween Actor Pattern
  *
  * Complete sequence showing egg landing, hatching, and chick exiting:
  * - Waiting
- * - Falling (gravity + rotation)
+ * - Falling (tween-based with rotation)
  * - Landed (positions egg on ground)
  * - Hatching (shows chick in shell)
  * - Hatched (chick standing, brief pause)
@@ -24,10 +27,7 @@ const DEMO_CONFIG = {
   eggHeight: 60,
   chickWidth: 60,
   chickHeight: 60,
-  gravity: 0.15,
-  startY: 100,
-  maxVelocity: 8,
-  rotationSpeed: 5,
+  fallingDuration: 3,
   hatchingPauseDuration: 500,
   hatchedPauseDuration: 500,
   exitDuration: 1000,
@@ -40,23 +40,21 @@ export const eggLandHatchExitMachine = setup({
       startPosition: Position;
       canvasWidth?: number;
       canvasHeight?: number;
-      rotationDirection?: Direction['value'];
       chickExitDirection?: Direction['value'];
     };
     output: {
       eggId: string;
     };
     context: {
-      eggRef: { current: null };
+      eggRef: React.RefObject<Konva.Image> | { current: null };
       id: string;
       position: Position;
-      velocity: number;
-      rotation: number;
-      rotationDirection: Direction['value'];
+      targetPosition: Position;
       chickExitDirection: Direction['value'];
       canvasWidth: number;
       canvasHeight: number;
       groundY: number;
+      currentTweenDurationMS: number;
       exitStartTime: number;
       exitStartX: number;
       exitTargetX: number;
@@ -66,36 +64,22 @@ export const eggLandHatchExitMachine = setup({
       | { type: 'Play' }
       | { type: 'Update' };
   },
+  actors: {
+    fallingTweenActor: tweenActor,
+  },
   actions: {
     setEggRef: assign({
       eggRef: (_, params: React.RefObject<any>) => params,
     }),
-    updatePositionAndRotation: assign({
-      position: ({ context }) => {
-        const newY = context.position.y + context.velocity;
-        return {
-          x: context.position.x,
-          y: newY,
-        };
-      },
-      velocity: ({ context }) => {
-        const newVelocity = context.velocity + DEMO_CONFIG.gravity;
-        return Math.min(newVelocity, DEMO_CONFIG.maxVelocity);
-      },
-      rotation: ({ context }) => {
-        return (
-          context.rotation +
-          context.rotationDirection * DEMO_CONFIG.rotationSpeed
-        );
-      },
-    }),
-    positionEggOnGround: assign({
-      position: ({ context }) => ({
+    setTweenProperties: assign({
+      targetPosition: ({ context }) => ({
         x: context.position.x,
         y: context.groundY - DEMO_CONFIG.eggHeight / 2,
       }),
-      velocity: 0,
-      rotation: 0,
+      currentTweenDurationMS: () => DEMO_CONFIG.fallingDuration * 1000,
+    }),
+    setFinalPosition: assign({
+      position: (_, params: Position) => params,
     }),
     positionChickOnGround: assign({
       position: ({ context }) => ({
@@ -129,9 +113,6 @@ export const eggLandHatchExitMachine = setup({
     }),
   },
   guards: {
-    hasLanded: ({ context }) => {
-      return context.position.y + DEMO_CONFIG.eggHeight / 2 >= context.groundY;
-    },
     exitComplete: ({ context }) => {
       const elapsed = Date.now() - context.exitStartTime;
       return elapsed >= DEMO_CONFIG.exitDuration;
@@ -155,13 +136,12 @@ export const eggLandHatchExitMachine = setup({
       eggRef: { current: null },
       id: input.id,
       position: input.startPosition,
-      velocity: 0,
-      rotation: 0,
-      rotationDirection: input.rotationDirection ?? 1,
+      targetPosition: { x: 0, y: 0 },
       chickExitDirection,
       canvasWidth,
       canvasHeight,
       groundY,
+      currentTweenDurationMS: 0,
       exitStartTime: 0,
       exitStartX: 0,
       exitTargetX: 0,
@@ -186,22 +166,36 @@ export const eggLandHatchExitMachine = setup({
       },
     },
     Falling: {
-      on: {
-        Update: [
-          {
-            guard: 'hasLanded',
-            target: 'Landed',
+      entry: 'setTweenProperties',
+      invoke: {
+        src: 'fallingTweenActor',
+        input: ({ context }) => {
+          if (!isImageRef(context.eggRef)) {
+            throw new Error('Egg ref is not set');
+          }
+
+          const config: TweenConfig = {
+            durationMS: context.currentTweenDurationMS,
+            x: context.targetPosition.x,
+            y: context.targetPosition.y,
+            rotation: Math.random() > 0.5 ? 720 : -720,
+          };
+
+          return { node: context.eggRef.current, config };
+        },
+        onDone: {
+          target: 'Landed',
+          actions: {
+            type: 'setFinalPosition',
+            params: ({ event }) => event.output,
           },
-          {
-            actions: 'updatePositionAndRotation',
-          },
-        ],
+        },
       },
     },
     Landed: {
       always: {
         target: 'Hatching',
-        actions: ['positionEggOnGround', 'positionChickOnGround'],
+        actions: 'positionChickOnGround',
       },
     },
     Hatching: {
