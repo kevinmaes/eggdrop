@@ -35,7 +35,9 @@ export const henEggLayingMachine = setup({
       id: string;
       position: Position;
     };
-    events: { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> };
+    events:
+      | { type: 'Set henRef'; henRef: React.RefObject<Konva.Image> }
+      | { type: 'Play' };
   },
   actions: {
     setHenRef: assign({
@@ -44,7 +46,7 @@ export const henEggLayingMachine = setup({
   },
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QAkwDsC0BRKUMBkBDATwEs0oBiAZTABcACAC3QCUwAzAbQAYBdRKAAOAe1ik6pEWkEgAHogAsigMwA6RQHYArADYVugJwrDAJk0BGbQBoQxRBdMBfJ7dSYceImQpqAkhAANmCUcrB0hHRgaoQcUQBOABRWPDwAlJTu2LgEJORQ-kFgvAJIIKLiktKyCggWKtpqhhY82tqKAByGlqYdurq29ggqqWq6HYq6moqGunoWuooubujZXnm+AArxYEKE8fkMdCIMgSSh4ZHRsQmJpqkZWZ65PgXbu-uHx6ckJbIVEikMjKtVUig0PGUOg6mlMU2MmkGiBGPDGEymMzmugWS1cICeOW8+TURIoDDAuAuESiMTiYCS9wemVWz1JBTZ5NwfzKAKqwNAtU0PFMahUfVMjJ4i1MjiRw1G40m01m80Wy3xLMJGwKABFpGAfq8qVdabdGY9NetXmo9WgDWdXtzhGJAdUQYghSKxboJakpYoZaY5RYOqjlDxDNoUr0ZdoOi48WgRBA4LICVb8v8XXyaogMBY5cY1KZtM0LAGLJYVJpNIZ1emXsSAsEs5UgbmEFpgxMIfoI1Y+jC4-XLY2tjs9gcyd8Ha3Xfz5Ig4bo1B09ELUpoOr1DIo5aZDIY1FKYYtDH1NCZnHiG2ySdrOVA5zn3Qg9EerGYVI4LPUFoZ90PY9xk0M8LyvEcPC1a1bXtbVn3bV8OmrNRywjHQVEUbRWg6DpuxXQwpRjKZtwjFQEycIA */
-  id: 'Hen-Egg-Laying',
+  id: 'Hen - Egg Laying',
   context: ({ input }) => ({
     henRef: { current: null },
     id: input.id,
@@ -63,6 +65,11 @@ export const henEggLayingMachine = setup({
   },
   initial: 'Idle',
   states: {
+    Idle: {
+      on: {
+        Play: 'Idle',
+      },
+    },
     Idle: {
       after: {
         1500: 'Preparing to lay',
