@@ -16,7 +16,7 @@ import type { Position } from '../../../types';
 const DEMO_CONFIG = {
   henWidth: 120,
   henHeight: 120,
-  layingDelay: 2000, // 2 seconds between eggs for demo visibility
+  layingDelay: 800, // 0.8 seconds between eggs for demo visibility
   layingDuration: 500, // 500ms laying animation
 };
 
