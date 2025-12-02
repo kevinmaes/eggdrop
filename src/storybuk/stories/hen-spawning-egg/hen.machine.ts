@@ -101,7 +101,7 @@ export const henMachine = setup({
     layingDuration: DEMO_CONFIG.layingDuration,
   },
 }).createMachine({
-  id: 'Story-Hen',
+  id: 'Hen - Moving + Laying',
   context: ({ input }) => ({
     henRef: { current: null },
     id: input.id,
