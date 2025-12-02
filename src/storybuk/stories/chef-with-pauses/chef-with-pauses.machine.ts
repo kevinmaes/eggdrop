@@ -144,7 +144,7 @@ export const chefWithPausesMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Chef-With-Pauses',
+  id: 'Chef - With Pauses',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? DEMO_CONFIG.stageWidth;
     const canvasHeight = input.canvasHeight ?? DEMO_CONFIG.stageHeight;
