@@ -88,7 +88,7 @@ export const eggFallingAndBreakingMachine = setup({
     }),
   },
 }).createMachine({
-  id: 'Egg-Falling-And-Breaking',
+  id: 'Egg - Falling and Breaking',
   context: ({ input }) => {
     const canvasHeight = input.canvasHeight ?? 1080;
     const groundY = canvasHeight - STAGE_PADDING.BOTTOM;
