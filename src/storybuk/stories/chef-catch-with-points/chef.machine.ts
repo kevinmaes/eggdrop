@@ -59,6 +59,7 @@ export const chefMachine = setup({
     catchingDuration: DEMO_CONFIG.catchingDuration,
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYBmBaAygFwEM8BLAewDsCAnATwGIcw8ACAY3QwCVMBtABgC6iUAAdSsYiQrCQAD0QBGAOxKAdAFYAzAE4ATEoAcugCzbNB9XoA0IGor4A2VbssK3Jvkq0LNAX182aJi4hFKUtAxMbBwACqR4nMQAtgASktwY-EJIIGISYTLyCArGCs7GmkpuZp7qJuo2dsW6-oEcIURk4TSqAJIQADZgdMhE7FkyeZJdhYqa6qraCnzqBlWaCpbqxg6NiJoOC9oOFau6jgoGBtqtIEHY+J0U1D2jeOzE5FB0srChYKoCBg8GAqAAKVhjVCfKAAEQArlQnuQAJQjdqPMIvVRvD5fCY5KYFHJFHxHZardabbTbXa2RD6YyqJR8VnGAwU3S6Py3cikCBwGT3DpY2iTcTTaQkxBYBR7YprDSXLkmDnqRy6G4BO4Y0JdbH9Ibi-IzaUIYxKeWaPhlBQObRKXQOcyrDbGYy3YWY-W0HFQmHGyXkWYITSa1RGTSaYyrAx8eYVYxW+OqBz2x3OiwGN0e-y+IA */
   id: 'Chef-Stationary',
   context: ({ input }) => ({
     chefRef: { current: null },

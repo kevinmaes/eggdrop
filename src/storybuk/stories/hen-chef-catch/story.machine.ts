@@ -211,7 +211,7 @@ export const storyMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Hen-Chef-Catch-Orchestrator',
+  id: 'Chef catches an egg',
   context: ({ input }) => {
     // Calculate chef position at ground level
     // Center the pot (not the chef sprite) under the hen

@@ -50,5 +50,7 @@ export const storyConfig: StoryConfig = {
   },
   layoutMode: 'horizontal-split-narrow',
   ...canvasDimensions,
-  statelyEmbedUrl: [], // TODO: Add after publishing to Stately
+  statelyEmbedUrl: [
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&colorMode=light&colorMode=light&colorMode=light&machineId=268b27c3-aaea-42d6-b363-7ac795c51978',
+  ], // TODO: Add after publishing to Stately
 };

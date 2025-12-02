@@ -93,7 +93,7 @@ export const eggMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Egg-Falling',
+  id: 'Egg - Falling (caught)',
   context: ({ input }) => {
     return {
       eggRef: { current: null },

@@ -264,7 +264,8 @@ export const storyMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Chef-Catch-With-Points-Orchestrator',
+  /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYBmBaZBDALgMapYDqAlviQAoD25AdvrFgPIBOxc+7Bt7AYgDKYfAAIuGOvgBK5ALYAJSjMwBtAAwBdRKAAOtWJXK0GukAA9EAJgAcAZgB096wE4AjLYAsrl69sArABsADQgAJ6I7tYAvjFhaJg4BMRklDT0TCwcXLA8fOyOAJIQADZgAtSluOGaOkggBkb4JmYNVggBGo5utkEa7gDsGn0aAf6hEYj2GoOO7vZBLraDw9YDrnEJ6Nh4RCQUVFh0jMxsnOh5vPj8jjIArgwMjFACADI1YrgMYmBQUHVzE1jKZzB0utZHK5BgEvHZrNEAoMvO4wpFOhogo5bLZ3F4grYNK43J5bFsQIldikDuljpkzjlLvkboUHk8XgIAKL-MTAlqmMT3PQQAiQQENPmtMGILAI9yOAIBRYaEaw7y4+xoxBBIKuRxeQaecZjUmK8mU5L7NJHE5Zc65Zm3NnPBivVSwUTi-SGEFtUAdWV9KFBaxBAJ42YzXGTdH2FEKgJuNVDRMBMnxCk7S2pQ4ZU7ZC7ca5Ox4u15exo+-l+yyIOFYmZeOHWBF2QZBdwBLUIFyQmF9VMdzsI+zmrN7HO020MwtXAp3UsctTuere5pS9p1+xOQbWRahgkwsarbsI7peMbeIKrGH2QleOIZhi0CBwcwWic0m30gsO4vsIEqw3f0ZW3Lxg1DcML0GKN3BjRBbD7a93FcVDFXbaJ3DHJJP2tPM7UZIt5xKcpAPXUFNwQBZHExJslSGWxfFcDQDW7OC9VcHwxhRFElQ0axBmwqkrVzOl83tJl-wXdlXTI31pU6cC4xYwJohY3xvG7OEnAvaCXHbdU+kfGIgA */
+  id: 'Chef - Catch eggs with points',
   context: ({ input }) => {
     // Calculate chef position at ground level
     // Center the pot (not the chef sprite) under the hen

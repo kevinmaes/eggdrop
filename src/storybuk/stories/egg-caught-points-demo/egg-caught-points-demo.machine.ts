@@ -37,7 +37,7 @@ export const eggCaughtPointsDemoMachine = setup({
     }),
   },
 }).createMachine({
-  id: 'eggCaughtPointsDemo',
+  id: 'Egg - Caught points',
   context: ({ input }) => ({
     eggCaughtPointsId: input.eggCaughtPointsId,
     eggColor: input.eggColor,

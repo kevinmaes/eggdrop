@@ -59,7 +59,7 @@ export const chefMachine = setup({
     catchingDuration: DEMO_CONFIG.catchingDuration,
   },
 }).createMachine({
-  id: 'Chef-Stationary',
+  id: 'Chef - Catching',
   context: ({ input }) => ({
     chefRef: { current: null },
     chefPotRimHitRef: { current: null },
