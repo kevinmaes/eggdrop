@@ -105,4 +105,15 @@ export const STORYBUK_LAYOUT = {
   },
 } as const;
 
+export const KEYBOARD_INDICATOR = {
+  width: 140,
+  height: 50,
+  padding: 16,
+  cornerRadius: 8,
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  textSize: 18,
+  activeOpacity: 1.0,
+  inactiveOpacity: 0.6,
+} as const;
+
 export type SplitOrientation = 'horizontal' | 'vertical';

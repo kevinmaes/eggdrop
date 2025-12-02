@@ -150,7 +150,7 @@ export const chefBackAndForthMachine = setup({
       position,
       targetPosition: position,
       currentTweenDirection: 0,
-      movingDirection: 'right',
+      movingDirection: 'none',
       currentTweenDurationMS: 0,
       currentTweenSpeed: 0,
       currentTweenStartTime: 0,

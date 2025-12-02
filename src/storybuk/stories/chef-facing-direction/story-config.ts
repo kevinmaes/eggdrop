@@ -45,6 +45,7 @@ export const storyConfig: StoryConfig = {
     color: STORYBUK_COLORS.storyDemoBackground,
   },
   layoutMode: 'vertical-split-bottom',
+  showKeyboardIndicator: true,
   statelyEmbedUrl: '',
   ...canvasDimensions,
 };

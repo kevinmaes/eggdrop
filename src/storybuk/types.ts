@@ -56,6 +56,7 @@ export interface StoryConfig {
   canvasWidth: number;
   canvasHeight: number;
   statelyEmbedUrl: string;
+  showKeyboardIndicator?: boolean;
 }
 
 /**

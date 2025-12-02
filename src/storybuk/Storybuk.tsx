@@ -306,6 +306,9 @@ export function Storybuk() {
                           }}
                           actorInstances={visualActors}
                           resetCount={resetCount}
+                          showKeyboardIndicator={
+                            currentStoryConfig.showKeyboardIndicator
+                          }
                         />
                       </div>
                     )}

@@ -164,7 +164,7 @@ export const chefWithPausesMachine = setup({
       position,
       targetPosition: position,
       currentTweenDirection: 0,
-      movingDirection: 'right',
+      movingDirection: 'none',
       currentTweenDurationMS: 0,
       currentTweenSpeed: 0,
       currentTweenStartTime: 0,
@@ -231,6 +231,7 @@ export const chefWithPausesMachine = setup({
     },
     'Reached Destination': {
       // Pause at destination for 1-2 seconds before moving again
+      entry: 'cleanupTween',
       after: {
         pauseDuration: 'Moving',
       },
