@@ -14,8 +14,7 @@ import type { ActorRefFrom } from 'xstate';
 /**
  * Falling, Rotating Egg Component
  *
- * Displays an egg that falls with gravity and rotation.
- * Uses requestAnimationFrame for smooth animation.
+ * Displays an egg that falls with tween-based animation and rotation.
  * Supports white and gold egg colors.
  */
 
@@ -33,21 +32,14 @@ export function Egg({
 }: {
   actorRef: ActorRefFrom<typeof eggMachine>;
 }) {
-  const { position, rotation, color, isFalling } = useSelector(
-    actorRef,
-    (state) => ({
-      position: state?.context.position ?? { x: 0, y: 0 },
-      rotation: state?.context.rotation ?? 0,
-      color: state?.context.color ?? 'white',
-      isFalling: state?.matches('Falling') ?? false,
-    })
-  );
+  const { position, color } = useSelector(actorRef, (state) => ({
+    position: state?.context.position ?? { x: 0, y: 0 },
+    color: state?.context.color ?? 'white',
+  }));
 
   const [image] = useImage('/images/egg.sprite.png');
 
   const eggRef = useRef<Konva.Image>(null);
-  const animationFrameRef = useRef<number>(0);
-  const lastUpdateRef = useRef<number>(0);
 
   // Send ref to machine on mount - the machine will check when ref.current is populated
   useEffect(() => {
@@ -55,35 +47,6 @@ export function Egg({
       actorRef.send({ type: 'Set eggRef', eggRef });
     }
   }, [actorRef]);
-
-  // Animation loop with frame rate limiting (60 FPS)
-  useEffect(() => {
-    if (!isFalling) {
-      return;
-    }
-
-    const targetFPS = 60;
-    const frameTime = 1000 / targetFPS;
-
-    const animate = (timestamp: number) => {
-      const elapsed = timestamp - lastUpdateRef.current;
-
-      if (elapsed >= frameTime) {
-        actorRef.send({ type: 'Update' });
-        lastUpdateRef.current = timestamp;
-      }
-
-      animationFrameRef.current = window.requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [actorRef, isFalling]);
 
   if (!position) {
     return null;
@@ -106,7 +69,6 @@ export function Egg({
       height={EGG_SIZE.height}
       offsetX={EGG_SIZE.width / 2}
       offsetY={EGG_SIZE.height / 2}
-      rotation={rotation}
       crop={{
         x: currentFrame.x,
         y: currentFrame.y,
