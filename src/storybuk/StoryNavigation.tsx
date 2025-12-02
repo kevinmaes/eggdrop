@@ -340,7 +340,7 @@ export function StoryNavigation({
                         <span style={{ flex: 1 }}>
                           [{story.id}] {story.title}
                         </span>
-                        {story.statelyEmbedUrl && (
+                        {story.statelyEmbedUrl.length > 0 && (
                           <Link
                             size={12}
                             style={{
