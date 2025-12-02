@@ -50,5 +50,5 @@ export const storyConfig: StoryConfig = {
   },
   layoutMode: 'horizontal-split-narrow',
   ...canvasDimensions,
-  statelyEmbedUrl: '', // TODO: Add after publishing to Stately
+  statelyEmbedUrl: [], // TODO: Add after publishing to Stately
 };

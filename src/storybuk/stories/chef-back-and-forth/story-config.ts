@@ -46,6 +46,6 @@ export const storyConfig: StoryConfig = {
   },
   layoutMode: 'vertical-split-bottom',
   showKeyboardIndicator: true,
-  statelyEmbedUrl: '',
+  statelyEmbedUrl: [],
   ...canvasDimensions,
 };

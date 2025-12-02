@@ -6,7 +6,7 @@ import '@fontsource/nunito-sans/600.css';
 import '@fontsource/nunito-sans/700.css';
 
 import { ColorPicker } from './components/ColorPicker';
-import { StatelyEmbed } from './components/StatelyEmbed';
+import { StatelyEmbedContainer } from './components/StatelyEmbedContainer';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ControlPanel } from './ControlPanel';
 import { InspectorToggle } from './InspectorToggle';
@@ -141,7 +141,7 @@ export function Storybuk() {
   }, [currentStoryConfig, isPlaying, handlePlay, handleReset]);
 
   const splitOrientation = currentStoryConfig?.splitOrientation ?? 'horizontal';
-  const statelyUrl = currentStoryConfig?.statelyEmbedUrl ?? '';
+  const statelyUrls = currentStoryConfig?.statelyEmbedUrl ?? [];
 
   // Get dynamic dimensions based on split orientation
   const getLayoutDimensions = () => {
@@ -320,12 +320,13 @@ export function Storybuk() {
                         height: layoutDimensions.statelyCanvas.height,
                       }}
                     >
-                      <StatelyEmbed
+                      <StatelyEmbedContainer
                         width={layoutDimensions.statelyCanvas.width}
                         height={layoutDimensions.statelyCanvas.height}
                         demoTitle={currentStoryConfig.title}
-                        statelyUrl={statelyUrl}
+                        urls={statelyUrls}
                         theme={statelyTheme}
+                        splitOrientation={splitOrientation}
                       />
                     </div>
 

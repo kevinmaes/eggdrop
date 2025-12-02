@@ -58,7 +58,7 @@ export const henMachine = setup({
     })),
   },
 }).createMachine({
-  id: 'Hen-Laying',
+  id: 'Hen - Laying',
   context: ({ input }) => ({
     henRef: { current: null },
     id: input.id,

@@ -55,7 +55,7 @@ export interface StoryConfig {
   splitOrientation: SplitOrientation;
   canvasWidth: number;
   canvasHeight: number;
-  statelyEmbedUrl: string;
+  statelyEmbedUrl: string[]; // Array of 0-2 Stately embed URLs
   showKeyboardIndicator?: boolean;
 }
 

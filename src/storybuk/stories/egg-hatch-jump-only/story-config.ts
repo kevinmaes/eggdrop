@@ -59,6 +59,6 @@ export const storyConfig: StoryConfig = {
     color: STORYBUK_COLORS.storyDemoBackground,
   },
   layoutMode: 'horizontal-split-narrow',
-  statelyEmbedUrl: '',
+  statelyEmbedUrl: [],
   ...canvasDimensions,
 };
