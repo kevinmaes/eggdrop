@@ -67,12 +67,7 @@ export const henEggLayingMachine = setup({
   states: {
     Idle: {
       on: {
-        Play: 'Idle',
-      },
-    },
-    Idle: {
-      after: {
-        1500: 'Preparing to lay',
+        Play: 'Preparing to lay',
       },
     },
     'Preparing to lay': {
@@ -88,7 +83,7 @@ export const henEggLayingMachine = setup({
     },
     'Done laying': {
       after: {
-        200: 'Idle',
+        200: 'Preparing to lay',
       },
     },
   },
