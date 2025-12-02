@@ -207,7 +207,7 @@ export const eggHatchGameAccurateMachine = setup({
     hatchedPauseDuration: DEMO_CONFIG.hatchedPauseDuration,
   },
 }).createMachine({
-  id: 'Egg-Hatch-Game-Accurate',
+  id: 'Egg - Complete Lifecycle',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;

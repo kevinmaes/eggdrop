@@ -94,7 +94,7 @@ export const hatchedStandExitMachine = setup({
     standingPauseDuration: DEMO_CONFIG.standingPauseDuration,
   },
 }).createMachine({
-  id: 'Hatched-Stand-Exit',
+  id: 'Hatched - Stand + Exit',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;

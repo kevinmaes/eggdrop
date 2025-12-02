@@ -119,7 +119,7 @@ export const eggHatchJumpOnlyMachine = setup({
     hatchedPauseDuration: DEMO_CONFIG.hatchedPauseDuration,
   },
 }).createMachine({
-  id: 'Egg-Hatch-Jump-Only',
+  id: 'Egg - Hatch + Jump',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;

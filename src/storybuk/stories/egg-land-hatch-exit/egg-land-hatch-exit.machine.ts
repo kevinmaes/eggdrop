@@ -123,7 +123,7 @@ export const eggLandHatchExitMachine = setup({
     hatchedPauseDuration: DEMO_CONFIG.hatchedPauseDuration,
   },
 }).createMachine({
-  id: 'Egg-Land-Hatch-Exit',
+  id: 'Egg - Land + Hatch + Exit',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;
