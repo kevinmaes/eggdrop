@@ -54,5 +54,5 @@ export const storyConfig: StoryConfig = {
   ...canvasDimensions,
   statelyEmbedUrl: [
     'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&colorMode=light&colorMode=light&colorMode=light&machineId=de2872fe-dc4c-412e-bd3d-e04c2ca98767',
-  ], // TODO: Add after publishing to Stately
+  ],
 };
