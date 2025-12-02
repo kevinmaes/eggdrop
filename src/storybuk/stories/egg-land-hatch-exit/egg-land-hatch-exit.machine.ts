@@ -1,9 +1,9 @@
-import { setup, assign, type ActorRefFrom } from 'xstate';
 import Konva from 'konva';
+import { setup, assign, type ActorRefFrom } from 'xstate';
 
-import { STAGE_PADDING } from '../../story-constants';
 import { tweenActor, type TweenConfig } from '../../../tweenActor';
 import { isImageRef } from '../../../types';
+import { STAGE_PADDING } from '../../story-constants';
 
 import type { Direction, Position } from '../../../types';
 
