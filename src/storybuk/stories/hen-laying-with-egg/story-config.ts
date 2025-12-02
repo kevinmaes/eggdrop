@@ -20,7 +20,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 export const storyConfig: StoryConfig = {
   id: '05',
   type: 'animated',
-  title: 'Hen - Laying with static egg',
+  title: 'Hen - Laying static egg',
   description:
     'Hen lays an egg - egg appears at correct position (static, no falling yet)',
   actors: [
