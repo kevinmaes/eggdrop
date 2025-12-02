@@ -48,7 +48,7 @@ function HenSprite({
       position: state?.context.position ?? { x: 0, y: 0 },
       isMoving: state?.matches('Moving') ?? false,
       isLaying: state?.hasTag('laying') ?? false,
-      direction: state?.context.direction ?? 1,
+      direction: state?.context.currentTweenDirection ?? 1,
       eggsLaid: state?.context.eggsLaid ?? 0,
     })
   );

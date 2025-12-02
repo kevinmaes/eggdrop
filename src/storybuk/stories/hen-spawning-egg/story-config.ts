@@ -51,6 +51,7 @@ export const storyConfig: StoryConfig = {
   layoutMode: 'vertical-split-top',
   statelyEmbedUrl: [
     'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?code=9d19c8fd-366c-449f-b13a-ba18a1ef0f8d&mode=design&machineId=ca19308f-b586-4651-8bc9-3d0bd0a4ac7c',
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=65ae535b-a2e4-45c1-a0b2-63dfb17fbcb5',
   ],
   canvasWidth,
   canvasHeight,
