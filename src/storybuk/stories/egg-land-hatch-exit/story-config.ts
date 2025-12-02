@@ -20,7 +20,7 @@ const canvasDimensions = calculateStoryCanvasDimensions(
 export const storyConfig: StoryConfig = {
   id: '15',
   type: 'animated',
-  title: 'Egg - Land, Hatch, and Exit',
+  title: 'Egg - Land, Hatch, + Exit',
   description:
     'Complete sequence: egg falls and lands, hatches to show chick, chick runs off screen - No jump animation',
   actors: [
