@@ -78,7 +78,7 @@ export const eggLandHatchMachine = setup({
     }),
   },
 }).createMachine({
-  id: 'Egg-Land-Hatch',
+  id: 'Egg - Land and Hatch',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth ?? 1920;
     const canvasHeight = input.canvasHeight ?? 1080;

@@ -56,6 +56,8 @@ export const storyConfig: StoryConfig = {
     color: STORYBUK_COLORS.storyDemoBackground,
   },
   layoutMode: 'horizontal-split-narrow',
-  statelyEmbedUrl: [],
+  statelyEmbedUrl: [
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=Design&colorMode=light&colorMode=light&colorMode=light&machineId=a5ae1753-0434-4e09-986f-c6b0fccdaaf2',
+  ],
   ...canvasDimensions,
 };
