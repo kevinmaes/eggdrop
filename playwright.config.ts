@@ -42,12 +42,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        launchOptions: {
-          args: ['--window-size=1920,1080', '--force-device-scale-factor=1'],
-        },
-      },
+      use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'firefox',
