@@ -46,11 +46,6 @@ test.describe('@automated Game', () => {
       },
       { timeout: 5000 }
     );
-
-    await page.evaluate(() => {
-      const testAPI = window.__TEST_API__;
-      testAPI?.app?.send({ type: 'Play' });
-    });
   });
 
   test('should move the chef to catch eggs one after another until the level ends', async ({
@@ -64,6 +59,16 @@ test.describe('@automated Game', () => {
     console.log(
       `📐 Viewport size: ${viewportSize?.width}x${viewportSize?.height}`
     );
+
+    // Wait 1 second to view the intro screen
+    console.log('⏳ Showing intro screen for 1 second...\n');
+    await page.waitForTimeout(1000);
+
+    // Start the game
+    await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
 
     console.log('🤖 Starting bot...\n');
 
