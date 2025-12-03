@@ -417,11 +417,6 @@ export function findBestEgg(
   eggs: EggData[],
   chef: ChefData
 ): EnhancedEggData | null {
-  console.log(`[ChefBot] findBestEgg called with ${eggs.length} eggs`);
-  console.log(
-    `[ChefBot] Chef: x=${chef.position.x.toFixed(0)}, y=${chef.position.y.toFixed(0)}, speed=${chef.speed.toFixed(1)}, dir=${chef.movingDirection}, speedLimit=${chef.speedLimit}, accel=${chef.acceleration}, decel=${chef.deceleration}`
-  );
-
   // Pre-sort eggs by x position for efficient neighbor checking
   const sortedEggs = [...eggs].sort((a, b) => a.position.x - b.position.x);
 
@@ -450,17 +445,7 @@ export function findBestEgg(
     (egg) => egg.isReachable && egg.color !== 'black'
   );
 
-  // Debug logging when no valid eggs found
   if (validEggs.length === 0) {
-    console.log(`[ChefBot] No valid eggs found. Total eggs: ${eggs.length}`);
-    console.log(
-      `[ChefBot] Chef position: x=${chef.position.x}, y=${chef.position.y}, speed=${chef.speed}, direction=${chef.movingDirection}`
-    );
-    enhancedEggs.forEach((egg, i) => {
-      console.log(
-        `[ChefBot] Egg ${i}: color=${egg.color}, x=${egg.position.x}, y=${egg.position.y}, reachable=${egg.isReachable}, timeToCatch=${egg.timeToCatch.toFixed(2)}s, maxTravel=${egg.maxTravel.toFixed(2)}px, distance=${Math.abs(egg.position.x - chef.position.x).toFixed(2)}px`
-      );
-    });
     return null;
   }
 
