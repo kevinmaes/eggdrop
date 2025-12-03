@@ -1,0 +1,49 @@
+name: Detect Changes
+
+on:
+  workflow_call:
+    outputs:
+      app:
+        description: 'Changes detected in app code'
+        value: ${{ jobs.detect-changes.outputs.app }}
+      e2e-tests:
+        description: 'Changes detected in E2E tests'
+        value: ${{ jobs.detect-changes.outputs.e2e-tests }}
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.changes.outputs.app }}
+      e2e-tests: ${{ steps.changes.outputs.e2e-tests }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for relevant changes
+        id: changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            app:
+              - 'src/**'
+              - 'public/**'
+              - 'index.html'
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'tsconfig.json'
+              - 'vite.config.ts'
+              - 'playwright.config.ts'
+
+            e2e-tests:
+              - 'tests/**'
+              - 'playwright.config.ts'
+
+      - name: Display change detection results
+        run: |
+          echo "Change Detection Results:"
+          echo "========================"
+          echo "App: ${{ steps.changes.outputs.app }}"
+          echo "E2E Tests: ${{ steps.changes.outputs.e2e-tests }}"

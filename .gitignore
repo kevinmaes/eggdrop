@@ -25,6 +25,7 @@ dist-ssr
 *.sln
 *.sw?
 /test-results/
+test-results.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/

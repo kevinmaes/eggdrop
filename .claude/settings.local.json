@@ -2,9 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(cat:*)",
+      "Bash(cat:*)",
       "Bash(git add:*)",
       "Bash(git mv:*)",
       "Bash(git rm:*)",
+      "Bash(node -e:*)",
       "Bash(node -e:*)",
       "Bash(pnpm add:*)",
       "Bash(pnpm build)",
@@ -14,8 +16,9 @@
       "Bash(pnpm format)",
       "Bash(pnpm lint:*)",
       "Bash(pnpm lint)",
+      "Bash(pnpm test:automated:*)",
+      "Bash(pnpm test:automated:headed:single:*)",
       "Bash(pnpm test)",
-      "Bash(pnpm tsc:*)",
       "Bash(pnpm tsc:*)",
       "Bash(tree:*)"
     ],
