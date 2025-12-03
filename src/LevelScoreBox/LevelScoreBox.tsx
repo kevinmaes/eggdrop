@@ -60,6 +60,8 @@ export function LevelScoreBox({
   const [animateForBlackEggCaught, setAnimateForBlackEggCaught] =
     useState(false);
   useEffect(() => {
+    if (!gameLevelActorRef) return;
+
     gameLevelActorRef.on('Egg caught', (event) => {
       if (event.eggColor === 'black') {
         setAnimateForBlackEggCaught(true);

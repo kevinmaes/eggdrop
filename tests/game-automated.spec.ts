@@ -65,16 +65,7 @@ test.describe('@automated Game', () => {
       `📐 Viewport size: ${viewportSize?.width}x${viewportSize?.height}`
     );
 
-    // Wait for user to press Enter before starting the bot
-    console.log(
-      '\n🎮 GAME READY! Adjust window size if needed, then press Enter to start the bot...\n'
-    );
-    await new Promise((resolve) => {
-      process.stdin.once('data', () => {
-        console.log('🤖 Starting bot...\n');
-        resolve(undefined);
-      });
-    });
+    console.log('🤖 Starting bot...\n');
 
     // Create and start the chefBot first
     const chefBot = createActor(chefBotMachine, {
