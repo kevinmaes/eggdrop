@@ -33,6 +33,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /* Set viewport large enough to show full game without scrollbars */
+    viewport: { width: 1920, height: 1080 },
   },
 
   /* Configure projects for major browsers with different timeouts */
