@@ -24,43 +24,58 @@ export function calculateTimeToCatch(egg: EggData, chef: ChefData): number {
 
 /**
  * Calculate the maximum distance the chef can travel in the given time,
- * considering acceleration, current speed, and direction
+ * considering acceleration, current speed, direction changes, and deceleration
  */
 export function calculateMaxTravel(
   timeToCatch: number,
   chef: ChefData,
   egg: EggData
 ): number {
-  // If chef is already moving in the right direction, use current speed
   const currentSpeed = chef.speed;
   const isMovingTowardsTarget =
     (chef.movingDirection === 'right' && egg.position.x > chef.position.x) ||
     (chef.movingDirection === 'left' && egg.position.x < chef.position.x);
 
-  // Calculate maximum possible distance using speed limit
-  const maxDistanceAtSpeedLimit = chef.speedLimit * timeToCatch;
+  const needsDirectionChange =
+    chef.movingDirection !== 'none' &&
+    !isMovingTowardsTarget &&
+    currentSpeed > 0;
 
-  // If moving towards target, we can potentially go further
-  if (isMovingTowardsTarget && currentSpeed > 0) {
-    // Distance covered at current speed
-    const distanceAtCurrentSpeed = currentSpeed * timeToCatch;
+  let availableTime = timeToCatch;
+  let distanceCovered = 0;
 
-    // Additional distance from acceleration
-    const accelerationTime = Math.min(
-      timeToCatch,
-      (chef.speedLimit - currentSpeed) / chef.acceleration
-    );
-    const distanceFromAcceleration =
-      0.5 * chef.acceleration * accelerationTime * accelerationTime;
+  // If chef needs to change direction, account for deceleration time
+  if (needsDirectionChange) {
+    const decelerationTime = currentSpeed / chef.deceleration;
 
-    return Math.max(
-      maxDistanceAtSpeedLimit,
-      distanceAtCurrentSpeed + distanceFromAcceleration
-    );
+    // If not enough time to even stop, egg is unreachable
+    if (decelerationTime >= timeToCatch) {
+      return 0;
+    }
+
+    // Distance covered while decelerating (in wrong direction, so subtract)
+    const decelerationDistance = 0.5 * currentSpeed * decelerationTime;
+    distanceCovered -= decelerationDistance; // Negative because moving away
+    availableTime -= decelerationTime;
   }
 
-  // If not moving towards target or stationary, use the simpler calculation
-  return maxDistanceAtSpeedLimit;
+  // Now calculate distance in the correct direction
+  const timeToReachSpeedLimit = chef.speedLimit / chef.acceleration;
+
+  if (availableTime >= timeToReachSpeedLimit) {
+    // Enough time to reach full speed
+    const accelerationDistance =
+      0.5 * chef.acceleration * timeToReachSpeedLimit * timeToReachSpeedLimit;
+    const fullSpeedTime = availableTime - timeToReachSpeedLimit;
+    const fullSpeedDistance = chef.speedLimit * fullSpeedTime;
+    distanceCovered += accelerationDistance + fullSpeedDistance;
+  } else {
+    // Only have time to accelerate partway
+    distanceCovered += 0.5 * chef.acceleration * availableTime * availableTime;
+  }
+
+  // Return absolute value since we track direction separately
+  return Math.abs(distanceCovered);
 }
 
 /**
@@ -77,8 +92,8 @@ export function isEggReachable(
 
   const distanceToTarget = Math.abs(egg.position.x - chef.position.x);
 
-  // Add a small buffer to account for potential timing variations
-  const safetyBuffer = 50; // Increased buffer to be more lenient
+  // Add a buffer to account for timing variations and pot rim width
+  const safetyBuffer = chef.potRimWidth * 0.75; // Use pot rim width as buffer
   return distanceToTarget <= maxTravel + safetyBuffer;
 }
 

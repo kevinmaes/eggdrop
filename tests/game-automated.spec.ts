@@ -22,11 +22,14 @@ test.describe('@automated Game', () => {
 
   // Shared setup for all tests
   test.beforeEach(async ({ page }) => {
+    // Set viewport size BEFORE navigating to ensure full visibility from start
+    await page.setViewportSize({ width: 1920, height: 1080 });
+
     // Listen for console messages from the browser
     page.on('console', (msg) => console.log(`Browser console: ${msg.text()}`));
 
-    // Navigate to the game page with test mode enabled
-    await page.goto('/?testMode=true');
+    // Navigate to the game page with test mode and automated test mode enabled
+    await page.goto('/?testMode=true&automatedTest=true');
 
     // Wait for loading state to disappear
     await expect(page.getByText(LOADING_MSG)).toBeHidden();
@@ -43,11 +46,6 @@ test.describe('@automated Game', () => {
       },
       { timeout: 5000 }
     );
-
-    await page.evaluate(() => {
-      const testAPI = window.__TEST_API__;
-      testAPI?.app?.send({ type: 'Play' });
-    });
   });
 
   test('should move the chef to catch eggs one after another until the level ends', async ({
@@ -55,6 +53,24 @@ test.describe('@automated Game', () => {
   }) => {
     test.setTimeout(300000);
     const { logStep } = createLogger();
+
+    // Log viewport size for debugging
+    const viewportSize = page.viewportSize();
+    console.log(
+      `📐 Viewport size: ${viewportSize?.width}x${viewportSize?.height}`
+    );
+
+    // Wait 1 second to view the intro screen
+    console.log('⏳ Showing intro screen for 1 second...\n');
+    await page.waitForTimeout(1000);
+
+    // Start the game
+    await page.evaluate(() => {
+      const testAPI = window.__TEST_API__;
+      testAPI?.app?.send({ type: 'Play' });
+    });
+
+    console.log('🤖 Starting bot...\n');
 
     // Create and start the chefBot first
     const chefBot = createActor(chefBotMachine, {
@@ -69,10 +85,10 @@ test.describe('@automated Game', () => {
     const isGameLevelDoneHandle = await page.waitForFunction(() => {
       const testAPI = window.__TEST_API__;
       const appActorRef = testAPI?.app as AppActorRef;
-      const gameLevelActorRef = appActorRef.system.get(
+      const gameLevelActorRef = appActorRef?.system.get(
         'Game Level'
       ) as GameLevelActorRef;
-      return gameLevelActorRef.getSnapshot().matches('Done');
+      return gameLevelActorRef?.getSnapshot().matches('Done');
     });
     const isGameLevelDone = await isGameLevelDoneHandle.jsonValue();
 
