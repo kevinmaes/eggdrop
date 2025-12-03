@@ -5,7 +5,8 @@
       "Bash(pnpm lint)",
       "Bash(pnpm format)",
       "Bash(pnpm tsc:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(pnpm test:automated:*)"
     ],
     "deny": [],
     "ask": []

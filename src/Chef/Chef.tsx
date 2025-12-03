@@ -75,7 +75,7 @@ export function Chef() {
   // Set the chefPotRimHitRef in the gameLevel machine
   const chefPotRimHitRef = useRef<Konva.Ellipse>(null);
   useEffect(() => {
-    if (isImageRef(chefPotRimHitRef)) {
+    if (gameLevelActorRef && isImageRef(chefPotRimHitRef)) {
       gameLevelActorRef.send({
         type: 'Set chefPotRimHitRef',
         chefPotRimHitRef,

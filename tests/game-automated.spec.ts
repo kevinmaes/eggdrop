@@ -22,6 +22,9 @@ test.describe('@automated Game', () => {
 
   // Shared setup for all tests
   test.beforeEach(async ({ page }) => {
+    // Set viewport size BEFORE navigating to ensure full visibility from start
+    await page.setViewportSize({ width: 1920, height: 1080 });
+
     // Listen for console messages from the browser
     page.on('console', (msg) => console.log(`Browser console: ${msg.text()}`));
 
@@ -56,6 +59,23 @@ test.describe('@automated Game', () => {
     test.setTimeout(300000);
     const { logStep } = createLogger();
 
+    // Log viewport size for debugging
+    const viewportSize = page.viewportSize();
+    console.log(
+      `📐 Viewport size: ${viewportSize?.width}x${viewportSize?.height}`
+    );
+
+    // Wait for user to press Enter before starting the bot
+    console.log(
+      '\n🎮 GAME READY! Adjust window size if needed, then press Enter to start the bot...\n'
+    );
+    await new Promise((resolve) => {
+      process.stdin.once('data', () => {
+        console.log('🤖 Starting bot...\n');
+        resolve(undefined);
+      });
+    });
+
     // Create and start the chefBot first
     const chefBot = createActor(chefBotMachine, {
       input: { page },
@@ -69,10 +89,10 @@ test.describe('@automated Game', () => {
     const isGameLevelDoneHandle = await page.waitForFunction(() => {
       const testAPI = window.__TEST_API__;
       const appActorRef = testAPI?.app as AppActorRef;
-      const gameLevelActorRef = appActorRef.system.get(
+      const gameLevelActorRef = appActorRef?.system.get(
         'Game Level'
       ) as GameLevelActorRef;
-      return gameLevelActorRef.getSnapshot().matches('Done');
+      return gameLevelActorRef?.getSnapshot().matches('Done');
     });
     const isGameLevelDone = await isGameLevelDoneHandle.jsonValue();
 
