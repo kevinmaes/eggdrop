@@ -28,8 +28,8 @@ test.describe('@automated Game', () => {
     // Listen for console messages from the browser
     page.on('console', (msg) => console.log(`Browser console: ${msg.text()}`));
 
-    // Navigate to the game page with test mode enabled
-    await page.goto('/?testMode=true');
+    // Navigate to the game page with test mode and automated test mode enabled
+    await page.goto('/?testMode=true&automatedTest=true');
 
     // Wait for loading state to disappear
     await expect(page.getByText(LOADING_MSG)).toBeHidden();

@@ -10,6 +10,7 @@ export { getBorderRadius };
 
 export interface GameConfig {
   isTestMode: boolean;
+  isAutomatedTest: boolean;
   isMuted: boolean;
   populationSize: number;
   levelDurationMS: number;
@@ -120,7 +121,10 @@ export const STAGE_DIMENSIONS = {
   movementMargin: 25,
 };
 
-const createGameConfig = (isTestMode: boolean = false): GameConfig => {
+const createGameConfig = (
+  isTestMode: boolean = false,
+  isAutomatedTest: boolean = false
+): GameConfig => {
   // The position and dimensions of the chef
   const chefWidth = 344;
   const chefHeight = 344;
@@ -135,6 +139,7 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
 
   const gameConfig: GameConfig = {
     isTestMode,
+    isAutomatedTest,
     isMuted: false,
     // The number of hens in the game
     populationSize: POPULATION_SIZE,
@@ -247,6 +252,24 @@ const createGameConfig = (isTestMode: boolean = false): GameConfig => {
     gameConfig.populationSize = 10;
     gameConfig.levelDurationMS = 60_000;
   }
+
+  // Automated test mode: Crank up the intensity for bot demonstrations
+  if (isAutomatedTest) {
+    // INTENSITY CONTROL: Adjust this single value to control difficulty
+    // 1.0 = normal difficulty
+    // 2.0 = 2x intensity (twice as many hens, appearing twice as fast)
+    // 3.0 = 3x intensity, etc.
+    const INTENSITY_MULTIPLIER = 2.0;
+
+    gameConfig.populationSize = Math.floor(
+      POPULATION_SIZE * INTENSITY_MULTIPLIER
+    );
+    gameConfig.levelDurationMS = Math.floor(
+      (POPULATION_SIZE * 1000 + 60_000) * INTENSITY_MULTIPLIER * 0.75
+    );
+    gameConfig.hen.entranceDelayMS = Math.floor(1000 / INTENSITY_MULTIPLIER);
+  }
+
   return gameConfig;
 };
 
@@ -256,6 +279,7 @@ let gameConfigInstance: GameConfig | null = null;
 // Export a function that returns the singleton instance
 export function getGameConfig(): GameConfig {
   let isTestMode = false;
+  let isAutomatedTest = false;
 
   // Prefer env var if present (for Playwright/Node tests)
   if (typeof process !== 'undefined' && process.env['TEST_MODE']) {
@@ -264,13 +288,14 @@ export function getGameConfig(): GameConfig {
     // Fallback to query string in browser
     const urlParams = new URLSearchParams(window.location.search as string);
     isTestMode = urlParams.get('testMode') === 'true';
+    isAutomatedTest = urlParams.get('automatedTest') === 'true';
   }
 
   if (gameConfigInstance) {
     return gameConfigInstance;
   }
 
-  gameConfigInstance = createGameConfig(isTestMode);
+  gameConfigInstance = createGameConfig(isTestMode, isAutomatedTest);
   return gameConfigInstance;
 }
 
