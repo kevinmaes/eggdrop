@@ -13,6 +13,13 @@ export interface Position {
   y: number;
 }
 
+export interface BoundingBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface Direction {
   value: -1 | 0 | 1;
   label: 'left' | 'right' | 'none';

@@ -26,7 +26,12 @@ import { type GameConfig } from '../gameConfig';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
 import { addEggToHistory } from '../test-api';
-import { isImageRef, type Direction, type Position } from '../types';
+import {
+  isImageRef,
+  type BoundingBox,
+  type Direction,
+  type Position,
+} from '../types';
 
 import {
   countdownTimer,
@@ -96,12 +101,7 @@ export const gameLevelMachine = setup({
           eggId: string;
           eggColor: EggColor;
           position: Position;
-          eggBoundingBox: {
-            x: number;
-            y: number;
-            width: number;
-            height: number;
-          } | null;
+          eggBoundingBox: BoundingBox | null;
         }
       | CountdownTimerTickEvent;
   },
@@ -509,12 +509,7 @@ export const gameLevelMachine = setup({
       { context },
       params: {
         position: Position;
-        eggBoundingBox: {
-          x: number;
-          y: number;
-          width: number;
-          height: number;
-        } | null;
+        eggBoundingBox: BoundingBox | null;
       }
     ) => {
       if (!isImageRef(context.chefPotRimHitRef)) {
