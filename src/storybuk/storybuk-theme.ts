@@ -116,4 +116,15 @@ export const KEYBOARD_INDICATOR = {
   inactiveOpacity: 0.6,
 } as const;
 
-export type SplitOrientation = 'horizontal' | 'vertical';
+/**
+ * Split orientation defines where the demo stage is positioned relative to the Stately embed
+ * - demo-left: Demo on left, Stately on right (horizontal split)
+ * - demo-right: Demo on right, Stately on left (horizontal split)
+ * - demo-top: Demo on top, Stately on bottom (vertical split)
+ * - demo-bottom: Demo on bottom, Stately on top (vertical split)
+ */
+export type SplitOrientation =
+  | 'demo-left'
+  | 'demo-right'
+  | 'demo-top'
+  | 'demo-bottom';

@@ -60,7 +60,10 @@ export function Egg({
   const isLanded = currentState === 'Landed';
   const isHatching = currentState === 'Hatching';
   // Hatching Jump is now a compound state, check if it's an object with that key
-  const isHatchingJump = typeof currentState === 'object' && currentState !== null && 'Hatching Jump' in currentState;
+  const isHatchingJump =
+    typeof currentState === 'object' &&
+    currentState !== null &&
+    'Hatching Jump' in currentState;
   const isHatched = currentState === 'Hatched';
   const isExiting = currentState === 'Exiting';
   const isSplatting = currentState === 'Splatting';

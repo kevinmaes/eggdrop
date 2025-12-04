@@ -13,7 +13,8 @@ import { chefFacingDirectionMachine } from './chef-facing-direction.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
-  CHEF_STORY_CANVAS_HEIGHT_PERCENT
+  CHEF_STORY_CANVAS_HEIGHT_PERCENT,
+  'bottom'
 );
 
 export const storyConfig: StoryConfig = {

@@ -140,15 +140,15 @@ export function Storybuk() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentStoryConfig, isPlaying, handlePlay, handleReset]);
 
-  const splitOrientation = currentStoryConfig?.splitOrientation ?? 'horizontal';
+  const splitOrientation = currentStoryConfig?.splitOrientation ?? 'demo-left';
   const statelyUrls = currentStoryConfig?.statelyEmbedUrl ?? [];
 
   // Get dynamic dimensions based on split orientation
   const getLayoutDimensions = () => {
     const contentArea = STORYBUK_LAYOUT.contentArea; // 1620×1020
 
-    if (splitOrientation === 'horizontal') {
-      // Story on LEFT, Stately on RIGHT
+    if (splitOrientation === 'demo-left' || splitOrientation === 'demo-right') {
+      // Horizontal split: Demo and Stately side-by-side
       // Story controls width only, height fills content area
       const storyWidth =
         currentStoryConfig?.canvasWidth ||
@@ -162,7 +162,7 @@ export function Storybuk() {
       };
     }
 
-    // vertical: Story on TOP, Stately on BOTTOM
+    // Vertical split: Demo and Stately stacked vertically
     // Story controls height only, width fills content area
     const storyHeight =
       currentStoryConfig?.canvasHeight ||
@@ -261,7 +261,10 @@ export function Storybuk() {
               height: STORYBUK_LAYOUT.contentArea.height,
               display: 'flex',
               flexDirection:
-                splitOrientation === 'horizontal' ? 'row' : 'column',
+                splitOrientation === 'demo-left' ||
+                splitOrientation === 'demo-right'
+                  ? 'row'
+                  : 'column',
             }}
           >
             {isLoading && (
@@ -294,52 +297,79 @@ export function Storybuk() {
                   const hasHeadless = headlessActors.length > 0;
                   const hasVisual = visualActors.length > 0;
 
+                  // Define canvas elements
+                  const storyCanvas = hasVisual && (
+                    <div
+                      style={{
+                        width: layoutDimensions.storyCanvas.width,
+                        height: layoutDimensions.storyCanvas.height,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: backgroundColor,
+                      }}
+                    >
+                      <StoryCanvas
+                        width={layoutDimensions.storyCanvas.width}
+                        height={layoutDimensions.storyCanvas.height}
+                        background={{
+                          ...currentStoryConfig.background,
+                          color: backgroundColor,
+                        }}
+                        actorInstances={visualActors}
+                        resetCount={resetCount}
+                        showKeyboardIndicator={
+                          currentStoryConfig.showKeyboardIndicator
+                        }
+                      />
+                    </div>
+                  );
+
+                  const statelyCanvas = (
+                    <div
+                      style={{
+                        width: layoutDimensions.statelyCanvas.width,
+                        height: layoutDimensions.statelyCanvas.height,
+                      }}
+                    >
+                      <StatelyEmbedContainer
+                        width={layoutDimensions.statelyCanvas.width}
+                        height={layoutDimensions.statelyCanvas.height}
+                        demoTitle={currentStoryConfig.title}
+                        urls={statelyUrls}
+                        theme={statelyTheme}
+                        splitOrientation={splitOrientation}
+                      />
+                    </div>
+                  );
+
+                  // Render in appropriate order based on split orientation
                   return (
                     <>
-                      {/* Story Canvas */}
-                      {hasVisual && (
-                        <div
-                          style={{
-                            width: layoutDimensions.storyCanvas.width,
-                            height: layoutDimensions.storyCanvas.height,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: backgroundColor,
-                          }}
-                        >
-                          <StoryCanvas
-                            width={layoutDimensions.storyCanvas.width}
-                            height={layoutDimensions.storyCanvas.height}
-                            background={{
-                              ...currentStoryConfig.background,
-                              color: backgroundColor,
-                            }}
-                            actorInstances={visualActors}
-                            resetCount={resetCount}
-                            showKeyboardIndicator={
-                              currentStoryConfig.showKeyboardIndicator
-                            }
-                          />
-                        </div>
+                      {splitOrientation === 'demo-left' && (
+                        <>
+                          {storyCanvas}
+                          {statelyCanvas}
+                        </>
                       )}
-
-                      {/* Stately Canvas */}
-                      <div
-                        style={{
-                          width: layoutDimensions.statelyCanvas.width,
-                          height: layoutDimensions.statelyCanvas.height,
-                        }}
-                      >
-                        <StatelyEmbedContainer
-                          width={layoutDimensions.statelyCanvas.width}
-                          height={layoutDimensions.statelyCanvas.height}
-                          demoTitle={currentStoryConfig.title}
-                          urls={statelyUrls}
-                          theme={statelyTheme}
-                          splitOrientation={splitOrientation}
-                        />
-                      </div>
+                      {splitOrientation === 'demo-right' && (
+                        <>
+                          {statelyCanvas}
+                          {storyCanvas}
+                        </>
+                      )}
+                      {splitOrientation === 'demo-top' && (
+                        <>
+                          {storyCanvas}
+                          {statelyCanvas}
+                        </>
+                      )}
+                      {splitOrientation === 'demo-bottom' && (
+                        <>
+                          {statelyCanvas}
+                          {storyCanvas}
+                        </>
+                      )}
 
                       {/* Headless actors (hidden, for inspector only) */}
                       {hasHeadless && (

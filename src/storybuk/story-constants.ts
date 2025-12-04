@@ -100,19 +100,32 @@ interface StoryCanvasDimensions {
   canvasHeight: number;
 }
 
+/**
+ * Calculate canvas dimensions based on orientation direction
+ * @param direction - 'horizontal' for side-by-side layout, 'vertical' for stacked layout
+ * @param percent - Percentage of full canvas to use for demo stage
+ * @param demoPosition - Where demo is positioned: 'left', 'right', 'top', 'bottom' (defaults based on direction)
+ */
 export function calculateStoryCanvasDimensions(
-  splitOrientation: SplitOrientation,
-  percent: number
+  direction: 'horizontal' | 'vertical',
+  percent: number,
+  demoPosition?: 'left' | 'right' | 'top' | 'bottom'
 ): StoryCanvasDimensions {
-  if (splitOrientation === 'horizontal') {
+  if (direction === 'horizontal') {
+    // Default to demo-left for horizontal
+    const splitOrientation =
+      demoPosition === 'right' ? 'demo-right' : 'demo-left';
     return {
-      splitOrientation: 'horizontal',
+      splitOrientation,
       canvasWidth: Math.floor((STORY_CANVAS.MAX_WIDTH * percent) / 100),
       canvasHeight: STORY_CANVAS.MAX_HEIGHT,
     };
   } else {
+    // Default to demo-top for vertical
+    const splitOrientation =
+      demoPosition === 'bottom' ? 'demo-bottom' : 'demo-top';
     return {
-      splitOrientation: 'vertical',
+      splitOrientation,
       canvasWidth: STORYBUK_LAYOUT.contentArea.width,
       canvasHeight: Math.floor((STORY_CANVAS.MAX_HEIGHT * percent) / 100),
     };

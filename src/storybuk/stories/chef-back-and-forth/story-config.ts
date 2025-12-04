@@ -13,7 +13,8 @@ import { chefBackAndForthMachine } from './chef-back-and-forth.machine';
 
 const canvasDimensions = calculateStoryCanvasDimensions(
   'vertical',
-  CHEF_STORY_CANVAS_HEIGHT_PERCENT
+  CHEF_STORY_CANVAS_HEIGHT_PERCENT,
+  'bottom'
 );
 
 export const storyConfig: StoryConfig = {

@@ -18,8 +18,8 @@ interface StatelyEmbedContainerProps {
  * - 0 URLs: Shows "No Stately embed URL configured" message
  * - 1 URL: Single embed fills entire area (same as current behavior)
  * - 2 URLs: Splits perpendicular to main split orientation
- *   - Horizontal mode (story left): Split Stately area top/bottom
- *   - Vertical mode (story top): Split Stately area left/right
+ *   - demo-left/demo-right: Split Stately area top/bottom
+ *   - demo-top/demo-bottom: Split Stately area left/right
  */
 export function StatelyEmbedContainer({
   width,
@@ -81,14 +81,14 @@ export function StatelyEmbedContainer({
   let embedHeight: number;
   let flexDirection: 'row' | 'column';
 
-  if (splitOrientation === 'horizontal') {
-    // Main split is horizontal (story left, Stately right)
+  if (splitOrientation === 'demo-left' || splitOrientation === 'demo-right') {
+    // Main split is horizontal (story and Stately side-by-side)
     // Split Stately area top/bottom (vertical stacking)
     embedWidth = width;
     embedHeight = height / 2;
     flexDirection = 'column';
   } else {
-    // Main split is vertical (story top, Stately bottom)
+    // Main split is vertical (story and Stately stacked)
     // Split Stately area left/right (horizontal stacking)
     embedWidth = width / 2;
     embedHeight = height;
