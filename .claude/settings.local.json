@@ -25,7 +25,8 @@
       "Bash(gh issue edit:*)",
       "Bash(gh pr view:*)",
       "Bash(git fetch:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
