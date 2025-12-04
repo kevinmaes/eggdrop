@@ -96,6 +96,12 @@ export const gameLevelMachine = setup({
           eggId: string;
           eggColor: EggColor;
           position: Position;
+          eggBoundingBox: {
+            x: number;
+            y: number;
+            width: number;
+            height: number;
+          } | null;
         }
       | CountdownTimerTickEvent;
   },
@@ -499,7 +505,18 @@ export const gameLevelMachine = setup({
     isEggCaughtPointsActorDone: (_, params: { eggCaughtPointsid: string }) => {
       return !!params.eggCaughtPointsid;
     },
-    testPotRimHit: ({ context }, params: Position) => {
+    testPotRimHit: (
+      { context },
+      params: {
+        position: Position;
+        eggBoundingBox: {
+          x: number;
+          y: number;
+          width: number;
+          height: number;
+        } | null;
+      }
+    ) => {
       if (!isImageRef(context.chefPotRimHitRef)) {
         return false;
       }
@@ -511,17 +528,30 @@ export const gameLevelMachine = setup({
         height: potRimHitHeight,
       } = context.chefPotRimHitRef.current.getClientRect();
 
-      // Consider the leading edge of the egg for the hit test
-      const eggLeadingEdgeYPos =
-        params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+      // Use the bounding box from the event if available (accounts for rotation)
+      // Otherwise fall back to the simple calculation
+      let eggLeadingEdgeYPos: number;
+      let eggCenterX: number;
+
+      if (params.eggBoundingBox) {
+        // Use the rotated bounding box calculated by the egg actor
+        eggLeadingEdgeYPos =
+          params.eggBoundingBox.y + params.eggBoundingBox.height;
+        eggCenterX = params.eggBoundingBox.x + params.eggBoundingBox.width / 2;
+      } else {
+        // Fallback: use simple calculation if bounding box not available
+        eggLeadingEdgeYPos =
+          params.position.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+        eggCenterX = params.position.x;
+      }
 
       if (eggLeadingEdgeYPos < potRimHitY) {
         return false;
       }
 
       return (
-        params.x >= potRimHitX &&
-        params.x <= potRimHitX + potRimHitWidth &&
+        eggCenterX >= potRimHitX &&
+        eggCenterX <= potRimHitX + potRimHitWidth &&
         eggLeadingEdgeYPos >= potRimHitY &&
         eggLeadingEdgeYPos <= potRimHitY + potRimHitHeight
       );
@@ -641,7 +671,10 @@ export const gameLevelMachine = setup({
     'Egg position updated': {
       guard: {
         type: 'testPotRimHit',
-        params: ({ event }) => event.position,
+        params: ({ event }) => ({
+          position: event.position,
+          eggBoundingBox: event.eggBoundingBox,
+        }),
       },
       actions: [
         {

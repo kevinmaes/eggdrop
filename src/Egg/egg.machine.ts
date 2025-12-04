@@ -137,12 +137,27 @@ export const eggMachine = setup({
       position: (_, params: Position) => params,
     }),
     notifyParentOfPosition: sendParent(
-      ({ context }, params: { position: Position }) => ({
-        type: 'Egg position updated',
-        eggId: context.id,
-        eggColor: context.color,
-        position: params.position,
-      })
+      ({ context }, params: { position: Position }) => {
+        // Calculate the rotated bounding box if we have the egg ref
+        let eggBoundingBox: { x: number; y: number; width: number; height: number } | null = null;
+        if (isImageRef(context.eggRef) && context.eggRef.current) {
+          const rect = context.eggRef.current.getClientRect();
+          eggBoundingBox = {
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height,
+          };
+        }
+
+        return {
+          type: 'Egg position updated',
+          eggId: context.id,
+          eggColor: context.color,
+          position: params.position,
+          eggBoundingBox,
+        };
+      }
     ),
     splatOnFloor: assign({
       position: ({ context }) => ({
