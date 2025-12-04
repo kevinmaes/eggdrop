@@ -139,7 +139,12 @@ export const eggMachine = setup({
     notifyParentOfPosition: sendParent(
       ({ context }, params: { position: Position }) => {
         // Calculate the rotated bounding box if we have the egg ref
-        let eggBoundingBox: { x: number; y: number; width: number; height: number } | null = null;
+        let eggBoundingBox: {
+          x: number;
+          y: number;
+          width: number;
+          height: number;
+        } | null = null;
         if (isImageRef(context.eggRef) && context.eggRef.current) {
           const rect = context.eggRef.current.getClientRect();
           eggBoundingBox = {
