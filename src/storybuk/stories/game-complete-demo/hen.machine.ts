@@ -19,7 +19,7 @@ import type { Direction, Position } from '../../../types';
 const DEMO_CONFIG = {
   henWidth: 120,
   henHeight: 120,
-  layingDelay: 500, // 0.5 seconds between eggs for rapid drops
+  layingDelay: 350, // 0.35 seconds between eggs for more frequent drops
   layingDuration: 500, // 500ms laying animation
   baseTweenDurationSeconds: 1.5, // Much faster movement
   speed: 0.6,
