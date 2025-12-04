@@ -106,7 +106,7 @@ export const STORYBUK_LAYOUT = {
 } as const;
 
 export const KEYBOARD_INDICATOR = {
-  width: 140,
+  width: 180,
   height: 50,
   padding: 16,
   cornerRadius: 8,
