@@ -7,6 +7,7 @@ import { storyConfig as chefIdleConfig } from './stories/chef-idle/story-config'
 import { storyConfig as chefWithPausesConfig } from './stories/chef-with-pauses/story-config';
 import { storyConfig as eggCaughtPointsConfig } from './stories/egg-caught-points-demo/story-config';
 import { storyConfig as eggFallLandOnlyConfig } from './stories/egg-fall-land-only/story-config';
+import { storyConfig as gameCompleteDemoConfig } from './stories/game-complete-demo/story-config';
 import { storyConfig as eggFallingConfig } from './stories/egg-falling/story-config';
 import { storyConfig as eggFallingAndBreakingConfig } from './stories/egg-falling-and-breaking/story-config';
 import { storyConfig as eggFallingRotatingConfig } from './stories/egg-falling-rotating/story-config';
@@ -63,7 +64,10 @@ export const chefStories: StoryConfig[] = [
   chefCatchWithPointsConfig,
 ];
 
-export const otherStories: StoryConfig[] = [eggCaughtPointsConfig];
+export const otherStories: StoryConfig[] = [
+  eggCaughtPointsConfig,
+  gameCompleteDemoConfig,
+];
 
 /**
  * Ordered array of all stories - use this for display order
