@@ -7,7 +7,6 @@ import { storyConfig as chefIdleConfig } from './stories/chef-idle/story-config'
 import { storyConfig as chefWithPausesConfig } from './stories/chef-with-pauses/story-config';
 import { storyConfig as eggCaughtPointsConfig } from './stories/egg-caught-points-demo/story-config';
 import { storyConfig as eggFallLandOnlyConfig } from './stories/egg-fall-land-only/story-config';
-import { storyConfig as gameCompleteDemoConfig } from './stories/game-complete-demo/story-config';
 import { storyConfig as eggFallingConfig } from './stories/egg-falling/story-config';
 import { storyConfig as eggFallingAndBreakingConfig } from './stories/egg-falling-and-breaking/story-config';
 import { storyConfig as eggFallingRotatingConfig } from './stories/egg-falling-rotating/story-config';
@@ -16,6 +15,7 @@ import { storyConfig as eggHatchJumpOnlyConfig } from './stories/egg-hatch-jump-
 import { storyConfig as eggIdleConfig } from './stories/egg-idle/story-config';
 import { storyConfig as eggLandHatchConfig } from './stories/egg-land-hatch/story-config';
 import { storyConfig as eggLandHatchExitConfig } from './stories/egg-land-hatch-exit/story-config';
+import { storyConfig as gameCompleteDemoConfig } from './stories/game-complete-demo/story-config';
 import { storyConfig as hatchedStandExitConfig } from './stories/hatched-stand-exit/story-config';
 import { storyConfig as henBackAndForthConfig } from './stories/hen-back-and-forth/story-config';
 import { storyConfig as henChefCatchConfig } from './stories/hen-chef-catch/story-config';

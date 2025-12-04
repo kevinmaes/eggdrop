@@ -2,6 +2,7 @@ import Konva from 'konva';
 import { assign, sendParent, setup } from 'xstate';
 
 import { tweenActor, type TweenConfig } from '../../../tweenActor';
+
 import type { Direction, Position } from '../../../types';
 
 /**

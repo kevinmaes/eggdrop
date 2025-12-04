@@ -3,10 +3,11 @@ import { useCallback, useState } from 'react';
 import { useSelector } from '@xstate/react';
 import { Group } from 'react-konva';
 
+import { EggCaughtPoints } from '../chef-catch-with-points/egg-caught-points';
+
 import { Chef } from './chef';
 import { Egg } from './egg';
 import { Hen } from './hen';
-import { EggCaughtPoints } from '../chef-catch-with-points/egg-caught-points';
 
 import type { storyMachine } from './story.machine';
 import type Konva from 'konva';
