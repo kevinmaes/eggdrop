@@ -41,6 +41,30 @@ import {
 import type { GenerationStats, Hendividual, LevelResults } from './types';
 import type { GameAssets } from '../types/assets';
 
+/**
+ * Checks if two axis-aligned bounding boxes overlap.
+ * Uses standard AABB (Axis-Aligned Bounding Box) collision detection.
+ * Returns true if the boxes overlap in both X and Y axes.
+ */
+export function doBoundingBoxesOverlap(
+  box1: BoundingBox,
+  box2: BoundingBox
+): boolean {
+  // Check if boxes overlap on X axis
+  // Overlap occurs when: box1Left < box2Right AND box1Right > box2Left
+  const xOverlap = box1.x < box2.x + box2.width && box1.x + box1.width > box2.x;
+  if (!xOverlap) {
+    return false;
+  }
+
+  // Check if boxes overlap on Y axis
+  // Overlap occurs when: box1Top < box2Bottom AND box1Bottom > box2Top
+  const yOverlap =
+    box1.y < box2.y + box2.height && box1.y + box1.height > box2.y;
+
+  return yOverlap;
+}
+
 export type GameLevelActorRef = ActorRefFrom<typeof gameLevelMachine>;
 
 export const gameLevelMachine = setup({
@@ -516,47 +540,38 @@ export const gameLevelMachine = setup({
         return false;
       }
 
-      const {
-        x: potRimHitX,
-        y: potRimHitY,
-        width: potRimHitWidth,
-        height: potRimHitHeight,
-      } = context.chefPotRimHitRef.current.getClientRect();
-
-      const potRimLeft = potRimHitX;
-      const potRimRight = potRimHitX + potRimHitWidth;
-      const potRimTop = potRimHitY;
-      const potRimBottom = potRimHitY + potRimHitHeight;
+      const potRimBoundingBox =
+        context.chefPotRimHitRef.current.getClientRect();
 
       // Use the bounding box from the event if available (accounts for rotation)
       // Otherwise fall back to the simple calculation
-      let eggLeft: number;
-      let eggRight: number;
-      let eggLeadingEdgeYPos: number;
+      const eggBoundingBox: BoundingBox = params.eggBoundingBox ?? {
+        x: params.position.x - 0.5 * context.gameConfig.egg.fallingEgg.width,
+        y: params.position.y - 0.5 * context.gameConfig.egg.fallingEgg.height,
+        width: context.gameConfig.egg.fallingEgg.width,
+        height: context.gameConfig.egg.fallingEgg.height,
+      };
 
-      if (params.eggBoundingBox) {
-        // Use the rotated bounding box calculated by the egg actor
-        eggLeft = params.eggBoundingBox.x;
-        eggRight = params.eggBoundingBox.x + params.eggBoundingBox.width;
-        eggLeadingEdgeYPos =
-          params.eggBoundingBox.y + params.eggBoundingBox.height;
-      } else {
-        // Fallback: use simple calculation if bounding box not available
-        const eggHalfWidth = 0.5 * context.gameConfig.egg.fallingEgg.width;
-        eggLeft = params.position.x - eggHalfWidth;
-        eggRight = params.position.x + eggHalfWidth;
-        eggLeadingEdgeYPos =
-          params.position.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
+      // Is the egg horizontally over the chef? (X axis)
+      // This rules out most eggs quickly since many fall straight down
+      const xOverlap =
+        eggBoundingBox.x < potRimBoundingBox.x + potRimBoundingBox.width &&
+        eggBoundingBox.x + eggBoundingBox.width > potRimBoundingBox.x;
+      if (!xOverlap) {
+        return false;
       }
 
-      // Check if the egg's leading edge (bottom) is within the pot rim's Y range
+      // Has the egg's leading edge reached the pot rim's Y range?
+      const eggLeadingEdgeYPos = eggBoundingBox.y + eggBoundingBox.height;
+      const potRimTop = potRimBoundingBox.y;
+      const potRimBottom = potRimBoundingBox.y + potRimBoundingBox.height;
+
       if (eggLeadingEdgeYPos < potRimTop || eggLeadingEdgeYPos > potRimBottom) {
         return false;
       }
 
-      // Check if the egg's X range overlaps with the pot rim's X range
-      // Overlap occurs when: eggLeft < potRimRight AND eggRight > potRimLeft
-      return eggLeft < potRimRight && eggRight > potRimLeft;
+      // Full bounding box overlap check
+      return doBoundingBoxesOverlap(eggBoundingBox, potRimBoundingBox);
     },
   },
 }).createMachine({
