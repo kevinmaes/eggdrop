@@ -26,7 +26,13 @@ import { type GameConfig } from '../gameConfig';
 import { type HenDoneEvent, henMachine } from '../Hen/hen.machine';
 import { sounds } from '../sounds';
 import { addEggToHistory } from '../test-api';
-import { isImageRef, type Direction, type Position } from '../types';
+import {
+  isImageRef,
+  type BoundingBox,
+  type Direction,
+  type Position,
+} from '../types';
+import { doBoundingBoxesOverlap } from '../utils/boundingBox';
 
 import {
   countdownTimer,
@@ -96,6 +102,7 @@ export const gameLevelMachine = setup({
           eggId: string;
           eggColor: EggColor;
           position: Position;
+          eggBoundingBox: BoundingBox | null;
         }
       | CountdownTimerTickEvent;
   },
@@ -499,32 +506,43 @@ export const gameLevelMachine = setup({
     isEggCaughtPointsActorDone: (_, params: { eggCaughtPointsid: string }) => {
       return !!params.eggCaughtPointsid;
     },
-    testPotRimHit: ({ context }, params: Position) => {
+    'egg hits the pot': (
+      { context },
+      params: {
+        position: Position;
+        eggBoundingBox: BoundingBox;
+      }
+    ) => {
       if (!isImageRef(context.chefPotRimHitRef)) {
         return false;
       }
 
-      const {
-        x: potRimHitX,
-        y: potRimHitY,
-        width: potRimHitWidth,
-        height: potRimHitHeight,
-      } = context.chefPotRimHitRef.current.getClientRect();
+      const potRimBoundingBox =
+        context.chefPotRimHitRef.current.getClientRect();
 
-      // Consider the leading edge of the egg for the hit test
-      const eggLeadingEdgeYPos =
-        params.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
-
-      if (eggLeadingEdgeYPos < potRimHitY) {
+      // Is the egg horizontally over the chef? (X axis)
+      // This rules out most eggs quickly since many fall straight down
+      const xOverlap =
+        params.eggBoundingBox.x <
+          potRimBoundingBox.x + potRimBoundingBox.width &&
+        params.eggBoundingBox.x + params.eggBoundingBox.width >
+          potRimBoundingBox.x;
+      if (!xOverlap) {
         return false;
       }
 
-      return (
-        params.x >= potRimHitX &&
-        params.x <= potRimHitX + potRimHitWidth &&
-        eggLeadingEdgeYPos >= potRimHitY &&
-        eggLeadingEdgeYPos <= potRimHitY + potRimHitHeight
-      );
+      // Has the egg's leading edge reached the pot rim's Y range?
+      const eggLeadingEdgeYPos =
+        params.eggBoundingBox.y + params.eggBoundingBox.height;
+      const potRimTop = potRimBoundingBox.y;
+      const potRimBottom = potRimBoundingBox.y + potRimBoundingBox.height;
+
+      if (eggLeadingEdgeYPos < potRimTop || eggLeadingEdgeYPos > potRimBottom) {
+        return false;
+      }
+
+      // Full bounding box overlap check
+      return doBoundingBoxesOverlap(params.eggBoundingBox, potRimBoundingBox);
     },
   },
 }).createMachine({
@@ -640,8 +658,23 @@ export const gameLevelMachine = setup({
     },
     'Egg position updated': {
       guard: {
-        type: 'testPotRimHit',
-        params: ({ event }) => event.position,
+        type: 'egg hits the pot',
+        params: ({ context, event }) => {
+          // Use the bounding box from the event if available (accounts for rotation)
+          // Otherwise fall back to the simple calculation
+          const eggBoundingBox: BoundingBox = event.eggBoundingBox ?? {
+            x: event.position.x - 0.5 * context.gameConfig.egg.fallingEgg.width,
+            y:
+              event.position.y - 0.5 * context.gameConfig.egg.fallingEgg.height,
+            width: context.gameConfig.egg.fallingEgg.width,
+            height: context.gameConfig.egg.fallingEgg.height,
+          };
+
+          return {
+            position: event.position,
+            eggBoundingBox,
+          };
+        },
       },
       actions: [
         {
