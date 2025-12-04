@@ -19,11 +19,11 @@ import type { Direction, Position } from '../../../types';
 const DEMO_CONFIG = {
   henWidth: 120,
   henHeight: 120,
-  layingDelay: 350, // 0.35 seconds between eggs for more frequent drops
+  layingDelay: 150, // 0.25 seconds between eggs for very rapid drops
   layingDuration: 500, // 500ms laying animation
   baseTweenDurationSeconds: 2.5, // Slower, more relaxed movement
-  speed: 0.4,
-  movementRangePercent: 0.5, // Move across 50% of screen width (centered)
+  speed: 0.8,
+  movementRangePercent: 0.6, // Move across 50% of screen width (centered)
 };
 
 type Destination = 'left-edge' | 'right-edge';
@@ -74,15 +74,19 @@ export const henMachine = setup({
     setHenRef: assign({
       henRef: (_, params: React.RefObject<Konva.Group>) => params,
     }),
-    // Send "Lay an egg" event to parent orchestrator with 3-color rotation
+    // Send "Lay an egg" event to parent orchestrator with weighted random color
     notifyParentOfEggLaying: sendParent(({ context }) => {
-      // Rotate through white (0), gold (1), black (2)
-      const eggColor =
-        context.eggsLaid % 3 === 0
-          ? 'white'
-          : context.eggsLaid % 3 === 1
-            ? 'gold'
-            : 'black';
+      // Weighted random selection: white (60%), gold (25%), black (15%)
+      const rand = Math.random();
+      let eggColor: 'white' | 'gold' | 'black';
+
+      if (rand < 0.6) {
+        eggColor = 'white';
+      } else if (rand < 0.85) {
+        eggColor = 'gold';
+      } else {
+        eggColor = 'black';
+      }
 
       return {
         type: 'Lay an egg',
@@ -92,7 +96,7 @@ export const henMachine = setup({
           x: context.position.x + DEMO_CONFIG.henWidth / 2,
           y: context.position.y + DEMO_CONFIG.henHeight - 20 + 15,
         },
-        eggColor: eggColor as 'white' | 'gold' | 'black',
+        eggColor,
       };
     }),
     incrementEggsLaid: assign({
