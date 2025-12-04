@@ -65,11 +65,12 @@ const chefBotMachine = setup({
         };
   },
   guards: {
-    isGameAppReady: (_, params: GameConfig | undefined) => !!params,
-    wasTargetEggCaught: (_, params: EggHistoryEntry | undefined) => {
+    'is game app ready': (_, params: GameConfig | undefined) => !!params,
+    'was target egg caught': (_, params: EggHistoryEntry | undefined) => {
       return params !== undefined && params.resultStatus === 'Caught';
     },
-    areThereMoreEggs: (_, params: { moreEggs: boolean }) => params.moreEggs,
+    'are there more eggs': (_, params: { moreEggs: boolean }) =>
+      params.moreEggs,
   },
   actions: {
     updateExpectedScore: assign({
@@ -298,7 +299,7 @@ const chefBotMachine = setup({
         onDone: [
           {
             guard: {
-              type: 'isGameAppReady',
+              type: 'is game app ready',
               params: ({ event }) => event.output,
             },
             target: 'Analyzing',
@@ -393,7 +394,7 @@ const chefBotMachine = setup({
         onDone: [
           {
             guard: {
-              type: 'wasTargetEggCaught',
+              type: 'was target egg caught',
               params: ({ event }) => event.output,
             },
             target: 'Evaluating',
@@ -422,7 +423,7 @@ const chefBotMachine = setup({
         onDone: [
           {
             guard: {
-              type: 'areThereMoreEggs',
+              type: 'are there more eggs',
               params: ({ event }) => event.output,
             },
             target: 'Analyzing',

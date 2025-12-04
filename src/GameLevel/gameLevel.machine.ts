@@ -496,14 +496,17 @@ export const gameLevelMachine = setup({
     countdownTimer,
   },
   guards: {
-    areAllHensDone: ({ context }) => context.hensLeft === 0,
-    isAnEggActorDone: (_, params: { eggId: string }) => {
+    'are all hens done': ({ context }) => context.hensLeft === 0,
+    'is an egg actor done': (_, params: { eggId: string }) => {
       return !!params.eggId;
     },
-    isAHenActorDone: (_, params: { henId: string }) => {
+    'is a hen actor done': (_, params: { henId: string }) => {
       return !!params.henId;
     },
-    isEggCaughtPointsActorDone: (_, params: { eggCaughtPointsid: string }) => {
+    'is egg caught points actor done': (
+      _,
+      params: { eggCaughtPointsid: string }
+    ) => {
       return !!params.eggCaughtPointsid;
     },
     'egg hits the pot': (
@@ -716,7 +719,7 @@ export const gameLevelMachine = setup({
       on: {
         Tick: [
           {
-            guard: 'areAllHensDone',
+            guard: 'are all hens done',
             target: 'Done',
           },
           {
@@ -733,7 +736,7 @@ export const gameLevelMachine = setup({
           // Egg actor done
           {
             guard: {
-              type: 'isAnEggActorDone',
+              type: 'is an egg actor done',
               params: ({ event }: { event: EggDoneEvent }) => ({
                 eggId: event.output.eggId,
               }),
@@ -763,7 +766,7 @@ export const gameLevelMachine = setup({
           // Hen actor done
           {
             guard: {
-              type: 'isAHenActorDone',
+              type: 'is a hen actor done',
               params: ({ event }: { event: HenDoneEvent }) => ({
                 henId: event.output.henId,
               }),
@@ -773,7 +776,7 @@ export const gameLevelMachine = setup({
           // Egg Caught Points actor done
           {
             guard: {
-              type: 'isEggCaughtPointsActorDone',
+              type: 'is egg caught points actor done',
               params: ({ event }: { event: EggCaughtPointsDoneEvent }) => ({
                 eggCaughtPointsId: event.output.eggCaughtPointsId,
               }),
