@@ -44,11 +44,10 @@ export function Egg({
 }: {
   actorRef: ActorRefFrom<typeof eggMachine>;
 }) {
-  const { position, rotation, currentState, color, exitTargetX } = useSelector(
+  const { position, currentState, color, exitTargetX } = useSelector(
     actorRef,
     (state) => ({
       position: state?.context.position ?? { x: 0, y: 0 },
-      rotation: 0, // Will be set by tween during falling
       currentState: state?.value ?? 'Idle',
       color: state?.context.color ?? 'white',
       exitTargetX: state?.context.exitTargetX ?? 0,
@@ -77,7 +76,6 @@ export function Egg({
   const showBrokenEgg = isSplatting;
 
   // Determine chick sprite frame
-  const useHatchFrame = isHatching;
   const useJumpFrame = isHatchingJump;
   const useStandFrame = isHatched;
   const useRunFrame = isExiting;

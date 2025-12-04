@@ -2,7 +2,7 @@ import Konva from 'konva';
 import { assign, setup } from 'xstate';
 
 import { tweenActor, type TweenConfig } from '../../../tweenActor';
-import { isImageRef, type Direction, type Position } from '../../../types';
+import { type Direction, type Position } from '../../../types';
 import { CHEF_DEMO, STORY_CANVAS } from '../../story-constants';
 
 /**
