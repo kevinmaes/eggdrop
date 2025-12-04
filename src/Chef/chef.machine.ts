@@ -53,7 +53,7 @@ export const chefMachine = setup({
       | { type: 'Reset isCatchingEgg' };
   },
   guards: {
-    isDirectionChanging: (
+    'is direction changing': (
       { context },
       params: { direction: Direction['value'] }
     ) => context.direction !== params.direction,
@@ -211,7 +211,7 @@ export const chefMachine = setup({
     },
     'Set direction': {
       guard: {
-        type: 'isDirectionChanging',
+        type: 'is direction changing',
         params: ({ event }) => ({ direction: event.direction }),
       },
       actions: {
