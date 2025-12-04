@@ -506,7 +506,7 @@ export const gameLevelMachine = setup({
     isEggCaughtPointsActorDone: (_, params: { eggCaughtPointsid: string }) => {
       return !!params.eggCaughtPointsid;
     },
-    testPotRimHit: (
+    'egg hits the pot': (
       { context },
       params: {
         position: Position;
@@ -664,7 +664,7 @@ export const gameLevelMachine = setup({
     },
     'Egg position updated': {
       guard: {
-        type: 'testPotRimHit',
+        type: 'egg hits the pot',
         params: ({ event }) => ({
           position: event.position,
           eggBoundingBox: event.eggBoundingBox,
