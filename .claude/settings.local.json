@@ -20,7 +20,12 @@
       "Bash(pnpm test:automated:headed:single:*)",
       "Bash(pnpm test)",
       "Bash(pnpm tsc:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh pr view:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
