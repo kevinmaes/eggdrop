@@ -21,8 +21,8 @@ const DEMO_CONFIG = {
   henHeight: 120,
   layingDelay: 350, // 0.35 seconds between eggs for more frequent drops
   layingDuration: 500, // 500ms laying animation
-  baseTweenDurationSeconds: 1.5, // Much faster movement
-  speed: 0.6,
+  baseTweenDurationSeconds: 2.5, // Slower, more relaxed movement
+  speed: 0.4,
   movementRangePercent: 0.5, // Move across 50% of screen width (centered)
 };
 
