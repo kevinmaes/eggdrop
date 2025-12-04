@@ -523,33 +523,40 @@ export const gameLevelMachine = setup({
         height: potRimHitHeight,
       } = context.chefPotRimHitRef.current.getClientRect();
 
+      const potRimLeft = potRimHitX;
+      const potRimRight = potRimHitX + potRimHitWidth;
+      const potRimTop = potRimHitY;
+      const potRimBottom = potRimHitY + potRimHitHeight;
+
       // Use the bounding box from the event if available (accounts for rotation)
       // Otherwise fall back to the simple calculation
+      let eggLeft: number;
+      let eggRight: number;
       let eggLeadingEdgeYPos: number;
-      let eggCenterX: number;
 
       if (params.eggBoundingBox) {
         // Use the rotated bounding box calculated by the egg actor
+        eggLeft = params.eggBoundingBox.x;
+        eggRight = params.eggBoundingBox.x + params.eggBoundingBox.width;
         eggLeadingEdgeYPos =
           params.eggBoundingBox.y + params.eggBoundingBox.height;
-        eggCenterX = params.eggBoundingBox.x + params.eggBoundingBox.width / 2;
       } else {
         // Fallback: use simple calculation if bounding box not available
+        const eggHalfWidth = 0.5 * context.gameConfig.egg.fallingEgg.width;
+        eggLeft = params.position.x - eggHalfWidth;
+        eggRight = params.position.x + eggHalfWidth;
         eggLeadingEdgeYPos =
           params.position.y + 0.5 * context.gameConfig.egg.fallingEgg.height;
-        eggCenterX = params.position.x;
       }
 
-      if (eggLeadingEdgeYPos < potRimHitY) {
+      // Check if the egg's leading edge (bottom) is within the pot rim's Y range
+      if (eggLeadingEdgeYPos < potRimTop || eggLeadingEdgeYPos > potRimBottom) {
         return false;
       }
 
-      return (
-        eggCenterX >= potRimHitX &&
-        eggCenterX <= potRimHitX + potRimHitWidth &&
-        eggLeadingEdgeYPos >= potRimHitY &&
-        eggLeadingEdgeYPos <= potRimHitY + potRimHitHeight
-      );
+      // Check if the egg's X range overlaps with the pot rim's X range
+      // Overlap occurs when: eggLeft < potRimRight AND eggRight > potRimLeft
+      return eggLeft < potRimRight && eggRight > potRimLeft;
     },
   },
 }).createMachine({
