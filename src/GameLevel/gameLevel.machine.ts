@@ -32,7 +32,11 @@ import {
   type Direction,
   type Position,
 } from '../types';
-import { doBoundingBoxesOverlap } from '../utils/boundingBox';
+import {
+  doBoundingBoxesOverlap,
+  hasHorizontalOverlap,
+  isLeadingEdgeInYRange,
+} from '../utils/boundingBox';
 
 import {
   countdownTimer,
@@ -525,22 +529,20 @@ export const gameLevelMachine = setup({
 
       // Is the egg horizontally over the chef? (X axis)
       // This rules out most eggs quickly since many fall straight down
-      const xOverlap =
-        params.eggBoundingBox.x <
-          potRimBoundingBox.x + potRimBoundingBox.width &&
-        params.eggBoundingBox.x + params.eggBoundingBox.width >
-          potRimBoundingBox.x;
-      if (!xOverlap) {
+      const hasXOverlap = hasHorizontalOverlap(
+        params.eggBoundingBox,
+        potRimBoundingBox
+      );
+      if (!hasXOverlap) {
         return false;
       }
 
       // Has the egg's leading edge reached the pot rim's Y range?
-      const eggLeadingEdgeYPos =
-        params.eggBoundingBox.y + params.eggBoundingBox.height;
-      const potRimTop = potRimBoundingBox.y;
-      const potRimBottom = potRimBoundingBox.y + potRimBoundingBox.height;
-
-      if (eggLeadingEdgeYPos < potRimTop || eggLeadingEdgeYPos > potRimBottom) {
+      const isEggCloseToChef = isLeadingEdgeInYRange(
+        params.eggBoundingBox,
+        potRimBoundingBox
+      );
+      if (!isEggCloseToChef) {
         return false;
       }
 
