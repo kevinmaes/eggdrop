@@ -529,20 +529,12 @@ export const gameLevelMachine = setup({
 
       // Is the egg horizontally over the chef? (X axis)
       // This rules out most eggs quickly since many fall straight down
-      const hasXOverlap = hasHorizontalOverlap(
-        params.eggBoundingBox,
-        potRimBoundingBox
-      );
-      if (!hasXOverlap) {
+      if (!hasHorizontalOverlap(params.eggBoundingBox, potRimBoundingBox)) {
         return false;
       }
 
       // Has the egg's leading edge reached the pot rim's Y range?
-      const isEggCloseToChef = isLeadingEdgeInYRange(
-        params.eggBoundingBox,
-        potRimBoundingBox
-      );
-      if (!isEggCloseToChef) {
+      if (!isLeadingEdgeInYRange(params.eggBoundingBox, potRimBoundingBox)) {
         return false;
       }
 
