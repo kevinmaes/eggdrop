@@ -11,7 +11,12 @@ import {
 import { type GameConfig } from '../gameConfig';
 import { sounds } from '../sounds';
 import { tweenActor } from '../tweenActor';
-import { isImageRef, type Direction, type Position } from '../types';
+import {
+  isImageRef,
+  type BoundingBox,
+  type Direction,
+  type Position,
+} from '../types';
 
 import { eggMotionActor } from './eggMotionActor';
 
@@ -86,8 +91,8 @@ export const eggMachine = setup({
     hatchingAnimation: tweenActor,
   },
   guards: {
-    isHenMoving: ({ context }) => context.henIsMoving,
-    eggCanHatch: ({ context }) => {
+    'is hen moving': ({ context }) => context.henIsMoving,
+    'egg can hatch': ({ context }) => {
       if (context.color === 'black') {
         return false;
       }
@@ -96,11 +101,11 @@ export const eggMachine = setup({
       }
       return Math.random() < context.hatchRate;
     },
-    isEggNearChefPot: ({ context }) => {
+    'is egg near chef pot': ({ context }) => {
       if (!isImageRef(context.eggRef)) return false;
       return context.eggRef.current.y() >= context.gameConfig.chef.y;
     },
-    isEggOffScreen: ({ context }) => {
+    'is egg off screen': ({ context }) => {
       if (!isImageRef(context.eggRef)) return false;
       return (
         context.eggRef.current.x() < 0 ||
@@ -137,12 +142,27 @@ export const eggMachine = setup({
       position: (_, params: Position) => params,
     }),
     notifyParentOfPosition: sendParent(
-      ({ context }, params: { position: Position }) => ({
-        type: 'Egg position updated',
-        eggId: context.id,
-        eggColor: context.color,
-        position: params.position,
-      })
+      ({ context }, params: { position: Position }) => {
+        // Calculate the rotated bounding box if we have the egg ref
+        let eggBoundingBox: BoundingBox | null = null;
+        if (isImageRef(context.eggRef) && context.eggRef.current) {
+          const rect = context.eggRef.current.getClientRect();
+          eggBoundingBox = {
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height,
+          };
+        }
+
+        return {
+          type: 'Egg position updated',
+          eggId: context.id,
+          eggColor: context.color,
+          position: params.position,
+          eggBoundingBox,
+        };
+      }
     ),
     splatOnFloor: assign({
       position: ({ context }) => ({
@@ -239,7 +259,7 @@ export const eggMachine = setup({
       on: {
         'Notify of animation position': [
           {
-            guard: 'isEggOffScreen',
+            guard: 'is egg off screen',
             target: 'Done',
             actions: {
               type: 'setResultStatus',
@@ -247,7 +267,7 @@ export const eggMachine = setup({
             },
           },
           {
-            guard: 'isEggNearChefPot',
+            guard: 'is egg near chef pot',
             actions: {
               type: 'notifyParentOfPosition',
               params: ({ event }) => ({
@@ -268,7 +288,7 @@ export const eggMachine = setup({
         'Init Falling': {
           always: [
             {
-              guard: 'isHenMoving',
+              guard: 'is hen moving',
               target: 'At an Angle',
             },
             { target: 'Straight Down' },
@@ -348,7 +368,7 @@ export const eggMachine = setup({
     Landed: {
       always: [
         {
-          guard: 'eggCanHatch',
+          guard: 'egg can hatch',
           target: 'Hatching',
           actions: ['hatchOnFloor', 'playHatchSound'],
         },
