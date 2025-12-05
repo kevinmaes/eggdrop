@@ -43,7 +43,7 @@ export function GameCompleteDemo({
 
   // Memoize the callback to prevent re-renders
   const handlePotRimHitRefReady = useCallback(
-    (ref: React.RefObject<Konva.Ellipse>) => {
+    (ref: React.RefObject<Konva.Ellipse | null>) => {
       actorRef.send({
         type: 'Set chefPotRimHitRef',
         chefPotRimHitRef: ref,

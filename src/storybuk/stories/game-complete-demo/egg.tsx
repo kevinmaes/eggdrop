@@ -113,11 +113,12 @@ export function Egg({
 
   // Egg sprite selection based on color
   const eggFrameName = `egg-${color}.png`;
-  const eggFrame = eggSpriteData.frames[eggFrameName]?.frame;
+  const eggFrame = (eggSpriteData.frames as any)[eggFrameName]?.frame;
 
   // Broken egg sprite (in chick sprite sheet!)
   const brokenEggFrameName = `egg-broken-${color}.png`;
-  const brokenEggFrame = chickSpriteData.frames[brokenEggFrameName]?.frame;
+  const brokenEggFrame = (chickSpriteData.frames as any)[brokenEggFrameName]
+    ?.frame;
 
   // Chick sprite selection
   let chickFrameName = 'chick-hatch.png';
@@ -129,7 +130,7 @@ export function Egg({
     const runDirection = exitTargetX < position.x ? 'left' : 'right';
     chickFrameName = `chick-run-${runDirection}-${runFrameIndex + 1}.png`;
   }
-  const chickFrame = chickSpriteData.frames[chickFrameName]?.frame;
+  const chickFrame = (chickSpriteData.frames as any)[chickFrameName]?.frame;
 
   // Render egg
   if (showEgg && eggFrame) {

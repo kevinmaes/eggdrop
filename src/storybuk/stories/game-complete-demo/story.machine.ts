@@ -54,7 +54,7 @@ export const storyMachine = setup({
       chefStartPosition: Position;
       henActorRef: ActorRefFrom<typeof henMachine> | null;
       chefActorRef: ActorRefFrom<typeof chefMachine> | null;
-      chefPotRimHitRef: RefObject<Konva.Ellipse> | null;
+      chefPotRimHitRef: RefObject<Konva.Ellipse | null> | null;
       eggActorRefs: ActorRefFrom<typeof eggMachine>[];
       eggCaughtPointsActorRefs: ActorRefFrom<typeof eggCaughtPointsMachine>[];
       potRimHitAreaColor: string;
@@ -65,7 +65,7 @@ export const storyMachine = setup({
       | { type: 'Reset' }
       | {
           type: 'Set chefPotRimHitRef';
-          chefPotRimHitRef: RefObject<Konva.Ellipse>;
+          chefPotRimHitRef: RefObject<Konva.Ellipse | null>;
         }
       | {
           type: 'Lay an egg';
@@ -83,7 +83,7 @@ export const storyMachine = setup({
   actions: {
     // Store the chef pot rim hit ref
     setChefPotRimHitRef: assign({
-      chefPotRimHitRef: (_, params: RefObject<Konva.Ellipse>) => params,
+      chefPotRimHitRef: (_, params: RefObject<Konva.Ellipse | null>) => params,
     }),
     // Set hit area color to red
     setPotRimHitAreaColorToRed: assign({

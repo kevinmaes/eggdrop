@@ -41,7 +41,7 @@ export const henMachine = setup({
       henId: string;
     };
     context: {
-      henRef: React.RefObject<Konva.Group> | { current: null };
+      henRef: React.RefObject<Konva.Group | null> | { current: null };
       id: string;
       destination: Destination;
       position: Position;
@@ -58,7 +58,7 @@ export const henMachine = setup({
       currentTweenStartTime: number;
     };
     events:
-      | { type: 'Set henRef'; henRef: React.RefObject<Konva.Group> }
+      | { type: 'Set henRef'; henRef: React.RefObject<Konva.Group | null> }
       | { type: 'Update position during tween'; position: Position }
       | { type: 'Play' };
   },
@@ -73,7 +73,7 @@ export const henMachine = setup({
   },
   actions: {
     setHenRef: assign({
-      henRef: (_, params: React.RefObject<Konva.Group>) => params,
+      henRef: (_, params: React.RefObject<Konva.Group | null>) => params,
     }),
     // Send "Lay an egg" event to parent orchestrator with weighted random color
     notifyParentOfEggLaying: sendParent(({ context }) => {

@@ -31,7 +31,7 @@ export function Chef({
   hitAreaFill = 'transparent',
 }: {
   actorRef: ActorRefFrom<typeof chefMachine>;
-  onPotRimHitRefReady?: (ref: RefObject<Konva.Ellipse>) => void;
+  onPotRimHitRefReady?: (ref: RefObject<Konva.Ellipse | null>) => void;
   hitAreaFill?: string;
 }) {
   const {

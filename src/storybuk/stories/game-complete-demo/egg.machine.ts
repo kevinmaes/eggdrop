@@ -45,7 +45,7 @@ export const eggMachine = setup({
       eggId: string;
     };
     context: {
-      eggRef: React.RefObject<Konva.Image> | { current: null };
+      eggRef: React.RefObject<Konva.Image | null> | { current: null };
       id: string;
       position: Position;
       targetPosition: Position;
@@ -61,7 +61,7 @@ export const eggMachine = setup({
       exitTargetX: number;
     };
     events:
-      | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image> }
+      | { type: 'Set eggRef'; eggRef: React.RefObject<Konva.Image | null> }
       | { type: 'Notify of animation position'; position: Position }
       | { type: 'Catch' };
   },
@@ -71,13 +71,15 @@ export const eggMachine = setup({
     exitingTweenActor: tweenActor,
   },
   actions: {
-    setEggRef: assign(({ context }, params: React.RefObject<Konva.Image>) => {
-      // Set the node position immediately when ref is attached
-      if (isImageRef(params)) {
-        params.current.setPosition(context.position);
+    setEggRef: assign(
+      ({ context }, params: React.RefObject<Konva.Image | null>) => {
+        // Set the node position immediately when ref is attached
+        if (params.current) {
+          params.current.setPosition(context.position);
+        }
+        return { eggRef: params };
       }
-      return { eggRef: params };
-    }),
+    ),
     setTweenProperties: assign({
       targetPosition: ({ context }) => ({
         x: context.position.x,

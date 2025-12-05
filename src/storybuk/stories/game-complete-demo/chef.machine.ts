@@ -37,8 +37,8 @@ export const chefMachine = setup({
       chefId: string;
     };
     context: {
-      chefRef: React.RefObject<Konva.Group> | { current: null };
-      chefPotRimHitRef: React.RefObject<Konva.Ellipse> | { current: null };
+      chefRef: React.RefObject<Konva.Group | null> | { current: null };
+      chefPotRimHitRef: React.RefObject<Konva.Ellipse | null> | { current: null };
       isCatching: boolean;
       id: string;
       destination: Destination;
@@ -55,10 +55,10 @@ export const chefMachine = setup({
       rightEdge: number;
     };
     events:
-      | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Group> }
+      | { type: 'Set chefRef'; chefRef: React.RefObject<Konva.Group | null> }
       | {
           type: 'Set chefPotRimHitRef';
-          chefPotRimHitRef: React.RefObject<Konva.Ellipse>;
+          chefPotRimHitRef: React.RefObject<Konva.Ellipse | null>;
         }
       | { type: 'Catch'; eggColor: 'white' | 'gold' | 'black' }
       | { type: 'Play' };
@@ -75,10 +75,11 @@ export const chefMachine = setup({
   },
   actions: {
     setChefRef: assign({
-      chefRef: (_, params: React.RefObject<Konva.Group>) => params,
+      chefRef: (_, params: React.RefObject<Konva.Group | null>) => params,
     }),
     setChefPotRimHitRef: assign({
-      chefPotRimHitRef: (_, params: React.RefObject<Konva.Ellipse>) => params,
+      chefPotRimHitRef: (_, params: React.RefObject<Konva.Ellipse | null>) =>
+        params,
     }),
     setIsCatching: assign({ isCatching: true }),
     clearIsCatching: assign({ isCatching: false }),
