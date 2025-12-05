@@ -144,4 +144,4 @@ return (
       </Group>
     </Layer>
   </Stage>
-)
+);

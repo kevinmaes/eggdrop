@@ -168,8 +168,8 @@ const chefBotMachine = setup({
 
       const targetEggXPos = targetEgg.position.x;
 
+      // Press Left or Right arrow key to move the chef
       const keyToPress = targetEggXPos < chefXPos ? 'ArrowLeft' : 'ArrowRight';
-
       await page.keyboard.down(keyToPress);
 
       // Wait until the chef is in a position to catch the target egg
