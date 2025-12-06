@@ -85,28 +85,6 @@ export function StatelyEmbed({
           {demoTitle}
         </div>
       )}
-      {/* Temporary debug overlay for URL */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '8px',
-          left: '8px',
-          fontSize: '10px',
-          color: 'rgba(255, 255, 255, 0.95)',
-          fontFamily: 'monospace',
-          backgroundColor: 'rgba(255, 0, 0, 0.8)',
-          padding: '6px 10px',
-          borderRadius: '4px',
-          zIndex: 10,
-          maxWidth: '90%',
-          wordBreak: 'break-all',
-          lineHeight: '1.4',
-        }}
-      >
-        <strong>DEBUG URL:</strong>
-        <br />
-        {urlWithTheme || 'No URL'}
-      </div>
       {urlWithTheme ? (
         <>
           <iframe
