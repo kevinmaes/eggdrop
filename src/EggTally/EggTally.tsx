@@ -59,7 +59,7 @@ export function EggTally({
       <Text
         x={eggSize + 8}
         y={0.5 * eggSize - 10}
-        text={count === 0 ? 'x' : count.toLocaleString()}
+        text={count.toLocaleString()}
         fontSize={20}
         fontStyle="bold"
         fontFamily="Arco"
