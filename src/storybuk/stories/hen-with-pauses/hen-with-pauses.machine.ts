@@ -189,7 +189,7 @@ export const henWithPausesMachine = setup({
     },
   },
 }).createMachine({
-  id: 'Hen-WithPauses',
+  id: 'Hen - Moving With Pauses',
   context: ({ input }) => {
     const canvasWidth = input.canvasWidth || DEMO_CONFIG.stageWidth;
     const canvasHeight = input.canvasHeight || DEMO_CONFIG.stageHeight;
