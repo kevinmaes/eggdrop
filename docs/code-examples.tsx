@@ -145,3 +145,35 @@ return (
     </Layer>
   </Stage>
 );
+
+
+// Guard
+
+'egg hits the pot': (
+      { context },
+      params: {
+        position: Position;
+        eggBoundingBox: BoundingBox;
+      }
+    ) => {
+      if (!isImageRef(context.chefPotRimHitRef)) {
+        return false;
+      }
+
+      const potRimBoundingBox =
+        context.chefPotRimHitRef.current.getClientRect();
+
+      // Is the egg horizontally over the chef? (X axis)
+      // This rules out most eggs quickly since many fall straight down
+      if (!hasHorizontalOverlap(params.eggBoundingBox, potRimBoundingBox)) {
+        return false;
+      }
+
+      // Has the egg's leading edge reached the pot rim's Y range?
+      if (!isLeadingEdgeInYRange(params.eggBoundingBox, potRimBoundingBox)) {
+        return false;
+      }
+
+      // Full bounding box overlap check
+      return doBoundingBoxesOverlap(params.eggBoundingBox, potRimBoundingBox);
+    },
