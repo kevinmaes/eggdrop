@@ -11,11 +11,13 @@ Key features:
 - Interactive story navigation with sprite icons and visual indicators
 - Dual-mode demos showing both headless state machines and visual presentations
 - Stately Inspector integration for real-time state machine visualization
+- Embedded Stately statechart visualizations alongside demos
 - Individual actor stories (Chef, Hen, Egg, Chick) demonstrating core behaviors
 - Multi-actor compositions showing synchronized interactions
 - Presentation layouts optimized for demos (1920x1080)
 - Play/pause/reset controls with synchronized playback
 - Theme toggle support for different viewing preferences
+- Keyboard indicator for interactive demos
 
 Technical improvements:
 

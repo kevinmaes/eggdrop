@@ -48,7 +48,6 @@ export const storyConfig: StoryConfig = {
   layoutMode: 'vertical-split-bottom',
   showKeyboardIndicator: true,
   statelyEmbedUrl: [
-    // 'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&colorMode=light&colorMode=light&colorMode=light&machineId=f7665539-747e-4617-8603-201df860b95d',
     'https://stately.ai/registry/editor/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&machineId=f7665539-747e-4617-8603-201df860b95d',
   ],
   ...canvasDimensions,
