@@ -42,7 +42,7 @@ export const henIdleMachine = setup({
     }),
   },
 }).createMachine({
-  id: 'Hen-Idle',
+  id: 'Hen - Idle',
   context: ({ input }) => ({
     henRef: { current: null },
     id: input.id,
