@@ -21,6 +21,7 @@ export default [
       '*.config.*',
       'scripts/**/*',
       'tests/**/*',
+      'docs/**/*',
     ],
   },
   js.configs.recommended,

@@ -1,0 +1,63 @@
+import {
+  calculateStoryCanvasDimensions,
+  STORYBUK_COLORS,
+  type StoryConfig,
+  EGG_STORY_CANVAS_WIDTH_PERCENT,
+  getCenterX,
+  getFallingStartY,
+  ACTOR_SIZE,
+} from '../../story-config-constants';
+
+// Explicit imports - no pattern matching!
+import { EggFallingAndBreaking } from './egg-falling-and-breaking';
+import { EggFallingAndBreakingHeadless } from './egg-falling-and-breaking-headless';
+import { eggFallingAndBreakingHeadlessMachine } from './egg-falling-and-breaking-headless.machine';
+import { eggFallingAndBreakingMachine } from './egg-falling-and-breaking.machine';
+
+const canvasDimensions = calculateStoryCanvasDimensions(
+  'horizontal',
+  EGG_STORY_CANVAS_WIDTH_PERCENT
+);
+
+export const storyConfig: StoryConfig = {
+  id: '12',
+  type: 'animated',
+  title: 'Egg - Falling + Breaking',
+  description:
+    'Egg falls and splats on the ground, showing broken egg sprite - Visual story + headless inspector',
+  actors: [
+    {
+      type: 'egg',
+      machineVersion: 'splat',
+      componentVersion: 'splat',
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
+        y: getFallingStartY(canvasDimensions.canvasHeight),
+      },
+      id: 'egg-visual',
+      machine: eggFallingAndBreakingMachine,
+      Component: EggFallingAndBreaking,
+    },
+    {
+      type: 'egg',
+      machineVersion: 'splat-headless',
+      componentVersion: 'splat-headless',
+      startPosition: {
+        x: getCenterX(canvasDimensions.canvasWidth, ACTOR_SIZE.egg.width, true),
+        y: getFallingStartY(canvasDimensions.canvasHeight),
+      },
+      id: 'egg-headless',
+      machine: eggFallingAndBreakingHeadlessMachine,
+      Component: EggFallingAndBreakingHeadless,
+    },
+  ],
+  background: {
+    type: 'solid',
+    color: STORYBUK_COLORS.storyDemoBackground,
+  },
+  layoutMode: 'horizontal-split-narrow',
+  statelyEmbedUrl: [
+    'https://stately.ai/registry/editor/embed/3a22c0b6-a102-448a-b09b-2f118d881d53?mode=design&colorMode=light&colorMode=light&colorMode=light&machineId=0e84c58c-791a-47b8-8180-4ebbfbbc44b1',
+  ],
+  ...canvasDimensions,
+};

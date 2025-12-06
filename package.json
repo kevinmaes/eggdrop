@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc -b && vite build",
     "check": "pnpm lint && pnpm tsc && pnpm test && pnpm build",
+    "checks": "pnpm check",
     "ci": "pnpm lint && pnpm tsc && pnpm test",
     "dev": "vite",
     "format:check": "prettier --check .",
@@ -29,10 +30,13 @@
     "version": "changeset version"
   },
   "dependencies": {
+    "@fontsource/nunito-sans": "^5.2.7",
+    "@statelyai/inspect": "^0.4.0",
     "@xstate/react": "^6.0.0",
     "fontfaceobserver": "^2.3.0",
     "howler": "^2.2.4",
     "konva": "^10.0.8",
+    "lucide-react": "^0.553.0",
     "nanoid": "^5.1.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -64,7 +68,7 @@
     "vite": "^7.1.12",
     "vitest": "^4.0.5"
   },
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.23.0",
   "engines": {
     "node": ">=20.0.0"
   }
