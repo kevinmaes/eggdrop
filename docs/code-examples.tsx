@@ -1,3 +1,6 @@
+// This file is just for code samples used in the ReactNext presentation slides.
+
+
 // Examples of an XState event
 
 // Event
