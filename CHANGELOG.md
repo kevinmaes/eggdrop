@@ -1,5 +1,42 @@
 # vite-project
 
+## 0.3.0
+
+### Minor Changes
+
+- 1cd87b9: Add Storybuk demo studio for composable actor showcases
+
+  Introduces a comprehensive demo studio (Storybuk) that showcases individual actor state machines and their compositions. This zero-bloat platform enables developers to view, test, and understand actor behaviors in isolation and in combination.
+
+  Key features:
+  - Interactive story navigation with sprite icons and visual indicators
+  - Dual-mode demos showing both headless state machines and visual presentations
+  - Stately Inspector integration for real-time state machine visualization
+  - Embedded Stately statechart visualizations alongside demos
+  - Individual actor stories (Chef, Hen, Egg, Chick) demonstrating core behaviors
+  - Multi-actor compositions showing synchronized interactions
+  - Presentation layouts optimized for demos (1920x1080)
+  - Play/pause/reset controls with synchronized playback
+  - Theme toggle support for different viewing preferences
+  - Keyboard indicator for interactive demos
+
+  Technical improvements:
+  - Refactored position calculations to match game pattern
+  - Enhanced sprite animations with improved timing and synchronization
+  - Centralized story configuration system
+  - Shared inspector utilities for state machine debugging
+  - TypeScript strict mode compliance across all stories
+
+### Patch Changes
+
+- 2bd22c7: Fix egg count in score board starting with "x" instead of "0"
+
+  The egg count display in the score board during gameplay now correctly starts at "0" instead of displaying "x" when no eggs have been caught yet.
+
+- f472ecc: Add more explicit workflow triggers and improve reporting
+- f0c5dc2: Fix component file formatting
+- 7b03f2b: Create util functions for bounding box checks
+
 ## 0.2.1
 
 ### Patch Changes
