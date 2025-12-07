@@ -33,6 +33,8 @@
 
   The egg count display in the score board during gameplay now correctly starts at "0" instead of displaying "x" when no eggs have been caught yet.
 
+- f472ecc: Add more explicit workflow triggers and improve reporting
+- f0c5dc2: Fix component file formatting
 - 7b03f2b: Create util functions for bounding box checks
 
 ## 0.2.1
