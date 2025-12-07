@@ -38,7 +38,9 @@ export const chefMachine = setup({
     };
     context: {
       chefRef: React.RefObject<Konva.Group | null> | { current: null };
-      chefPotRimHitRef: React.RefObject<Konva.Ellipse | null> | { current: null };
+      chefPotRimHitRef:
+        | React.RefObject<Konva.Ellipse | null>
+        | { current: null };
       isCatching: boolean;
       id: string;
       destination: Destination;
