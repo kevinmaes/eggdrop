@@ -26,7 +26,8 @@
       "Bash(gh pr view:*)",
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(pnpm changeset:*)"
     ],
     "deny": [],
     "ask": []
