@@ -1,5 +1,13 @@
 # vite-project
 
+## 0.3.1
+
+### Patch Changes
+
+- fb94a55: Update Claude.md documentation to clarify that PRs should target dev branch by default and include PR workflow instructions with changeset creation
+- b052960: Fix Vercel routing to serve static assets correctly. Add filesystem handler to prevent redirecting JS/CSS files to index.html
+- fb94a55: Add SPA routing support for Vercel deployment. Fixes 404 errors when accessing routes directly or refreshing on non-root routes.
+
 ## 0.3.0
 
 ### Minor Changes
