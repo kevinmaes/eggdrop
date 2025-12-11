@@ -157,7 +157,7 @@ export const loadingMachine = setup({
       entry: {
         type: 'updateStatus',
         params: {
-          progress: 0.1,
+          progress: 0,
           message: 'Loading fonts...',
         },
       },
