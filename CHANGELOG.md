@@ -1,5 +1,11 @@
 # vite-project
 
+## 0.3.2
+
+### Patch Changes
+
+- d4a565a: Fix loader animation to start at 0% instead of 10%
+
 ## 0.3.1
 
 ### Patch Changes
