@@ -23,9 +23,15 @@ export function GameLevel() {
     })
   );
 
-  const gameLevelActorRef = appActorRef.system.get(
-    GAME_LEVEL_ACTOR_ID
-  ) as ActorRefFrom<typeof gameLevelMachine>;
+  const gameLevelActorRef = appActorRef.system.get(GAME_LEVEL_ACTOR_ID) as
+    | ActorRefFrom<typeof gameLevelMachine>
+    | undefined;
+
+  // If the gameLevelMachine actor doesn't exist yet (e.g., during loading),
+  // render nothing until it's available
+  if (!gameLevelActorRef) {
+    return null;
+  }
 
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
     gameLevelActorRef,

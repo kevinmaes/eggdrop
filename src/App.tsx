@@ -27,16 +27,17 @@ function App() {
     return <div>Error loading the game...</div>;
   }
 
-  if (isLoading) {
-    return <LoadingOverlay status={loadingStatus} />;
-  }
-
+  // Persistent stage: Always render the Konva stage (even during loading)
+  // so the scene is ready the moment gameplay begins. This helps "cover up"
+  // the fact that mounting some graphics takes time that is noticeable.
   return (
     <div className="app-page">
       <KonvaStageAndBackground>
         <BetweenLevelsLayer />
         {showGamePlayLevel && <GameLevel />}
       </KonvaStageAndBackground>
+      {/* LoadingOverlay renders as a translucent curtain atop the stage */}
+      {isLoading && <LoadingOverlay status={loadingStatus} />}
     </div>
   );
 }
