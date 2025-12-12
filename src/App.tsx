@@ -55,13 +55,21 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
     <div className="app-stage-wrapper">
       <div className="app-stage-container">
         <div className="app-stage-container-middle">
-          <div className="app-stage-container-inner">
+          <div
+            className="app-stage-container-inner"
+            style={{
+              width: gameConfig.stage.width,
+              height: gameConfig.stage.height,
+            }}
+          >
             <Stage
               width={gameConfig.stage.width}
               height={gameConfig.stage.height}
               style={{
                 borderRadius: `${getBorderRadius()}px`,
                 overflow: 'hidden',
+                position: 'relative',
+                display: 'block',
               }}
             >
               {/* Background graphics layer - static (no events) */}

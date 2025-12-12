@@ -50,8 +50,13 @@ body,
 }
 
 .app-stage-container-inner {
+  position: relative;
   border-radius: var(--border-radius-inner);
   overflow: hidden;
+}
+
+.app-stage-container-inner > div {
+  position: relative !important;
 }
 
 @media (max-height: 900px) {
