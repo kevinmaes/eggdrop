@@ -68,8 +68,6 @@ function KonvaStageAndBackground({ children }: { children: React.ReactNode }) {
               style={{
                 borderRadius: `${getBorderRadius()}px`,
                 overflow: 'hidden',
-                position: 'relative',
-                display: 'block',
               }}
             >
               {/* Background graphics layer - static (no events) */}
