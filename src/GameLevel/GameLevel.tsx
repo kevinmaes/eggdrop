@@ -23,18 +23,27 @@ export function GameLevel() {
     })
   );
 
-  const gameLevelActorRef = appActorRef.system.get(
-    GAME_LEVEL_ACTOR_ID
-  ) as ActorRefFrom<typeof gameLevelMachine>;
+  const gameLevelActorRef = appActorRef.system.get(GAME_LEVEL_ACTOR_ID) as
+    | ActorRefFrom<typeof gameLevelMachine>
+    | undefined;
 
+  // Always call useSelector unconditionally to comply with React hooks rules
+  // useSelector handles undefined gracefully, matching the pattern used in
+  // CountdownTimer.tsx and HensCountdown.tsx
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
     gameLevelActorRef,
     (state) => ({
-      henActorRefs: state?.context.henActorRefs ?? [],
-      eggActorRefs: state?.context.eggActorRefs ?? [],
-      eggCaughtPointsActorRefs: state?.context.eggCaughtPointsActorRefs ?? [],
+      henActorRefs: state?.context?.henActorRefs ?? [],
+      eggActorRefs: state?.context?.eggActorRefs ?? [],
+      eggCaughtPointsActorRefs: state?.context?.eggCaughtPointsActorRefs ?? [],
     })
   );
+
+  // If the gameLevelMachine actor doesn't exist yet (e.g., during loading),
+  // render nothing until it's available
+  if (!gameLevelActorRef) {
+    return null;
+  }
 
   return (
     <>

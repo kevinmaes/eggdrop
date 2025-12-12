@@ -6,7 +6,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #0b1020;
+  background-color: rgba(11, 16, 32, 0.85);
+  backdrop-filter: blur(2px);
   color: #f8f9ff;
   z-index: 9999;
 }
