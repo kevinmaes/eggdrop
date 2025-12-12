@@ -1,5 +1,3 @@
-import { useState, useEffect, useMemo } from 'react';
-
 import { useSelector } from '@xstate/react';
 import { Layer, Text } from 'react-konva';
 
@@ -29,23 +27,11 @@ export function GameLevel() {
     | ActorRefFrom<typeof gameLevelMachine>
     | undefined;
 
-  // Track actor existence with useState to ensure hooks are always called
-  const [hasActor, setHasActor] = useState(!!gameLevelActorRef);
-  useEffect(() => {
-    setHasActor(!!gameLevelActorRef);
-  }, [gameLevelActorRef]);
-
-  // Create a stable actor ref for useSelector - always call useSelector unconditionally
-  // Use useMemo to ensure we have a stable reference that doesn't change between renders
-  const actorRefForSelector = useMemo(
-    () => gameLevelActorRef ?? ({} as ActorRefFrom<typeof gameLevelMachine>),
-    [gameLevelActorRef]
-  );
-
   // Always call useSelector unconditionally to comply with React hooks rules
-  // The selector uses optional chaining to safely handle undefined/null state
+  // useSelector handles undefined gracefully, matching the pattern used in
+  // CountdownTimer.tsx and HensCountdown.tsx
   const { henActorRefs, eggActorRefs, eggCaughtPointsActorRefs } = useSelector(
-    actorRefForSelector,
+    gameLevelActorRef,
     (state) => ({
       henActorRefs: state?.context?.henActorRefs ?? [],
       eggActorRefs: state?.context?.eggActorRefs ?? [],
@@ -55,7 +41,7 @@ export function GameLevel() {
 
   // If the gameLevelMachine actor doesn't exist yet (e.g., during loading),
   // render nothing until it's available
-  if (!hasActor || !gameLevelActorRef) {
+  if (!gameLevelActorRef) {
     return null;
   }
 
