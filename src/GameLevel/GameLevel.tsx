@@ -10,9 +10,7 @@ import { Hen } from '../Hen/Hen';
 import { HensCountdown } from '../HensCountdown/HensCountdown';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 
-import { gameLevelMachine, type GameLevelActorRef } from './gameLevel.machine';
-
-import type { ActorRefFrom } from 'xstate';
+import { type GameLevelActorRef } from './gameLevel.machine';
 
 export function GameLevel() {
   const appActorRef = AppActorContext.useActorRef();
