@@ -507,6 +507,11 @@ export const gameLevelMachine = setup({
     'is a hen actor done': (_, params: { henId: string }) => {
       return !!params.henId;
     },
+    'is last hen done': ({ context }, params: { henId: string }) => {
+      // Check if this is a valid hen and if it's the last one
+      // (hensLeft will be 1 when the last hen is completing, since decrement happens after this guard)
+      return !!params.henId && context.hensLeft === 1;
+    },
     'is egg caught points actor done': (
       _,
       params: { eggCaughtPointsid: string }
@@ -757,7 +762,18 @@ export const gameLevelMachine = setup({
               },
             ],
           },
-          // Hen actor done
+          // Hen actor done - check if this was the last hen
+          {
+            guard: {
+              type: 'is last hen done',
+              params: ({ event }: { event: HenDoneEvent }) => ({
+                henId: event.output.henId,
+              }),
+            },
+            actions: ['removeHenActorRef', 'decrementHensLeft'],
+            target: 'Done',
+          },
+          // Hen actor done - not the last hen
           {
             guard: {
               type: 'is a hen actor done',
