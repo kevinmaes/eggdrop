@@ -10,7 +10,7 @@ import { Hen } from '../Hen/Hen';
 import { HensCountdown } from '../HensCountdown/HensCountdown';
 import { LevelScoreBox } from '../LevelScoreBox/LevelScoreBox';
 
-import { gameLevelMachine } from './gameLevel.machine';
+import { gameLevelMachine, type GameLevelActorRef } from './gameLevel.machine';
 
 import type { ActorRefFrom } from 'xstate';
 
@@ -24,7 +24,7 @@ export function GameLevel() {
   );
 
   const gameLevelActorRef = appActorRef.system.get(GAME_LEVEL_ACTOR_ID) as
-    | ActorRefFrom<typeof gameLevelMachine>
+    | GameLevelActorRef
     | undefined;
 
   // Always call useSelector unconditionally to comply with React hooks rules
