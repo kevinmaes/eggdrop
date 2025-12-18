@@ -121,10 +121,12 @@ export const STAGE_DIMENSIONS = {
   movementMargin: 25,
 };
 
-const createGameConfig = (
-  isTestMode: boolean = false,
-  isAutomatedTest: boolean = false
-): GameConfig => {
+type TestMode = 'none' | 'test' | 'test:speed' | 'test:automated';
+
+const createGameConfig = (testMode: TestMode = 'none'): GameConfig => {
+  const isTestMode = testMode === 'test' || testMode === 'test:speed';
+  const isAutomatedTest = testMode === 'test:automated';
+  const isSpeedTest = testMode === 'test:speed';
   // The position and dimensions of the chef
   const chefWidth = 344;
   const chefHeight = 344;
@@ -253,6 +255,13 @@ const createGameConfig = (
     gameConfig.levelDurationMS = 60_000;
   }
 
+  // Speed test mode: Super fast levels for quick e2e verification
+  if (isSpeedTest) {
+    gameConfig.populationSize = 3;
+    gameConfig.levelDurationMS = 30_000; // 30 seconds to allow hens to complete their walk
+    gameConfig.hen.entranceDelayMS = 200; // Faster hen entrance
+  }
+
   // Automated test mode: Crank up the intensity for bot demonstrations
   if (isAutomatedTest) {
     // INTENSITY CONTROL: Adjust this single value to control difficulty
@@ -278,24 +287,28 @@ let gameConfigInstance: GameConfig | null = null;
 
 // Export a function that returns the singleton instance
 export function getGameConfig(): GameConfig {
-  let isTestMode = false;
-  let isAutomatedTest = false;
+  let testMode: TestMode = 'none';
 
   // Prefer env var if present (for Playwright/Node tests)
   if (typeof process !== 'undefined' && process.env['TEST_MODE']) {
-    isTestMode = process.env['TEST_MODE'] === 'true';
+    testMode = process.env['TEST_MODE'] === 'true' ? 'test' : 'none';
   } else if (typeof window !== 'undefined') {
     // Fallback to query string in browser
     const urlParams = new URLSearchParams(window.location.search as string);
-    isTestMode = urlParams.get('testMode') === 'true';
-    isAutomatedTest = urlParams.get('automatedTest') === 'true';
+    if (urlParams.get('speedTest') === 'true') {
+      testMode = 'test:speed';
+    } else if (urlParams.get('automatedTest') === 'true') {
+      testMode = 'test:automated';
+    } else if (urlParams.get('testMode') === 'true') {
+      testMode = 'test';
+    }
   }
 
   if (gameConfigInstance) {
     return gameConfigInstance;
   }
 
-  gameConfigInstance = createGameConfig(isTestMode, isAutomatedTest);
+  gameConfigInstance = createGameConfig(testMode);
   return gameConfigInstance;
 }
 

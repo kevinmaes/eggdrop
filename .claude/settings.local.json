@@ -27,7 +27,10 @@
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
       "Bash(find:*)",
-      "Bash(pnpm changeset:*)"
+      "Bash(pnpm changeset:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm use:*)",
+      "Bash(pnpm exec playwright test:*)"
     ],
     "deny": [],
     "ask": []
