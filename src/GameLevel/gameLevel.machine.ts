@@ -5,7 +5,6 @@ import {
   assertEvent,
   assign,
   emit,
-  log,
   sendTo,
   setup,
 } from 'xstate';
@@ -713,7 +712,7 @@ export const gameLevelMachine = setup({
   },
   states: {
     Playing: {
-      entry: ['startBackgroundMusic', log('Game Level - Playing')],
+      entry: 'startBackgroundMusic',
       exit: 'stopBackgroundMusic',
       on: {
         Tick: [
