@@ -40,7 +40,52 @@ jobs:
           git merge origin/dev --no-edit
           git push origin main
 
+      - name: Get version from package.json
+        id: get-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: tag-check
+        run: |
+          if git rev-parse "v${{ steps.get-version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push tag
+        if: steps.tag-check.outputs.exists == 'false'
+        run: |
+          git tag "v${{ steps.get-version.outputs.version }}"
+          git push origin "v${{ steps.get-version.outputs.version }}"
+
+      - name: Extract changelog for this version
+        if: steps.tag-check.outputs.exists == 'false'
+        id: changelog
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          # Extract content between this version header and the next version header
+          CHANGELOG=$(sed -n "/^## ${VERSION}$/,/^## [0-9]/p" CHANGELOG.md | sed '$d' | tail -n +2)
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.tag-check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.get-version.outputs.version }}
+          name: v${{ steps.get-version.outputs.version }}
+          body: ${{ steps.changelog.outputs.content }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Summary
         run: |
           echo "✅ Successfully merged dev into main"
           echo "🚀 Vercel will now deploy to production"
+          if [ "${{ steps.tag-check.outputs.exists }}" == "false" ]; then
+            echo "📦 Created GitHub Release v${{ steps.get-version.outputs.version }}"
+          else
+            echo "⏭️ Skipped release creation (tag v${{ steps.get-version.outputs.version }} already exists)"
+          fi
