@@ -50,8 +50,23 @@ body,
 }
 
 .app-stage-container-inner {
+  position: relative;
   border-radius: var(--border-radius-inner);
   overflow: hidden;
+}
+
+/* Ensure Konva Stage wrapper is properly contained */
+.app-stage-container-inner > div {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Fix Konva canvas positioning - ensure canvases are positioned correctly */
+.app-stage-container-inner canvas {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 @media (max-height: 900px) {
