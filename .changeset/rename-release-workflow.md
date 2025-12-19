@@ -2,4 +2,4 @@
 "eggdrop": patch
 ---
 
-Rename release workflow from "Auto Promote and Release" to "Release" for simplicity.
+Rename workflows to follow Changesets conventions: version.yml becomes release.yml (creates Version Packages PR), and release.yml becomes deploy.yml (promotes to main and creates GitHub Release).
