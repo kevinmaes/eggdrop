@@ -1,5 +1,14 @@
 # vite-project
 
+## 0.3.2
+
+### Patch Changes
+
+- d4a565a: Fix loader animation to start at 0% instead of 10%
+- a7ff40d: Fix Version Packages PR not triggering CI workflows by supporting PAT token for changesets action
+- c47d6ec: Implement persistent stage plan - render Konva stage continuously during loading with translucent overlay curtain instead of replacing the stage. This ensures the scene is ready the moment gameplay begins, helping to cover up noticeable graphics mounting time.
+- cc1c123: Add manual trigger option to Version workflow
+
 ## 0.3.1
 
 ### Patch Changes
