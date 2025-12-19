@@ -1,5 +1,12 @@
 # vite-project
 
+## 0.3.3
+
+### Patch Changes
+
+- c7e2fce: Rename promote-to-main workflow to auto-promote-and-release and add automatic GitHub Release creation. Releases are created with version tags (v0.x.x) and changelog content extracted from CHANGELOG.md.
+- 9abd0ae: Rename release-to-main to promote-to-main and add automatic trigger on Version Packages PR merge
+
 ## 0.3.2
 
 ### Patch Changes
