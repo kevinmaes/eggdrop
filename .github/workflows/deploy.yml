@@ -1,6 +1,6 @@
-# Automatically merges dev into main after a "Version Packages" PR is merged
+# Merges dev into main after a "Version Packages" PR is merged
 # Creates a GitHub Release with changelog, then Vercel auto-deploys main to production
-name: Auto Promote and Release
+name: Deploy
 
 on:
   pull_request:
